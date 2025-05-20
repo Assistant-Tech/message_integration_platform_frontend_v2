@@ -20,6 +20,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       className,
       onClick,
       Icon,
+      // right - icon
+      // left - icon 
       ...props
     },
     ref,
@@ -31,7 +33,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         event.preventDefault();
         navigate(redirectTo);
       }
-
       onClick?.(event);
     };
 

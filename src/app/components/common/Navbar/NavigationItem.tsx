@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
-import { DropdownMenu } from "@/app/components/ui";
+import { DropdownMenu } from "@/app/components/common";
 
 interface NavigationItemProps {
   item: {
@@ -44,7 +44,6 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
 
   return (
     <div
-      className="relative"
       onMouseEnter={() => item.dropdown && onMouseEnter(item.name)}
       onMouseLeave={onMouseLeave}
     >
@@ -65,10 +64,7 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
 
       <AnimatePresence>
         {item.dropdown && activeDropdown === item.name && (
-          <DropdownMenu
-            items={item.dropdown}
-            isVisible={activeDropdown === item.name}
-          />
+          <DropdownMenu items={item} isVisible={activeDropdown === item.name} />
         )}
       </AnimatePresence>
     </div>

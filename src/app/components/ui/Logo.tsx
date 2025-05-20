@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { APP_ROUTES } from "@/app/constants/routes";
 import logo from "@/app/assets/logo.svg";
+import { cn } from "@/app/utils/cn";
 
 interface LogoProps {
   className?: string;
@@ -17,9 +18,8 @@ const Logo: React.FC<LogoProps> = ({ className = "" }) => (
         className="h-12 w-12 text-primary"
         alt="Assistant Tech Logo"
       />
-      <h1 className="h4-bold-24 xs:body-bold-16">
-        ASSISTANT{" "}
-        <span className="h4-bold-24 sm:body-bold-16 text-secondary">TECH</span>
+      <h1 className="text-base sm:text-lg xl:text-2xl font-bold font-nunito">
+        ASSISTANT <span className="text-secondary">TECH</span>
       </h1>
     </figure>
   </Link>

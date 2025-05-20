@@ -22,7 +22,7 @@ const Navbar = () => {
   const navbarStyles = {
     default: "bg-white border-b border-transparent",
     scrolled:
-      "bg-white/85 backdrop-blur-lg shadow-lg border-b border-gray-100/20",
+      "bg-white/85 backdrop-blur-sm shadow-sm border-b border-gray-100/20",
   };
 
   return (
@@ -36,7 +36,7 @@ const Navbar = () => {
           {/* Logo with scroll animation */}
           <div
             className={`transition-all duration-300 ${
-              isScrolled ? "scale-95" : "scale-100"
+              isScrolled ? "scale-75" : "scale-100"
             }`}
           >
             <Logo />

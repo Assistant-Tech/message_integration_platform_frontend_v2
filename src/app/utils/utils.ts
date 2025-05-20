@@ -6,9 +6,10 @@ import {
   HelpCircle,
   BarChart3,
   FileText,
+  FileQuestion,
 } from "lucide-react";
-import { APP_ROUTES } from "@/app/constants/routes";
 
+// Types for navigation items
 export interface DropdownItem {
   name: string;
   href: string;
@@ -22,6 +23,7 @@ export interface NavigationItem {
   dropdown?: DropdownItem[];
 }
 
+// Sample navigation data
 export const navigation: NavigationItem[] = [
   {
     name: "Products",
@@ -39,6 +41,12 @@ export const navigation: NavigationItem[] = [
         icon: MessageSquare,
       },
       {
+        name: "CRM-1",
+        href: "/products/crm",
+        description: "Customer relationship management",
+        icon: Users,
+      },
+      {
         name: "Analytics",
         href: "/products/analytics",
         description: "Business intelligence platform",
@@ -49,6 +57,12 @@ export const navigation: NavigationItem[] = [
         href: "/products/database",
         description: "Secure data management",
         icon: Database,
+      },
+      {
+        name: "CRM-2",
+        href: "/products/crm",
+        description: "Customer relationship management",
+        icon: Users,
       },
     ],
   },
@@ -73,8 +87,14 @@ export const navigation: NavigationItem[] = [
         description: "Latest news and insights",
         icon: FileText,
       },
+      {
+        name: "FAQ",
+        href: "/resources/faq",
+        description: "For more questionaires",
+        icon: FileQuestion,
+      },
     ],
   },
-  { name: "Contact", href: APP_ROUTES.PUBLIC.CONTACT },
-  { name: "Pricing", href: APP_ROUTES.PUBLIC.PRICING },
+  { name: "Contact", href: "/contact" },
+  { name: "Pricing", href: "/pricing" },
 ];
