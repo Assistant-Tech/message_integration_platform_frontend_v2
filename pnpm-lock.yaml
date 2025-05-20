@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@fontsource/merriweather':
+        specifier: ^5.2.7
+        version: 5.2.7
       '@fontsource/nunito-sans':
         specifier: ^5.2.5
         version: 5.2.5
@@ -430,6 +433,9 @@ packages:
 
   '@floating-ui/utils@0.2.9':
     resolution: {integrity: sha512-MDWhGtE+eHw5JW7lq4qhc5yRLS11ERl1c7Z6Xd0a58DozHES6EnNNwUWbMiG4J9Cgj053Bhk8zvlhFYKVhULwg==}
+
+  '@fontsource/merriweather@5.2.7':
+    resolution: {integrity: sha512-ryOP1w5L0bZCFm1YoITndy18N+4Z07sJFkWEl9XxCAbqx88gkUO/F/vjPMw4Uup20w6plDD5w6xmsRiAI3+1NA==}
 
   '@fontsource/nunito-sans@5.2.5':
     resolution: {integrity: sha512-QE2I4PmR9CHoAXxfpz4L+o35X4jg64i+5/J8Aa0G24mY9xs2VPr0a4igDcZkjIMhGfFfPAvcaR+hf/NpXVhZuw==}
@@ -2478,6 +2484,8 @@ snapshots:
       react-dom: 19.1.0(react@19.1.0)
 
   '@floating-ui/utils@0.2.9': {}
+
+  '@fontsource/merriweather@5.2.7': {}
 
   '@fontsource/nunito-sans@5.2.5': {}
 

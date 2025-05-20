@@ -27,7 +27,7 @@ const Navbar = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out h-20 ${
         isScrolled ? navbarStyles.scrolled : navbarStyles.default
       }`}
     >
@@ -41,7 +41,6 @@ const Navbar = () => {
           >
             <Logo />
           </div>
-
           {/* Desktop Navigation */}
           <DesktopNavigation
             activeDropdown={activeDropdown}

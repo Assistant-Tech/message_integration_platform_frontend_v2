@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 
-import { AdminRoutes, PublicRoutes, UserRoutes } from "@/app/router";
+import { PublicRoutes } from "@/app/router";
 import { Loading } from "@/app/components/common";
 import { PublicLayout } from "./components/layout";
 import { Route, Routes } from "react-router-dom";
@@ -17,9 +17,9 @@ const AppRoutes = () => {
         <PublicRoutes />
       </PublicLayout>
       {/* Admin Routes */}
-      <AdminRoutes />
+      {/* <AdminRoutes /> */}
       {/* User Routes  */}
-      <UserRoutes />
+      {/* <UserRoutes /> */}
     </Suspense>
   );
 };

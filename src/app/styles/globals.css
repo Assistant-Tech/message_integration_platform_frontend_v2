@@ -1,4 +1,5 @@
 @import "tailwindcss";
+/* Main Nunito Import */
 @import "@fontsource/nunito-sans/400.css";
 @import "@fontsource/nunito-sans/500.css";
 @import "@fontsource/nunito-sans/600.css";
@@ -6,10 +7,16 @@
 @import "@fontsource/nunito-sans/400-italic.css";
 @import "@fontsource/nunito-sans/700-italic.css";
 
+/* Accent Typo Import */
+@import "@fontsource/merriweather";
+@import "@fontsource/merriweather/400.css";
+@import "@fontsource/merriweather/400-italic.css";
+
 @theme {
   /* Font families */
   --font-sans: "Nunito Sans", ui-sans-serif, system-ui, sans-serif;
   --font-nunito: "Nunito Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-meri: "Merriweather", ui-sans-serif, system-ui, sans-serif;
 
   /* Primary Color */
   --color-primary-light: #e4f7f3;
@@ -62,6 +69,9 @@
 */
 body {
   @apply bg-white text-primary-dark font-sans;
+}
+.bold-64 {
+  @apply text-6xl leading-[60px] tracking-[-0.012em] font-meri;
 }
 /*
 ─────────────────────────────────────────────────────────────────────────────
