@@ -21,7 +21,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       onClick,
       Icon,
       // right - icon
-      // left - icon 
+      // left - icon
       ...props
     },
     ref,
@@ -44,7 +44,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           variant === "primary"
             ? "bg-primary text-white button-semi-bold-16 hover:bg-white hover:text-primary border hover:border-primary"
             : variant === "secondary"
-              ? "bg-gray-200 button-semi-bold-16 text-primary hover:bg-gray-300"
+              ? "bg-secondary button-semi-bold-16 text-white"
               : "bg-transparent button-semi-bold-16 text-primary hover:text-white ring-1 ring-primary/80",
           className,
         )}

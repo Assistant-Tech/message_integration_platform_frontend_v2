@@ -26,9 +26,9 @@ const DropdownMenu = ({ items, isVisible }: DropdownMenuProps) => {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 10, scale: 0.95 }}
           transition={{ duration: 0.2 }}
-          className="absolute top-full flex justify-center left-1/2 transform -translate-x-1/2 mt-2 w-screen bg-white rounded-lg shadow-lg ring-opacity-5 overflow-hidden z-50"
+          className="absolute top-full flex justify-center left-1/2 transform -translate-x-1/2 mt-2 w-screen max-w-[1680px] bg-white rounded-lg shadow-lg ring-opacity-5 overflow-hidden z-50"
         >
-          <div className="flex flex-col justify-center items-center w-screen px-36">
+          <div className="flex flex-col justify-center items-center w-screen">
             <div className="flex">
               {/* left side image & text */}
               <div className="p-4 bg-white">
@@ -96,7 +96,7 @@ const DropdownMenu = ({ items, isVisible }: DropdownMenuProps) => {
                 <h1>Terms and Conditions </h1>
                 <h1>Help Center </h1>
               </article>
-              <Button label="Book a demo" />
+              <Button label="Book a demo" variant="secondary" />
             </div>
           </div>
         </motion.div>
