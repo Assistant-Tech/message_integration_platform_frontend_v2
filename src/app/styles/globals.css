@@ -1,0 +1,262 @@
+@import "tailwindcss";
+@import "@fontsource/nunito-sans/400.css";
+@import "@fontsource/nunito-sans/500.css";
+@import "@fontsource/nunito-sans/600.css";
+@import "@fontsource/nunito-sans/700.css";
+@import "@fontsource/nunito-sans/400-italic.css";
+@import "@fontsource/nunito-sans/700-italic.css";
+
+@theme {
+  /* Font families */
+  --font-sans: "Nunito Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-nunito: "Nunito Sans", ui-sans-serif, system-ui, sans-serif;
+
+  /* Primary Color */
+  --color-primary-light: #e4f7f3;
+  --color-primary-inactive: #a1e0d4;
+  --color-primary: #1cb496;
+  --color-primary-dark: #169078;
+  --color-white: #ffffff;
+
+  /* Secondary Color */
+  --color-secondary-light: #fef3e6;
+  --color-secondary-inactive: #f9cf99;
+  --color-secondary: #f08700;
+  --color-secondary-dark: #c06c00;
+
+  /* Text Color */
+  --color-base-white: #ffffff;
+  --color-grey-medium: #666666;
+  --color-grey: #333333;
+  --color-base-black: #03120f;
+  --color-primary: #1cb496;
+  --color-secondary: #f08700;
+
+  /* Border color */
+  --color-grey-light: #dbf7ea;
+
+  /* Success color */
+  --color-success-light: #dbf7ea;
+  --color-success: #009951;
+  --color-success-dark: #006b38;
+
+  /* Warning color */
+  --color-warning-light: #fff3d1;
+  --color-warning: #ffc21a;
+  --color-warning-dark: #daa000;
+
+  /* Danger color */
+  --color-danger-light: #f8cac7;
+  --color-danger: #b3261e;
+  --color-danger-dark: #8d0800;
+
+  /* Information color */
+  --color-information-light: #e6f2fc;
+  --color-information: #007b35;
+  --color-information-dark: #004a89;
+}
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Base Styles
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+body {
+  @apply bg-white text-primary-dark font-sans;
+}
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Heading 1 
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+.h1-bold-48 {
+  @apply text-5xl leading-[60px] tracking-[-0.012em] font-bold font-nunito;
+}
+
+.h1-semi-bold-48 {
+  @apply text-5xl leading-[60px] tracking-[-0.012em] font-semibold font-nunito;
+}
+
+.h1-medium-48 {
+  @apply text-5xl leading-[60px] tracking-[-0.012em] font-medium font-nunito;
+}
+
+.h1-regular-48 {
+  @apply text-5xl leading-[60px] tracking-[-0.012em] font-normal font-nunito;
+}
+
+.h1-italic-bold-48 {
+  @apply text-5xl leading-[60px] tracking-[-0.012em] font-bold font-nunito italic;
+}
+
+.h1-italic-regular-48 {
+  @apply text-5xl leading-[60px] tracking-[-0.012em] font-normal font-nunito italic;
+}
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Heading 2
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+.h2-bold-40 {
+  @apply text-[40px] leading-[50px] tracking-[-0.002em] font-bold font-nunito;
+}
+
+.h2-semi-bold-40 {
+  @apply text-[40px] leading-[50px] tracking-[-0.002em] font-semibold font-nunito;
+}
+.h2-medium-40 {
+  @apply text-[40px] leading-[50px] tracking-[-0.002em] font-semibold font-nunito;
+}
+
+.h2-regular-40 {
+  @apply text-[40px] leading-[50px] tracking-[-0.002em] font-semibold font-nunito;
+}
+
+.h2-italic-bold-40 {
+  @apply text-[40px] leading-[50px] tracking-[-0.002em] font-semibold font-nunito italic;
+}
+
+.h2-italic-regular-40 {
+  @apply text-[40px] leading-[50px] tracking-[-0.002em] font-semibold font-nunito italic;
+}
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Heading 3
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+.h3-bold-32 {
+  @apply text-3xl leading-[40px] tracking-[0em] font-bold font-nunito;
+}
+
+.h3-semi-bold-32 {
+  @apply text-3xl leading-[40px] tracking-[0em] font-semibold font-nunito;
+}
+
+.h3-medium-32 {
+  @apply text-3xl leading-[40px] tracking-[0em] font-medium font-nunito;
+}
+
+.h3-regular-32 {
+  @apply text-3xl leading-[40px] tracking-[0em] font-normal font-nunito;
+}
+
+.h3-italic-bold-32 {
+  @apply text-3xl leading-[40px] tracking-[0em] font-bold font-nunito italic;
+}
+
+.h3-italic-regular-32 {
+  @apply text-3xl leading-[40px] tracking-[0em] font-normal font-nunito italic;
+}
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Heading 4
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+.h4-bold-24 {
+  @apply text-2xl leading-[30px] tracking-[0em] font-bold font-nunito;
+}
+
+.h4-semi-bold-24 {
+  @apply text-2xl leading-[30px] tracking-[0em] font-semibold font-nunito;
+}
+
+.h4-medium-24 {
+  @apply text-2xl leading-[30px] tracking-[0em] font-medium font-nunito;
+}
+
+.h4-regular-24 {
+  @apply text-2xl leading-[30px] tracking-[0em] font-normal font-nunito;
+}
+
+.h4-italic-bold-24 {
+  @apply text-2xl leading-[30px] tracking-[0em] font-bold font-nunito italic;
+}
+
+.h4-italic-regular-24 {
+  @apply text-2xl leading-[30px] tracking-[0em] font-normal font-nunito italic;
+}
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Heading 5 
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+.h5-bold-16 {
+  @apply text-base leading-[24px] tracking-[0.01em] font-bold font-nunito;
+}
+
+.h5-semi-bold-16 {
+  @apply text-base leading-[24px] tracking-[0.01em] font-semibold font-nunito;
+}
+
+.h5-medium-16 {
+  @apply text-base leading-[24px] tracking-[0.01em] font-medium font-nunito;
+}
+
+.h5-regular-16 {
+  @apply text-base leading-[24px] tracking-[0.01em] font-normal font-nunito;
+}
+
+.h5-italic-bold-16 {
+  @apply text-base leading-[24px] tracking-[0.01em] font-bold font-nunito italic;
+}
+
+.h5-italic-regular-16 {
+  @apply text-base leading-[24px] tracking-[0.01em] font-normal font-nunito italic;
+}
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ BODY Section
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+.body-bold-16 {
+  @apply font-bold text-base leading-[24px] tracking-[0.01em] font-nunito;
+}
+.body-semi-bold-16 {
+  @apply font-semibold text-base leading-[24px] tracking-[0.01em] font-nunito;
+}
+.body-medium-16 {
+  @apply font-medium text-base leading-[24px] tracking-[0.01em] font-nunito;
+}
+.body-regular-16 {
+  @apply font-normal text-base leading-[24px] tracking-[0.01em] font-nunito;
+}
+.body-regular-underlined-16 {
+  @apply font-semibold text-base leading-[24px] tracking-[0.01em] font-nunito underline underline-offset-1;
+}
+.body-italic-bold-16 {
+  @apply font-bold text-base leading-[24px] tracking-[0.01em] font-nunito italic;
+}
+.body-italic-regular-16 {
+  @apply font-normal text-base leading-[24px] tracking-[0.01em] font-nunito italic;
+}
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Button Text
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+.button-semi-bold-16 {
+  @apply font-nunito font-medium text-base leading-[24px] tracking-[0.01em];
+}
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Label Text
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+.label-bold-14 {
+  @apply font-nunito font-bold text-sm leading-[22px] tracking-[0.02em];
+}
+.label-semi-bold-14 {
+  @apply font-nunito font-semibold text-sm leading-[22px] tracking-[0.02em];
+}
+.label-medium-14 {
+  @apply font-nunito font-medium text-sm leading-[22px] tracking-[0.02em];
+}
+.label-regular-14 {
+  @apply font-nunito font-normal text-sm leading-[22px] tracking-[0.02em];
+}
+.label-italic-bold-14 {
+  @apply font-nunito font-bold text-sm leading-[22px] tracking-[0.02em] italic;
+}
+.label-italic-regular-14 {
+  @apply font-nunito font-normal text-sm leading-[22px] tracking-[0.02em] italic;
+}
