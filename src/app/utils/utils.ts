@@ -171,3 +171,88 @@ export const SOCIAL_LINKS_CONFIG: SocialLink[] = [
     size: 28,
   },
 ];
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Footer data utils
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+import fbBNW from "@/app/assets/icons/fbn-bnw.svg";
+import instaBNW from "@/app/assets/icons/insta-bnw.svg";
+import LinkBNW from "@/app/assets/icons/link.svg";
+import xBNW from "@/app/assets/icons/x-bnw.svg";
+
+export type Footer = {
+  name: string;
+  src: string;
+  href: string;
+  color: string;
+  size: number;
+};
+interface product {
+  name: string;
+  url: string;
+}
+export type FooterLinks = {
+  products: product[];
+};
+
+export const SocialFooter: SocialLink[] = [
+  {
+    name: "Facebook",
+    src: fbBNW,
+    href: "https://wa.me/yourphonenumber",
+    color: "#25D366",
+    size: 44,
+  },
+  {
+    name: "Instagram",
+    src: instaBNW,
+    href: "https://wa.me/yourphonenumber",
+    color: "#25D366",
+    size: 44,
+  },
+  {
+    name: "LinkedIn",
+    src: LinkBNW,
+    href: "https://wa.me/yourphonenumber",
+    color: "#25D366",
+    size: 44,
+  },
+  {
+    name: "X",
+    src: xBNW,
+    href: "https://wa.me/yourphonenumber",
+    color: "#25D366",
+    size: 44,
+  },
+];
+
+export const footerLinks = {
+  products: [
+    { name: "Products One", url: "#" },
+    { name: "Products Two", url: "#" },
+    { name: "Products Three", url: "#" },
+    { name: "Products Four", url: "#" },
+  ],
+  resources: [
+    { name: "FAQs", url: "#" },
+    { name: "Support", url: "#" },
+    { name: "Blogs", url: "#" },
+    { name: "Videos", url: "#" },
+  ],
+  pricing: [
+    { name: "Starter Plan", url: "#" },
+    { name: "Growth Plan", url: "#" },
+    { name: "Pro Plan", url: "#" },
+  ],
+  contact: [
+    {
+      name: "assistant@gmail.com",
+      url: "mailto:assistant@gmail.com",
+      icon: "✉️",
+    },
+    { name: "+977-9810000000", url: "tel:+9779810000000", icon: "📞" },
+    { name: "123 Main Street, Anytown", url: "#", icon: "📍" },
+  ],
+};

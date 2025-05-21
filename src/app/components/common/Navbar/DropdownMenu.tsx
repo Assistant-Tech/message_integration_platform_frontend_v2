@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-import testImage from "@/app/assets/navbar-image-test.png";
+import testImage from "@/app/assets/images/navbar-image-test.png";
 import { Button } from "@/app/components/ui";
 interface DropdownItem {
   name: string;
@@ -75,7 +75,11 @@ const DropdownMenu = ({ items, isVisible }: DropdownMenuProps) => {
               {/* right side iamge && typograpghy */}
               <div className="bg-primary-light w-lg m-2 rounded-lg">
                 <figure className="p-8">
-                  <img src={testImage} alt="" className="rounded-lg" />
+                  <img
+                    src={testImage}
+                    alt="dropdown image"
+                    className=" rounded-lg"
+                  />
                   <div className="pt-3 text-start">
                     <h1 className="body-bopld-16 text-base-black">
                       Lorem Ipusm
