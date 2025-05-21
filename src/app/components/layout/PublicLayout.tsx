@@ -1,16 +1,13 @@
-import { ReactNode } from "react";
 import { Outlet } from "react-router-dom";
 import { Footer, Navbar } from "@/app/components/common";
 
-interface PublicLayoutProps {
-  children?: ReactNode;
-}
-
-const PublicLayout = ({ children }: PublicLayoutProps) => {
+const PublicLayout = () => {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="flex flex-col">
       <Navbar />
-      <main className="flex-1 pt-20">{children || <Outlet />}</main>
+      <main>
+        <Outlet />
+      </main>
       {/* Pachi Integrate garne */}
       <Footer />
     </div>
