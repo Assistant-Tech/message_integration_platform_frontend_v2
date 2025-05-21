@@ -5,6 +5,7 @@ import { Logo } from "@/app/components/ui";
 import play from "@/app/assets/icons/play.svg";
 import app from "@/app/assets/icons/app.svg";
 
+// add link later on when the other pages are ready
 // import { Link } from "react-router-dom";
 
 const Footer = () => {

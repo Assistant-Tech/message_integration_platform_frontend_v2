@@ -1,11 +1,24 @@
 import { cn } from "@/app/utils/cn";
 import { SOCIAL_LINKS_CONFIG } from "@/app/utils/utils";
-import { motion } from "framer-motion";
-import { useMemo } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useMemo, useRef } from "react";
 import type { FC } from "react";
+import dash from "@/app/assets/images/dash.png";
 
 const Hero: FC = () => {
   const timestamp = useMemo(() => Date.now(), []);
+  const containerRef = useRef(null);
+
+  // Scroll animation setup
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"],
+  });
+
+  // Transform values based on scroll position
+  const dashboardY = useTransform(scrollYProgress, [0, 0.5], ["100%", "0%"]);
+  const dashboardScale = useTransform(scrollYProgress, [0, 0.5], [0.8, 1]);
+  const dashboardOpacity = useTransform(scrollYProgress, [0, 0.3], [0.6, 1]);
 
   const renderFloatingBubbles = () => {
     const bubblePositions = [
@@ -51,7 +64,7 @@ const Hero: FC = () => {
             transform: "translateX(-50%)",
           }}
           aria-label={`Connect on ${name}`}
-          initial={{ opacity: 0, scale: 0.5, y: 30 }}
+          initial={{ opacity: 0, scale: 0.5, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.9, delay, ease: "easeOut" }}
           whileHover={{ scale: 1.25, zIndex: 20, y: -8 }}
@@ -79,9 +92,13 @@ const Hero: FC = () => {
       );
     }).filter(Boolean);
   };
+
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-green-50 to-teal-50 overflow-hidden pt-20 rounded-4xl">
-      <div className="container mx-auto px-4 pt-12 mt-48 pb-32 relative z-10">
+    <div
+      ref={containerRef}
+      className="relative min-h-screen bg-primary-light overflow-hidden pt-20 rounded-4xl mt-24"
+    >
+      <div className="container mx-auto px-4 pt-24 pb-32 relative z-10">
         <motion.div
           className="max-w-4xl mx-auto text-center"
           initial={{ opacity: 0, y: 20 }}
@@ -131,6 +148,26 @@ const Hero: FC = () => {
           </motion.div>
         </motion.div>
       </div>
+
+      {/* Dashboard image that appears on scroll */}
+      <motion.div
+        className="absolute left-0 right-0 mx-auto w-full max-w-5xl bottom-0 z-20 px-4 md:px-8"
+        style={{
+          y: dashboardY,
+          scale: dashboardScale,
+          opacity: dashboardOpacity,
+        }}
+      >
+        <div className="relative w-full shadow-2xl rounded-t-2xl overflow-hidden">
+          <img
+            src={dash}
+            alt="Dashboard Interface"
+            width={1200}
+            height={675}
+            className="w-full h-auto object-cover"
+          />
+        </div>
+      </motion.div>
 
       <div className="absolute inset-0 pointer-events-none">
         {renderFloatingBubbles()}

@@ -71,7 +71,7 @@ body {
   @apply bg-white text-primary-dark font-sans;
 }
 .bold-64 {
-  @apply text-6xl leading-[60px] tracking-[-0.012em] font-meri;
+  @apply text-[64px] leading-[60px] tracking-[-0.012em] font-meri;
 }
 /*
 ─────────────────────────────────────────────────────────────────────────────
