@@ -122,13 +122,6 @@ export type SocialLink = {
 
 export const SOCIAL_LINKS_CONFIG: SocialLink[] = [
   {
-    name: "WhatsApp",
-    src: WhatsAppIcon,
-    href: "https://wa.me/yourphonenumber",
-    color: "#25D366",
-    size: 44,
-  },
-  {
     name: "Facebook",
     src: FacebookIcon,
     href: "https://facebook.com/yourprofile",
@@ -142,19 +135,20 @@ export const SOCIAL_LINKS_CONFIG: SocialLink[] = [
     color: "#E4405F",
     size: 36,
   },
-  {
-    name: "Telegram",
-    src: TelegramIcon,
-    href: "https://t.me/yourusername",
-    color: "#0088cc",
-    size: 42,
-  },
+
   {
     name: "X",
     src: X,
     href: "https://t.me/yourusername",
     color: "#000",
     size: 28,
+  },
+  {
+    name: "Telegram",
+    src: TelegramIcon,
+    href: "https://t.me/yourusername",
+    color: "#0088cc",
+    size: 42,
   },
   {
     name: "Tiktok",
@@ -169,6 +163,13 @@ export const SOCIAL_LINKS_CONFIG: SocialLink[] = [
     href: "https://viber.com",
     color: "#000",
     size: 28,
+  },
+  {
+    name: "WhatsApp",
+    src: WhatsAppIcon,
+    href: "https://wa.me/yourphonenumber",
+    color: "#25D366",
+    size: 44,
   },
 ];
 

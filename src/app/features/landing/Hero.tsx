@@ -2,20 +2,17 @@ import { cn } from "@/app/utils/cn";
 import { SOCIAL_LINKS_CONFIG } from "@/app/utils/utils";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useMemo, useRef } from "react";
-import type { FC } from "react";
 import dash from "@/app/assets/images/dash.png";
 
-const Hero: FC = () => {
+const Hero = () => {
   const timestamp = useMemo(() => Date.now(), []);
   const containerRef = useRef(null);
 
-  // Scroll animation setup
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end start"],
   });
 
-  // Transform values based on scroll position
   const dashboardY = useTransform(scrollYProgress, [0, 0.5], ["100%", "0%"]);
   const dashboardScale = useTransform(scrollYProgress, [0, 0.5], [0.8, 1]);
   const dashboardOpacity = useTransform(scrollYProgress, [0, 0.3], [0.6, 1]);
@@ -131,7 +128,7 @@ const Hero: FC = () => {
             transition={{ duration: 0.8, delay: 0.6 }}
           >
             <motion.button
-              className="px-6 py-3 bg-teal-500 text-white font-medium rounded-md hover:bg-teal-600 transition"
+              className="px-6 py-3 bg-primary text-white body-bold-16 rounded-md hover:bg-primary-dark transition cursor-pointer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -139,7 +136,7 @@ const Hero: FC = () => {
             </motion.button>
 
             <motion.button
-              className="px-6 py-3 bg-white text-teal-600 font-medium rounded-md border border-teal-200 hover:border-teal-400 transition"
+              className="px-6 py-3 bg-white text-primary font-medium rounded-md border border-primary hover:border-primary transition"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >

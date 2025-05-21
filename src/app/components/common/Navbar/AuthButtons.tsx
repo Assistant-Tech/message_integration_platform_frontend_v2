@@ -39,18 +39,26 @@ const AuthButtons: React.FC<AuthButtonsProps> = ({
   }
 
   return (
-    <div className="hidden lg:flex items-center space-x-4">
+    <div className="hidden lg:flex items-center space-x-4 ">
       <Link
         to={APP_ROUTES.PUBLIC.LOGIN}
-        className="body-bold-16 text-grey hover:text-primary transition-colors"
+        className="body-bold-16 text-grey hover:text-primary transition-colors cursor-pointer"
       >
         Log In
       </Link>
       <Link to={APP_ROUTES.PUBLIC.REGISTER}>
-        <Button label="Start Free Trial" variant="primary" />
+        <Button
+          label="Start Free Trial"
+          variant="primary"
+          className="cursor-pointer"
+        />
       </Link>
-      <Link to="/demo">
-        <Button label="Book a Demo" variant="outlined" />
+      <Link to="/demo" className="cursor-pointer">
+        <Button
+          label="Book a Demo"
+          variant="neutral"
+          className="cursor-pointer"
+        />
       </Link>
     </div>
   );

@@ -1,15 +1,32 @@
 import type React from "react";
+import { forwardRef, type ButtonHTMLAttributes } from "react";
 import { useNavigate } from "react-router-dom";
-
-import { type ButtonHTMLAttributes, forwardRef } from "react";
 import { cn } from "@/app/utils/cn";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   label: string;
-  variant?: "primary" | "secondary" | "outlined";
+  variant?:
+    | "primary"
+    | "secondary"
+    | "success"
+    | "information"
+    | "warning"
+    | "danger"
+    | "neutral";
   redirectTo?: string;
-  Icon?: React.ElementType;
+  IconLeft?: React.ElementType;
+  IconRight?: React.ElementType;
 }
+
+const variantStyles: Record<string, string> = {
+  primary: "bg-primary text-white hover:bg-primary-dark",
+  secondary: "bg-secondary text-white hover:bg-secondary-dark",
+  success: "bg-green-600 text-white hover:bg-green-700",
+  information: "bg-blue-600 text-white hover:bg-blue-700",
+  warning: "bg-yellow-500 text-black hover:bg-yellow-600",
+  danger: "bg-red-600 text-white hover:bg-red-700",
+  neutral: "bg-primary-light text-black hover:bg-primary-inactive",
+};
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
@@ -17,11 +34,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       label,
       variant = "primary",
       redirectTo,
-      className,
       onClick,
-      Icon,
-      // right - icon
-      // left - icon
+      className,
+      IconLeft,
+      IconRight,
       ...props
     },
     ref,
@@ -39,32 +55,17 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         ref={ref}
+        onClick={handleClick}
         className={cn(
-          "max-w-48 max-h-12 flex items-center justify-center gap-2 sm:gap-3 px-3 sm:px-3 py-3 sm:py-3 rounded-xl transition-all duration-300 ease-in-out cursor-pointer relative overflow-hidden group",
-          variant === "primary"
-            ? "bg-primary text-white button-semi-bold-16 hover:bg-white hover:text-primary border hover:border-primary"
-            : variant === "secondary"
-              ? "bg-secondary button-semi-bold-16 text-white"
-              : "bg-transparent button-semi-bold-16 text-primary hover:text-white ring-1 ring-primary/80",
+          "flex items-center justify-center gap-2 px-4 py-3 rounded-md font-medium transition-colors duration-200",
+          variantStyles[variant],
           className,
         )}
-        onClick={handleClick}
         {...props}
       >
-        <div
-          className={cn(
-            "w-48 h-48 absolute rounded-full",
-
-            variant === "primary"
-              ? "bg-white"
-              : variant === "secondary"
-                ? "bg-gray-200"
-                : "bg-primary",
-            " scale-0 group-hover:scale-200 -z-0 transition-all duration-300 ease-in",
-          )}
-        />
-        {Icon && <Icon size={24} className=" z-10" />}
-        <span className="z-10">{label}</span>
+        {IconLeft && <IconLeft size={18} className="mr-1" />}
+        <span>{label}</span>
+        {IconRight && <IconRight size={18} className="ml-1" />}
       </button>
     );
   },
