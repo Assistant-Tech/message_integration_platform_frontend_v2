@@ -21,10 +21,10 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 const variantStyles: Record<string, string> = {
   primary: "bg-primary text-white hover:bg-primary-dark",
   secondary: "bg-secondary text-white hover:bg-secondary-dark",
-  success: "bg-green-600 text-white hover:bg-green-700",
-  information: "bg-blue-600 text-white hover:bg-blue-700",
-  warning: "bg-yellow-500 text-black hover:bg-yellow-600",
-  danger: "bg-red-600 text-white hover:bg-red-700",
+  success: "bg-success text-white hover:bg-success-dark",
+  information: "bg-information text-white hover:bg-information-dark",
+  warning: "bg-warning text-black hover:bg-warning-dark",
+  danger: "bg-danger text-white hover:bg-danger-light",
   neutral: "bg-primary-light text-black hover:bg-primary-inactive",
 };
 
@@ -57,7 +57,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         onClick={handleClick}
         className={cn(
-          "flex items-center justify-center gap-2 px-4 py-3 rounded-md font-medium transition-colors duration-200",
+          "flex items-center justify-center gap-2 px-4 py-3 rounded-md button-semi-bold-16 transition-colors duration-200",
           variantStyles[variant],
           className,
         )}

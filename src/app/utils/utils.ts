@@ -12,6 +12,10 @@ import {
   BarChart3,
   FileText,
   FileQuestion,
+  LucideIcon,
+  Clock,
+  Shield,
+  Zap,
 } from "lucide-react";
 export interface DropdownItem {
   name: string;
@@ -172,6 +176,70 @@ export const SOCIAL_LINKS_CONFIG: SocialLink[] = [
     size: 44,
   },
 ];
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Hero data utils (NO JSX HERE)
+─────────────────────────────────────────────────────────────────────────────
+*/
+
+export type FeatureCard = {
+  title: string;
+  description: string;
+  iconColor: string;
+  icon: LucideIcon; // <— store the icon component, not JSX
+  animate: boolean;
+};
+
+export const featureCards: FeatureCard[] = [
+  {
+    title: "All Messages in One Inbox",
+    description:
+      "No more switching between apps! Brings all your messages together in one place, so you can reply faster and stay organized.",
+    iconColor: "#26AA91",
+    icon: MessageSquare,
+    animate: true,
+  },
+  {
+    title: "Lightning Fast Responses",
+    description:
+      "Respond to customers instantly with smart templates and automated workflows that save time.",
+    iconColor: "#4A6FFF",
+    icon: Zap,
+    animate: true,
+  },
+  {
+    title: "Secure & Private",
+    description:
+      "Enterprise-grade security ensures your conversations and data remain protected at all times.",
+    iconColor: "#FF6B6B",
+    icon: Shield,
+    animate: true,
+  },
+  {
+    title: "Team Collaboration",
+    description:
+      "Work seamlessly with your team members to provide the best customer support experience.",
+    iconColor: "#9B59B6",
+    icon: Users,
+    animate: true,
+  },
+  {
+    title: "Analytics & Insights",
+    description:
+      "Track performance metrics and gain valuable insights to improve your customer communication.",
+    iconColor: "#F39C12",
+    icon: BarChart3,
+    animate: true,
+  },
+  {
+    title: "24/7 Availability",
+    description:
+      "Never miss a customer message with round-the-clock monitoring and instant notifications.",
+    iconColor: "#1ABC9C",
+    icon: Clock,
+    animate: true,
+  },
+];
 
 /*
 ─────────────────────────────────────────────────────────────────────────────
@@ -182,6 +250,7 @@ import fbBNW from "@/app/assets/icons/fbn-bnw.svg";
 import instaBNW from "@/app/assets/icons/insta-bnw.svg";
 import LinkBNW from "@/app/assets/icons/link.svg";
 import xBNW from "@/app/assets/icons/x-bnw.svg";
+import { ReactElement } from "react";
 
 export type Footer = {
   name: string;
