@@ -13,10 +13,13 @@ const MainFeature = () => {
       >
         {/* Typography Section */}
         <Box className="max-w-lg">
-          <Text size="2" className="h5-italic-bold-16 text-secondary mb-4">
+          <Text
+            size="2"
+            className="h5-italic-bold-16 text-secondary bg-secondary-light px-4 py-3 rounded-4xl capitalize"
+          >
             USE IT ANYWHERE, ANYTIME
           </Text>
-          <h1 color="gray" className="h2-bold-40">
+          <h1 color="gray" className="h2-bold-40 pt-4">
             What <span className="text-primary">Assistant</span> Helps You Do?
           </h1>
           <Text className="h4-regular-24 text-start">
