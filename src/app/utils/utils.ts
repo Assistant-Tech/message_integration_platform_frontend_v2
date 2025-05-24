@@ -178,7 +178,7 @@ export const SOCIAL_LINKS_CONFIG: SocialLink[] = [
 ];
 /*
 ─────────────────────────────────────────────────────────────────────────────
- 📦 ▶ Hero data utils (NO JSX HERE)
+ 📦 ▶ Feature data utils (NO JSX HERE)
 ─────────────────────────────────────────────────────────────────────────────
 */
 
@@ -240,7 +240,61 @@ export const featureCards: FeatureCard[] = [
     animate: true,
   },
 ];
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Scale data utils (NO JSX HERE)
+─────────────────────────────────────────────────────────────────────────────
+*/
+export interface ScaleFeature {
+  text: string;
+  icon: string;
+}
 
+export const scaleFeature: ScaleFeature[] = [
+  {
+    text: "Online store owners who want to reply fast on social media",
+    icon: "ShoppingBag",
+  },
+  {
+    text: "Hotels, salons, and service businesses that take bookings in chat",
+    icon: "Users",
+  },
+  {
+    text: "Local services like electricians, tutors, and cleaners",
+    icon: "Zap",
+  },
+  {
+    text: "Creators and influencers who chat with followers and fans",
+    icon: "Heart",
+  },
+  {
+    text: "Small businesses that want to support customers better",
+    icon: "TrendingUp",
+  },
+];
+
+export interface ImageSlide {
+  src: string;
+  alt: string;
+  caption?: string;
+}
+export const imageSlides: ImageSlide[] = [
+  {
+    src: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop&crop=center",
+    alt: "Online shopping interface",
+    caption: "E-commerce Solutions",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600&h=400&fit=crop&crop=center",
+    alt: "Mobile payment interface",
+    caption: "Payment Processing",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=600&h=400&fit=crop&crop=center",
+    alt: "Business analytics dashboard",
+    caption: "Business Analytics",
+  },
+];
 /*
 ─────────────────────────────────────────────────────────────────────────────
  📦 ▶ Footer data utils
