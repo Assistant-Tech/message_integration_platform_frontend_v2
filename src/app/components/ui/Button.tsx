@@ -12,7 +12,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     | "information"
     | "warning"
     | "danger"
-    | "neutral";
+    | "neutral"
+    | "outlined";
   redirectTo?: string;
   IconLeft?: React.ElementType;
   IconRight?: React.ElementType;
@@ -26,6 +27,8 @@ const variantStyles: Record<string, string> = {
   warning: "bg-warning text-black hover:bg-warning-dark",
   danger: "bg-danger text-white hover:bg-danger-light",
   neutral: "bg-primary-light text-black hover:bg-primary-inactive",
+  outlined:
+    "bg-white border border-primary text-primary hover:text-white hover:bg-primary",
 };
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(

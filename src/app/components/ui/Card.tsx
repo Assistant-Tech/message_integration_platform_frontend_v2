@@ -57,21 +57,25 @@ const Card = ({
 
   return (
     <Comp
-      className={`w-full h-full p-8 ${borderRadiusClasses[borderRadius]} ${shadowClasses[elevation]} ${animationClasses} cursor-pointer bg-primary`}
+      className={`w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg h-[300px] sm:h-[320px] p-6 sm:p-8 flex flex-col justify-between ${borderRadiusClasses[borderRadius]} ${shadowClasses[elevation]} ${animationClasses} cursor-pointer bg-primary`}
       style={{ color: textColor }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full pt-4">
         <div
-          className={`w-16 h-16 flex items-center justify-center text-base-white ${borderRadiusClasses.full} mb-6 flex-shrink-0`}
+          className={`w-14 h-14 sm:w-16 sm:h-16  flex items-center justify-center ${borderRadiusClasses.full} mb-4 sm:mb-6 flex-shrink-0`}
           style={{ backgroundColor: iconBackgroundColor }}
         >
           <div style={{ color: iconColor }}>{icon}</div>
         </div>
 
-        <h3 className="mb-4 h5-bold-16">{title}</h3>
-        <p className="mb-4 h5-bold-16 opacity-90 flex-grow">{description}</p>
+        <div className="flex flex-col flex-grow">
+          <h3 className="text-base sm:text-lg font-semibold mb-2 sm:mb-4">
+            {title}
+          </h3>
+          <p className="text-sm sm:text-base opacity-90">{description}</p>
+        </div>
       </div>
     </Comp>
   );

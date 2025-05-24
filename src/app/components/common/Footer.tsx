@@ -49,12 +49,12 @@ const Footer = () => {
   };
 
   return (
-    <footer className=" border-t border-white ">
-      <div className="max-w-full w-full mx-auto ">
+    <footer className=" border-t border-white">
+      <div className="max-w-full w-full">
         {/* Main footer content */}
         <div className="bg-primary-light text-base-black grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 pb-8 px-4 py-8 sm:px-6 lg:px-8 ">
           {/* Company logo and info */}
-          <div className="lg:col-span-1 ">
+          <div className="lg:col-span-1 px-4">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}

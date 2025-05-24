@@ -1,6 +1,7 @@
 export { default as Loading } from "./Loading";
 export { default as Navbar } from "./Navbar";
 export { default as Footer } from "./Footer";
+export { default as TrailBanner } from "./Trialbanner";
 
 //Navbar Components
 export { default as NavigationItem } from "./Navbar/NavigationItem";
