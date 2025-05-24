@@ -31,7 +31,7 @@ const Navbar = () => {
         isScrolled ? navbarStyles.scrolled : navbarStyles.default
       }`}
     >
-      <div className="mx-auto max-w-full max-h-20 px-4 sm:px-6 md:px-32 py-2">
+      <div className="mx-auto max-w-[1600px] px-4 sm:px-6 md:px-8 py-2">
         <div className="flex h-16 justify-between items-center">
           {/* Logo with scroll animation */}
           <div
@@ -41,6 +41,7 @@ const Navbar = () => {
           >
             <Logo />
           </div>
+
           {/* Desktop Navigation */}
           <DesktopNavigation
             activeDropdown={activeDropdown}

@@ -1,15 +1,16 @@
 // import { TrailBanner } from "@/app/components/common";
 import {
-  About,
+  // About,
   BuiltAssistant,
   ChatBot,
-  Contact,
+  // Contact,
   GetStarted,
   Hero,
   MainFeature,
   ScaleBusiness,
   Testimonials,
   UnifiedMessageBox,
+  FAQ,
 } from "@/app/features/landing/";
 
 import { Theme } from "@radix-ui/themes";
@@ -30,10 +31,11 @@ const Landing = () => {
         <ScaleBusiness />
         <BuiltAssistant />
         <Testimonials />
+        <FAQ />
 
         {/* Left */}
-        <Contact />
-        <About />
+        {/* <Contact />
+        <About /> */}
       </Theme>
     </div>
   );

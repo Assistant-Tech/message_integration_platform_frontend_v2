@@ -9,3 +9,4 @@ export { default as GetStarted } from "./GetStarted";
 export { default as ScaleBusiness } from "./ScaleBusiness";
 export { default as BuiltAssistant } from "./BuiltAssistant";
 export { default as Testimonials } from "./Testimonials";
+export { default as FAQ } from "./FAQ";
