@@ -91,88 +91,90 @@ const Hero = () => {
   };
 
   return (
-    <div
-      ref={containerRef}
-      className="relative min-h-screen bg-primary-light overflow-hidden pt-20 rounded-4xl mt-24"
-    >
-      <div className="container mx-auto px-4 pt-24 pb-32 relative z-10">
-        <motion.div
-          className="max-w-4xl mx-auto text-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <motion.h1
-            className="bold-64 font-bold text-gray-900 mb-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            Talk to All Your Customers in One Place
-          </motion.h1>
-
-          <motion.p
-            className="h4-regular-24 md:text-xl text-base-black mb-10 mx-auto max-w-2xl"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-          >
-            Just one clean, easy AI powered app to manage all your chats —
-            WhatsApp, Instagram, Facebook, Telegram, and more.
-          </motion.p>
-
-          <motion.div
-            className="flex flex-col sm:flex-row justify-center gap-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-          >
-            <motion.button
-              className="px-6 py-3 bg-primary text-white body-bold-16 rounded-md hover:bg-primary-dark transition cursor-pointer"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Start 14-day Free Trial
-            </motion.button>
-
-            <motion.button
-              className="px-6 py-3 bg-white text-primary font-medium rounded-md border border-primary hover:border-primary transition"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Book a Demo
-            </motion.button>
-          </motion.div>
-        </motion.div>
-      </div>
-
-      {/* Dashboard image that appears on scroll */}
-      <motion.div
-        className="absolute left-0 right-0 mx-auto w-full max-w-5xl bottom-0 z-20 px-4 md:px-8"
-        style={{
-          y: dashboardY,
-          scale: dashboardScale,
-          opacity: dashboardOpacity,
-        }}
+    <section className="px-4 md:px-32">
+      <div
+        ref={containerRef}
+        className="relative min-h-screen bg-primary-light overflow-hidden pt-20 rounded-4xl mt-24 "
       >
-        <div className="relative w-full shadow-2xl rounded-t-2xl overflow-hidden">
-          <img
-            src={dash}
-            alt="Dashboard Interface"
-            width={1200}
-            height={675}
-            className="w-full h-auto object-cover"
-          />
+        <div className="container relative mx-auto px-4 pt-24 pb-32 z-10">
+          <motion.div
+            className="max-w-4xl mx-auto text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <motion.h1
+              className="bold-64 font-bold text-gray-900 mb-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              Talk to All Your Customers in One Place
+            </motion.h1>
+
+            <motion.p
+              className="h4-regular-24 md:text-xl text-base-black mb-10 mx-auto max-w-2xl"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              Just one clean, easy AI powered app to manage all your chats —
+              WhatsApp, Instagram, Facebook, Telegram, and more.
+            </motion.p>
+
+            <motion.div
+              className="flex flex-col sm:flex-row justify-center gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+            >
+              <motion.button
+                className="px-6 py-3 bg-primary text-white body-bold-16 rounded-md hover:bg-primary-dark transition cursor-pointer"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Start 14-day Free Trial
+              </motion.button>
+
+              <motion.button
+                className="px-6 py-3 bg-white text-primary font-medium rounded-md border border-primary hover:border-primary transition"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Book a Demo
+              </motion.button>
+            </motion.div>
+          </motion.div>
         </div>
-      </motion.div>
 
-      <div className="absolute inset-0 pointer-events-none">
-        {renderFloatingBubbles()}
+        {/* Dashboard image that appears on scroll */}
+        <motion.div
+          className="absolute left-0 right-0 mx-auto w-full max-w-5xl bottom-0 z-20 px-4 md:px-8"
+          style={{
+            y: dashboardY,
+            scale: dashboardScale,
+            opacity: dashboardOpacity,
+          }}
+        >
+          <div className="relative w-full shadow-2xl rounded-t-2xl overflow-hidden">
+            <img
+              src={dash}
+              alt="Dashboard Interface"
+              width={1200}
+              height={675}
+              className="w-full h-auto object-cover"
+            />
+          </div>
+        </motion.div>
+
+        <div className="absolute inset-0 pointer-events-none">
+          {renderFloatingBubbles()}
+        </div>
+
+        {/* Reserved for Mac section */}
+        <div className="h-64 md:h-96"></div>
       </div>
-
-      {/* Reserved for Mac section */}
-      <div className="h-64 md:h-96"></div>
-    </div>
+    </section>
   );
 };
 

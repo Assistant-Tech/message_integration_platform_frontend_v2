@@ -3,3 +3,7 @@ export { default as Feature } from "./Feature";
 export { default as MainFeature } from "./MainFeature";
 export { default as Contact } from "./Contact";
 export { default as About } from "./About";
+export { default as ChatBot } from "./ChatBot";
+export { default as UnifiedMessageBox } from "./UnifiedMessageBox";
+export { default as GetStarted } from "./GetStarted";
+export { default as ScaleBusiness } from "./ScaleBusiness";
