@@ -1,12 +1,14 @@
 // import { TrailBanner } from "@/app/components/common";
 import {
   About,
+  BuiltAssistant,
   ChatBot,
   Contact,
   GetStarted,
   Hero,
   MainFeature,
   ScaleBusiness,
+  Testimonials,
   UnifiedMessageBox,
 } from "@/app/features/landing/";
 
@@ -26,6 +28,8 @@ const Landing = () => {
         <UnifiedMessageBox />
         <GetStarted />
         <ScaleBusiness />
+        <BuiltAssistant />
+        <Testimonials />
 
         {/* Left */}
         <Contact />

@@ -16,12 +16,12 @@ const ChatBot: React.FC = () => {
   ];
 
   return (
-    <Box className="max-h-full pb-16 px-4 md:px-32">
+    <Box className="min-h-auto w-full max-w-[1600px] mx-auto px-4 md:px-8 py-16">
       <Flex
         direction={{ initial: "column", lg: "row" }}
         align="center"
         justify="between"
-        className="container relative gap-16"
+        className="container relative gap-16 px-4 md:px-32"
       >
         {/* Left Section with Image and Animated Cards */}
         <motion.div

@@ -1,6 +1,5 @@
 import { Box, Flex, Text } from "@radix-ui/themes";
 import { Button } from "@/app/components/ui";
-
 import computerMockup from "@/app/assets/images/getstarted.png";
 
 const GetStarted = () => {
@@ -16,15 +15,15 @@ const GetStarted = () => {
         direction={{ initial: "column", md: "row" }}
         align="start"
         justify="between"
-        className="relative z-10 min-w-screen max-w-6xl gap-28 px-4 md:px-36 pt-16"
+        className="relative z-10 w-full max-w-[1600px] mx-auto gap-28 px-4 md:px-16 pt-16"
       >
         {/* Left Section: Text and Button */}
         <Flex
           direction="column"
           align={{ initial: "center", md: "start" }}
           justify="center"
-          gap={"2"}
-          className="text-start md:text-left md:w-2xl p-4"
+          gap="2"
+          className="text-start md:text-left md:max-w-2xl p-4"
         >
           <Text className="h4-bold-24 md:h2-bold-40 text-base-white">
             Get Started with Assistant today.
@@ -41,11 +40,11 @@ const GetStarted = () => {
         </Flex>
 
         {/* Right Section: Computer Mockup */}
-        <Box className="md:w-xl flex justify-center -mb-12 md:mb-2 border-8 border-base-white rounded-3xl transform -rotate-5">
+        <Box className="md:max-w-xl flex justify-center -mb-12 md:mb-2 border-8 border-base-white rounded-3xl transform -rotate-5">
           <img
             src={computerMockup}
             alt="Assistant Dashboard Mockup"
-            className="w-full h-auto max-w-xl object-contain animate-float rounded-2xl "
+            className="w-full h-auto max-w-xl object-contain animate-float rounded-2xl"
           />
         </Box>
       </Flex>

@@ -4,7 +4,7 @@ import { featureCards } from "@/app/utils/utils";
 
 const MainFeature = () => {
   return (
-    <Box className="min-h-screen w-full bg-base-white pt-20 px-4 md:px-32">
+    <Box className="min-h-auto w-full max-w-[1600px] mx-auto px-4 md:px-8 py-16">
       <Flex
         direction={{ initial: "column", lg: "row" }}
         justify="between"

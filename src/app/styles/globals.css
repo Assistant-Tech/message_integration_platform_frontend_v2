@@ -32,7 +32,7 @@
   --color-secondary-dark: #c06c00;
 
   /* Text Color */
-  --color-base-white: #ffffff;
+  --color-base-white: #F8F9FA;
   --color-grey-medium: #666666;
   --color-grey: #333333;
   --color-base-black: #03120f;
@@ -40,7 +40,7 @@
   --color-secondary: #f08700;
 
   /* Border color */
-  --color-grey-light: #dbf7ea;
+  --color-grey-light: #e3e3e3;
 
   /* Success color */
   --color-success-light: #dbf7ea;

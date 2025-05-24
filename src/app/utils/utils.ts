@@ -195,8 +195,8 @@ export const featureCards: FeatureCard[] = [
     title: "All Messages in One Inbox",
     description:
       "No more switching between apps! Brings all your messages together in one place, so you can reply faster and stay organized.",
-    iconColor: "#26AA91",
     icon: MessageSquare,
+    iconColor: "#4A6FFF",
     animate: true,
   },
   {
@@ -297,6 +297,102 @@ export const imageSlides: ImageSlide[] = [
 ];
 /*
 ─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Built Assistant Feature data utils
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+import feature1 from "@/app/assets/images/feature1.png";
+import feature2 from "@/app/assets/images/feature2.png";
+import feature3 from "@/app/assets/images/feature3.png";
+
+export type BuildFeature = {
+  title: string;
+  description: string;
+  img: string;
+  animate: boolean;
+};
+
+export const buildFeature: BuildFeature[] = [
+  {
+    title: "All Messages in One Inbox",
+    description: "A clean inbox for all your chats",
+    img: feature1,
+    animate: true,
+  },
+  {
+    title: "Lightning Fast Responses",
+    description: "Easy tools for your team to reply faster",
+    img: feature2,
+    animate: true,
+  },
+  {
+    title: "Secure & Private",
+    description: "Reports to see how you're doing",
+    img: feature3,
+    animate: true,
+  },
+];
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Testimonials data utils
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+export interface Testimonial {
+  id: number;
+  content: string;
+  author: {
+    name: string;
+    role: string;
+    avatar: string;
+  };
+  companyLogos?: string[];
+}
+
+export const defaultTestimonials: Testimonial[] = [
+  {
+    id: 1,
+    content:
+      "Pellentesque suscipit fringilla libero eu ullamcorper. Cras risus eros, faucibus sit amet augue id, tempus pellentesque eros.",
+    author: {
+      name: "Jane Doe",
+      role: "Assistant Manager",
+      avatar:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=64&h=64&fit=crop&crop=face",
+    },
+    companyLogos: [
+      "https://via.placeholder.com/80x40/333/fff?text=LOGO1",
+      "https://via.placeholder.com/80x40/333/fff?text=LOGO2",
+      "https://via.placeholder.com/80x40/333/fff?text=LOGO3",
+    ],
+  },
+  {
+    id: 2,
+    content:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    author: {
+      name: "John Smith",
+      role: "CEO & Founder",
+      avatar:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=64&h=64&fit=crop&crop=face",
+    },
+    companyLogos: [
+      "https://via.placeholder.com/80x40/666/fff?text=BRAND",
+      "https://via.placeholder.com/80x40/666/fff?text=CORP",
+    ],
+  },
+  {
+    id: 3,
+    content:
+      "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    author: {
+      name: "Sarah Wilson",
+      role: "Marketing Director",
+      avatar:
+        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=64&h=64&fit=crop&crop=face",
+    },
+  },
+];
+/*
+─────────────────────────────────────────────────────────────────────────────
  📦 ▶ Footer data utils
  ─────────────────────────────────────────────────────────────────────────────
 */
@@ -304,7 +400,6 @@ import fbBNW from "@/app/assets/icons/fbn-bnw.svg";
 import instaBNW from "@/app/assets/icons/insta-bnw.svg";
 import LinkBNW from "@/app/assets/icons/link.svg";
 import xBNW from "@/app/assets/icons/x-bnw.svg";
-import { ReactElement } from "react";
 
 export type Footer = {
   name: string;
