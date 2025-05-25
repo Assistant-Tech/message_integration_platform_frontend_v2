@@ -4,7 +4,7 @@ import { featureCards } from "@/app/utils/utils";
 
 const MainFeature = () => {
   return (
-    <Box className="min-h-auto w-full max-w-[1600px] mx-auto px-4 md:px-8 py-16">
+    <Box className="min-h-auto w-full max-w-[1600px] mx-auto px-4 md:px-2 py-16">
       <Flex
         direction={{ initial: "column", lg: "row" }}
         justify="between"
@@ -15,14 +15,14 @@ const MainFeature = () => {
         <Box className="max-w-lg">
           <Text
             size="2"
-            className="h5-italic-bold-16 text-secondary bg-secondary-light px-4 py-3 rounded-4xl capitalize"
+            className="h5-italic-bold-16 text-secondary bg-secondary-light py-3 rounded-4xl capitalize"
           >
             USE IT ANYWHERE, ANYTIME
           </Text>
           <h1 color="gray" className="h2-bold-40 pt-4">
             What <span className="text-primary">Assistant</span> Helps You Do?
           </h1>
-          <Text className="h4-regular-24 text-start">
+          <Text className="h4-regular-24 text-start text-grey-medium">
             Simple tools to manage customer messages, work with your team, and
             grow your business.
           </Text>

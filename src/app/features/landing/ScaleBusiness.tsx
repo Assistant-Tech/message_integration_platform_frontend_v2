@@ -1,14 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import {
-  Check,
-  ShoppingBag,
-  CreditCard,
-  Users,
-  Zap,
-  TrendingUp,
-  Heart,
-} from "lucide-react";
+import { Check, ShoppingBag, CreditCard } from "lucide-react";
 import { Badge } from "@/app/components/ui";
 import { scaleFeature } from "@/app/utils/utils";
 import { cn } from "@/app/utils/cn";
@@ -34,16 +26,8 @@ const ScaleBusiness: React.FC = () => {
     },
   };
 
-  const iconMap: Record<string, React.ElementType> = {
-    ShoppingBag,
-    Users,
-    Zap,
-    Heart,
-    TrendingUp,
-  };
-
   return (
-    <div className="min-h-auto max-w-[1600px] mx-auto px-4 md:px-32 py-20">
+    <div className="min-h-auto max-w-[1600px] mx-auto py-20 px-4 md:px-2">
       <div className="w-full">
         <motion.div
           className="flex flex-col lg:flex-row justify-between gap-16 items-center"
@@ -77,7 +61,6 @@ const ScaleBusiness: React.FC = () => {
             {/* Feature List */}
             <motion.div className="space-y-4" variants={itemVariants}>
               {scaleFeature.map((feature, index) => {
-                const IconComponent = iconMap[feature.icon];
                 return (
                   <motion.div
                     key={index}
@@ -91,9 +74,6 @@ const ScaleBusiness: React.FC = () => {
                       </div>
                     </div>
                     <div className="flex items-center space-x-3">
-                      {IconComponent && (
-                        <IconComponent className="w-5 h-5 text-gray-500 group-hover:text-primary transition-colors duration-200" />
-                      )}
                       <p className="text-gray-700 group-hover:text-gray-900 transition-colors duration-200">
                         {feature.text}
                       </p>

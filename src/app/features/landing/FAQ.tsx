@@ -30,10 +30,11 @@ const FAQ = () => {
                 className="space-y-4"
                 defaultValue="item-1"
               >
+                {/* Create this as component */}
                 {/* First FAQ Item - Expanded by default */}
                 <Accordion.Item
                   value="item-1"
-                  className="border-b border-grey rounded-lg overflow-hidden"
+                  className="border-b border-grey-light rounded-lg overflow-hidden"
                 >
                   <Accordion.Header>
                     <Accordion.Trigger className="flex justify-between items-center w-full p-6 text-left transition-colors group">

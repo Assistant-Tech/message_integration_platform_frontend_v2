@@ -15,7 +15,7 @@ const GetStarted = () => {
         direction={{ initial: "column", md: "row" }}
         align="start"
         justify="between"
-        className="relative z-10 w-full max-w-[1600px] mx-auto gap-28 px-4 md:px-16 pt-16"
+        className="relative z-10 w-full max-w-[1600px] mx-auto gap-28 pt-16"
       >
         {/* Left Section: Text and Button */}
         <Flex

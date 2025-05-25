@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { motion } from "framer-motion";
 import { Box, Flex } from "@radix-ui/themes";
@@ -16,12 +14,12 @@ const ChatBot: React.FC = () => {
   ];
 
   return (
-    <Box className="min-h-auto w-full max-w-[1600px] mx-auto px-4 md:px-8 py-16">
+    <Box className="min-h-auto w-full max-w-[1600px] mx-auto px-4 md:px-2 py-16">
       <Flex
         direction={{ initial: "column", lg: "row" }}
         align="center"
         justify="between"
-        className="container relative gap-16 px-4 md:px-32"
+        className="container relative gap-16"
       >
         {/* Left Section with Image and Animated Cards */}
         <motion.div
@@ -73,7 +71,7 @@ const ChatBot: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="text-lg text-gray-600 leading-relaxed"
+            className="h4-regular-24 text-grey-medium"
           >
             Create chatbots for sales, support, and more. Build intelligent
             conversational experiences that engage your customers 24/7 with our

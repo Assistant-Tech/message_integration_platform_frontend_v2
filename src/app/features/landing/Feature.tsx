@@ -89,6 +89,7 @@ const Feature = () => {
               <Card
                 title={card.title}
                 description={card.description}
+                // fix this
                 backgroundColor={card.backgroundColor}
                 iconColor={card.iconColor}
                 icon={card.icon}
