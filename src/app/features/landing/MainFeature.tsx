@@ -34,12 +34,12 @@ const MainFeature = () => {
           justify={{ initial: "center", md: "center" }}
           wrap="wrap"
           gap="4"
-          className="max-w-4xl"
+          className="max-w-full"
         >
           {featureCards.slice(0, 4).map((card, index) => (
             <Box
               key={index}
-              className="min-h-36 w-auto max-w-[90vw] sm:w-[90%] md:w-[48%]"
+              className="min-h-36 max-w-[90vw] w-full sm:w-[90%] md:w-[48%]"
             >
               <Card
                 title={card.title}

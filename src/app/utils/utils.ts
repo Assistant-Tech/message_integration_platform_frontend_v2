@@ -16,6 +16,7 @@ import {
   Clock,
   Shield,
   Zap,
+  Users2,
 } from "lucide-react";
 export interface DropdownItem {
   name: string;
@@ -45,28 +46,16 @@ export const navigation: NavigationItem[] = [
         icon: MessageSquare,
       },
       {
-        name: "CRM-1",
+        name: "Unified Messaging",
         href: "/products/crm",
-        description: "Customer relationship management",
-        icon: Users,
+        description: "Vestibulum tempus imperdiet",
+        icon: Users2, 
       },
       {
-        name: "Analytics",
-        href: "/products/analytics",
-        description: "Business intelligence platform",
+        name: "Bulk Messaging",
+        href: "/products/bulkmessage",
+        description: "Vestibulum tempus imperdiet",
         icon: BarChart3,
-      },
-      {
-        name: "Database",
-        href: "/products/database",
-        description: "Secure data management",
-        icon: Database,
-      },
-      {
-        name: "CRM-2",
-        href: "/products/crm",
-        description: "Customer relationship management",
-        icon: Users,
       },
     ],
   },

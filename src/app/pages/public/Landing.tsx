@@ -18,7 +18,7 @@ import "@radix-ui/themes/styles.css";
 
 const Landing = () => {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen px-4">
       <Theme>
         {/* <TrailBanner /> */}
 

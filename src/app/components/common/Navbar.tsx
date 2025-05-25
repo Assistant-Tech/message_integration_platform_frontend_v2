@@ -27,11 +27,11 @@ const Navbar = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out h-20 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out h-20 py-2 ${
         isScrolled ? navbarStyles.scrolled : navbarStyles.default
       }`}
     >
-      <div className="mx-auto max-w-[1600px] px-4 sm:px-6 md:px-8 py-2">
+      <div className="mx-auto max-w-[1600px]">
         <div className="flex h-16 justify-between items-center">
           {/* Logo with scroll animation */}
           <div

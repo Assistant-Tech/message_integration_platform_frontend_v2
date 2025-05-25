@@ -94,7 +94,7 @@ const Hero = () => {
     <section className="max-w-[1600px] mx-auto">
       <div
         ref={containerRef}
-        className="relative bg-primary-light overflow-hidden pt-20 rounded-4xl mt-24 "
+        className="relative bg-primary-light overflow-hidden pt-20 rounded-4xl mt-20 "
       >
         <div className="container relative mx-auto px-4 pt-24 pb-32 z-10">
           <motion.div
