@@ -4,7 +4,6 @@ import { faqData } from "@/app/utils/utils";
 const FAQ = () => {
   return (
     <div className="py-10 px-4 sm:px-6 lg:px-8">
-      {/* Added max-w-7xl and mx-auto here */}
       <div className="max-w-[1600px] mx-auto">
         <div className="bg-base-white rounded-2xl shadow-sm overflow-hidden">
           <div className="flex flex-col justify-center items-center lg:flex-row">
@@ -20,8 +19,6 @@ const FAQ = () => {
                 </p>
               </div>
             </div>
-
-            {/* Right Section - FAQ Accordion */}
             <div className="w-3/5 py-8 pe-16">
               <Accordian items={faqData} defaultOpenId="item-1" />
             </div>

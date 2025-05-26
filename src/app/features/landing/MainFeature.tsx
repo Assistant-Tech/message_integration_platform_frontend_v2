@@ -24,18 +24,9 @@ const MainFeature = () => {
         </Box>
 
         {/* Responsive Card Grid Section */}
-        <Flex
-          direction="row"
-          justify={{ initial: "center", md: "center" }}
-          wrap="wrap"
-          gap="4"
-          className="max-w-full"
-        >
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
           {featureCards.slice(0, 4).map((card, index) => (
-            <Box
-              key={index}
-              className="min-h-36 max-w-[90vw] w-full sm:w-[90%] md:w-[48%]"
-            >
+            <div key={index} className="w-full">
               <Card
                 title={card.title}
                 description={card.description}
@@ -45,9 +36,9 @@ const MainFeature = () => {
                 borderRadius="2xl"
                 elevation="lg"
               />
-            </Box>
+            </div>
           ))}
-        </Flex>
+        </div>
       </Flex>
     </Box>
   );

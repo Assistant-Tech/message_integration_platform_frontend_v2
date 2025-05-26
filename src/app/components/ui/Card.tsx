@@ -37,10 +37,10 @@ const shadowClasses: Record<ElevationType, string> = {
 };
 
 const Card = ({
-  title = "All Messages in One Inbox",
+  title,
   description = "No more switching between apps! Brings all your messages together in one place, so you can reply faster and stay organized.",
   textColor = "#ffffff",
-  icon = <MessageSquare size={32} />,
+  icon,
   iconBackgroundColor = "#ffffff",
   iconColor = "#26AA91",
   borderRadius = "lg",
@@ -48,7 +48,6 @@ const Card = ({
   elevation = "md",
   asChild = false,
 }: CardProps) => {
-  const [isHovered, setIsHovered] = useState(false);
   const Comp = asChild ? Slot : "div";
 
   const animationClasses = animated
@@ -57,24 +56,20 @@ const Card = ({
 
   return (
     <Comp
-      className={`w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg h-[300px] sm:h-[320px] p-6 sm:p-8 flex flex-col justify-between ${borderRadiusClasses[borderRadius]} ${shadowClasses[elevation]} ${animationClasses} cursor-pointer bg-primary`}
+      className={`w-full max-w-sm lg:max-w-md h-[300px] sm:h-[320px] p-6 sm:p-8 flex flex-col justify-between ${borderRadiusClasses[borderRadius]} ${shadowClasses[elevation]} ${animationClasses} cursor-pointer bg-primary`}
       style={{ color: textColor }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="flex flex-col h-full pt-4">
+      <div className="flex flex-col h-full">
         <div
-          className={`w-14 h-14 sm:w-16 sm:h-16  flex items-center justify-center ${borderRadiusClasses.full} mb-4 sm:mb-6 flex-shrink-0`}
+          className={`w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center ${borderRadiusClasses.full} flex-shrink-0`}
           style={{ backgroundColor: iconBackgroundColor }}
         >
           <div style={{ color: iconColor }}>{icon}</div>
         </div>
 
         <div className="flex flex-col flex-grow">
-          <h3 className="text-base sm:text-lg font-semibold mb-2 sm:mb-4">
-            {title}
-          </h3>
-          <p className="text-sm sm:text-base opacity-90">{description}</p>
+          <h3 className="h5-bold-16 py-4">{title}</h3>
+          <p className="h5-regular-16 opacity-90">{description}</p>
         </div>
       </div>
     </Comp>
