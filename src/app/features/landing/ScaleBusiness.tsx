@@ -27,7 +27,7 @@ const ScaleBusiness: React.FC = () => {
   };
 
   return (
-    <div className="min-h-auto max-w-[1600px] mx-auto py-20 px-4 md:px-2">
+    <div className="min-h-auto max-w-[1600px] mx-auto py-10 px-4 md:px-2">
       <div className="w-full">
         <motion.div
           className="flex flex-col lg:flex-row justify-between gap-16 items-center"
@@ -37,7 +37,7 @@ const ScaleBusiness: React.FC = () => {
         >
           {/* Left Section - Text and Features */}
           <motion.div
-            className="space-y-8 w-full lg:max-w-xl"
+            className="space-y-3 w-full lg:max-w-xl"
             variants={itemVariants}
           >
             {/* Badge */}
@@ -85,7 +85,7 @@ const ScaleBusiness: React.FC = () => {
 
             {/* CTA */}
             <motion.div
-              className="pt-6 border-t border-gray-200"
+              className="pt-4 border-t border-gray-200"
               variants={itemVariants}
             >
               <p className="body-regular-16 text-grey">

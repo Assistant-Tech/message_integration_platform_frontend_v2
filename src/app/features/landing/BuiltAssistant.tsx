@@ -9,20 +9,19 @@ const BuiltAssistant: React.FC = () => {
   };
 
   return (
-    <Box className="w-full max-w-[1600px] mx-auto my-4 px-4 md:px-2">
+    <Box className="w-full max-w-[1600px] mx-auto my-4 px-4 md:px-2 py-10">
       <Container className="py-4 md:py-8 bg-white rounded-[2rem] border-2 border-gray-300">
         <Flex
           direction="column"
           align="center"
           justify={"center"}
-          gap="8"
           className="text-center"
         >
           {/* Header Section */}
-          <Box className="max-w-4xl space-y-4">
+          <Box className="max-w-4xl">
             <Badge title="Why We Built Assistant" />
 
-            <h1 className="h2-bold-40">
+            <h1 className="h2-bold-40 py-4">
               Simplify life for daily
               <span className="text-primary"> customer communicators</span>.
             </h1>
@@ -37,7 +36,7 @@ const BuiltAssistant: React.FC = () => {
           <Grid
             columns={{ initial: "1", sm: "2", md: "3" }}
             gap="6"
-            className="w-full pt-2 mx-16 px-4 md:px-14"
+            className="w-full py-6"
           >
             {buildFeature.map((feature, index) => (
               <FeatureCard

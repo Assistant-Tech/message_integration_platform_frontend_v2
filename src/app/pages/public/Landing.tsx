@@ -1,29 +1,30 @@
-// import { TrailBanner } from "@/app/components/common";
+import { Footer, Navbar } from "@/app/components/common";
 import {
-  // About,
   BuiltAssistant,
   ChatBot,
-  // Contact,
   GetStarted,
-  Hero,
+  // Hero,
+  HeroSection,
   MainFeature,
   ScaleBusiness,
   Testimonials,
   UnifiedMessageBox,
   FAQ,
 } from "@/app/features/landing/";
-
 import { Theme } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
 
 const Landing = () => {
   return (
-    <div className="min-h-screen px-4">
+    <div className="min-h-screen">
       <Theme>
         {/* <TrailBanner /> */}
 
+        {/* <Hero /> */}
         {/* Implemented */}
-        <Hero />
+        <Navbar />
+
+        <HeroSection />
         <MainFeature />
         <ChatBot />
         <UnifiedMessageBox />
@@ -32,6 +33,8 @@ const Landing = () => {
         <BuiltAssistant />
         <Testimonials />
         <FAQ />
+
+        <Footer />
 
         {/* Left */}
         {/* <Contact />

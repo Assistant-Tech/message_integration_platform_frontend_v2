@@ -45,8 +45,8 @@ const Testimonials: React.FC<TestimonialsProps> = ({
   }, [autoScroll, autoScrollInterval, goToNext, total]);
 
   return (
-    <section className="min-w-full bg-primary-light">
-      <Box className="max-w-[1600px] mx-auto py-20 px-4 sm:px-8 ">
+    <section className="min-w-full h-auto md:min-h-[300px] bg-primary-light my-10">
+      <Box className="max-w-[1600px] mx-auto py-10">
         <Flex
           direction={{
             initial: "column",
@@ -59,7 +59,7 @@ const Testimonials: React.FC<TestimonialsProps> = ({
         >
           {/* Header Section */}
           <Box className="w-full lg:w-1/2 space-y-4 text-center lg:text-left">
-            <Badge title="Client Testimonial" />
+            <Badge title="CLIENT TESTIMONIALS" bgColor="bg-primary" textColor="text-white"/>
             <Flex
               direction={{ initial: "column", md: "column", lg: "column" }}
               gap="4"

@@ -26,10 +26,10 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-primary-light text-black border-t border-white/20">
+    <footer className="bg-primary-light text-black border-t border-white/20 py-10">
       <div className="max-w-[1600px] mx-auto px-4 lg:px-2">
         {/* Top */}
-        <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-x-36 py-14 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-x-36 w-full">
           {/* Brand */}
           <div className="space-y-6 flex flex-col items-center text-center md:items-start md:text-left">
             <motion.div
@@ -103,7 +103,7 @@ const Footer = () => {
         <Separator.Root decorative className="w-full h-px bg-border mb-6" />
 
         {/* Bottom */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 pb-10">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           {/* Copyright */}
           <motion.p
             initial={{ opacity: 0 }}

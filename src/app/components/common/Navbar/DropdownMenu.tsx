@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import testImage from "@/app/assets/images/navbar-image-test.png";
 import { Button } from "@/app/components/ui";
+import { ArrowUpRight } from "lucide-react";
 
 interface DropdownItem {
   name: string;
@@ -54,7 +55,7 @@ const DropdownMenu = ({ items, isVisible }: DropdownMenuProps) => {
                           className="flex gap-6 rounded-lg transition-colors group"
                         >
                           <div className="flex items-center p-2">
-                            <div className="w-10 h-10 p-2 bg-primary-light flex justify-center items-center mr-3 rounded-lg">
+                            <div className="w-14 h-14 p-2 bg-primary-light flex justify-center items-center mr-3 rounded-lg">
                               {item.icon && (
                                 <item.icon className="h-6 w-6 text-primary group-hover:text-primary transition-colors" />
                               )}
@@ -104,7 +105,12 @@ const DropdownMenu = ({ items, isVisible }: DropdownMenuProps) => {
                     <span>Terms&nbsp;and&nbsp;Conditions</span>
                     <span>Help&nbsp;Center</span>
                   </div>
-                  <Button label="Book a demo" variant="secondary" />
+                  <Button
+                    label="Book a demo"
+                    variant="secondary"
+                    IconRight={<ArrowUpRight size={24} />}
+                    className="flex flex-cols justify-center items-center"
+                  />
                 </div>
               </div>
             </div>

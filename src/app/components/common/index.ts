@@ -10,3 +10,8 @@ export { default as AuthButtons } from "./Navbar/AuthButtons";
 export { default as MenuMobileToggle } from "./Navbar/MobileMenuToggle";
 export { default as MobileMenu } from "./Navbar/MobileMenu";
 export { default as DropdownMenu } from "./Navbar/DropdownMenu";
+
+// Hero Components
+export { default as HeroContent } from "./Hero/HeroContent";
+export { default as SocialIcons } from "./Hero/SocialIcons";
+export { default as DashboardPreview } from "./Hero/DashboardPreview";

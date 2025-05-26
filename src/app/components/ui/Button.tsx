@@ -15,8 +15,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     | "neutral"
     | "outlined";
   redirectTo?: string;
-  IconLeft?: React.ElementType;
-  IconRight?: React.ElementType;
+  IconLeft?: React.ReactElement;
+  IconRight?: React.ReactElement;
 }
 
 const variantStyles: Record<string, string> = {
@@ -66,9 +66,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         )}
         {...props}
       >
-        {IconLeft && <IconLeft size={18} className="mr-1" />}
+        {IconLeft && <span>{IconLeft} </span>}
         <span>{label}</span>
-        {IconRight && <IconRight size={18} className="ml-1" />}
+        {IconRight && <span>{IconRight} </span>}
       </button>
     );
   },

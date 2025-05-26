@@ -5,3 +5,5 @@ export { default as Input } from "./Input";
 export { default as Label } from "./Label";
 export { default as Badge } from "./Badge";
 export { default as FeatureCard } from "./FeatureCard";
+export { default as PopupModal } from "./PopupModal";
+export { default as Accordian } from "./Accordian";

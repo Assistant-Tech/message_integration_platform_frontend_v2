@@ -1,0 +1,89 @@
+import * as Dialog from "@radix-ui/react-dialog";
+import { motion } from "framer-motion";
+import { X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Button } from "@/app/components/ui/";
+import { cn } from "@/app/utils/cn";
+import newsletter from "@/app/assets/images/newsletter.png";
+
+const PopupModal = () => {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    setOpen(true);
+  }, []);
+
+  return (
+    <Dialog.Root open={open} onOpenChange={setOpen}>
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 bg-black/70 z-40" />
+
+        <Dialog.Content>
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className={cn(
+              "fixed z-50 top-1/2 left-1/2 w-5xl max-w-xl -translate-x-1/2 -translate-y-1/2",
+              "rounded-4xl bg-white shadow-xl",
+            )}
+          >
+            <figure className="bg-linear-to-b from-primary-light at-primary to-primary-dark h-72  rounded-t-3xl">
+              <Dialog.Close asChild>
+                <button
+                  className="absolute top-4 left-4 text-base-black hover:text-white hover:bg-danger bg-white rounded-full p-1 cursor-pointer focus:outline-none"
+                  aria-label="Close"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </Dialog.Close>
+              <img
+                src={newsletter}
+                alt="newsletter.png"
+                className="w-full h-64"
+              />
+            </figure>
+            <div className="p-8">
+              <div className="flex items-center justify-between">
+                <Dialog.Title className="h3-bold-32 text-center p-2">
+                  Unlock Exclusive Offers and Stay Updated
+                </Dialog.Title>
+              </div>
+              <div className="text-gray-700 mb-2">
+                Subscribe to Assistant Tech’s monthly newsletter to stay updated
+                on new features and services and get a chance to unlock
+                exclusive offers as a gift
+                <span className="flex justify-center items-center body-italic-bold-16 text-center">
+                  Terms & condition applied
+                </span>
+              </div>
+              <div className="relative py-2">
+                {/* Create different component here which should be dynamic too */}
+                <input
+                  type="email"
+                  // value={email}
+                  // onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Your email address"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 body-regular-16 text-base-black bg-white"
+                />
+              </div>
+
+              <div className="flex justify-center gap-2 pb-4">
+                <Dialog.Close asChild>
+                  <Button
+                    label="Subscribe"
+                    variant="primary"
+                    className="w-full"
+                  />
+                </Dialog.Close>
+              </div>
+            </div>
+          </motion.div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  );
+};
+
+export default PopupModal;

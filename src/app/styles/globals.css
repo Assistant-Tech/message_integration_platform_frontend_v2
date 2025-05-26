@@ -18,7 +18,10 @@
   --font-nunito: "Nunito Sans", ui-sans-serif, system-ui, sans-serif;
   --font-meri: "Merriweather", ui-sans-serif, system-ui, sans-serif;
 
-  /* Primary Color */
+  /* Custom gradient */
+  --custom-gradient: linear-gradient(to bottom, #1cb496 8%, #169078 81.5%);
+
+  /*PrimaryColor*/
   --color-primary-light: #e4f7f3;
   --color-primary-inactive: #a1e0d4;
   --color-primary: #1cb496;
@@ -32,7 +35,7 @@
   --color-secondary-dark: #c06c00;
 
   /* Text Color */
-  --color-base-white: #F8F9FA;
+  --color-base-white: #f8f9fa;
   --color-grey-medium: #666666;
   --color-grey: #333333;
   --color-base-black: #03120f;

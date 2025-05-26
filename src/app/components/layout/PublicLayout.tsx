@@ -1,15 +1,13 @@
 import { Outlet } from "react-router-dom";
-import { Footer, Navbar } from "@/app/components/common";
+import { PopupModal } from "@/app/components/ui";
 
 const PublicLayout = () => {
   return (
     <div className="flex flex-col">
-      <Navbar />
+      <PopupModal />
       <main>
         <Outlet />
       </main>
-      {/* Pachi Integrate garne */}
-      <Footer />
     </div>
   );
 };

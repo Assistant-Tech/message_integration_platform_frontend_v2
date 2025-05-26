@@ -20,7 +20,7 @@ const UnifiedMessagingInbox = () => {
     <section>
       <div
         ref={sectionRef}
-        className="relative min-h-screen bg-primary-light overflow-hidden"
+        className="relative max-w-full mx-auto bg-primary-light overflow-hidden"
       >
         <motion.div
           initial={{ opacity: 0, y: 20 }}

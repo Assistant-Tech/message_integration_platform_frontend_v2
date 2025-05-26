@@ -1,14 +1,30 @@
 import { motion } from "framer-motion";
+import { cn } from "@/app/utils/cn";
 
-const Badge = ({ title }: { title: string }) => {
+interface BadgeProps {
+  title: string;
+  bgColor?: string;
+  textColor?: string;
+  className?: string;
+}
+
+const Badge = ({
+  title,
+  bgColor = "bg-secondary-light",
+  textColor = "text-secondary",
+  className,
+}: BadgeProps) => {
   return (
-    // Dynamic banauna baki
     <motion.div
-      className="inline-flex items-center px-4 py-3 rounded-full bg-secondary-light"
+      className={cn(
+        "inline-flex items-center px-4 py-3 rounded-full",
+        bgColor,
+        className,
+      )}
       whileHover={{ scale: 1.05 }}
       transition={{ type: "spring", stiffness: 300 }}
     >
-      <span className="text-secondary body-italic-bold-16 cursor-pointer">
+      <span className={cn("body-italic-bold-16 cursor-pointer", textColor)}>
         {title}
       </span>
     </motion.div>

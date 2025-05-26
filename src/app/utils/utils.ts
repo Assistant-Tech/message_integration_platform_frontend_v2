@@ -5,10 +5,8 @@
 */
 import {
   MessageSquare,
-  Database,
   Users,
   BookOpen,
-  HelpCircle,
   BarChart3,
   FileText,
   FileQuestion,
@@ -17,6 +15,7 @@ import {
   Shield,
   Zap,
   Users2,
+  Video,
 } from "lucide-react";
 export interface DropdownItem {
   name: string;
@@ -49,7 +48,7 @@ export const navigation: NavigationItem[] = [
         name: "Unified Messaging",
         href: "/products/crm",
         description: "Vestibulum tempus imperdiet",
-        icon: Users2, 
+        icon: Users2,
       },
       {
         name: "Bulk Messaging",
@@ -63,26 +62,26 @@ export const navigation: NavigationItem[] = [
     name: "Resources",
     dropdown: [
       {
-        name: "Documentation",
-        href: "/resources/docs",
+        name: "Blogs",
+        href: "/resources/blogs",
         description: "API docs and guides",
         icon: BookOpen,
       },
       {
-        name: "Help Center",
-        href: "/resources/help",
+        name: "Videos",
+        href: "/resources/videos",
         description: "Get support and answers",
-        icon: HelpCircle,
+        icon: Video,
       },
       {
-        name: "Blog",
-        href: "/resources/blog",
+        name: "FAQs",
+        href: "/resources/faq",
         description: "Latest news and insights",
         icon: FileText,
       },
       {
-        name: "FAQ",
-        href: "/resources/faq",
+        name: "Support",
+        href: "/resources/support",
         description: "For more questionaires",
         icon: FileQuestion,
       },
@@ -106,6 +105,7 @@ import Tiktok from "@/app/assets/icons/tiktok.svg";
 import viber from "@/app/assets/icons/viber.svg";
 
 export type SocialLink = {
+  [x: string]: any;
   name: string;
   src: string;
   href: string;
@@ -113,13 +113,15 @@ export type SocialLink = {
   size: number;
 };
 
-export const SOCIAL_LINKS_CONFIG: SocialLink[] = [
+export const SOCIAL_LINKS_CONFIG = [
   {
     name: "Facebook",
     src: FacebookIcon,
     href: "https://facebook.com/yourprofile",
     color: "#1877F2",
     size: 42,
+    top: "20%",
+    left: "85%",
   },
   {
     name: "Instagram",
@@ -127,14 +129,17 @@ export const SOCIAL_LINKS_CONFIG: SocialLink[] = [
     href: "https://instagram.com/yourprofile",
     color: "#E4405F",
     size: 36,
+    top: "35%",
+    left: "100%",
   },
-
   {
     name: "X",
     src: X,
-    href: "https://t.me/yourusername",
+    href: "https://twitter.com/yourusername",
     color: "#000",
     size: 28,
+    top: "50%",
+    left: "75%",
   },
   {
     name: "Telegram",
@@ -142,6 +147,8 @@ export const SOCIAL_LINKS_CONFIG: SocialLink[] = [
     href: "https://t.me/yourusername",
     color: "#0088cc",
     size: 42,
+    top: "50%",
+    left: "25%",
   },
   {
     name: "Tiktok",
@@ -149,6 +156,8 @@ export const SOCIAL_LINKS_CONFIG: SocialLink[] = [
     href: "https://tiktok.com",
     color: "#000",
     size: 28,
+    top: "35%",
+    left: "0%",
   },
   {
     name: "Viber",
@@ -156,6 +165,8 @@ export const SOCIAL_LINKS_CONFIG: SocialLink[] = [
     href: "https://viber.com",
     color: "#000",
     size: 28,
+    top: "20%",
+    left: "15%",
   },
   {
     name: "WhatsApp",
@@ -163,8 +174,11 @@ export const SOCIAL_LINKS_CONFIG: SocialLink[] = [
     href: "https://wa.me/yourphonenumber",
     color: "#25D366",
     size: 44,
+    top: "65%",
+    left: "10%",
   },
 ];
+
 /*
 ─────────────────────────────────────────────────────────────────────────────
  📦 ▶ Feature data utils (NO JSX HERE)
@@ -380,6 +394,52 @@ export const defaultTestimonials: Testimonial[] = [
     },
   },
 ];
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ FAQ data utils
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+
+export interface FAQ {
+  id: string;
+  question: string;
+  answer: string;
+}
+
+export const faqData: FAQ[] = [
+  {
+    id: "item-1",
+    question: "What message management features does your platform offer?",
+    answer:
+      "Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci lorem Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, suscipit porttitor velit elementum non. Fusce nec pellentesque erat, id lobortis nunc. Donec dui leo, ultrices quis turpis nec, sollicitudin sodales",
+  },
+  {
+    id: "item-2",
+    question: "How secure is my data?",
+    answer:
+      "Fusce nec pellentesque erat, id lobortis nunc. Donec dui leo, ultrices quisVestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, suscipit porttitor velit elementum non. Fusce nec pellentesque erat, id lobortis nunc. Donec dui leo, ultrices quis turpis nec, sollicitudin sodales",
+  },
+  {
+    id: "item-3",
+    question: "Can I customize user permissions?",
+    answer:
+      "Donec dui leo, ultrices quis turpis nec, sollicitudin sodales. Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, suscipit porttitor velit elementum non. Fusce nec pellentesque erat, id lobortis nunc. Donec dui leo, ultrices quis turpis nec, sollicitudin sodales",
+  },
+  {
+    id: "item-4",
+    question: "Is the platform mobile-friendly?",
+    answer:
+      "Vivamus pulvinar commodo orci, suscipit porttitor velit elementum non. Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, suscipit porttitor velit elementum non. Fusce nec pellentesque erat, id lobortis nunc. Donec dui leo, ultrices quis turpis nec, sollicitudin sodales",
+  },
+  {
+    id: "item-5",
+    question: "What kind of support is available?",
+    answer:
+      "Vestibulum tempus imperdiet sem ac porttitor. Fusce nec pellentesque erat. Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, suscipit porttitor velit elementum non. Fusce nec pellentesque erat, id lobortis nunc. Donec dui leo, ultrices quis turpis nec, sollicitudin sodales",
+  },
+];
+
 /*
 ─────────────────────────────────────────────────────────────────────────────
  📦 ▶ Footer data utils
