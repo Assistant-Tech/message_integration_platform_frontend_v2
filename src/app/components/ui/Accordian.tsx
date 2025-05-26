@@ -23,8 +23,8 @@ const Accordian = ({ items, defaultOpenId }: AccordianProps) => {
           <Accordion.Header>
             <Accordion.Trigger className="flex justify-between items-center w-full text-start transition-colors group pt-4 pb-2">
               <span className="h5-bold-16 text-grey">{question}</span>
-              <Minus className="w-5 h-5 text-gray-600 group-data-[state=closed]:hidden flex-shrink-0 cursor-pointer" />
-              <Plus className="w-5 h-5 text-gray-600 group-data-[state=open]:hidden flex-shrink-0 cursor-pointer" />
+              <Minus className="w-5 h-5 text-grey group-data-[state=closed]:hidden flex-shrink-0 cursor-pointer" />
+              <Plus className="w-5 h-5 text-grey group-data-[state=open]:hidden flex-shrink-0 cursor-pointer" />
             </Accordion.Trigger>
           </Accordion.Header>
           <Accordion.Content className="h5-regular-16 text-grey-medium pb-2">

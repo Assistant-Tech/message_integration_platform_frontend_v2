@@ -27,63 +27,57 @@ const ScaleBusiness: React.FC = () => {
   };
 
   return (
-    <div className="min-h-auto max-w-[1600px] mx-auto py-10 px-4 md:px-2">
+    <div className="max-w-[1600px] mx-auto py-10 px-4 sm:px-6 lg:px-8">
       <div className="w-full">
         <motion.div
-          className="flex flex-col lg:flex-row justify-between gap-16 items-center"
+          className="flex flex-col lg:flex-row items-center lg:items-start justify-between gap-10 lg:gap-16"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
           {/* Left Section - Text and Features */}
           <motion.div
-            className="space-y-3 w-full lg:max-w-xl"
+            className="space-y-5 w-full lg:max-w-xl text-center lg:text-left"
             variants={itemVariants}
           >
-            {/* Badge */}
             <Badge title="Scale Your Business" />
 
-            {/* Heading */}
             <motion.div variants={itemVariants}>
               <h1 className={cn("text-grey", "h2-semi-bold-40")}>
                 Who is <span className="text-primary">Assistant</span> for?
               </h1>
             </motion.div>
 
-            {/* Subtitle */}
             <motion.p
-              className="h4-regular-24 text-grey-medium max-w-xl"
+              className="h4-regular-24 text-grey-medium mx-auto lg:mx-0 max-w-xl"
               variants={itemVariants}
             >
               If you talk to customers online, Assistant is for you.
             </motion.p>
 
-            {/* Feature List */}
-            <motion.div className="space-y-4" variants={itemVariants}>
-              {scaleFeature.map((feature, index) => {
-                return (
-                  <motion.div
-                    key={index}
-                    className="flex items-start space-x-4 group cursor-pointer"
-                    variants={itemVariants}
-                    whileHover={{ x: 8, transition: { duration: 0.2 } }}
-                  >
-                    <div className="flex-shrink-0 mt-1">
-                      <div className="w-6 h-6 rounded-full bg-teal-100 flex items-center justify-center group-hover:bg-teal-200 transition-colors duration-200">
-                        <Check className="w-4 h-4 text-primary" />
-                      </div>
+            <motion.div
+              className="space-y-4 max-w-xl mx-auto lg:mx-0"
+              variants={itemVariants}
+            >
+              {scaleFeature.map((feature, index) => (
+                <motion.div
+                  key={index}
+                  className="flex items-start space-x-4 group cursor-pointer"
+                  variants={itemVariants}
+                  whileHover={{ x: 8, transition: { duration: 0.2 } }}
+                >
+                  <div className="flex-shrink-0 mt-1">
+                    <div className="w-6 h-6 rounded-full bg-teal-100 flex items-center justify-center group-hover:bg-teal-200 transition-colors duration-200">
+                      <Check className="w-4 h-4 text-primary" />
                     </div>
-                    <div className="flex items-center space-x-3">
-                      <p className="text-gray-700 group-hover:text-gray-900 transition-colors duration-200">
-                        {feature.text}
-                      </p>
-                    </div>
-                  </motion.div>
-                );
-              })}
+                  </div>
+                  <p className="text-gray-700 group-hover:text-gray-900 transition-colors duration-200">
+                    {feature.text}
+                  </p>
+                </motion.div>
+              ))}
             </motion.div>
 
-            {/* CTA */}
             <motion.div
               className="pt-4 border-t border-gray-200"
               variants={itemVariants}
@@ -98,9 +92,9 @@ const ScaleBusiness: React.FC = () => {
             </motion.div>
           </motion.div>
 
-          {/* Right Section - Animation Area */}
+          {/* Right Section - Animated Illustration */}
           <motion.div
-            className="relative h-[500px] w-full max-w-md"
+            className="relative h-[300px] sm:h-[400px] lg:h-[500px] w-full max-w-md"
             variants={itemVariants}
           >
             {/* Floating Shopping Bag */}
@@ -136,12 +130,12 @@ const ScaleBusiness: React.FC = () => {
               <CreditCard className="w-6 h-6 text-white" />
             </motion.div>
 
-            {/* Placeholder illustration or image */}
+            {/* Placeholder Image */}
             <motion.figure
               className="w-full h-full bg-gray-100 border border-dashed border-gray-300 rounded-xl flex items-center justify-center"
               variants={itemVariants}
             >
-              <span className="text-gray-400">
+              <span className="text-gray-400 text-sm text-center px-2">
                 Insert Illustration or Dashboard Image
               </span>
             </motion.figure>
