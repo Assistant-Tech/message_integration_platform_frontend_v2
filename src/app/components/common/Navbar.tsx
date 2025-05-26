@@ -31,7 +31,7 @@ const Navbar = () => {
         isScrolled ? navbarStyles.scrolled : navbarStyles.default
       }`}
     >
-      <div className="mx-auto max-w-[1600px]">
+      <div className="mx-auto max-w-[1600px] px-4 md:px-2">
         <div className="flex h-16 justify-between items-center">
           {/* Logo with scroll animation */}
           <div

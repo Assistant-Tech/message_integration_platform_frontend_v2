@@ -36,7 +36,7 @@ const SocialIcons: React.FC = () => {
             }}
           >
             <motion.div
-              className="w-16 h-16 rounded-full flex items-center justify-center shadow-lg cursor-pointer bg-white relative"
+              className="w-8 h-8 md:w-16 md:h-16 rounded-full flex items-center justify-center shadow-lg cursor-pointer bg-white relative"
               animate={{
                 y: [0, -10, 0],
                 rotate: [0, 3, -3, 0],
@@ -62,6 +62,15 @@ const SocialIcons: React.FC = () => {
                 alt={social.name}
                 width={social.size}
                 height={social.size}
+                className="hidden md:block"
+              />
+              {/* Mobile size */}
+              <img
+                src={social.src}
+                alt={social.name}
+                width={social.mobileSize}
+                height={social.mobileSize}
+                className="block md:hidden"
               />
 
               {/* Glow */}

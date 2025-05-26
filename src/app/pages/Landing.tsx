@@ -3,7 +3,6 @@ import {
   BuiltAssistant,
   ChatBot,
   GetStarted,
-  // Hero,
   HeroSection,
   MainFeature,
   ScaleBusiness,
@@ -20,7 +19,6 @@ const Landing = () => {
       <Theme>
         {/* <TrailBanner /> */}
 
-        {/* <Hero /> */}
         {/* Implemented */}
         <Navbar />
 

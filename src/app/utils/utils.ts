@@ -120,6 +120,7 @@ export const SOCIAL_LINKS_CONFIG = [
     href: "https://facebook.com/yourprofile",
     color: "#1877F2",
     size: 42,
+    mobileSize: 30,
     top: "20%",
     left: "85%",
   },
@@ -129,6 +130,7 @@ export const SOCIAL_LINKS_CONFIG = [
     href: "https://instagram.com/yourprofile",
     color: "#E4405F",
     size: 36,
+    mobileSize: 26,
     top: "35%",
     left: "100%",
   },
@@ -138,6 +140,7 @@ export const SOCIAL_LINKS_CONFIG = [
     href: "https://twitter.com/yourusername",
     color: "#000",
     size: 28,
+    mobileSize: 20,
     top: "50%",
     left: "75%",
   },
@@ -147,6 +150,7 @@ export const SOCIAL_LINKS_CONFIG = [
     href: "https://t.me/yourusername",
     color: "#0088cc",
     size: 42,
+    mobileSize: 30,
     top: "50%",
     left: "25%",
   },
@@ -156,6 +160,7 @@ export const SOCIAL_LINKS_CONFIG = [
     href: "https://tiktok.com",
     color: "#000",
     size: 28,
+    mobileSize: 20,
     top: "35%",
     left: "0%",
   },
@@ -165,6 +170,7 @@ export const SOCIAL_LINKS_CONFIG = [
     href: "https://viber.com",
     color: "#000",
     size: 28,
+    mobileSize: 20,
     top: "20%",
     left: "15%",
   },
@@ -174,11 +180,11 @@ export const SOCIAL_LINKS_CONFIG = [
     href: "https://wa.me/yourphonenumber",
     color: "#25D366",
     size: 44,
+    mobileSize: 32,
     top: "65%",
     left: "10%",
   },
 ];
-
 /*
 ─────────────────────────────────────────────────────────────────────────────
  📦 ▶ Feature data utils (NO JSX HERE)

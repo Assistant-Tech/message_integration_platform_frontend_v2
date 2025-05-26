@@ -1,4 +1,3 @@
-// store/auth-store.ts
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 import { User } from "@/app/types/auth.ts";

@@ -1,4 +1,3 @@
-export { default as Hero } from "./Hero";
 export { default as HeroSection } from "./HeroSection";
 export { default as Feature } from "./Feature";
 export { default as MainFeature } from "./MainFeature";

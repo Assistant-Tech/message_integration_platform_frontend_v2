@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { APP_ROUTES } from "@/app/constants/routes";
 import logo from "@/app/assets/logo.svg";
-import { cn } from "@/app/utils/cn";
 
 interface LogoProps {
   className?: string;

@@ -25,14 +25,16 @@ const PopupModal = () => {
             exit={{ scale: 0.9, opacity: 0 }}
             transition={{ duration: 0.3 }}
             className={cn(
-              "fixed z-50 top-1/2 left-1/2 w-5xl max-w-xl -translate-x-1/2 -translate-y-1/2",
+              "fixed z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
+              // Responsive max-widths
+              "w-[90%] sm:w-full sm:max-w-lg md:max-w-xl xl:max-w-2xl",
               "rounded-4xl bg-white shadow-xl",
             )}
           >
-            <figure className="bg-linear-to-b from-primary-light at-primary to-primary-dark h-72  rounded-t-3xl">
+            <figure className="bg-linear-to-b from-primary-light at-primary to-primary-dark h-48 sm:h-60 md:h-72 rounded-t-3xl relative">
               <Dialog.Close asChild>
                 <button
-                  className="absolute top-4 left-4 text-base-black hover:text-white hover:bg-danger bg-white rounded-full p-1 cursor-pointer focus:outline-none"
+                  className="absolute top-3 left-3 sm:top-4 sm:left-4 text-base-black hover:text-white hover:bg-danger bg-white rounded-full p-1 cursor-pointer focus:outline-none"
                   aria-label="Close"
                 >
                   <X className="w-5 h-5" />
@@ -41,31 +43,28 @@ const PopupModal = () => {
               <img
                 src={newsletter}
                 alt="newsletter.png"
-                className="w-full h-64"
+                className="w-full h-full object-cover rounded-t-3xl"
               />
             </figure>
-            <div className="p-8">
+            <div className="p-4 sm:p-6 md:p-8">
               <div className="flex items-center justify-between">
                 <Dialog.Title className="h3-bold-32 text-center p-2">
                   Unlock Exclusive Offers and Stay Updated
                 </Dialog.Title>
               </div>
-              <div className="text-gray-700 mb-2">
+              <div className="text-grey body-medium-16 mb-2 text-center">
                 Subscribe to Assistant Tech’s monthly newsletter to stay updated
                 on new features and services and get a chance to unlock
                 exclusive offers as a gift
-                <span className="flex justify-center items-center body-italic-bold-16 text-center">
+                <span className="block body-italic-bold-16 text-center mt-2">
                   Terms & condition applied
                 </span>
               </div>
               <div className="relative py-2">
-                {/* Create different component here which should be dynamic too */}
                 <input
                   type="email"
-                  // value={email}
-                  // onChange={(e) => setEmail(e.target.value)}
                   placeholder="Your email address"
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 body-regular-16 text-base-black bg-white"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 body-regular-14 sm:body-regular-16 text-base-black bg-white"
                 />
               </div>
 
