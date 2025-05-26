@@ -26,18 +26,16 @@ const ChatBot: React.FC = () => {
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
-          className="relative w-full max-w-2xl"
+          className="relative w-full px-4 md:px-48 lg:px-2"
         >
-          {/* Animated Cards - always positioned left of image */}
-          <div className="absolute left-0 top-16 -translate-y-1/2 z-10">
+          <div className="absolute left-0 lg:-left-10 top-20 -translate-y-1/2 z-10">
             <AnimatedProcessCard processes={processes} />
           </div>
-
-          <figure className="relative">
+          <figure className="w-full">
             <img
               src={createbot}
               alt="Create Bot"
-              className="w-full sm:h-[553px] h-[289px] object-contain"
+              className="w-auto h-auto md:w-[720px] md:h-[550px] object-fill"
             />
           </figure>
         </motion.div>
@@ -47,7 +45,7 @@ const ChatBot: React.FC = () => {
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="w-full max-w-xl"
+          className="w-full max-w-2xl"
         >
           <Badge title="AI DRIVEN CHATBOTS " />
 

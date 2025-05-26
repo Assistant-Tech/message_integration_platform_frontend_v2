@@ -1,11 +1,34 @@
 import { Box, Flex, Text } from "@radix-ui/themes";
 import { Button } from "@/app/components/ui";
+import { motion } from "framer-motion";
 import computerMockup from "@/app/assets/images/getstarted.png";
+import logo from "@/app/assets/logo.svg";
+import { Circle } from "lucide-react";
 
 const GetStarted = () => {
   return (
     <Box className="relative w-full h-auto md:h-80 overflow-hidden bg-primary-dark flex items-center justify-center">
       {/* Abstract shapes in the background */}
+      <div className="absolute bottom-0 -left-40">
+        <motion.img
+          src={logo}
+          alt="logo/svg"
+          className="w-96 h-96 opacity-40 "
+          initial={{ rotate: 180, scale: 1 }}
+          animate={{
+            rotate: [90, 190, 170, 180],
+            scale: [1, 1.05, 0.95, 1],
+          }}
+          transition={{
+            duration: 15,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      </div>
+      <motion.div className="absolute -top-30 -right-72">
+        <Circle className="w-96 h-96 opacity-20" color="white" />
+      </motion.div>
       <Box className="absolute top-0 left-0 w-64 h-64 bg-custom-light-blue rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></Box>
       <Box className="absolute bottom-0 right-0 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></Box>
       <Box className="absolute top-1/4 right-1/4 w-52 h-52 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></Box>
