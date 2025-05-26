@@ -445,10 +445,10 @@ export const faqData: FAQ[] = [
  📦 ▶ Footer data utils
  ─────────────────────────────────────────────────────────────────────────────
 */
-import fbBNW from "@/app/assets/icons/fbn-bnw.svg";
-import instaBNW from "@/app/assets/icons/insta-bnw.svg";
+import fbBNW from "@/app/assets/icons/fb1.svg";
+import instaBNW from "@/app/assets/icons/in.svg";
 import LinkBNW from "@/app/assets/icons/link.svg";
-import xBNW from "@/app/assets/icons/x-bnw.svg";
+import xBNW from "@/app/assets/icons/xx.svg";
 
 export type Footer = {
   name: string;

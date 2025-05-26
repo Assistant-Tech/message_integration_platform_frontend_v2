@@ -1,9 +1,10 @@
+import { useState } from "react";
 import { footerLinks, SocialFooter } from "@/app/utils/utils";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Logo } from "@/app/components/ui";
+import { ChevronDown } from "lucide-react";
 import play from "@/app/assets/icons/play.svg";
 import app from "@/app/assets/icons/app.svg";
-import * as Separator from "@radix-ui/react-separator";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -24,29 +25,34 @@ const itemVariants = {
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const [openSection, setOpenSection] = useState<string | null>(null);
+
+  const toggleSection = (section: string) => {
+    setOpenSection(openSection === section ? null : section);
+  };
 
   return (
-    <footer className="bg-primary-light text-black border-t border-white/20 py-10">
-      <div className="max-w-[1600px] mx-auto px-4 lg:px-2">
+    <footer className="bg-primary-light text-base-black pt-10">
+      <div>
         {/* Top */}
-        <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-x-36 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-x-40 w-full max-w-[1600px] mx-auto px-4">
           {/* Brand */}
-          <div className="space-y-6 flex flex-col items-center text-center md:items-start md:text-left">
+          <div className="flex flex-col items-center text-center md:items-start md:text-left">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
-              className="flex items-center"
+              className="flex items-center pb-4"
             >
               <Logo />
             </motion.div>
 
-            <p className="body-bold-16 max-w-xs">
+            <p className="body-bold-16 max-w-xs pb-4">
               "Let's Make Customer Conversations Simple"
             </p>
 
             {/* Store Buttons */}
-            <div className="flex flex-col gap-2 w-48 py-12">
+            <div className="flex flex-col gap-2 w-48 pb-6">
               {[
                 { img: app, label: "App Store" },
                 { img: play, label: "Google Play" },
@@ -65,45 +71,95 @@ const Footer = () => {
               ))}
             </div>
           </div>
-          {/* Footer Links Grid */}
-          {/* add drop down */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
-            {["products", "resources", "pricing", "contact"].map((section) => (
-              <motion.nav
-                key={section}
-                initial="hidden"
-                animate="visible"
-                variants={containerVariants}
-                aria-label={section}
-              >
-                <h3 className="body-bold-16 capitalize mb-4">{section}</h3>
-                <ul className="space-y-4">
-                  {(footerLinks as any)[section].map(
-                    (link: any, index: number) => (
-                      <motion.li key={index} variants={itemVariants}>
-                        <a
-                          href={link.url}
-                          className="hover:text-primary-inactive transition-colors flex items-center h4-regular-16"
+
+          {/* Footer Links */}
+          <div className="w-full">
+            {/* Mobile/Tablet Dropdowns */}
+            <div className="lg:hidden space-y-6 px-4 py-2">
+              {["products", "resources", "pricing", "contact"].map(
+                (section) => (
+                  <div key={section}>
+                    <button
+                      onClick={() => toggleSection(section)}
+                      className="w-full flex justify-between items-center py-2 h4-bold-16 border-b border-gray-300"
+                    >
+                      <span className="capitalize">{section}</span>
+                      <ChevronDown
+                        className={`transition-transform ${
+                          openSection === section ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+                    <AnimatePresence>
+                      {openSection === section && (
+                        <motion.ul
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden pl-2 py-2 space-y-2"
                         >
-                          {link.icon && (
-                            <span className="mr-2">{link.icon}</span>
+                          {(footerLinks as any)[section].map(
+                            (link: any, index: number) => (
+                              <li key={index}>
+                                <a
+                                  href={link.url}
+                                  className="hover:text-primary-inactive transition-colors flex items-center text-sm"
+                                >
+                                  {link.icon && (
+                                    <span className="mr-2">{link.icon}</span>
+                                  )}
+                                  {link.name}
+                                </a>
+                              </li>
+                            ),
                           )}
-                          {link.name}
-                        </a>
-                      </motion.li>
-                    ),
-                  )}
-                </ul>
-              </motion.nav>
-            ))}
+                        </motion.ul>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                ),
+              )}
+            </div>
+
+            {/* Desktop Grid */}
+            <div className="hidden lg:grid grid-cols-2 md:grid-cols-4 gap-10">
+              {["products", "resources", "pricing", "contact"].map(
+                (section) => (
+                  <motion.nav
+                    key={section}
+                    initial="hidden"
+                    animate="visible"
+                    variants={containerVariants}
+                    aria-label={section}
+                  >
+                    <h3 className="body-bold-16 capitalize mb-4">{section}</h3>
+                    <ul className="space-y-4">
+                      {(footerLinks as any)[section].map(
+                        (link: any, index: number) => (
+                          <motion.li key={index} variants={itemVariants}>
+                            <a
+                              href={link.url}
+                              className="hover:text-primary-inactive transition-colors flex items-center h4-regular-16"
+                            >
+                              {link.icon && (
+                                <span className="mr-2">{link.icon}</span>
+                              )}
+                              {link.name}
+                            </a>
+                          </motion.li>
+                        ),
+                      )}
+                    </ul>
+                  </motion.nav>
+                ),
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Divider */}
-        <Separator.Root decorative className="w-full h-px bg-border mb-6" />
-
         {/* Bottom */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="bg-primary text-white flex flex-col md:flex-row justify-between items-center gap-4 px-4 md:px-36 py-6">
           {/* Copyright */}
           <motion.p
             initial={{ opacity: 0 }}
@@ -119,7 +175,7 @@ const Footer = () => {
             initial="hidden"
             animate="visible"
             variants={containerVariants}
-            className="flex gap-4"
+            className="flex gap-6"
           >
             {SocialFooter.map((item, index) => (
               <motion.li
@@ -131,23 +187,12 @@ const Footer = () => {
                   <img
                     src={item.src}
                     alt={`${item.name} icon`}
-                    className="w-6 h-6 bg-white rounded-full p-1"
+                    className="w-10 h-10"
                   />
                 </a>
               </motion.li>
             ))}
           </motion.ul>
-
-          {/* Legal */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.7 }}
-            className="flex space-x-6 body-regular-16"
-          >
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms of Service</a>
-          </motion.div>
         </div>
       </div>
     </footer>

@@ -28,7 +28,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
           transition={{ duration: 0.3 }}
-          className="lg:hidden bg-white border-t shadow-lg"
+          className="lg:hidden bg-white shadow-lg"
         >
           <div className="px-4 pt-2 pb-3 space-y-1">
             {navigation.map((item) => (
@@ -73,18 +73,18 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
                             <Link
                               key={dropdownItem.name}
                               to={dropdownItem.href}
-                              className="flex items-center px-3 py-2 rounded-md text-sm text-gray-600 hover:text-primary hover:bg-gray-50 transition-colors"
+                              className="flex items-center px-3 py-2 rounded-md text-grey hover:text-primary hover:bg-gray-50 transition-colors"
                               onClick={onClose}
                             >
                               {dropdownItem.icon && (
                                 <dropdownItem.icon className="h-4 w-4 mr-3" />
                               )}
                               <div>
-                                <div className="font-medium">
+                                <div className="h5-bold-16">
                                   {dropdownItem.name}
                                 </div>
                                 {dropdownItem.description && (
-                                  <div className="text-xs text-gray-500">
+                                  <div className="font-regular-14 text-grey-medium">
                                     {dropdownItem.description}
                                   </div>
                                 )}
