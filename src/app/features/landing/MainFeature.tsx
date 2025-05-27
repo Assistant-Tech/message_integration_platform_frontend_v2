@@ -4,20 +4,28 @@ import { featureCards } from "@/app/utils/utils";
 
 const MainFeature = () => {
   return (
-    <Box className="min-h-auto w-full max-w-[1600px] mx-auto px-4 md:px-2 py-10">
+    <Box
+      className="pt-20"
+      id="feature"
+    >
       <Flex
         direction={{ initial: "column", lg: "row" }}
         justify="between"
         align="center"
-        className="max-w-[1600px] mx-auto gap-16"
+        className="max-w-[1600px] mx-auto gap-4"
       >
         {/* Typography Section */}
         <Box className="max-w-lg">
-          <Badge title="USE IT ANYWHERE, ANYTIME " />
-          <h1 color="gray" className="h2-bold-40 pt-4">
+          <div className="flex lg:justify-start lg:items-start justify-center items-center">
+            <Badge title="USE IT ANYWHERE, ANYTIME " />
+          </div>
+          <h1
+            color="gray"
+            className="h2-bold-40 pt-4 lg:text-start text-center"
+          >
             What <span className="text-primary">Assistant</span> Helps You Do?
           </h1>
-          <Text className="h4-regular-24 text-start text-grey-medium pt-4">
+          <Text as="p" className="h4-regular-24 text-grey-medium pt-4 text-center lg:text-start">
             Simple tools to manage customer messages, work with your team, and
             grow your business.
           </Text>
@@ -30,7 +38,6 @@ const MainFeature = () => {
               <Card
                 title={card.title}
                 description={card.description}
-                iconColor={card.iconColor}
                 icon={<card.icon size={32} color={card.iconColor} />}
                 animated={card.animate}
                 borderRadius="2xl"
