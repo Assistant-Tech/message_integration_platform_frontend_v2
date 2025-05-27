@@ -65,6 +65,17 @@
   --color-information: #007b35;
   --color-information-dark: #004a89;
 }
+
+/* Scroll bar hide */
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /*
 ─────────────────────────────────────────────────────────────────────────────
  📦 ▶ Base Styles

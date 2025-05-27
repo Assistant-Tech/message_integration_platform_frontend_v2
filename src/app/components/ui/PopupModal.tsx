@@ -4,7 +4,7 @@ import { X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/app/components/ui/";
 import { cn } from "@/app/utils/cn";
-import newsletter from "@/app/assets/images/newsletter.png";
+import newsletter from "@/app/assets/images/newsletter.webp";
 
 const PopupModal = () => {
   const [open, setOpen] = useState(false);
@@ -18,7 +18,7 @@ const PopupModal = () => {
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/70 z-40" />
 
-        <Dialog.Content>
+        <Dialog.Content aria-describedby={undefined}>
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -26,18 +26,20 @@ const PopupModal = () => {
             transition={{ duration: 0.3 }}
             className={cn(
               "fixed z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
-              // Responsive max-widths
-              "w-[90%] sm:w-full sm:max-w-lg md:max-w-xl xl:max-w-2xl",
+              "w-[90%] sm:w-full sm:max-w-lg xl:max-w-xl",
               "rounded-4xl bg-white shadow-xl",
             )}
           >
-            <figure className="bg-linear-to-b from-primary-light at-primary to-primary-dark h-48 sm:h-60 md:h-72 rounded-t-3xl relative">
+            <figure
+              className="h-48 sm:h-60 md:h-72 rounded-t-3xl relative"
+              style={{
+                background:
+                  "linear-gradient(159deg, #1CB496 8.78%, #0C4E41 81.41%)",
+              }}
+            >
               <Dialog.Close asChild>
-                <button
-                  className="absolute top-3 left-3 sm:top-4 sm:left-4 text-base-black hover:text-white hover:bg-danger bg-white rounded-full p-1 cursor-pointer focus:outline-none"
-                  aria-label="Close"
-                >
-                  <X className="w-5 h-5" />
+                <button className="absolute top-4 right-4 text-base-black bg-white rounded-full p-4 cursor-pointer focus:outline-none">
+                  <X className="w-6 h-6  absolute right-1 top-1" />
                 </button>
               </Dialog.Close>
               <img
@@ -48,15 +50,15 @@ const PopupModal = () => {
             </figure>
             <div className="p-4 sm:p-6 md:p-8">
               <div className="flex items-center justify-between">
-                <Dialog.Title className="h3-bold-32 text-center p-2">
+                <h3 className="h3-bold-32 text-center p-2">
                   Unlock Exclusive Offers and Stay Updated
-                </Dialog.Title>
+                </h3>
               </div>
               <div className="text-grey body-medium-16 mb-2 text-center">
                 Subscribe to Assistant Tech’s monthly newsletter to stay updated
                 on new features and services and get a chance to unlock
                 exclusive offers as a gift
-                <span className="block body-italic-bold-16 text-center mt-2">
+                <span className="block body-italic-bold-16 text-center text-grey-medium">
                   Terms & condition applied
                 </span>
               </div>
@@ -74,6 +76,7 @@ const PopupModal = () => {
                     label="Subscribe"
                     variant="primary"
                     className="w-full"
+                    name="close"
                   />
                 </Dialog.Close>
               </div>

@@ -31,7 +31,7 @@ const Navbar = () => {
         isScrolled ? navbarStyles.scrolled : navbarStyles.default
       }`}
     >
-      <div className="mx-auto max-w-[1600px] px-4 md:px-2">
+      <div className="mx-auto max-w-[1600px] px-4 sm:px-6 md:px-8 xl:px-12 2xl:px-0">
         <div className="flex h-16 justify-between items-center">
           {/* Logo with scroll animation */}
           <div
@@ -59,10 +59,12 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Controls */}
-          <nav className="flex gap-2 lg:hidden">
-            <Link to={APP_ROUTES.PUBLIC.REGISTER}>
-              <Button label="Start Free Trial" variant="primary" />
-            </Link>
+          <nav className="flex gap-2 lg:hidden items-center">
+            {!mobileMenuOpen && (
+              <Link to={APP_ROUTES.PUBLIC.REGISTER}>
+                <Button label="Start Free Trial" variant="primary" />
+              </Link>
+            )}
             <MenuMobileToggle
               isOpen={mobileMenuOpen}
               onToggle={toggleMobileMenu}
