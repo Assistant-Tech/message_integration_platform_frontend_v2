@@ -18,7 +18,7 @@ const HeroSection: React.FC = () => {
     >
       {/* Background abstract shapes */}
       <div className="absolute inset-0 overflow-hidden -z-10">
-        <motion.div className="absolute top-0 -left-14">
+        <motion.div className="absolute top-40 -left-14">
           <Circle
             className="w-24 h-24 md:w-24 md:h-24 opacity-40"
             color="teal"

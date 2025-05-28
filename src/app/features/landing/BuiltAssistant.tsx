@@ -1,6 +1,6 @@
 import { Badge, Button, FeatureCard } from "@/app/components/ui";
 import { buildFeature } from "@/app/utils/utils";
-import { Box, Container, Flex, Grid } from "@radix-ui/themes";
+import { Box, Flex } from "@radix-ui/themes";
 import React from "react";
 
 const BuiltAssistant: React.FC = () => {
@@ -10,22 +10,21 @@ const BuiltAssistant: React.FC = () => {
 
   return (
     <Box className="pt-20">
-      <Container className="py-4 md:py-8 bg-white rounded-[2rem] border-2 border-gray-300">
+      <div className="py-8 md:py-8 bg-base-white rounded-2xl border-2 border-grey-light max-w-full">
         <Flex
           direction="column"
           align="center"
-          justify={"center"}
+          justify="center"
           className="text-center"
+          gap="12"
         >
           {/* Header Section */}
           <Box className="max-w-4xl">
             <Badge title="Why We Built Assistant" />
-
             <h1 className="h2-bold-40 py-4">
               Simplify life for daily
               <span className="text-primary"> customer communicators</span>.
             </h1>
-
             <p className="h4-regular-24 text-grey-medium max-w-3xl mx-auto text-center">
               Running a business is hard enough. Answering messages from 5
               different apps shouldn't make it harder.
@@ -33,11 +32,7 @@ const BuiltAssistant: React.FC = () => {
           </Box>
 
           {/* Features Grid */}
-          <Grid
-            columns={{ initial: "1", sm: "2", md: "3" }}
-            gap="6"
-            className="w-full py-6"
-          >
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 w-full px-4 sm:px-14 py-6 ">
             {buildFeature.map((feature, index) => (
               <FeatureCard
                 key={index}
@@ -46,7 +41,7 @@ const BuiltAssistant: React.FC = () => {
                 description={feature.description}
               />
             ))}
-          </Grid>
+          </div>
 
           {/* CTA Button */}
           <Box>
@@ -57,7 +52,7 @@ const BuiltAssistant: React.FC = () => {
             />
           </Box>
         </Flex>
-      </Container>
+      </div>
     </Box>
   );
 };

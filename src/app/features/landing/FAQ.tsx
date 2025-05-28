@@ -4,7 +4,7 @@ import { Flex, Box } from "@radix-ui/themes";
 
 const FAQ = () => {
   return (
-    <div className="pb-10" id="faq">
+    <div className="py-10" id="faq">
       <div className="max-w-[1600px] mx-auto">
         <div className="bg-base-white rounded-2xl border-2 border-grey-light overflow-hidden">
           {/* Responsive Flex Container */}

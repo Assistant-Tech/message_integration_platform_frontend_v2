@@ -11,7 +11,7 @@ import {
 } from "@/app/components/common";
 import { useScrollEffect } from "@/app/hooks/ui/useScrollEffect";
 
-const Navbar = () => {
+const Navbar = ({ offsetTop = false }: { offsetTop?: boolean }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { activeDropdown, handleMouseEnter, handleMouseLeave } = useDropdown();
   const isScrolled = useScrollEffect(50);
@@ -29,36 +29,28 @@ const Navbar = () => {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out h-20 py-2 ${
         isScrolled ? navbarStyles.scrolled : navbarStyles.default
-      }`}
+      } ${offsetTop ? "mt-16" : ""}`}
     >
       <div className="mx-auto max-w-[1600px] px-4 sm:px-6 md:px-8 xl:px-12 2xl:px-0">
         <div className="flex h-16 justify-between items-center">
-          {/* Logo with scroll animation */}
           <div
-            className={`transition-all duration-300 ${
-              isScrolled ? "scale-75" : "scale-100"
-            }`}
+            className={`transition-all duration-300 ${isScrolled ? "scale-75" : "scale-100"}`}
           >
             <Logo />
           </div>
 
-          {/* Desktop Navigation */}
           <DesktopNavigation
             activeDropdown={activeDropdown}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           />
 
-          {/* Auth Buttons with scroll effect */}
           <div
-            className={`transition-all duration-300 ${
-              isScrolled ? "opacity-90" : "opacity-100"
-            }`}
+            className={`transition-all duration-300 ${isScrolled ? "opacity-90" : "opacity-100"}`}
           >
             <AuthButtons />
           </div>
 
-          {/* Mobile Controls */}
           <nav className="flex gap-2 lg:hidden items-center">
             {!mobileMenuOpen && (
               <Link to={APP_ROUTES.PUBLIC.REGISTER}>
@@ -73,7 +65,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu with backdrop */}
       <MobileMenu isOpen={mobileMenuOpen} onClose={closeMobileMenu} />
     </header>
   );

@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/app/components/ui/";
 import { cn } from "@/app/utils/cn";
 import newsletter from "@/app/assets/images/newsletter.webp";
+import { Link } from "react-router-dom";
 
 const PopupModal = () => {
   const [open, setOpen] = useState(false);
@@ -58,9 +59,10 @@ const PopupModal = () => {
                 Subscribe to Assistant Tech’s monthly newsletter to stay updated
                 on new features and services and get a chance to unlock
                 exclusive offers as a gift
-                <span className="block body-italic-bold-16 text-center text-grey-medium">
+                {/* Here will be link */}
+                <Link to={"/"}  className="block body-italic-bold-16 text-center underline text-danger">
                   Terms & condition applied
-                </span>
+                </Link>
               </div>
               <div className="relative py-2">
                 <input

@@ -11,6 +11,7 @@ import {
 import { DemoTextArea } from "@/app/features/auth/components/ui";
 import PhoneInput from "@/app/components/ui/PhoneInput";
 import { X } from "lucide-react";
+import { toast } from "sonner";
 
 export const DemoDialog = () => {
   const { isOpen, close } = useDemoDialogStore();
@@ -24,10 +25,13 @@ export const DemoDialog = () => {
     resolver: zodResolver(demoSchema),
     mode: "onSubmit",
   });
-
   const onSubmit = (data: DemoFormData) => {
+    toast.success("Form Submitted Successfully");
     console.log("Submitted:", data);
     reset();
+  };
+  const onError = () => {
+    toast.error("Please fill out all required fields.");
   };
 
   return (
@@ -69,7 +73,7 @@ export const DemoDialog = () => {
                     </div>
 
                     <form
-                      onSubmit={handleSubmit(onSubmit)}
+                      onSubmit={handleSubmit(onSubmit, onError)}
                       className="flex flex-col gap-3 mt-3 w-full max-w-7xl"
                     >
                       <div className="flex flex-col sm:flex-row gap-3">

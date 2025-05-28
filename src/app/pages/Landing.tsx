@@ -1,7 +1,7 @@
 import "@radix-ui/themes/styles.css";
 import { Theme } from "@radix-ui/themes";
 
-import { Footer, Navbar } from "@/app/components/common";
+import { Footer, Navbar, TrialBanner } from "@/app/components/common";
 import {
   BuiltAssistant,
   ChatBot,
@@ -15,17 +15,19 @@ import {
 } from "@/app/features/landing/";
 import { DemoDialog } from "@/app/features/auth";
 import { Container } from "@/app/components/layout";
+import { useState } from "react";
 
 const Landing = () => {
+  const [isBannerVisible, setIsBannerVisible] = useState(true);
   return (
     <div className="min-h-screen">
       <Theme>
-        {/* <TrailBanner /> */}
+        <TrialBanner onClose={() => setIsBannerVisible(false)} />
         <Container>
           <DemoDialog />
         </Container>
 
-        <Navbar />
+        <Navbar offsetTop={isBannerVisible} />
 
         {/* Hero Section */}
         <Container>

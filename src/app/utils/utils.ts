@@ -170,7 +170,7 @@ export const SOCIAL_LINKS_CONFIG = [
     color: "#000",
     size: 28,
     mobileSize: 20,
-    top: "9%",
+    top: "19%",
     left: "10%",
   },
   {
@@ -510,6 +510,7 @@ export const SocialFooter: SocialLink[] = [
     size: 44,
   },
 ];
+import { Mail, Phone, MapPin } from "lucide-react";
 
 export const footerLinks = {
   products: [
@@ -533,9 +534,17 @@ export const footerLinks = {
     {
       name: "assistant@gmail.com",
       url: "mailto:assistant@gmail.com",
-      icon: "✉️",
+      icon: Mail,
     },
-    { name: "+977-9810000000", url: "tel:+9779810000000", icon: "📞" },
-    { name: "123 Main Street, Anytown", url: "#", icon: "📍" },
+    {
+      name: "+977-9810000000",
+      url: "tel:+9779810000000",
+      icon: Phone,
+    },
+    {
+      name: "123 Main Street, Anytown",
+      url: "#",
+      icon: MapPin,
+    },
   ],
 };

@@ -5,14 +5,10 @@ import { Button } from "@/app/components/ui";
 const HeroContent: React.FC = () => {
   return (
     <div className="text-center space-y-4 pt-16 z-auto">
-      <motion.h1
-        initial={{ opacity: 0, y: -30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="bold-64 text-base-black pb-4"
-      >
+      <h1 className="bold-64 text-base-black pb-4">
         Talk to All Your Customers in One Place
-      </motion.h1>
+      </h1>
+
       <motion.p
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}

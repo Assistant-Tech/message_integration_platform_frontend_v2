@@ -1,4 +1,5 @@
 import { BrowserRouter } from "react-router-dom";
+import { Toaster } from "sonner";
 
 import "@/app/styles/globals.css";
 import AppRoutes from "@/app/AppRoutes";
@@ -8,8 +9,9 @@ const App = () => {
   return (
     <ErrorBoundary>
       <BrowserRouter>
-        <div className="min-h-screen">
+        <div>
           <AppRoutes />
+          <Toaster position="top-right" richColors />
         </div>
       </BrowserRouter>
     </ErrorBoundary>

@@ -32,10 +32,10 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-primary-light pt-10">
+    <footer className="bg-primary-light pt-10 w-full">
       <div>
         {/* Top */}
-        <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-x-40 w-full max-w-[1600px] mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-x-40 w-full max-w-[1600px] mx-auto">
           {/* Brand */}
           <div className="flex flex-col items-center text-center md:items-start md:text-left">
             <motion.div
@@ -133,17 +133,20 @@ const Footer = () => {
                     variants={containerVariants}
                     aria-label={section}
                   >
-                    <h3 className="body-bold-16 capitalize text-base-black mb-4">{section}</h3>
+                    <h3 className="body-bold-16 capitalize text-base-black mb-4">
+                      {section}
+                    </h3>
                     <ul className="space-y-4">
                       {(footerLinks as any)[section].map(
                         (link: any, index: number) => (
                           <motion.li key={index} variants={itemVariants}>
                             <a
+                              key={link.name}
                               href={link.url}
-                              className="hover:text-primary transition-colors flex items-center h4-regular-16"
+                              className="flex items-center text-sm text-muted-foreground hover:underline"
                             >
                               {link.icon && (
-                                <span className="mr-2">{link.icon}</span>
+                                <link.icon className="mr-2 w-4 h-4" />
                               )}
                               {link.name}
                             </a>
@@ -159,7 +162,7 @@ const Footer = () => {
         </div>
 
         {/* Bottom */}
-        <div className="bg-primary text-white flex flex-col md:flex-row justify-between items-center gap-4 px-4 md:px-36 py-6">
+        <div className="bg-primary text-white flex flex-col md:flex-row justify-between items-center gap-4 px-4 md:px-40 py-6">
           {/* Copyright */}
           <motion.p
             initial={{ opacity: 0 }}
