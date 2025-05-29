@@ -99,16 +99,14 @@ const Footer = () => {
                           transition={{ duration: 0.2 }}
                           className="overflow-hidden pl-2 py-2 space-y-2"
                         >
-                          {(footerLinks as any)[section].map(
-                            (link: any, index: number) => (
+                          {footerLinks[section as keyof typeof footerLinks].map(
+                            (link, index: number) => (
                               <li key={index}>
                                 <a
                                   href={link.url}
                                   className="text-grey transition-colors flex items-center text-sm"
                                 >
-                                  {link.icon && (
-                                    <span className="mr-2">{link.icon}</span>
-                                  )}
+                                  {link.icon && <link.icon className="mr-2" />}
                                   {link.name}
                                 </a>
                               </li>
@@ -137,8 +135,8 @@ const Footer = () => {
                       {section}
                     </h3>
                     <ul className="space-y-4">
-                      {(footerLinks as any)[section].map(
-                        (link: any, index: number) => (
+                      {footerLinks[section as keyof typeof footerLinks].map(
+                        (link, index: number) => (
                           <motion.li key={index} variants={itemVariants}>
                             <a
                               key={link.name}

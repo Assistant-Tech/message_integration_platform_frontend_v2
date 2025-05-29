@@ -1,6 +1,5 @@
 import { Slot } from "@radix-ui/react-slot";
-import { useState, ReactNode } from "react";
-import { MessageSquare } from "lucide-react";
+import { ReactNode } from "react";
 
 type BorderRadiusType = "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "full";
 type ElevationType = "none" | "sm" | "md" | "lg" | "xl";

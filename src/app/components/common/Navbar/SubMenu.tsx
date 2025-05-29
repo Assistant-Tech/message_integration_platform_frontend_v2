@@ -64,7 +64,7 @@ const SubMenu: React.FC<SubMenuProps> = ({
 
       {/* Submenu Items */}
       <ul className="flex flex-col pt-4 px-4">
-        {item.dropdown?.map((subItem: any, index) => (
+        {item.dropdown?.map((subItem, index) => (
           <li key={index} onClick={() => onItemClick(subItem.href)}>
             <div className="flex items-start space-x-4 space-y-4">
               <div className="flex justify-start items-center pb-4">

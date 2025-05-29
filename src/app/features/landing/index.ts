@@ -1,5 +1,4 @@
 export { default as HeroSection } from "./HeroSection";
-export { default as Feature } from "./Feature";
 export { default as MainFeature } from "./MainFeature";
 export { default as Contact } from "./Contact";
 export { default as About } from "./About";
@@ -9,4 +8,5 @@ export { default as GetStarted } from "./GetStarted";
 export { default as ScaleBusiness } from "./ScaleBusiness";
 export { default as BuiltAssistant } from "./BuiltAssistant";
 export { default as Testimonials } from "./Testimonials";
+export { default as Pricing } from "./Pricing";
 export { default as FAQ } from "./FAQ";

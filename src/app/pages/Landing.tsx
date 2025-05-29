@@ -1,71 +1,76 @@
 import "@radix-ui/themes/styles.css";
 import { Theme } from "@radix-ui/themes";
+import { useState, Suspense, lazy } from "react";
 
 import { Footer, Navbar, TrialBanner } from "@/app/components/common";
 import {
   BuiltAssistant,
-  ChatBot,
   GetStarted,
   HeroSection,
   MainFeature,
   ScaleBusiness,
-  Testimonials,
-  // UnifiedMessageBox,
+  Pricing,
   FAQ,
 } from "@/app/features/landing/";
 import { DemoDialog } from "@/app/features/auth";
-import { Container } from "@/app/components/layout";
-import { useState } from "react";
+import Section from "@/app/components/layout/Section";
+
+// Lazy-load large components
+const ChatBot = lazy(() => import("@/app/features/landing/ChatBot"));
+const Testimonials = lazy(() => import("@/app/features/landing/Testimonials"));
 
 const Landing = () => {
   const [isBannerVisible, setIsBannerVisible] = useState(true);
+
+  const sections = [
+    // Demo dialog
+    { element: <DemoDialog /> },
+    // Hero Section
+    { element: <HeroSection /> },
+    // Main Feature
+    { element: <MainFeature /> },
+    // Chatbot with fallbacks
+    {
+      element: (
+        <Suspense fallback={<div>Loading...</div>}>
+          <ChatBot />
+        </Suspense>
+      ),
+    },
+    // Get Started
+    { element: <GetStarted />, useContainer: false },
+    // Scale Your Business
+    { element: <ScaleBusiness /> },
+    // Built Assistant
+    { element: <BuiltAssistant /> },
+    {
+      element: (
+        <Suspense fallback={<div>Loading testimonials...</div>}>
+          <Testimonials />
+        </Suspense>
+      ),
+      useContainer: false,
+    },
+    // Pricing
+    { element: <Pricing /> },
+    // Faq
+    { element: <FAQ /> },
+    // Footer
+    { element: <Footer />, useContainer: false },
+  ];
+
   return (
     <div className="min-h-screen">
       <Theme>
+        {/* Trial banner or Ads Type Section */}
         <TrialBanner onClose={() => setIsBannerVisible(false)} />
-        <Container>
-          <DemoDialog />
-        </Container>
-
+        {/* Navbar */}
         <Navbar offsetTop={isBannerVisible} />
-
-        {/* Hero Section */}
-        <Container>
-          <HeroSection />
-        </Container>
-
-        {/* Meain Feature */}
-        <Container>
-          <MainFeature />
-        </Container>
-
-        {/* ChatBot */}
-        <Container>
-          <ChatBot />
-        </Container>
-
-        {/* <UnifiedMessageBox /> */}
-        <GetStarted />
-
-        {/* Scale Business */}
-        <Container>
-          <ScaleBusiness />
-        </Container>
-
-        {/* Build Assistant */}
-        <Container>
-          <BuiltAssistant />
-        </Container>
-
-        {/* Testimonials */}
-        <Testimonials />
-
-        {/* FAQ */}
-        <Container>
-          <FAQ />
-        </Container>
-
-        <Footer />
+        {sections.map(({ element, useContainer = true }, idx) => (
+          <Section key={idx} useContainer={useContainer}>
+            {element}
+          </Section>
+        ))}
       </Theme>
     </div>
   );

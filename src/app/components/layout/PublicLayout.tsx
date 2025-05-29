@@ -1,4 +1,4 @@
-import { PopupModal } from "@/app/components/ui";
+import { PopupModal } from "@/app/components/common";
 import React, { ReactNode } from "react";
 
 interface PublicLayoutProps {

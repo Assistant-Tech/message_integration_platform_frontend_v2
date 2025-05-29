@@ -12,7 +12,7 @@ const MainFeature = () => {
         direction={{ initial: "column", lg: "row" }}
         justify="between"
         align="center"
-        className="max-w-[1600px] mx-auto gap-4"
+        className="gap-4"
       >
         {/* Typography Section */}
         <Box className="max-w-lg">
