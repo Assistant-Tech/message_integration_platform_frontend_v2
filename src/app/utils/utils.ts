@@ -21,7 +21,7 @@ export interface DropdownItem {
   name: string;
   href: string;
   description?: string;
-  icon?: React.ComponentType<{ className?: string }>;
+  icon: LucideIcon;
 }
 export interface NavigationItem {
   name: string;
@@ -105,7 +105,7 @@ import Tiktok from "@/app/assets/icons/tiktok.svg";
 import viber from "@/app/assets/icons/viber.svg";
 
 export type SocialLink = {
-  [x: string]: any;
+  [x: string]: string | number;
   name: string;
   src: string;
   href: string;
@@ -455,7 +455,6 @@ import fbBNW from "@/app/assets/icons/fb1.svg";
 import instaBNW from "@/app/assets/icons/in.svg";
 import LinkBNW from "@/app/assets/icons/link.svg";
 import xBNW from "@/app/assets/icons/xx.svg";
-
 export type Footer = {
   name: string;
   src: string;
@@ -502,7 +501,18 @@ export const SocialFooter: SocialLink[] = [
   },
 ];
 
-export const footerLinks = {
+export interface item {
+  name: string;
+  url: string;
+  icon?: LucideIcon;
+}
+export interface footerLinksProps {
+  products: item[];
+  resources: item[];
+  contact: item[];
+  pricing: item[];
+}
+export const footerLinks: footerLinksProps = {
   products: [
     { name: "Products One", url: "#" },
     { name: "Products Two", url: "#" },
