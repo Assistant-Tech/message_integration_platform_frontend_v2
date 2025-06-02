@@ -64,7 +64,14 @@ const DynamicToggle: React.FC<DynamicToggleProps> = ({
               <span>{option.label}</span>
 
               {option.extraLabel && (
-                <span className="text-xs font-medium text-primary bg-primary-light border border-primary px-2 py-0.5 rounded-full">
+                <span
+                  className={cn(
+                    "text-xs font-medium px-2 py-0.5 rounded-full",
+                    isSelected
+                      ? "text-black bg-white"
+                      : "text-primary bg-primary-light border border-primarypric",
+                  )}
+                >
                   {option.extraLabel}
                 </span>
               )}

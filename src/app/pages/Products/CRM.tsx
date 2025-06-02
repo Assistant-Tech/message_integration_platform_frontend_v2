@@ -53,16 +53,16 @@ const CRM: React.FC = () => {
       color: "bg-blue-500",
     },
     {
-      icon: <Building2 className="w-8 h-8 text-emerald-500" />,
+      icon: <Building2 className="w-8 h-8 text-primary" />,
       title: "All Industries",
-      color: "bg-emerald-500",
+      color: "bg-primary",
     },
   ];
 
   return (
-    <div className="bg-gradient-to-br from-gray-50 to-white mt-24">
+    <div className="bg-white mt-24">
       <div>
-        {/* Breadcrumb */}
+        {/* Breadcrumb Section */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -81,10 +81,10 @@ const CRM: React.FC = () => {
             className="space-y-8"
           >
             <div className="space-y-6">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-grey leading-tight">
                 Empowering Your Business with{" "}
-                <span className="text-emerald-600">Assistant's</span> AI-Powered
-                CRM Software
+                <span className="text-primary">Assistant's</span> AI-Powered CRM
+                Software
               </h1>
 
               <p className="text-lg sm:text-xl text-gray-600 leading-relaxed max-w-2xl">
@@ -101,6 +101,7 @@ const CRM: React.FC = () => {
                 Start your 14-days free trial today!
               </p>
 
+              {/* Input  */}
               <div className="flex flex-col sm:flex-row gap-4 max-w-md">
                 <div className="flex-1">
                   <Input
@@ -111,6 +112,7 @@ const CRM: React.FC = () => {
                     className="w-full"
                   />
                 </div>
+                {/* Button */}
                 <Button
                   label={isLoading ? "Loading..." : "Get Started"}
                   variant="primary"
@@ -128,14 +130,14 @@ const CRM: React.FC = () => {
                 you agree to{" "}
                 <a
                   href="#"
-                  className="text-emerald-600 hover:text-emerald-700 underline"
+                  className="text-primary hover:text-primary-dark underline"
                 >
                   Terms of Service
                 </a>{" "}
                 and{" "}
                 <a
                   href="#"
-                  className="text-emerald-600 hover:text-emerald-700 underline"
+                  className="text-primary hover:text-primary-dark underline"
                 >
                   Privacy Policy
                 </a>{" "}
@@ -153,7 +155,7 @@ const CRM: React.FC = () => {
                   transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
                   className="flex items-start gap-3"
                 >
-                  <div className="flex-shrink-0 p-2 bg-emerald-100 rounded-lg text-emerald-600">
+                  <div className="flex-shrink-0 p-2 bg-primary-light rounded-lg text-primary">
                     {feature.icon}
                   </div>
                   <div>
@@ -290,17 +292,17 @@ const CRM: React.FC = () => {
                   transition={{ duration: 0.8, delay: 0.8 }}
                   className="relative z-10 text-center py-20"
                 >
-                  <h2 className="text-6xl font-bold mb-4 bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">
+                  <h2 className="text-6xl font-bold mb-4 bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent">
                     CRM
                   </h2>
-                  <div className="flex justify-center space-x-4 text-emerald-400">
-                    <div className="w-12 h-12 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+                  <div className="flex justify-center space-x-4 text-primary">
+                    <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
                       <Building2 className="w-6 h-6" />
                     </div>
-                    <div className="w-12 h-12 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+                    <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
                       <Target className="w-6 h-6" />
                     </div>
-                    <div className="w-12 h-12 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+                    <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
                       <Shield className="w-6 h-6" />
                     </div>
                   </div>
@@ -325,9 +327,9 @@ const CRM: React.FC = () => {
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
-              className="absolute -top-4 -left-4 w-16 h-16 bg-emerald-100 rounded-xl flex items-center justify-center shadow-lg"
+              className="absolute -top-4 -left-4 w-16 h-16 bg-primary-light rounded-xl flex items-center justify-center shadow-lg"
             >
-              <Zap className="w-8 h-8 text-emerald-600" />
+              <Zap className="w-8 h-8 text-primary" />
             </motion.div>
 
             <motion.div

@@ -7,6 +7,7 @@ const ProductsLayout = () => {
   return (
     <Container>
       <Navbar />
+      {/* breadcrumb */}
       {/* You can implement dyanmic breadcumbs here */}
       {/* <ProductNavigation /> */}
       <Outlet />
