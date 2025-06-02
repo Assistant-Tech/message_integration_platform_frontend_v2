@@ -11,7 +11,7 @@ import {
   ScaleBusiness,
   Pricing,
   FAQ,
-} from "@/app/features/landing/";
+} from "@/app/features/landing/index";
 import { DemoDialog } from "@/app/features/auth";
 import Section from "@/app/components/layout/Section";
 
