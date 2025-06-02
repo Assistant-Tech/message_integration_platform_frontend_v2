@@ -7,3 +7,4 @@ export { default as Badge } from "./Badge";
 export { default as FeatureCard } from "./FeatureCard";
 export { default as Accordian } from "./Accordian";
 export { default as DynamicToggle } from "./DynamicToggle";
+export { default as Breadcrumb } from "./Breadcrumb";

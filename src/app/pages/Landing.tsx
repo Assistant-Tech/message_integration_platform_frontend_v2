@@ -2,7 +2,7 @@ import "@radix-ui/themes/styles.css";
 import { Theme } from "@radix-ui/themes";
 import { useState, Suspense, lazy } from "react";
 
-import { Footer, Navbar, TrialBanner } from "@/app/components/common";
+import { Footer, Navbar, PopupModal, TrialBanner } from "@/app/components/common";
 import {
   BuiltAssistant,
   GetStarted,
@@ -23,6 +23,8 @@ const Landing = () => {
   const [isBannerVisible, setIsBannerVisible] = useState(true);
 
   const sections = [
+    // Popup Modal
+    { element: <PopupModal /> },
     // Demo dialog
     { element: <DemoDialog /> },
     // Hero Section
