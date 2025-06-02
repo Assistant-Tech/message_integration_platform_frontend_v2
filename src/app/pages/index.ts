@@ -4,4 +4,4 @@ export { default as Landing } from "./Landing";
 
 
 // Product exports 
-export { default as CRM } from "./Products/CRM";
+export { default as CRM } from "./products/CRM";

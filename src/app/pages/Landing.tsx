@@ -11,13 +11,13 @@ import {
   ScaleBusiness,
   Pricing,
   FAQ,
-} from "@/app/features/landing/index";
+} from "@/app/pages/landing/index";
 import { DemoDialog } from "@/app/features/auth";
 import Section from "@/app/components/layout/Section";
 
 // Lazy-load large components
-const ChatBot = lazy(() => import("@/app/features/landing/ChatBot"));
-const Testimonials = lazy(() => import("@/app/features/landing/Testimonials"));
+const ChatBot = lazy(() => import("@/app/pages/landing/ChatBot"));
+const Testimonials = lazy(() => import("@/app/pages/landing/Testimonials"));
 
 const Landing = () => {
   const [isBannerVisible, setIsBannerVisible] = useState(true);
