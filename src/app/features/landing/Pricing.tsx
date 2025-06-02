@@ -57,20 +57,19 @@ const Pricing = () => {
           </p>
         </article>
 
-        <div className="py-6">
+        <div className="pt-6">
           <DynamicToggle
             options={pricingOptions}
             defaultSelected={duration}
             onChange={(val) => setDuration(val.value as APIDuration)}
-            variant="primary"
-            size="lg"
           />
         </div>
 
         <RadioGroup.Root
           value={currency}
           onValueChange={(val) => setCurrency(val as any)}
-          className="w-full"
+          // Check toggle button color
+          className="w-full "
         >
           <Flex gap="4" justify="end" align="center">
             {["NPR", "USD"].map((cur) => (
