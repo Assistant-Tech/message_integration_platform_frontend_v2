@@ -1,22 +1,76 @@
-// components/PricingCard.tsx
 import { Check } from "lucide-react";
 import { cn } from "@/app/utils/cn";
 import { Button } from "@/app/components/ui";
-import { Plan } from "@/app/types/types";
+import { Plan } from "@/app/types/plan";
 
 interface PricingCardProps {
-  plan: Plan;
+  plan: Plan & {
+    title?: string;
+    subtitle?: string;
+    price?: string;
+    buttonText?: string;
+    features?: string[];
+  };
   duration: "monthly" | "yearly";
 }
 
 const PricingCard = ({ plan, duration }: PricingCardProps) => {
+  // console.log("🚀 ~ PricingCard ~ plan:", plan);
+
+  const formatTitle = (rawTitle?: string): string => {
+    if (!rawTitle) return "";
+    return rawTitle
+      .toLowerCase()
+      .replace(/_/g, " ") // Replace underscores with spaces
+      .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize each word
+  };
+
+  const getFeaturesList = (
+    features: Record<string, any> | string[],
+  ): string[] => {
+    if (Array.isArray(features)) return features;
+
+    const featuresList: string[] = [];
+    Object.entries(features).forEach(([key, value]) => {
+      if (key === "includes") {
+        featuresList.push(`Includes ${value} features`);
+      } else if (key === "channels" && Array.isArray(value)) {
+        featuresList.push(`Channels: ${value.join(", ")}`);
+      } else if (key === "chatAgents") {
+        featuresList.push(`${value} Chat Agents`);
+      } else if (key === "integrations") {
+        featuresList.push(`${value} Integrations`);
+      } else if (typeof value === "boolean" && value) {
+        const readableKey = key
+          .replace(/([A-Z])/g, " $1")
+          .replace(/^./, (str) => str.toUpperCase());
+        featuresList.push(readableKey);
+      } else if (typeof value === "number") {
+        const readableKey = key
+          .replace(/([A-Z])/g, " $1")
+          .replace(/^./, (str) => str.toUpperCase());
+        featuresList.push(`${readableKey}: ${value}`);
+      }
+    });
+
+    return featuresList;
+  };
+
+  const displayFeatures = plan.features ? getFeaturesList(plan.features) : [];
+  const displayPrice =
+    plan.price || `${plan.currency === "NPR" ? "रु" : "$"}${plan.amount}`;
+  const buttonText =
+    plan.buttonText || (plan.amount === 0 ? "Contact Us" : "Choose Plan");
+
   return (
     <div
-      className={`relative rounded-2xl p-6 sm:p-8 transition-all duration-300 w-full h-full ${
+      className={cn(
+        "relative rounded-2xl p-6 sm:p-8 transition-all duration-300 w-full h-full",
         plan.isPopular
           ? "bg-primary text-white transform scale-105"
-          : "bg-white border-2 border-grey-light"
-      }`}
+          : "bg-white border-2 border-grey-light",
+        "min-w-[280px] max-w-sm md:max-w-full flex-shrink-0",
+      )}
     >
       {plan.isPopular && (
         <div className="absolute -top-3 -right-3 w-36 h-36 overflow-hidden">
@@ -33,7 +87,7 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
             plan.isPopular ? "text-white" : "text-gray-900",
           )}
         >
-          {plan.title}
+          {formatTitle(plan.title || plan.name)}
         </h3>
         <p
           className={cn(
@@ -41,7 +95,7 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
             plan.isPopular ? "text-primary-light" : "text-gray-600",
           )}
         >
-          {plan.subtitle}
+          {plan.subtitle || plan.description}
         </p>
 
         <div className="w-full border border-grey-light my-6" />
@@ -53,10 +107,8 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
               plan.isPopular ? "text-white" : "text-grey",
             )}
           >
-            {plan.price}
-            {plan.price !== "Custom Pricing" && (
-              <span className="ps-2">/{duration}</span>
-            )}
+            {displayPrice}
+            {plan.amount !== 0 && <span className="ps-2">/{duration}</span>}
           </div>
           <Button
             className={cn(
@@ -65,7 +117,7 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
                 ? "bg-white text-primary hover:text-white hover:bg-primary"
                 : "bg-primary text-white hover:text-primary hover:bg-base-white",
             )}
-            label={plan.buttonText}
+            label={buttonText}
             variant="primary"
           />
         </div>
@@ -74,7 +126,7 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
       <div className="w-full border border-grey-light my-6" />
 
       <ul className="space-y-4">
-        {plan.features.map((feature, i) => (
+        {displayFeatures.map((feature: string, i: number) => (
           <li key={i} className="flex items-start gap-3">
             <Check
               className={cn(
@@ -104,7 +156,7 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
               : "text-grey hover:text-grey-medium",
           )}
         >
-          Learn mze
+          Learn more
         </a>
       </div>
     </div>

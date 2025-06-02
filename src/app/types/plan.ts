@@ -4,20 +4,19 @@
 ─────────────────────────────────────────────────────────────────────────────
 */
 export type Currency = "USD" | "NPR";
-export type Duration = "monthly" | "yearly";
+export type APIDuration = "MONTHLY" | "YEARLY";
+
+export type Duration = "monthly" | "yearly"; //UI
 
 export interface Plan {
-  title: string;
-  subtitle: string;
-  price: string;
-  originalPrice: string | null;
-  features: string[];
-  buttonText: string;
+  id: string;
+  name: string;
+  description: string;
+  amount: number;
+  interval: APIDuration;
+  durationInDays: number;
+  features: Record<string, any>;
+  isActive: boolean;
   isPopular: boolean;
+  currency: Currency;
 }
-
-export type PricingData = {
-  [key in Currency]: {
-    [key in Duration]: Plan[];
-  };
-};
