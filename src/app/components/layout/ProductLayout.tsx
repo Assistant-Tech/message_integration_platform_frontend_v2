@@ -1,17 +1,20 @@
 import { Outlet } from "react-router-dom";
-import { Navbar } from "@/app/components/common";
+import { Navbar, Footer } from "@/app/components/common";
 import { Container } from "@/app/components/layout";
 // import { ProductNavigation } from "@/app/components";
 
 const ProductsLayout = () => {
   return (
-    <Container>
-      <Navbar />
-      {/* breadcrumb */}
-      {/* You can implement dyanmic breadcumbs here */}
-      {/* <ProductNavigation /> */}
-      <Outlet />
-    </Container>
+    <section>
+      <Container>
+        <Navbar />
+        {/* breadcrumb */}
+        {/* You can implement dyanmic breadcumbs here */}
+        {/* <ProductNavigation /> */}
+        <Outlet />
+      </Container>
+      <Footer />
+    </section>
   );
 };
 

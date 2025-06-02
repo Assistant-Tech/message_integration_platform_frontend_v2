@@ -113,15 +113,6 @@ import X from "@/app/assets/icons/x.svg";
 import Tiktok from "@/app/assets/icons/tiktok.svg";
 import viber from "@/app/assets/icons/viber.svg";
 
-export type SocialLink = {
-  [x: string]: any;
-  name: string;
-  src: string;
-  href: string;
-  color: string;
-  size: number;
-};
-
 export const SOCIAL_LINKS_CONFIG = [
   {
     name: "Facebook",
@@ -454,65 +445,44 @@ export const faqData: FAQ[] = [
       "Vestibulum tempus imperdiet sem ac porttitor. Fusce nec pellentesque erat. Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, suscipit porttitor velit elementum non. Fusce nec pellentesque erat, id lobortis nunc. Donec dui leo, ultrices quis turpis nec, sollicitudin sodales",
   },
 ];
-
 /*
 ─────────────────────────────────────────────────────────────────────────────
  📦 ▶ Footer data utils
- ─────────────────────────────────────────────────────────────────────────────
+─────────────────────────────────────────────────────────────────────────────
 */
+import { Mail, Phone, MapPin } from "lucide-react";
 import fbBNW from "@/app/assets/icons/fb1.svg";
 import instaBNW from "@/app/assets/icons/in.svg";
 import LinkBNW from "@/app/assets/icons/link.svg";
 import xBNW from "@/app/assets/icons/xx.svg";
 
-export type Footer = {
+export type FooterLink = {
+  name: string;
+  url: string;
+};
+
+export type FooterContact = {
+  name: string;
+  url: string;
+  icon: LucideIcon;
+};
+
+export type FooterLinks = {
+  products: FooterLink[];
+  resources: FooterLink[];
+  pricing: FooterLink[];
+  contact: FooterContact[];
+};
+
+export type SocialLink = {
   name: string;
   src: string;
   href: string;
   color: string;
   size: number;
 };
-interface product {
-  name: string;
-  url: string;
-}
-export type FooterLinks = {
-  products: product[];
-};
 
-export const SocialFooter: SocialLink[] = [
-  {
-    name: "Facebook",
-    src: fbBNW,
-    href: "https://wa.me/yourphonenumber",
-    color: "#25D366",
-    size: 44,
-  },
-  {
-    name: "Instagram",
-    src: instaBNW,
-    href: "https://wa.me/yourphonenumber",
-    color: "#25D366",
-    size: 44,
-  },
-  {
-    name: "LinkedIn",
-    src: LinkBNW,
-    href: "https://wa.me/yourphonenumber",
-    color: "#25D366",
-    size: 44,
-  },
-  {
-    name: "X",
-    src: xBNW,
-    href: "https://wa.me/yourphonenumber",
-    color: "#25D366",
-    size: 44,
-  },
-];
-import { Mail, Phone, MapPin } from "lucide-react";
-
-export const footerLinks = {
+export const footerLinks: FooterLinks = {
   products: [
     { name: "Products One", url: "#" },
     { name: "Products Two", url: "#" },
@@ -548,3 +518,34 @@ export const footerLinks = {
     },
   ],
 };
+
+export const SocialFooter: SocialLink[] = [
+  {
+    name: "Facebook",
+    src: fbBNW,
+    href: "https://wa.me/yourphonenumber",
+    color: "#25D366",
+    size: 44,
+  },
+  {
+    name: "Instagram",
+    src: instaBNW,
+    href: "https://wa.me/yourphonenumber",
+    color: "#25D366",
+    size: 44,
+  },
+  {
+    name: "LinkedIn",
+    src: LinkBNW,
+    href: "https://wa.me/yourphonenumber",
+    color: "#25D366",
+    size: 44,
+  },
+  {
+    name: "X",
+    src: xBNW,
+    href: "https://wa.me/yourphonenumber",
+    color: "#25D366",
+    size: 44,
+  },
+];

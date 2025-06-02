@@ -19,14 +19,16 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
   className,
 }) => {
   return (
-    <nav className={cn("flex items-center space-x-2 text-sm", className)}>
+    <nav
+      className={cn("flex items-center space-x-2 body-semi-bold-16", className)}
+    >
       {items.map((item, index) => (
         <React.Fragment key={index}>
           {index > 0 && separator}
           {item.href ? (
             <a
               href={item.href}
-              className="text-gray-600 hover:text-gray-800 transition-colors"
+              className="text-primary hover:text-primary-dark transition-colors"
             >
               {item.label}
             </a>
