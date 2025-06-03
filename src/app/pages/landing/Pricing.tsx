@@ -68,7 +68,7 @@ const Pricing = () => {
         <RadioGroup.Root
           value={currency}
           onValueChange={(val) => setCurrency(val as any)}
-          // Check toggle button color
+          color="teal"
           className="w-full "
         >
           <Flex gap="4" justify="end" align="center">

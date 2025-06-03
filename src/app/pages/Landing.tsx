@@ -2,7 +2,12 @@ import "@radix-ui/themes/styles.css";
 import { Theme } from "@radix-ui/themes";
 import { useState, Suspense, lazy } from "react";
 
-import { Footer, Navbar, PopupModal, TrialBanner } from "@/app/components/common";
+import {
+  Footer,
+  Navbar,
+  PopupModal,
+  TrialBanner,
+} from "@/app/components/common";
 import {
   BuiltAssistant,
   GetStarted,
@@ -11,6 +16,7 @@ import {
   ScaleBusiness,
   Pricing,
   FAQ,
+  OrderManagement,
 } from "@/app/pages/landing/index";
 import { DemoDialog } from "@/app/features/auth";
 import Section from "@/app/components/layout/Section";
@@ -45,6 +51,9 @@ const Landing = () => {
     { element: <ScaleBusiness /> },
     // Built Assistant
     { element: <BuiltAssistant /> },
+    //Order Mangement
+    { element: <OrderManagement /> },
+    //Testimonials
     {
       element: (
         <Suspense fallback={<div>Loading testimonials...</div>}>
