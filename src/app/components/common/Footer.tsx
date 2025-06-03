@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { footerLinks, SocialFooter } from "@/app/utils/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { Logo } from "@/app/components/ui";
+import { Logo, StoreButtons } from "@/app/components/ui";
 import { ChevronDown } from "lucide-react";
 import play from "@/app/assets/icons/play.svg";
 import app from "@/app/assets/icons/app.svg";
@@ -22,6 +22,10 @@ const itemVariants = {
     transition: { duration: 0.5 },
   },
 };
+const storeLinks = [
+  { img: app, label: "App Store" },
+  { img: play, label: "Google Play" },
+];
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -53,22 +57,7 @@ const Footer = () => {
 
             {/* Store Buttons */}
             <div className="flex flex-col gap-2 w-48 pb-6">
-              {[
-                { img: app, label: "App Store" },
-                { img: play, label: "Google Play" },
-              ].map((store, i) => (
-                <motion.div
-                  key={i}
-                  whileHover={{ scale: 1.1 }}
-                  className="bg-black text-white px-3 py-1 rounded-lg flex items-center gap-2 h-14 cursor-pointer"
-                >
-                  <img src={store.img} alt="" />
-                  <div className="flex flex-col">
-                    <span>Available on the</span>
-                    <span className="ml-1 font-bold">{store.label}</span>
-                  </div>
-                </motion.div>
-              ))}
+              <StoreButtons stores={storeLinks} />;
             </div>
           </div>
 

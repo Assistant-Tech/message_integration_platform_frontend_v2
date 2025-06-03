@@ -3,15 +3,20 @@ import { motion } from "framer-motion";
 import { Flex } from "@radix-ui/themes";
 import { Zap, Target, ArrowRight, Circle, Check } from "lucide-react";
 
-import { Breadcrumb, Button, Input } from "@/app/components/ui";
+import { Breadcrumb, Button, Input, SmartCard } from "@/app/components/ui";
 import { cn } from "@/app/utils/cn";
 import { benefits, features } from "@/app/utils/product/crm";
-// import { GetStarted } from "@/app/pages/landing/";
 
 import crm from "@/app/assets/images/crm.webp";
 import business from "@/app/assets/images/CRM1.webp";
 import purchase from "@/app/assets/images/CRM2.webp";
-import { FAQ, Pricing } from "@/app/pages/landing/";
+import crm_video from "@/app/assets/images/crm_video.webp";
+import {
+  FAQ,
+  GetStarted,
+  Pricing,
+  SeemlessExperience,
+} from "@/app/pages/landing/";
 
 const CRM: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -156,7 +161,6 @@ const CRM: React.FC = () => {
               ))}
             </div>
           </motion.div>
-
           {/* Right Visual */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
@@ -208,7 +212,7 @@ const CRM: React.FC = () => {
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
-              className="absolute -top-2 sm:-top-4 md:-top-6 -left-2 sm:-left-4 md:-left-6 w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 bg-primary-light rounded-xl flex items-center justify-center shadow-lg"
+              className="absolute -top-2 sm:-top-4 md:-top-6 -left-2 sm:-left-4 md:-left-6 w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 bg-primary-light rounded-xl flex items-center justify-center"
             >
               <Zap className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 text-primary" />
             </motion.div>
@@ -224,7 +228,7 @@ const CRM: React.FC = () => {
                 ease: "easeInOut",
                 delay: 1,
               }}
-              className="absolute -bottom-2 sm:-bottom-4 md:-bottom-6 -right-2 sm:-right-4 md:-right-6 w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-information-light rounded-xl flex items-center justify-center shadow-lg"
+              className="absolute -bottom-2 sm:-bottom-4 md:-bottom-6 -right-2 sm:-right-4 md:-right-6 w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-information-light rounded-xl flex items-center justify-center"
             >
               <Target className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-information-dark" />
             </motion.div>
@@ -234,7 +238,7 @@ const CRM: React.FC = () => {
         {/* SCALE YOUR BUSINESS SECTION */}
         <div className="flex flex-col lg:flex-row items-center gap-8 sm:gap-12 lg:gap-16 py-12 sm:py-16 md:py-20 lg:py-24">
           {/* Image Section */}
-          <motion.div className="relative w-full lg:w-1/2 max-w-2xl order-2 lg:order-1">
+          <motion.div className="relative w-full lg:w-1/2 max-w-7xl order-2 lg:order-1">
             {/* Background decoration */}
             <div className="absolute -left-4 sm:-left-8 md:-left-16 bottom-0 -z-10">
               <Circle
@@ -244,7 +248,7 @@ const CRM: React.FC = () => {
             </div>
 
             {/* Main image */}
-            <motion.figure className="rounded-2xl overflow-hidden shadow-xl">
+            <motion.figure className="rounded-2xl overflow-hidden pe-20">
               <img
                 src={business}
                 alt="Online business dashboard"
@@ -253,7 +257,7 @@ const CRM: React.FC = () => {
             </motion.figure>
 
             {/* Overlapping image */}
-            <motion.figure className="absolute -bottom-4 sm:-bottom-8 md:-bottom-12 right-2 sm:right-6 md:right-10 w-32 sm:w-48 md:w-64 lg:w-72 rounded-xl sm:rounded-2xl overflow-hidden shadow-xl border-2 sm:border-4 border-white">
+            <motion.figure className="absolute -bottom-4 sm:-bottom-8 md:-bottom-12 right-2 sm:right-6 md:right-10 w-32 sm:w-48 md:w-64 lg:w-72 rounded-xl sm:rounded-2xl overflow-hidden border-2 sm:border-4 border-white">
               <img
                 src={purchase}
                 alt="Purchase analytics"
@@ -332,11 +336,12 @@ const CRM: React.FC = () => {
           </div>
 
           {/* Video Section */}
-          <div className="relative w-full max-w-6xl mx-auto aspect-video rounded-2xl sm:rounded-3xl md:rounded-4xl overflow-hidden shadow-2xl">
+          <div className="relative w-full max-w-6xl mx-auto aspect-video rounded-2xl sm:rounded-3xl md:rounded-4xl overflow-hidden">
             <video
               ref={videoRef}
               className="w-full h-full object-cover"
               src="/videos/crm-intro.mp4"
+              poster={crm_video}
               controls={false}
             />
             {!isPlaying && (
@@ -359,6 +364,44 @@ const CRM: React.FC = () => {
             )}
           </div>
         </div>
+
+        {/* GET STARTED */}
+        <div className="relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] w-screen">
+          <GetStarted />
+        </div>
+
+        {/* SMART SOLUTION BUSINES */}
+        <Flex direction={"column"} justify={"center"} className="py-24">
+          {/* Typo Section */}
+          <motion.article>
+            <motion.h1 className="h2-bold-40 text-base-black text-center pb-4">
+              Smart Solutions for Businesses of All Sizes
+            </motion.h1>
+            <motion.p className="body-regular-16 text-grey text-center pb-6">
+              Our AI-enabled CRM software focuses on providing smart solutions
+              like sales, marketing and customer support, for businesses of all
+              sizes and supports a sustainable business model.
+            </motion.p>
+          </motion.article>
+          {/* Grided Cards Section */}
+          <motion.div className="w-full mx-auto grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 justify-items-center pt-6">
+            <SmartCard
+              title="Connecting All Your Teams"
+              description="Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, sscipit porttitor velit. Vestibulum tempus imperdiet sem acporta."
+            />
+            <SmartCard
+              title="Connecting All Your Teams"
+              description="Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, sscipit porttitor velit. Vestibulum tempus imperdiet sem acporta."
+            />
+            <SmartCard
+              title="Connecting All Your Teams"
+              description="Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, sscipit porttitor velit. Vestibulum tempus imperdiet sem acporta."
+            />
+          </motion.div>
+        </Flex>
+
+        {/* SEEMLESS EXPERIENCE */}
+        <SeemlessExperience />
 
         {/* PRICING SECTION */}
         <Pricing />
