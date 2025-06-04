@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Flex } from "@radix-ui/themes";
 import { Zap, Target, ArrowRight, Circle, Check } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import { Breadcrumb, Button, Input, SmartCard } from "@/app/components/ui";
 import { cn } from "@/app/utils/cn";
@@ -17,6 +18,7 @@ import {
   Pricing,
   SeemlessExperience,
 } from "@/app/pages/landing/";
+import { APP_ROUTES } from "@/app/constants/routes";
 
 const CRM: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -318,18 +320,20 @@ const CRM: React.FC = () => {
         {/* LEARN MORE ABOUT CRM SECTION */}
         <div className="py-10 sm:py-16 md:py-20 lg:py-24">
           {/* Heading & Text */}
-          <div className="flex flex-col lg:flex-row lg:justify-between gap-6 sm:gap-8 md:gap-12 lg:gap-16 mb-8 sm:mb-12 md:mb-16">
+          <div className="flex flex-col lg:flex-row lg:justify-between items-center gap-6 sm:gap-8 md:gap-12 lg:gap-16 mb-8 sm:mb-12 md:mb-16">
             <motion.h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-base-black lg:max-w-lg leading-tight">
               Learn More About Our CRM Software
             </motion.h2>
-            <motion.div className="lg:max-w-2xl">
+            <motion.div className="lg:max-w-5xl ">
               <p className="text-sm sm:text-base md:text-lg text-grey-medium leading-relaxed">
                 Curious about how our software works? Watch this introductory
                 video and learn how it's the best solution for your business.
                 Explore more videos about our services{" "}
-                <span className="text-primary underline cursor-pointer hover:text-primary-dark">
-                  here
-                </span>
+                <Link to={APP_ROUTES.PUBLIC.VIDEOS}>
+                  <span className="text-primary underline cursor-pointer hover:text-primary-dark">
+                    here
+                  </span>
+                </Link>
                 .
               </p>
             </motion.div>

@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Package,
-  Truck,
-  MapPin,
-} from "lucide-react";
+import { Package, Truck, MapPin } from "lucide-react";
 import { Badge, Button } from "@/app/components/ui";
 
 // Types
@@ -63,13 +57,8 @@ const SLIDE_IMAGES: SlideImage[] = [
   },
 ];
 
-const AUTO_SLIDE_INTERVAL = 4000;
-
 // Hooks
-const useAutoSlide = (
-  totalSlides: number,
-  interval: number = AUTO_SLIDE_INTERVAL,
-) => {
+const useAutoSlide = (totalSlides: number, interval: number = 4000) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -104,7 +93,6 @@ const useAutoSlide = (
   };
 };
 
-// Components
 const ProcessStepIndicator: React.FC<{
   step: ProcessStep;
   isActive: boolean;
@@ -112,11 +100,11 @@ const ProcessStepIndicator: React.FC<{
   const getStepStyles = () => {
     switch (step.status) {
       case "completed":
-        return "bg-emerald-500 text-white border-emerald-500";
+        return "bg-primary text-white border-primary-dark";
       case "current":
-        return "bg-blue-500 text-white border-blue-500";
+        return "bg-information text-white border-information-dark";
       default:
-        return "bg-gray-200 text-gray-400 border-gray-300";
+        return "bg-danger-light text-danger border-danger";
     }
   };
 
@@ -137,7 +125,7 @@ const ProcessStepIndicator: React.FC<{
       <span
         className={`
         text-sm font-medium transition-colors duration-300
-        ${isActive ? "text-blue-600" : "text-gray-600"}
+        ${isActive ? "text-information" : "text-grey-light"}
       `}
       >
         {step.title}
@@ -162,7 +150,7 @@ const ProcessSteps: React.FC = () => {
               <div className="flex-1 mx-4">
                 <div className="h-0.5 bg-gray-300 relative overflow-hidden">
                   <motion.div
-                    className="h-full bg-emerald-500"
+                    className="h-full bg-primary"
                     initial={{ width: "0%" }}
                     animate={{
                       width: currentSlide > index ? "100%" : "0%",
@@ -180,14 +168,9 @@ const ProcessSteps: React.FC = () => {
 };
 
 const ImageSlider: React.FC = () => {
-  const {
-    currentSlide,
-    goToSlide,
-    nextSlide,
-    prevSlide,
-    pauseAutoSlide,
-    resumeAutoSlide,
-  } = useAutoSlide(SLIDE_IMAGES.length);
+  const { currentSlide, pauseAutoSlide, resumeAutoSlide } = useAutoSlide(
+    SLIDE_IMAGES.length,
+  );
 
   return (
     <div
@@ -195,7 +178,7 @@ const ImageSlider: React.FC = () => {
       onMouseEnter={pauseAutoSlide}
       onMouseLeave={resumeAutoSlide}
     >
-      <div className="relative h-80 overflow-hidden rounded-2xl bg-gray-100">
+      <div className="relative h-80 overflow-hidden rounded-2xl bg-base-white">
         <AnimatePresence mode="wait">
           <motion.img
             key={currentSlide}
@@ -208,39 +191,6 @@ const ImageSlider: React.FC = () => {
             transition={{ duration: 0.5, ease: "easeInOut" }}
           />
         </AnimatePresence>
-
-        {/* Navigation Arrows */}
-        <button
-          onClick={prevSlide}
-          className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/20 hover:bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all duration-200"
-          aria-label="Previous image"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
-
-        <button
-          onClick={nextSlide}
-          className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/20 hover:bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all duration-200"
-          aria-label="Next image"
-        >
-          <ChevronRight className="w-5 h-5" />
-        </button>
-
-        {/* Slide Indicators */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
-          {SLIDE_IMAGES.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => goToSlide(index)}
-              className={`w-2 h-2 rounded-full transition-all duration-200 ${
-                index === currentSlide
-                  ? "bg-white scale-125"
-                  : "bg-white/50 hover:bg-white/75"
-              }`}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
-        </div>
       </div>
     </div>
   );
@@ -277,7 +227,6 @@ const CTASection: React.FC = () => {
   );
 };
 
-// Main Component
 const OrderManagement: React.FC = () => {
   return (
     <div className="bg-whitepx-4  pt-20">

@@ -17,6 +17,8 @@ const Pricing = () => {
     isError,
   } = usePlans(duration, currency);
 
+  console.log("🚀 ~ Pricing ~ data:", fetchedPlans);
+
   // console.log("🚀 ~ Pricing ~ data:", fetchedPlans);
 
   const transformPlan = (plan: Plan) => ({

@@ -59,10 +59,6 @@ const PopupModal = () => {
                 Subscribe to Assistant Tech’s monthly newsletter to stay updated
                 on new features and services and get a chance to unlock
                 exclusive offers as a gift
-                {/* Here will be link */}
-                <Link to={"/"}  className="block body-italic-bold-16 text-center underline text-danger">
-                  Terms & condition applied
-                </Link>
               </div>
               <div className="relative py-2">
                 <input
@@ -73,15 +69,29 @@ const PopupModal = () => {
               </div>
 
               <div className="flex justify-center gap-2 pb-4">
-                <Dialog.Close asChild>
-                  <Button
-                    label="Subscribe"
-                    variant="primary"
-                    className="w-full"
-                    name="close"
-                  />
-                </Dialog.Close>
+                <Button
+                  label="Subscribe"
+                  variant="primary"
+                  className="w-full"
+                  name="close"
+                />
               </div>
+              {/* Here will be link */}
+              <Link
+                to={"/"}
+                className="block body-regualr-16 text-center text-grey-medium"
+              >
+                By providing your contact information, you agree to{" "}
+                <span className="text-primary underline">
+                  {" "}
+                  Terms of Service{" "}
+                </span>{" "}
+                and{" "}
+                <span className="text-primary underline">
+                  Privacy Policy
+                </span>{" "}
+                of the company.
+              </Link>
             </div>
           </motion.div>
         </Dialog.Content>
