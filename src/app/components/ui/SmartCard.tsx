@@ -1,5 +1,10 @@
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { LucideIcon } from "lucide-react";
+
 import { cn } from "@/app/utils/cn";
+import Button from "./Button";
 
 interface Action {
   label: string;
@@ -9,7 +14,8 @@ interface Action {
 interface SmartCardProps {
   title: string;
   description: string;
-  icon?: React.ElementType;
+  redirectTo?: string;
+  icon?: LucideIcon;
   actions?: Action[];
   className?: string;
 }
@@ -17,18 +23,23 @@ interface SmartCardProps {
 const SmartCard: React.FC<SmartCardProps> = ({
   title,
   description,
+  icon,
+  redirectTo,
   className = "",
 }) => {
+  const navigate = useNavigate();
+
+  const handleRedirect = () => {
+    if (redirectTo) {
+      navigate(redirectTo);
+      window.scrollTo(0, 0);
+    }
+  };
+
   const cardVariants = {
     initial: { scale: 1 },
-    hover: {
-      scale: 1.02,
-      transition: { duration: 0.2 },
-    },
-    tap: {
-      scale: 0.98,
-      transition: { duration: 0.1 },
-    },
+    hover: { scale: 1.02, transition: { duration: 0.2 } },
+    tap: { scale: 0.98, transition: { duration: 0.1 } },
   };
 
   return (
@@ -38,20 +49,29 @@ const SmartCard: React.FC<SmartCardProps> = ({
       whileHover="hover"
       whileTap="tap"
       className={cn(
-        "bg-white rounded-xl p-4 border border-gray-200 shadow-sm transition-all cursor-pointer hover:shadow-md px-8 py-6",
+        "bg-white rounded-xl p-4 border border-grey-light shadow-sm transition-all cursor-pointer hover:shadow-md px-8 py-6 h-full flex flex-col justify-between",
         className,
       )}
     >
-      {/* Icon/Image */}
-      <div className="w-12 h-12 bg-gray-200 rounded-md mb-3" />
+      <div>
+        {icon && (
+          <div className="w-12 h-12 bg-primary-light rounded-md mb-3 flex items-center justify-center text-gray-700">
+            {React.createElement(icon, { size: 24, color: "teal" })}
+          </div>
+        )}
+        <h3 className="h5-bold-16 text-base-black mb-2">{title}</h3>
+        <p className="body-regular-16 text-grey-medium line-clamp-3">
+          {description}
+        </p>
+      </div>
 
-      {/* Title */}
-      <h3 className="text-md font-semibold text-gray-900 mb-2">{title}</h3>
-
-      {/* Description */}
-      <p className="text-sm text-gray-600 leading-relaxed line-clamp-3">
-        {description}
-      </p>
+      <div className="pt-2 mt-4">
+        <Button
+          label="Learn More"
+          onClick={handleRedirect}
+          variant="outlined"
+        />
+      </div>
     </motion.div>
   );
 };

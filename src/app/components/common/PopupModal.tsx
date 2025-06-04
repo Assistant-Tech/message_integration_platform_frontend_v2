@@ -51,16 +51,19 @@ const PopupModal = () => {
             </figure>
             <div className="p-4 sm:p-6 md:p-8">
               <div className="flex items-center justify-between">
-                <h3 className="h3-bold-32 text-center p-2">
+                <Dialog.Title className="h3-bold-32 text-center p-2 text-grey">
                   Unlock Exclusive Offers and Stay Updated
-                </h3>
+                </Dialog.Title>
               </div>
               <div className="text-grey body-medium-16 mb-2 text-center">
                 Subscribe to Assistant Tech’s monthly newsletter to stay updated
                 on new features and services and get a chance to unlock
                 exclusive offers as a gift
                 {/* Here will be link */}
-                <Link to={"/"}  className="block body-italic-bold-16 text-center underline text-danger">
+                <Link
+                  to={"/"}
+                  className="block body-italic-bold-16 text-center underline text-danger"
+                >
                   Terms & condition applied
                 </Link>
               </div>

@@ -1,7 +1,17 @@
 import { Routes, Route } from "react-router-dom";
-import { Landing, Unauthorized, NotFound, CRM } from "@/app/pages";
+import {
+  Landing,
+  Unauthorized,
+  NotFound,
+  CRM,
+  Support,
+  Onboarding,
+  Policy,
+  TermsCondition,
+  Updates,
+} from "@/app/pages";
 import { APP_ROUTES } from "@/app/constants/routes";
-import { ProductLayout } from "@/app/components/layout";
+import { ProductLayout, ResourceLayout } from "@/app/components/layout";
 
 const PublicRoutes = () => {
   return (
@@ -13,11 +23,27 @@ const PublicRoutes = () => {
         path={APP_ROUTES.PUBLIC.PRODUCTS_OVERVIEW}
         element={<ProductLayout />}
       >
-        <Route path="crm" element={<CRM />} />
+        <Route path={APP_ROUTES.PUBLIC.CRM} element={<CRM />} />
+      </Route>
+
+      {/* Resources Routes */}
+      <Route
+        path={APP_ROUTES.PUBLIC.RESOURCES_OVERVIEW}
+        element={<ResourceLayout />}
+      >
+        <Route path={APP_ROUTES.PUBLIC.SUPPORT} element={<Support />} />
+        {/* Support/Routes */}
+        <Route path={APP_ROUTES.PUBLIC.ONBOARDING} element={<Onboarding />} />
+        <Route
+          path={APP_ROUTES.PUBLIC.TERMSCONDITION}
+          element={<TermsCondition />}
+        />
+        <Route path={APP_ROUTES.PUBLIC.POLICY} element={<Policy />} />
+        <Route path={APP_ROUTES.PUBLIC.UPDATES} element={<Updates />} />
       </Route>
 
       {/* 401 - UnAuth Page  */}
-      <Route path="/unauthorized" element={<Unauthorized />} />
+      <Route path={APP_ROUTES.PUBLIC.UNAUTHORIZED} element={<Unauthorized />} />
 
       {/* 404 - Not Found Page */}
       <Route path="*" element={<NotFound />} />

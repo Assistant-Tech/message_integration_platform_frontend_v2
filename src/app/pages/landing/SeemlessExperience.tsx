@@ -81,7 +81,7 @@ const SeemlessExperience: React.FC = () => {
   ];
 
   return (
-    <div className="max-h-screen bg-gradient-to-br via-primary-light to-primary flex items-center justify-center p-24 rounded-2xl mb-36">
+    <div className="bg-gradient-to-br via-primary-light to-primary flex items-center justify-center p-4 md:p-24 rounded-2xl mb-36">
       <div className=" w-full grid lg:grid-cols-2 gap-24 items-center">
         {/* Left Content */}
         <motion.div

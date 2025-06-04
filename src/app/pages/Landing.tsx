@@ -18,7 +18,6 @@ import {
   FAQ,
   OrderManagement,
 } from "@/app/pages/landing/index";
-import { DemoDialog } from "@/app/features/auth";
 import Section from "@/app/components/layout/Section";
 
 // Lazy-load large components
@@ -31,8 +30,6 @@ const Landing = () => {
   const sections = [
     // Popup Modal
     { element: <PopupModal /> },
-    // Demo dialog
-    { element: <DemoDialog /> },
     // Hero Section
     { element: <HeroSection /> },
     // Main Feature

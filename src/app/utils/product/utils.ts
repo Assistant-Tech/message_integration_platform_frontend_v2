@@ -12,7 +12,6 @@ import {
   ShieldUser,
 } from "lucide-react";
 
-// For breadcrumbs (for links and other])
 export interface crm {
   label: string;
   href?: string;
@@ -28,7 +27,6 @@ export interface FeatureProps {
   title: string;
   description: string;
 }
-
 // For benefits
 export interface BenefitProps {
   icon: LucideIcon;
@@ -65,5 +63,33 @@ export const benefits: BenefitProps[] = [
     icon: Building2,
     title: "All Industries",
     color: "bg-primary",
+  },
+];
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ CARD data utils
+─────────────────────────────────────────────────────────────────────────────
+*/
+import { Users, Share2, Workflow } from "lucide-react";
+
+export const smartCardData = [
+  {
+    title: "Better Customer Support",
+    description:
+      "Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, sscipit porttitor velit. Vestibulum tempus imperdiet sem acporta.",
+    icon: Users,
+  },
+  {
+    title: "Connecting All Your Teams",
+    description:
+      "Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, sscipit porttitor velit. Vestibulum tempus imperdiet sem acporta.",
+    icon: Share2,
+  },
+  {
+    title: "Smart Sales Workflow",
+    description:
+      "Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, sscipit porttitor velit. Vestibulum tempus imperdiet sem acporta.",
+    icon: Workflow,
   },
 ];

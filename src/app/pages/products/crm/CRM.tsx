@@ -5,7 +5,7 @@ import { Zap, Target, ArrowRight, Circle, Check } from "lucide-react";
 
 import { Breadcrumb, Button, Input, SmartCard } from "@/app/components/ui";
 import { cn } from "@/app/utils/cn";
-import { benefits, features } from "@/app/utils/product/crm";
+import { benefits, features, smartCardData } from "@/app/utils/product/utils";
 
 import crm from "@/app/assets/images/crm.webp";
 import business from "@/app/assets/images/CRM1.webp";
@@ -17,10 +17,10 @@ import {
   Pricing,
   SeemlessExperience,
 } from "@/app/pages/landing/";
+import { APP_ROUTES } from "@/app/constants/routes";
 
 const CRM: React.FC = () => {
   const [email, setEmail] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
   // Video settings and play button
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -34,15 +34,13 @@ const CRM: React.FC = () => {
   };
 
   const CrmBreadCrumb = [
-    { label: "Products", href: "/products" },
+    { label: "Products", href: APP_ROUTES.PUBLIC.PRODUCTS_OVERVIEW },
     { label: "CRM" },
   ];
 
   const handleGetStarted = async () => {
-    setIsLoading(true);
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsLoading(false);
     console.log("Starting trial with email:", email);
   };
 
@@ -103,16 +101,10 @@ const CRM: React.FC = () => {
                   />
                 </div>
                 <Button
-                  label={isLoading ? "Loading..." : "Get Started"}
+                  label={"Get Started"}
                   variant="primary"
                   onClick={handleGetStarted}
-                  disabled={isLoading || !email}
-                  IconRight={
-                    !isLoading ? (
-                      <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
-                    ) : undefined
-                  }
-                  className="w-full sm:w-auto sm:px-8 md:px-10 whitespace-nowrap h-12 sm:h-14 text-base font-medium"
+                  IconRight={<ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />}
                 />
               </div>
 
@@ -236,7 +228,7 @@ const CRM: React.FC = () => {
         </div>
 
         {/* SCALE YOUR BUSINESS SECTION */}
-        <div className="flex flex-col lg:flex-row items-center gap-8 sm:gap-12 lg:gap-16 py-12 sm:py-16 md:py-20 lg:py-24">
+        <div className="flex flex-col lg:flex-row items-center gap-8 sm:gap-12 lg:gap-16 py-2 sm:py-16 md:py-20 lg:py-24">
           {/* Image Section */}
           <motion.div className="relative w-full lg:w-1/2 max-w-7xl order-2 lg:order-1">
             {/* Background decoration */}
@@ -322,7 +314,7 @@ const CRM: React.FC = () => {
             <motion.h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-base-black lg:max-w-lg leading-tight">
               Learn More About Our CRM Software
             </motion.h2>
-            <motion.div className="lg:max-w-2xl">
+            <motion.div className="lg:max-w-5xl">
               <p className="text-sm sm:text-base md:text-lg text-grey-medium leading-relaxed">
                 Curious about how our software works? Watch this introductory
                 video and learn how it's the best solution for your business.
@@ -371,7 +363,7 @@ const CRM: React.FC = () => {
         </div>
 
         {/* SMART SOLUTION BUSINES */}
-        <Flex direction={"column"} justify={"center"} className="py-24">
+        <Flex direction={"column"} justify={"center"} className="py-8 md:py-24">
           {/* Typo Section */}
           <motion.article>
             <motion.h1 className="h2-bold-40 text-base-black text-center pb-4">
@@ -385,18 +377,9 @@ const CRM: React.FC = () => {
           </motion.article>
           {/* Grided Cards Section */}
           <motion.div className="w-full mx-auto grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 justify-items-center pt-6">
-            <SmartCard
-              title="Connecting All Your Teams"
-              description="Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, sscipit porttitor velit. Vestibulum tempus imperdiet sem acporta."
-            />
-            <SmartCard
-              title="Connecting All Your Teams"
-              description="Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, sscipit porttitor velit. Vestibulum tempus imperdiet sem acporta."
-            />
-            <SmartCard
-              title="Connecting All Your Teams"
-              description="Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, sscipit porttitor velit. Vestibulum tempus imperdiet sem acporta."
-            />
+            {smartCardData.map((card, index) => (
+              <SmartCard key={index} {...card} />
+            ))}
           </motion.div>
         </Flex>
 

@@ -48,7 +48,7 @@ export const DemoDialog = () => {
               />
             </Dialog.Overlay>
 
-            <Dialog.Content asChild>
+            <Dialog.Content asChild aria-describedby={undefined}>
               <motion.div
                 initial={{ y: "-10%", opacity: 0 }}
                 animate={{ y: "0%", opacity: 1 }}

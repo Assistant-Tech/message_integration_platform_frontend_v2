@@ -10,11 +10,20 @@ export const APP_ROUTES = {
     PRICING: "/pricing",
     PRODUCTS: "/products",
 
-    // For the product
+    // For the ["/product"]
     PRODUCTS_OVERVIEW: "/products",
     CRM: "/products/crm",
     ERP: "/products/erp",
     HRMS: "/products/hrms",
+
+    // For the ["/resources"]
+    RESOURCES_OVERVIEW: "/resources",
+    SUPPORT: "/resources/support",
+    // ["resources/support"]
+    ONBOARDING: "/resources/support/onboarding",
+    TERMSCONDITION: "/resources/support/terms&condition",
+    POLICY: "/resources/support/policy",
+    UPDATES: "/resources/support/updates",
   },
 
   // Admin routes
