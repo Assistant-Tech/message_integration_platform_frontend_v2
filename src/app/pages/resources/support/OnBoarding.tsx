@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 
 import { Breadcrumb } from "@/app/components/ui";
 import { APP_ROUTES } from "@/app/constants/routes";
+import { NewsLetter } from "@/app/components/common";
 
 const OnBoarding = () => {
   const SupportCrumb = [
@@ -21,6 +22,7 @@ const OnBoarding = () => {
         <Breadcrumb items={SupportCrumb} />
       </motion.div>
       OnBoarding
+      <NewsLetter />
     </div>
   );
 };

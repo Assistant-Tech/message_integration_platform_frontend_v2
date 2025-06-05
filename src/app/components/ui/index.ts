@@ -11,3 +11,4 @@ export { default as DynamicToggle } from "./DynamicToggle";
 export { default as Breadcrumb } from "./Breadcrumb";
 export { default as SmartCard } from "./SmartCard";
 export { default as StoreButtons } from "./StoreButtons";
+export { default as Agreement } from "./Agreement";

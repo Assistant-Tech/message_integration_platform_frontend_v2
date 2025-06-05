@@ -6,11 +6,6 @@ import { Zap, Target, ArrowRight, Circle, Check } from "lucide-react";
 import { Breadcrumb, Button, Input, SmartCard } from "@/app/components/ui";
 import { cn } from "@/app/utils/cn";
 import { benefits, features, smartCardData } from "@/app/utils/product/utils";
-
-import crm from "@/app/assets/images/crm.webp";
-import business from "@/app/assets/images/CRM1.webp";
-import purchase from "@/app/assets/images/CRM2.webp";
-import crm_video from "@/app/assets/images/crm_video.webp";
 import {
   FAQ,
   GetStarted,
@@ -18,6 +13,12 @@ import {
   SeemlessExperience,
 } from "@/app/pages/landing/";
 import { APP_ROUTES } from "@/app/constants/routes";
+
+// Images
+import crm from "@/app/assets/images/crm.webp";
+import business from "@/app/assets/images/CRM1.webp";
+import purchase from "@/app/assets/images/CRM2.webp";
+import crm_video from "@/app/assets/images/crm_video.webp";
 
 const CRM: React.FC = () => {
   const [email, setEmail] = useState("");

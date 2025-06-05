@@ -1,7 +1,7 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDemoDialogStore } from "@/app/store/useDemoDialogStore";
-import { Input, Button } from "@/app/components/ui";
+import { Input, Button, Agreement } from "@/app/components/ui";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -129,16 +129,8 @@ export const DemoDialog = () => {
                       </div>
 
                       <div className="w-full mt-1">
-                        <h1 className="label-regular-14 text-grey-medium text-center sm:text-left">
-                          By submitting this form, I agree to the company's{" "}
-                          <span className="label-bold-14 text-grey">
-                            Terms of Service
-                          </span>{" "}
-                          and{" "}
-                          <span className="label-bold-14 text-grey">
-                            Privacy Policy.
-                          </span>{" "}
-                        </h1>
+                        {/* Agreement Addition */}
+                        <Agreement />
                       </div>
                     </form>
                   </div>

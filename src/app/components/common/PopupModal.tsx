@@ -2,7 +2,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { useState, useEffect } from "react";
-import { Button } from "@/app/components/ui/";
+import { Agreement, Button } from "@/app/components/ui/";
 import { cn } from "@/app/utils/cn";
 import newsletter from "@/app/assets/images/newsletter.webp";
 import { Link } from "react-router-dom";
@@ -59,13 +59,6 @@ const PopupModal = () => {
                 Subscribe to Assistant Tech’s monthly newsletter to stay updated
                 on new features and services and get a chance to unlock
                 exclusive offers as a gift
-                {/* Here will be link */}
-                <Link
-                  to={"/"}
-                  className="block body-italic-bold-16 text-center underline text-danger"
-                >
-                  Terms & condition applied
-                </Link>
               </div>
               <div className="relative py-2">
                 <input
@@ -85,6 +78,8 @@ const PopupModal = () => {
                   />
                 </Dialog.Close>
               </div>
+              {/* Agreement Addition */}
+              <Agreement />
             </div>
           </motion.div>
         </Dialog.Content>

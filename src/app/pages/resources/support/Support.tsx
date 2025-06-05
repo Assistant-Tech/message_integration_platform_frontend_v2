@@ -1,10 +1,13 @@
 import { motion } from "framer-motion";
+import { Flex } from "@radix-ui/themes";
+import { Headset, Mail, MapPin, MapPinHouse, PhoneCall } from "lucide-react";
+
 import { RegisterForm } from "@/app/pages/resources/components";
-import support from "@/app/assets/images/support.webp";
 import { Breadcrumb, SmartCard } from "@/app/components/ui";
 import { APP_ROUTES } from "@/app/constants/routes";
 import { smartCards } from "@/app/utils/resource/utils";
-import { FAQ, Pricing, SeemlessExperience } from "@/app/pages/landing/";
+import { FAQ, GetStarted } from "@/app/pages/landing/";
+import support from "@/app/assets/images/support.webp";
 
 const Support = () => {
   const SupportCrumb = [
@@ -57,7 +60,7 @@ const Support = () => {
       </motion.div>
 
       {/* How can I help you today? */}
-      <motion.div className="pt-6 md:pt-20">
+      <motion.div className="pt-6 md:py-20">
         <h3 className="h3-bold-32 text-grey text-start">
           How can we help you today?
         </h3>
@@ -69,13 +72,63 @@ const Support = () => {
         </motion.div>
       </motion.div>
 
-      {/* Seemless Experience */}
-      <div className="pt-20">
-        <SeemlessExperience />
+      {/* GET STARTED */}
+      <div className="relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] w-screen">
+        <GetStarted />
       </div>
 
-      {/* Pricing Section */}
-      <Pricing />
+      {/* Contact Us */}
+      <motion.div className="pt-20">
+        <h1 className="h3-bold-32 text-grey text-start mb-8">Contact Us</h1>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Card 1 */}
+          <Flex
+            direction="column"
+            align="start"
+            className="bg-base-white hover:bg-grey-light p-6 rounded-lg"
+          >
+            <figure className="p-2 bg-primary-light rounded-lg">
+              <Headset size="36" color="teal" />
+            </figure>
+            <h5 className="h5-bold-16 text-base-black text-start pt-3">
+              Customer Service
+            </h5>
+            <div className="flex justify-between items-center pt-2 w-full flex-wrap gap-y-2">
+              <div className="flex text-grey-medium gap-2">
+                <Mail size="24" />
+                <h5 className="h5-regular-underline-16">assistant@gmail.com</h5>
+              </div>
+              <div className="flex text-grey-medium gap-2">
+                <PhoneCall size="20" />
+                <h5 className="h5-regular-underline-16">+977-9810000000</h5>
+              </div>
+            </div>
+          </Flex>
+
+          {/* Card 2 */}
+          <Flex
+            direction="column"
+            align="start"
+            className="bg-base-white hover:bg-grey-light p-6 rounded-lg"
+          >
+            <figure className="p-2 bg-primary-light rounded-lg">
+              <MapPin size="36" color="teal" />
+            </figure>
+            <h5 className="h5-bold-16 text-base-black text-start pt-3">
+              Visit Us
+            </h5>
+            <div className="flex justify-between items-center pt-2 w-full flex-wrap gap-y-2">
+              <div className="flex text-grey-medium gap-2">
+                <MapPinHouse size="24" />
+                <h5 className="h5-regular-underline-16">
+                  123 Main Street, Anytown
+                </h5>
+              </div>
+            </div>
+          </Flex>
+        </div>
+      </motion.div>
 
       {/* FAQ's Section  */}
       <FAQ />
