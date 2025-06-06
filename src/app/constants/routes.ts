@@ -21,6 +21,7 @@ export const APP_ROUTES = {
     SUPPORT: "/resources/support",
     // ["resources/support"]
     ONBOARDING: "/resources/support/onboarding",
+    SUBSCRIPTIONS: "/resources/subscription",
     TERMSCONDITION: "/resources/support/terms&condition",
     POLICY: "/resources/support/policy",
     UPDATES: "/resources/support/updates",

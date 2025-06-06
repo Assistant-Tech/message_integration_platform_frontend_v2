@@ -32,7 +32,7 @@ const PublicRoutes = () => {
         element={<ResourceLayout />}
       >
         <Route path={APP_ROUTES.PUBLIC.SUPPORT} element={<Support />} />
-        {/* Support/Routes */}
+        {/* Resources/Support/Routes */}
         <Route path={APP_ROUTES.PUBLIC.ONBOARDING} element={<Onboarding />} />
         <Route
           path={APP_ROUTES.PUBLIC.TERMSCONDITION}

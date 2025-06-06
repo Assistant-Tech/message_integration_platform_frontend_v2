@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
 
 import { cn } from "@/app/utils/cn";
-import Button from "./Button";
 
 interface Action {
   label: string;
@@ -49,7 +48,7 @@ const SmartCard: React.FC<SmartCardProps> = ({
       whileHover="hover"
       whileTap="tap"
       className={cn(
-        "bg-white rounded-xl p-4 border border-grey-light shadow-sm transition-all cursor-pointer hover:shadow-md px-8 py-6 h-full flex flex-col justify-between",
+        "bg-white rounded-xl p-4 border border-grey-light transition-all cursor-pointer hover:shadow-md px-8 py-6 h-full flex flex-col justify-between",
         className,
       )}
     >
@@ -65,12 +64,13 @@ const SmartCard: React.FC<SmartCardProps> = ({
         </p>
       </div>
 
-      <div className="pt-2 mt-4">
-        <Button
-          label="Learn More"
+      <div className="pt-2">
+        <span
           onClick={handleRedirect}
-          variant="outlined"
-        />
+          className="button-semi-bold-16 text-primary underline "
+        >
+          Learn more
+        </span>
       </div>
     </motion.div>
   );

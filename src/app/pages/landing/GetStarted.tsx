@@ -7,7 +7,7 @@ import { Circle } from "lucide-react";
 
 const GetStarted = () => {
   return (
-    <Box className="relative w-full h-auto md:h-96 overflow-hidden bg-primary-dark flex items-center justify-center">
+    <Box className="relative w-full h-auto md:h-96 overflow-hidden bg-primary-dark flex items-center justify-center scrollbar-hidden">
       {/* Abstract background shapes */}
       <div className="absolute bottom-0 -left-70">
         <motion.img
