@@ -1,9 +1,9 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
 
 import { cn } from "@/app/utils/cn";
+import { useRedirect } from "@/app/hooks/ui/useRedirect";
 
 interface Action {
   label: string;
@@ -26,14 +26,7 @@ const SmartCard: React.FC<SmartCardProps> = ({
   redirectTo,
   className = "",
 }) => {
-  const navigate = useNavigate();
-
-  const handleRedirect = () => {
-    if (redirectTo) {
-      navigate(redirectTo);
-      window.scrollTo(0, 0);
-    }
-  };
+  const redirect = useRedirect();
 
   const cardVariants = {
     initial: { scale: 1 },
@@ -66,8 +59,8 @@ const SmartCard: React.FC<SmartCardProps> = ({
 
       <div className="pt-2">
         <span
-          onClick={handleRedirect}
-          className="button-semi-bold-16 text-primary underline "
+          onClick={() => redirect(redirectTo)}
+          className="button-semi-bold-16 text-primary underline"
         >
           Learn more
         </span>

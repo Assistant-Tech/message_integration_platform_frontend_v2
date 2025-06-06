@@ -1,9 +1,10 @@
 import { motion } from "framer-motion";
+import { toast } from "sonner";
+import { useState } from "react";
 
 import { APP_ROUTES } from "@/app/constants/routes";
-import { Agreement, Breadcrumb } from "@/app/components/ui";
+import { Agreement, Breadcrumb, Button } from "@/app/components/ui";
 import { CheckCircle, Clock, MessageSquare, Zap } from "lucide-react";
-import { useState } from "react";
 
 const Updates = () => {
   const SupportCrumb = [
@@ -12,15 +13,16 @@ const Updates = () => {
   ];
 
   const [email, setEmail] = useState("");
-  const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  // SENT EMAIL for further details
+  const handleEmailSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (email) {
-      setIsSubmitted(true);
-      setTimeout(() => setIsSubmitted(false), 3000);
+      toast.success("Email Sent! We'll get back to you soon!");
     }
   };
+
+
   // VARIANTS FOR ANIMATION
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -123,7 +125,7 @@ const Updates = () => {
 
               {/* Email Form */}
               <motion.form
-                onSubmit={handleSubmit}
+                onSubmit={handleEmailSubmit}
                 variants={itemVariants}
                 className="flex flex-col sm:flex-row gap-4 max-w-md"
               >
@@ -137,18 +139,12 @@ const Updates = () => {
                     required
                   />
                 </div>
-                <motion.button
+
+                <Button
+                  label="Get Started"
+                  IconRight={<CheckCircle />}
                   type="submit"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="px-8 py-3 bg-gradient-to-r from-primary to-primary-dark text-white font-semibold rounded-lg hover:from-primary hover:to-primary-dark transition-all duration-200 shadow-lg hover:shadow-xl"
-                >
-                  {isSubmitted ? (
-                    <CheckCircle className="w-5 h-5 mx-auto" />
-                  ) : (
-                    "Get Started"
-                  )}
-                </motion.button>
+                />
               </motion.form>
 
               {/* Agreement */}
@@ -163,7 +159,7 @@ const Updates = () => {
                   <div className="p-2 bg-primary-light rounded-full">
                     <Clock className="w-5 h-5 text-primary" />
                   </div>
-                  <span className="text-gray-700 font-medium">
+                  <span className="text-grey-medium font-medium">
                     Round the Clock Reliability
                   </span>
                 </div>
@@ -171,7 +167,7 @@ const Updates = () => {
                   <div className="p-2 bg-blue-100 rounded-full">
                     <Zap className="w-5 h-5 text-blue-600" />
                   </div>
-                  <span className="text-gray-700 font-medium">
+                  <span className="text-grey-medium font-medium">
                     All Essential Solutions
                   </span>
                 </div>
@@ -285,7 +281,7 @@ const Updates = () => {
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
-                className="absolute -top-8 -left-8 w-4 h-4 bg-gradient-to-br from-warning to-primary to-danger rounded-full opacity-60"
+                className="absolute -top-8 -left-8 w-4 h-4 bg-gradient-to-br from-warning via-primary to-danger rounded-full opacity-60"
               ></motion.div>
               <motion.div
                 animate={{
