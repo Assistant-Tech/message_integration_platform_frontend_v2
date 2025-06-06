@@ -32,7 +32,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-primary-light text-base-black pt-10">
+    <footer className="bg-primary-light pt-10">
       <div>
         {/* Top */}
         <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-x-40 w-full max-w-[1600px] mx-auto px-4">
@@ -47,8 +47,8 @@ const Footer = () => {
               <Logo />
             </motion.div>
 
-            <p className="body-bold-16 max-w-xs pb-4">
-              "Let's Make Customer Conversations Simple"
+            <p className="body-bold-16 pb-4 text-grey">
+              Let's Make Customer Conversations Simple
             </p>
 
             {/* Store Buttons */}
@@ -104,7 +104,7 @@ const Footer = () => {
                               <li key={index}>
                                 <a
                                   href={link.url}
-                                  className="hover:text-primary-inactive transition-colors flex items-center text-sm"
+                                  className="text-grey transition-colors flex items-center text-sm"
                                 >
                                   {link.icon && (
                                     <span className="mr-2">{link.icon}</span>
@@ -133,14 +133,14 @@ const Footer = () => {
                     variants={containerVariants}
                     aria-label={section}
                   >
-                    <h3 className="body-bold-16 capitalize mb-4">{section}</h3>
+                    <h3 className="body-bold-16 capitalize text-base-black mb-4">{section}</h3>
                     <ul className="space-y-4">
                       {(footerLinks as any)[section].map(
                         (link: any, index: number) => (
                           <motion.li key={index} variants={itemVariants}>
                             <a
                               href={link.url}
-                              className="hover:text-primary-inactive transition-colors flex items-center h4-regular-16"
+                              className="hover:text-primary transition-colors flex items-center h4-regular-16"
                             >
                               {link.icon && (
                                 <span className="mr-2">{link.icon}</span>
@@ -187,7 +187,7 @@ const Footer = () => {
                   <img
                     src={item.src}
                     alt={`${item.name} icon`}
-                    className="w-10 h-10"
+                    className="w-6 h-6 "
                   />
                 </a>
               </motion.li>

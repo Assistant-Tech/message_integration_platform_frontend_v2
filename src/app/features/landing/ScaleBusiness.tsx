@@ -27,7 +27,7 @@ const ScaleBusiness: React.FC = () => {
   };
 
   return (
-    <div className="max-w-[1600px] mx-auto py-10 px-4 sm:px-6 lg:px-8">
+    <div className="pt-20">
       <div className="w-full">
         <motion.div
           className="flex flex-col lg:flex-row items-center lg:items-start justify-between gap-10 lg:gap-16"
@@ -78,10 +78,7 @@ const ScaleBusiness: React.FC = () => {
               ))}
             </motion.div>
 
-            <motion.div
-              className="pt-4 border-t border-gray-200"
-              variants={itemVariants}
-            >
+            <motion.div variants={itemVariants}>
               <p className="body-regular-16 text-grey">
                 Whether you're running a one-person shop or managing a team,{" "}
                 <span className="text-primary">

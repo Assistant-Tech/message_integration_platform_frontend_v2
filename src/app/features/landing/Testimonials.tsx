@@ -45,7 +45,7 @@ const Testimonials: React.FC<TestimonialsProps> = ({
   }, [autoScroll, autoScrollInterval, goToNext, total]);
 
   return (
-    <section className="min-w-full h-auto md:min-h-[300px] bg-primary-light my-10 px-4 md:px-2">
+    <section className="min-w-full h-auto md:min-h-[300px] bg-primary-light my-10 px-4 md:px-2" id="testimonials">
       <Box className="max-w-[1600px] mx-auto py-10">
         <Flex
           direction={{

@@ -1,4 +1,4 @@
-import { Routes } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 // import { lazy } from "react";
 
 // Lazy load user components --> Advance component handling

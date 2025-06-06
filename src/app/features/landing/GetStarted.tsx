@@ -9,7 +9,7 @@ const GetStarted = () => {
   return (
     <Box className="relative w-full h-auto md:h-96 overflow-hidden bg-primary-dark flex items-center justify-center">
       {/* Abstract background shapes */}
-      <div className="absolute bottom-0 -left-40">
+      <div className="absolute bottom-0 -left-70">
         <motion.img
           src={logo}
           alt="Logo SVG"
@@ -27,8 +27,8 @@ const GetStarted = () => {
         />
       </div>
 
-      <motion.div className="absolute -top-10 -right-72">
-        <Circle className="w-96 h-96 opacity-20" color="white" />
+      <motion.div className="absolute -top-10 -right-10">
+        <Circle className="w-40 h-40 opacity-20" color="white" />
       </motion.div>
 
       <Box className="absolute top-0 left-0 w-64 h-64 bg-custom-light-blue rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob" />

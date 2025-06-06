@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-import testImage from "@/app/assets/images/navbar-image-test.png";
+import testImage from "@/app/assets/images/navbar-image-test.webp";
 import { Button } from "@/app/components/ui";
 import { ArrowUpRight } from "lucide-react";
 

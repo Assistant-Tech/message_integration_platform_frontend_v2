@@ -9,7 +9,7 @@ const BuiltAssistant: React.FC = () => {
   };
 
   return (
-    <Box className="w-full max-w-[1600px] mx-auto my-4 px-4 md:px-2 py-10">
+    <Box className="pt-20">
       <Container className="py-4 md:py-8 bg-white rounded-[2rem] border-2 border-gray-300">
         <Flex
           direction="column"
@@ -49,10 +49,11 @@ const BuiltAssistant: React.FC = () => {
           </Grid>
 
           {/* CTA Button */}
-          <Box className="pt-2">
+          <Box>
             <Button
               onClick={handleStartTrial}
               label="Start 14-days Free Trial"
+              className="px-4 py-3"
             />
           </Box>
         </Flex>

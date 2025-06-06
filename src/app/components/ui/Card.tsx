@@ -42,7 +42,6 @@ const Card = ({
   textColor = "#ffffff",
   icon,
   iconBackgroundColor = "#ffffff",
-  iconColor = "#26AA91",
   borderRadius = "lg",
   animated = false,
   elevation = "md",
@@ -56,20 +55,20 @@ const Card = ({
 
   return (
     <Comp
-      className={`w-full max-w-sm lg:max-w-md h-[300px] sm:h-[320px] p-6 sm:p-8 flex flex-col justify-between ${borderRadiusClasses[borderRadius]} ${shadowClasses[elevation]} ${animationClasses} cursor-pointer bg-primary`}
+      className={`w-full max-w-sm lg:max-w-md h-80 sm:h-72 px-12 py-12 sm:py-8 flex flex-col justify-between ${borderRadiusClasses[borderRadius]} ${shadowClasses[elevation]} ${animationClasses} cursor-pointer bg-primary`}
       style={{ color: textColor }}
     >
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-auto">
         <div
           className={`w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center ${borderRadiusClasses.full} flex-shrink-0`}
           style={{ backgroundColor: iconBackgroundColor }}
         >
-          <div style={{ color: iconColor }}>{icon}</div>
+          <div>{icon}</div>
         </div>
 
-        <div className="flex flex-col flex-grow">
+        <div className="flex flex-col justify-start items-start">
           <h3 className="h5-bold-16 py-4">{title}</h3>
-          <p className="h5-regular-16 opacity-90">{description}</p>
+          <p className="h5-regular-16">{description}</p>
         </div>
       </div>
     </Comp>

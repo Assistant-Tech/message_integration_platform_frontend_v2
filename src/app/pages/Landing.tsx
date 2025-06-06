@@ -1,3 +1,6 @@
+import "@radix-ui/themes/styles.css";
+import { Theme } from "@radix-ui/themes";
+
 import { Footer, Navbar } from "@/app/components/common";
 import {
   BuiltAssistant,
@@ -7,36 +10,60 @@ import {
   MainFeature,
   ScaleBusiness,
   Testimonials,
-  UnifiedMessageBox,
+  // UnifiedMessageBox,
   FAQ,
 } from "@/app/features/landing/";
-import { Theme } from "@radix-ui/themes";
-import "@radix-ui/themes/styles.css";
+import { DemoDialog } from "@/app/features/auth";
+import { Container } from "@/app/components/layout";
 
 const Landing = () => {
   return (
     <div className="min-h-screen">
       <Theme>
         {/* <TrailBanner /> */}
+        <Container>
+          <DemoDialog />
+        </Container>
 
-        {/* Implemented */}
         <Navbar />
 
-        <HeroSection />
-        <MainFeature />
-        <ChatBot />
-        <UnifiedMessageBox />
+        {/* Hero Section */}
+        <Container>
+          <HeroSection />
+        </Container>
+
+        {/* Meain Feature */}
+        <Container>
+          <MainFeature />
+        </Container>
+
+        {/* ChatBot */}
+        <Container>
+          <ChatBot />
+        </Container>
+
+        {/* <UnifiedMessageBox /> */}
         <GetStarted />
-        <ScaleBusiness />
-        <BuiltAssistant />
+
+        {/* Scale Business */}
+        <Container>
+          <ScaleBusiness />
+        </Container>
+
+        {/* Build Assistant */}
+        <Container>
+          <BuiltAssistant />
+        </Container>
+
+        {/* Testimonials */}
         <Testimonials />
-        <FAQ />
+
+        {/* FAQ */}
+        <Container>
+          <FAQ />
+        </Container>
 
         <Footer />
-
-        {/* Left */}
-        {/* <Contact />
-        <About /> */}
       </Theme>
     </div>
   );

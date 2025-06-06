@@ -60,9 +60,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         onClick={handleClick}
         className={cn(
-          "flex items-center justify-center gap-2 px-4 py-3 rounded-md button-semi-bold-16 transition-colors duration-200 cursor-pointer",
+          "flex items-center justify-center gap-2 px-2 py-1 md:px-4 md:py-3 rounded-xl button-semi-bold-16 transition-colors duration-200 cursor-pointer",
           variantStyles[variant],
-          className,
+          className, 
         )}
         {...props}
       >

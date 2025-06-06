@@ -4,7 +4,7 @@ import { SOCIAL_LINKS_CONFIG } from "@/app/utils/utils";
 
 const SocialIcons: React.FC = () => {
   return (
-    <div className="absolute inset-0 pointer-events-none z-50">
+    <div className="absolute inset-0 pointer-events-none -z-10">
       {SOCIAL_LINKS_CONFIG.map((social, index) => {
         return (
           <motion.a
@@ -36,7 +36,7 @@ const SocialIcons: React.FC = () => {
             }}
           >
             <motion.div
-              className="w-8 h-8 md:w-16 md:h-16 rounded-full flex items-center justify-center shadow-lg cursor-pointer bg-white relative"
+              className="w-8 h-8 md:w-16 md:h-16 rounded-full flex items-center justify-center cursor-pointer bg-white relative md:opacity-90 sm:opacity-30 opacity-50"
               animate={{
                 y: [0, -10, 0],
                 rotate: [0, 3, -3, 0],
