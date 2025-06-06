@@ -12,9 +12,9 @@ const ContentSection: React.FC<ContentSectionProps> = ({
   const getHeadingClasses = (): string => {
     switch (level) {
       case 1:
-        return "h3-bold-32 text-base-black mb-6";
+        return "h3-bold-32 text-base-black mb-2";
       default:
-        return "body-regular-16 text-grey-medium mb-3";
+        return "body-regular-16 text-grey-medium mb-2";
     }
   };
 

@@ -18,7 +18,8 @@ import {
 const TermsCondition: React.FC = () => {
   const SupportCrumb = [
     { label: "Resources", href: APP_ROUTES.PUBLIC.RESOURCES_OVERVIEW },
-    { label: "Privacy & Policy" },
+    { label: "Support", href: APP_ROUTES.PUBLIC.SUPPORT },
+    { label: "Terms & Condition" },
   ];
 
   // Generate table of contents from content

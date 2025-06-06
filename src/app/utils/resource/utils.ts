@@ -36,56 +36,53 @@ export const registerFields: {
 // ----------------------
 // CARDS Fields Config
 // ----------------------
-
-import {
-  FileLock2,
-  Handshake,
-  LayoutDashboard,
-  MonitorCog,
-  TabletSmartphone,
-  Tag,
-} from "lucide-react";
+import onboarding from "@/app/assets/greenIcons/onboarding.svg";
+import subscription from "@/app/assets/greenIcons/subscription.svg";
+import updates from "@/app/assets/greenIcons/updates.svg";
+import mobile from "@/app/assets/greenIcons/mobile-app.svg";
+import terms from "@/app/assets/greenIcons/terms-of-service.svg";
+import privacy from "@/app/assets/greenIcons/privacy-policy.svg";
 
 export const smartCards = [
   {
     title: "Onboarding",
     description:
       "Get started with Assistant Tech right away. Let us guide you through our onboarding process.",
-    icon: LayoutDashboard,
+    icon: onboarding,
     redirectTo: APP_ROUTES.PUBLIC.ONBOARDING,
   },
   {
     title: "Subscription Plans",
     description:
       "Explore our flexible subscription options to find the perfect plan for your needs. Try out our 14-days free trial to know more.",
-    icon: Tag,
+    icon: subscription,
     redirectTo: APP_ROUTES.PUBLIC.SUBSCRIPTIONS,
   },
   {
     title: "Updates",
     description:
       "Always stay informed with the latest platform enhancements and feature releases of all our products.",
-    icon: MonitorCog,
+    icon: updates,
     redirectTo: APP_ROUTES.PUBLIC.UPDATES,
   },
   {
     title: "Mobile Application",
     description:
       "Download our app for seamless access on the go. Stay connected with your team and customers, at all time.",
-    icon: TabletSmartphone,
+    icon: mobile,
   },
   {
     title: "Terms & Condition",
     description:
       "Learn about our terms of service and our commitment to data security and user privacy.",
-    icon: Handshake,
+    icon: terms,
     redirectTo: APP_ROUTES.PUBLIC.TERMSCONDITION,
   },
   {
     title: "Privacy Policy",
     description:
       "Our privacy policy ensures that your personal information is protected and used responsibly.",
-    icon: FileLock2,
+    icon: privacy,
     redirectTo: APP_ROUTES.PUBLIC.POLICY,
   },
 ];
@@ -183,49 +180,53 @@ export const termsContentData: ContentSectionData[] = [
         },
         "Pellentesque suscipit fringilla libero eu ullamcorper. Cras risus eros, faucibus sit amet augue id, tempus pellentesque eros. In imperdiet tristique tincidunt.",
       ),
-      React.createElement("div", { key: "2", className: "space-y-2 text-grey" }, [
-        React.createElement(
-          "p",
-          {
-            key: "2-1",
-            className: "text-grey-meidum",
-          },
-          [
-            React.createElement(
-              "strong",
-              { key: "strong1" },
-              "Account Security: ",
-            ),
-            "You are responsible for maintaining the security of your account.",
-          ],
-        ),
-        React.createElement(
-          "p",
-          {
-            key: "2-2",
-            className: "text-grey-meidum",
-          },
-          [
-            React.createElement("strong", { key: "strong2" }, "Compliance: "),
-            "You must comply with all applicable laws and regulations.",
-          ],
-        ),
-        React.createElement(
-          "p",
-          {
-            key: "2-3",
-            className: "text-grey-meidum",
-          },
-          [
-            React.createElement(
-              "strong",
-              { key: "strong3" },
-              "Prohibited Activities: ",
-            ),
-            "You may not engage in any unlawful or harmful activities.",
-          ],
-        ),
-      ]),
+      React.createElement(
+        "div",
+        { key: "2", className: "space-y-2 text-grey" },
+        [
+          React.createElement(
+            "p",
+            {
+              key: "2-1",
+              className: "text-grey-meidum",
+            },
+            [
+              React.createElement(
+                "strong",
+                { key: "strong1" },
+                "Account Security: ",
+              ),
+              "You are responsible for maintaining the security of your account.",
+            ],
+          ),
+          React.createElement(
+            "p",
+            {
+              key: "2-2",
+              className: "text-grey-meidum",
+            },
+            [
+              React.createElement("strong", { key: "strong2" }, "Compliance: "),
+              "You must comply with all applicable laws and regulations.",
+            ],
+          ),
+          React.createElement(
+            "p",
+            {
+              key: "2-3",
+              className: "text-grey-meidum",
+            },
+            [
+              React.createElement(
+                "strong",
+                { key: "strong3" },
+                "Prohibited Activities: ",
+              ),
+              "You may not engage in any unlawful or harmful activities.",
+            ],
+          ),
+        ],
+      ),
     ]),
   },
   {

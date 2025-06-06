@@ -3,18 +3,22 @@ import { toast } from "sonner";
 import { useState } from "react";
 
 import { APP_ROUTES } from "@/app/constants/routes";
-import { Agreement, Breadcrumb, Button } from "@/app/components/ui";
-import { CheckCircle, Clock, MessageSquare, Zap } from "lucide-react";
+import { Agreement, Breadcrumb, Button, Input } from "@/app/components/ui";
+import { MessageSquare } from "lucide-react";
+import clock from "@/app/assets/greenIcons/clock.svg";
+import essentials from "@/app/assets/greenIcons/essentials.svg";
+import { GetStarted } from "@/app/pages/landing/";
+import { NewsLetter } from "@/app/components/common";
 
 const Updates = () => {
   const SupportCrumb = [
     { label: "Resources", href: APP_ROUTES.PUBLIC.RESOURCES_OVERVIEW },
+    { label: "Support", href: APP_ROUTES.PUBLIC.SUPPORT },
     { label: "Updates" },
   ];
 
   const [email, setEmail] = useState("");
 
-  // SENT EMAIL for further details
   const handleEmailSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (email) {
@@ -22,8 +26,6 @@ const Updates = () => {
     }
   };
 
-
-  // VARIANTS FOR ANIMATION
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -67,48 +69,39 @@ const Updates = () => {
   };
 
   return (
-    <div className="min-h-screen bg-base-white my-20 relative overflow-hidden rounded-4xl">
-      {/* Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-yellow-200/30 to-orange-300/30 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-blue-200/30 to-purple-300/30 rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-green-200/20 to-teal-300/20 rounded-full blur-3xl"></div>
-      </div>
-
-      <div className="relative z-10 text-base-black pt-8">
+    <div className="min-h-screen my-20 ">
+      {/* CUSTOMIZABLE OWN CHATBOT */}
+      <div className="relative z-10 text-base-black pt-4 px-4 md:px-px py-14">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="mb-4 sm:mb-6 md:mb-8 container mx-auto px-4 sm:px-6 lg:px-px"
+          className="mb-4 sm:mb-6 md:mb-8"
         >
           <Breadcrumb items={SupportCrumb} />
         </motion.div>
 
+        {/* CREATE CHATBOT  */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="container mx-auto px-4 sm:px-6 lg:px-px pt-12 lg:py-8"
+          className="pt-2 lg:py-8"
         >
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-12 lg:gap-16 items-start">
             {/* Left Content */}
-            <motion.div variants={itemVariants} className="space-y-8">
-              <div className="space-y-6">
+            <motion.div variants={itemVariants} className="space-y-8 max-w-2xl">
+              <div className="space-y-4 w-full">
                 <motion.h1
-                  className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-grey leading-tight"
+                  className="text-grey h2-bold-40"
                   variants={itemVariants}
                 >
-                  Create and{" "}
-                  <span className="bg-gradient-to-r from-primary via-warning to-danger bg-clip-text text-transparent">
-                    Customize
-                  </span>
-                  <br />
-                  Your Own Chatbot
+                  Create and Customize Your Own{"  "}
+                  <span className="text-primary">Chatbot</span>
                 </motion.h1>
 
                 <motion.p
-                  className="text-lg sm:text-xl text-gray-600 max-w-xl leading-relaxed"
+                  className="text-base md:text-lg text-grey-medium"
                   variants={itemVariants}
                 >
                   All Assistant Tech's users can now create and customize their
@@ -116,7 +109,7 @@ const Updates = () => {
                 </motion.p>
 
                 <motion.p
-                  className="text-base sm:text-lg text-grey-meplaceholder-grey-medium font-medium"
+                  className="body-regular-16 text-grey"
                   variants={itemVariants}
                 >
                   Start your 14-days free trial today!
@@ -127,47 +120,46 @@ const Updates = () => {
               <motion.form
                 onSubmit={handleEmailSubmit}
                 variants={itemVariants}
-                className="flex flex-col sm:flex-row gap-4 max-w-md"
+                className="flex flex-col sm:flex-row gap-3 sm:gap-2 w-full"
               >
-                <div className="flex-1">
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
-                    className="w-full px-4 py-3 border border-grey-light rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all duration-200 text-grey placeholder-grey-medium"
-                    required
-                  />
-                </div>
-
+                <Input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  className="w-full px-3 py-3"
+                  required
+                />
                 <Button
                   label="Get Started"
-                  IconRight={<CheckCircle />}
                   type="submit"
+                  className="w-full sm:w-36 px-4 py-3"
                 />
               </motion.form>
 
-              {/* Agreement */}
-              <Agreement />
+              <p className="body-regular-16 text-grey-medium">
+                No credit card needed.
+                <Agreement />
+              </p>
 
               {/* Features */}
               <motion.div
                 variants={itemVariants}
-                className="flex flex-col sm:flex-row gap-6 sm:gap-12"
+                className="flex flex-col justify-between sm:flex-row gap-4 sm:gap-8"
               >
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-primary-light rounded-full">
-                    <Clock className="w-5 h-5 text-primary" />
-                  </div>
-                  <span className="text-grey-medium font-medium">
+                <div className="flex items-center gap-3 cursor-pointer">
+                  <img src={clock} alt="round_clock.svg" className="w-8 h-8" />
+                  <span className="text-primary h5-bold-16">
                     Round the Clock Reliability
                   </span>
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-100 rounded-full">
-                    <Zap className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <span className="text-grey-medium font-medium">
+                <div className="flex items-center gap-3 cursor-pointer">
+                  <img
+                    src={essentials}
+                    alt="essentials.svg"
+                    className="w-8 h-8"
+                  />
+                  <span className="text-primary h5-bold-16">
                     All Essential Solutions
                   </span>
                 </div>
@@ -175,13 +167,13 @@ const Updates = () => {
             </motion.div>
 
             {/* Right Visual Content */}
-            <motion.div variants={itemVariants} className="relative">
-              <div className="grid grid-cols-2 gap-6 lg:gap-8">
+            <motion.div variants={itemVariants} className="relative w-full">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8 px-4">
                 {/* Chat Icon Card */}
                 <motion.div
                   variants={floatingVariants}
                   animate="animate"
-                  className="bg-gradient-to-br from-warning at- to-danger rounded-3xl p-8 lg:p-12 shadow-2xl"
+                  className="bg-gradient-to-br from-warning to-danger rounded-3xl p-6 sm:p-8 shadow-2xl"
                 >
                   <div className="relative">
                     <div className="bg-white rounded-2xl p-6 shadow-lg relative">
@@ -203,7 +195,7 @@ const Updates = () => {
                   animate="animate"
                   className="bg-gradient-to-br from-gray-800 to-grey rounded-3xl p-4 shadow-2xl self-end"
                 >
-                  <div className="bg-base-white rounded-2xl p-6 h-48 lg:h-56 relative overflow-hidden">
+                  <div className="bg-base-white rounded-2xl p-6 h-48 sm:h-56 relative overflow-hidden">
                     <div className="absolute top-4 right-4">
                       <MessageSquare className="w-6 h-6 text-gray-400" />
                     </div>
@@ -212,7 +204,7 @@ const Updates = () => {
                         <div className="w-16 h-2 bg-blue-300 rounded"></div>
                       </div>
                       <div className="bg-grey-light rounded-lg p-2 max-w-[60%] ml-auto">
-                        <div className="w-12 h-2 bg-grey-meplaceholder-grey-medium rounded"></div>
+                        <div className="w-12 h-2 bg-grey-medium rounded"></div>
                       </div>
                     </div>
                   </div>
@@ -223,7 +215,7 @@ const Updates = () => {
                   variants={floatingVariants}
                   animate="animate"
                   style={{ animationDelay: "1s" }}
-                  className="col-span-2 bg-white rounded-3xl p-6 lg:p-8 shadow-2xl"
+                  className="col-span-1 sm:col-span-2 bg-white rounded-3xl p-6 lg:p-8 shadow-2xl"
                 >
                   <div className="bg-gradient-to-br from-base-white to-base-white rounded-2xl p-4 lg:p-6">
                     <div className="flex items-center gap-2 mb-4">
@@ -236,7 +228,7 @@ const Updates = () => {
                         <div className="w-8 h-8 bg-warning rounded-full flex items-center justify-center">
                           <MessageSquare className="w-4 h-4 text-white" />
                         </div>
-                        <div className="text-xl lg:text-2xl font-bold text-gray-800">
+                        <div className="text-lg md:text-xl lg:text-2xl font-bold text-gray-800">
                           MESSAGE
                         </div>
                       </div>
@@ -248,7 +240,7 @@ const Updates = () => {
                     </div>
                   </div>
 
-                  {/* Floating Elements */}
+                  {/* Floating Orbs */}
                   <motion.div
                     animate={{ rotate: [0, 360] }}
                     transition={{
@@ -256,8 +248,8 @@ const Updates = () => {
                       repeat: Infinity,
                       ease: "linear",
                     }}
-                    className="absolute -top-4 -right-4 w-8 h-8 bg-gradient-to-br  to-danger rounded-full shadow-lg"
-                  ></motion.div>
+                    className="absolute -top-4 -right-4 w-8 h-8 bg-gradient-to-br to-danger rounded-full shadow-lg"
+                  />
                   <motion.div
                     animate={{ rotate: [360, 0] }}
                     transition={{
@@ -266,38 +258,42 @@ const Updates = () => {
                       ease: "linear",
                     }}
                     className="absolute -bottom-2 -left-2 w-6 h-6 bg-gradient-to-br from-blue-400 to-primary rounded-full shadow-lg"
-                  ></motion.div>
+                  />
                 </motion.div>
               </div>
 
-              {/* Floating particles */}
+              {/* Floating Particles */}
               <motion.div
-                animate={{
-                  y: [-20, 20, -20],
-                  x: [-10, 10, -10],
-                }}
+                animate={{ y: [-20, 20, -20], x: [-10, 10, -10] }}
                 transition={{
                   duration: 6,
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
                 className="absolute -top-8 -left-8 w-4 h-4 bg-gradient-to-br from-warning via-primary to-danger rounded-full opacity-60"
-              ></motion.div>
+              />
               <motion.div
-                animate={{
-                  y: [20, -20, 20],
-                  x: [10, -10, 10],
-                }}
+                animate={{ y: [20, -20, 20], x: [10, -10, 10] }}
                 transition={{
                   duration: 8,
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
                 className="absolute -bottom-4 -right-8 w-3 h-3 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full opacity-60"
-              ></motion.div>
+              />
             </motion.div>
           </div>
         </motion.div>
+      </div>
+
+      {/* GET STARTED */}
+      <div className="relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] w-screen">
+        <GetStarted />
+      </div>
+
+      {/* NEWSLETTER */}
+      <div className="pt-20">
+        <NewsLetter />
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import ContentSection from "./ContentSection";
 
 const TermsContent: React.FC<TermsContentProps> = ({ content }) => {
   return (
-    <div className="space-y-8 lg:space-y-12">
+    <div className="space-y-2 lg:space-y-12">
       {content.map((section) => (
         <ContentSection
           key={section.id}

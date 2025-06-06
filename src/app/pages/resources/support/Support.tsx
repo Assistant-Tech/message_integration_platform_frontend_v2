@@ -66,7 +66,7 @@ const Support = () => {
           How can we help you today?
         </h3>
         {/* Card Section */}
-        <motion.div className="w-full mx-auto grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 justify-items-center pt-6">
+        <motion.div className="w-full mx-auto grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 justify-items-center py-6">
           {smartCards.map((card, index) => (
             <SmartCard key={index} {...card} />
           ))}

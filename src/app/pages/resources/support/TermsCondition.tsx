@@ -18,6 +18,7 @@ import {
 const TermsCondition: React.FC = () => {
   const SupportCrumb = [
     { label: "Resources", href: APP_ROUTES.PUBLIC.RESOURCES_OVERVIEW },
+    { label: "Support", href: APP_ROUTES.PUBLIC.SUPPORT },
     { label: "Terms & Condition" },
   ];
 
@@ -88,7 +89,7 @@ const TermsCondition: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="bg-white rounded-lg border border-gray-200 p-6 lg:p-8"
+            className="bg-white rounded-lg border border-gray-200 px-px py-4 lg:px-8 lg:py-8"
           >
             {/* Terms and Condition */}
             <TermsContent content={termsContentData} />

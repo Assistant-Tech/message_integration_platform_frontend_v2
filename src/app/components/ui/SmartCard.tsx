@@ -14,7 +14,7 @@ interface SmartCardProps {
   title: string;
   description: string;
   redirectTo?: string;
-  icon?: LucideIcon;
+  icon?: string;
   actions?: Action[];
   className?: string;
 }
@@ -48,7 +48,7 @@ const SmartCard: React.FC<SmartCardProps> = ({
       <div>
         {icon && (
           <div className="w-12 h-12 bg-primary-light rounded-md mb-3 flex items-center justify-center text-gray-700">
-            {React.createElement(icon, { size: 24, color: "teal" })}
+            <img src={icon} className="w-8 h-8" />
           </div>
         )}
         <h3 className="h5-bold-16 text-base-black mb-2">{title}</h3>

@@ -1,11 +1,10 @@
 import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Flex } from "@radix-ui/themes";
-import { Zap, Target, ArrowRight, Circle, Check } from "lucide-react";
+import { Zap, Target, Circle, Check } from "lucide-react";
 
-import { Breadcrumb, Button, Input, SmartCard } from "@/app/components/ui";
+import { Agreement, Breadcrumb, Button, Input } from "@/app/components/ui";
 import { cn } from "@/app/utils/cn";
-import { benefits, features, smartCardData } from "@/app/utils/product/utils";
+import { benefits, features } from "@/app/utils/product/utils";
 import {
   FAQ,
   GetStarted,
@@ -13,6 +12,7 @@ import {
   SeemlessExperience,
 } from "@/app/pages/landing/";
 import { APP_ROUTES } from "@/app/constants/routes";
+import { SmartSolutions } from "@/app/pages/products/components/";
 
 // Images
 import crm from "@/app/assets/images/crm.webp";
@@ -68,15 +68,16 @@ const CRM: React.FC = () => {
             className="space-y-4 sm:space-y-6 md:space-y-8 order-2 lg:order-1"
           >
             <div className="space-y-3 sm:space-y-4 md:space-y-6">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-base-black leading-tight">
-                Empowering Your Business with
+              <h1 className="h2-bold-40 text-base-black">
+                Empowering Your Business with Assistant's
                 <span className="text-primary block sm:inline sm:ps-2">
-                  Assistant's
-                </span>{" "}
-                <span className="block sm:inline">AI-Powered CRM Software</span>
+                  <span className="block sm:inline">
+                    AI-Powered CRM Software
+                  </span>
+                </span>
               </h1>
 
-              <p className="text-sm sm:text-base md:text-lg text-grey-medium leading-relaxed">
+              <p className="body-regular-16 text-grey-medium">
                 Assistant Tech's CRM software helps you respond to your customer
                 inquiries instantly and efficiently. It streamlines your
                 company's workflow, helps with customer retention and
@@ -86,7 +87,7 @@ const CRM: React.FC = () => {
 
             {/* CTA Section */}
             <div className="space-y-3 sm:space-y-4">
-              <p className="text-sm sm:text-base md:text-lg text-grey-medium font-medium">
+              <p className="body-regular-16 text-grey-medium">
                 Start your 14-days free trial today!
               </p>
 
@@ -105,27 +106,13 @@ const CRM: React.FC = () => {
                   label={"Get Started"}
                   variant="primary"
                   onClick={handleGetStarted}
-                  IconRight={<ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />}
+                  className="py-3"
                 />
               </div>
 
-              <p className="text-xs sm:text-sm text-grey-medium leading-relaxed">
-                No credit card needed. By providing your contact information,
-                you agree to
-                <a
-                  href="#"
-                  className="text-primary hover:text-primary-dark underline mx-1"
-                >
-                  Terms of Service
-                </a>
-                and
-                <a
-                  href="#"
-                  className="text-primary hover:text-primary-dark underline mx-1"
-                >
-                  Privacy Policy
-                </a>
-                of the company.
+              <p className="body-regular-16 text-grey-medium">
+                No credit card needed.
+                <Agreement />
               </p>
             </div>
 
@@ -137,18 +124,13 @@ const CRM: React.FC = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
-                  className="flex items-start gap-3 sm:gap-4"
+                  className="flex items-center gap-2 sm:gap-4 cursor-pointer"
                 >
-                  <div className="flex-shrink-0 p-2 sm:p-3 bg-primary-light rounded-lg text-primary">
-                    <feature.icon className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h3 className="font-semibold text-primary mb-1 sm:mb-2 text-sm sm:text-base md:text-lg">
+                  <img src={feature.icon} className="w-8 h-8" />
+                  <div className="min-w-0">
+                    <h3 className="body-regular-16 text-primary mb-1">
                       {feature.title}
                     </h3>
-                    <p className="text-grey-medium text-xs sm:text-sm md:text-base leading-relaxed">
-                      {feature.description}
-                    </p>
                   </div>
                 </motion.div>
               ))}
@@ -364,25 +346,7 @@ const CRM: React.FC = () => {
         </div>
 
         {/* SMART SOLUTION BUSINES */}
-        <Flex direction={"column"} justify={"center"} className="py-8 md:py-24">
-          {/* Typo Section */}
-          <motion.article>
-            <motion.h1 className="h2-bold-40 text-base-black text-center pb-4">
-              Smart Solutions for Businesses of All Sizes
-            </motion.h1>
-            <motion.p className="body-regular-16 text-grey text-center pb-6">
-              Our AI-enabled CRM software focuses on providing smart solutions
-              like sales, marketing and customer support, for businesses of all
-              sizes and supports a sustainable business model.
-            </motion.p>
-          </motion.article>
-          {/* Grided Cards Section */}
-          <motion.div className="w-full mx-auto grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 justify-items-center pt-6">
-            {smartCardData.map((card, index) => (
-              <SmartCard key={index} {...card} />
-            ))}
-          </motion.div>
-        </Flex>
+        <SmartSolutions />
 
         {/* SEEMLESS EXPERIENCE */}
         <SeemlessExperience />

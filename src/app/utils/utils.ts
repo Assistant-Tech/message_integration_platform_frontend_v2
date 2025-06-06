@@ -96,7 +96,7 @@ export const navigation: NavigationItem[] = [
       },
     ],
   },
-  { id: 3, name: "Contact Us", href: "/contact" },
+  { id: 3, name: "About Us", href: "/about" },
   { id: 4, name: "Pricing", href: "/pricing" },
 ];
 

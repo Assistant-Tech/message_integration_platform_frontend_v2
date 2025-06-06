@@ -23,7 +23,7 @@ export const CrmBreadCrumb: crm[] = [
 
 // For features
 export interface FeatureProps {
-  icon: LucideIcon;
+  icon: string;
   title: string;
   description: string;
 }
@@ -34,15 +34,19 @@ export interface BenefitProps {
   color: string;
 }
 
+// import images
+import clock from "@/app/assets/greenIcons/clock.svg";
+import essentials from "@/app/assets/greenIcons/essentials.svg";
+
 // Pure data with component references
 export const features: FeatureProps[] = [
   {
-    icon: ShieldUser,
+    icon: clock,
     title: "Round the Clock Reliability",
     description: "24/7 support and monitoring",
   },
   {
-    icon: Zap,
+    icon: essentials,
     title: "All Essential Solutions",
     description: "Complete CRM toolkit in one platform",
   },
@@ -71,25 +75,28 @@ export const benefits: BenefitProps[] = [
  📦 ▶ CARD data utils
 ─────────────────────────────────────────────────────────────────────────────
 */
-import { Users, Share2, Workflow } from "lucide-react";
+
+import onboarding from "@/app/assets/greenIcons/onboarding.svg";
+import subscription from "@/app/assets/greenIcons/subscription.svg";
+import updates from "@/app/assets/greenIcons/updates.svg";
 
 export const smartCardData = [
   {
     title: "Better Customer Support",
     description:
       "Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, sscipit porttitor velit. Vestibulum tempus imperdiet sem acporta.",
-    icon: Users,
+    icon: onboarding,
   },
   {
     title: "Connecting All Your Teams",
     description:
       "Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, sscipit porttitor velit. Vestibulum tempus imperdiet sem acporta.",
-    icon: Share2,
+    icon: subscription,
   },
   {
     title: "Smart Sales Workflow",
     description:
       "Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, sscipit porttitor velit. Vestibulum tempus imperdiet sem acporta.",
-    icon: Workflow,
+    icon: updates,
   },
 ];

@@ -64,7 +64,7 @@ const AuthButtons: React.FC<AuthButtonsProps> = ({
       <Link to="#" className="cursor-pointer">
         <Button
           label="Book a Demo"
-          variant="neutral"
+          variant="outlined"
           className="cursor-pointer"
           onClick={handleDemo}
         />
