@@ -5,8 +5,6 @@ import { useState, useEffect } from "react";
 import { Agreement, Button } from "@/app/components/ui/";
 import { cn } from "@/app/utils/cn";
 import newsletter from "@/app/assets/images/newsletter.webp";
-import { Link } from "react-router-dom";
-
 const PopupModal = () => {
   const [open, setOpen] = useState(false);
 
