@@ -69,7 +69,7 @@ const Pricing = () => {
           value={currency}
           onValueChange={(val) => setCurrency(val as any)}
           color="teal"
-          className="w-full "
+          className="w-full pb-4 md:pb-8"
         >
           <Flex gap="4" justify="end" align="center">
             {["NPR", "USD"].map((cur) => (

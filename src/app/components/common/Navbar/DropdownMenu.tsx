@@ -8,7 +8,7 @@ interface DropdownItem {
   name: string;
   href: string;
   description?: string;
-  icon?: React.ElementType;
+  icon?: string;
 }
 
 interface DropdownMenuProps {
@@ -57,7 +57,7 @@ const DropdownMenu = ({ items, isVisible }: DropdownMenuProps) => {
                           <div className="flex items-center p-2">
                             <div className="w-14 h-14 p-2 bg-primary-light flex justify-center items-center mr-3 rounded-lg">
                               {item.icon && (
-                                <item.icon className="h-6 w-6 text-primary group-hover:text-primary transition-colors" />
+                                <img src={item.icon} className="h-8 w-8" />
                               )}
                             </div>
                             <div>

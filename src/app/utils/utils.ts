@@ -6,22 +6,27 @@
 import {
   MessageSquare,
   Users,
-  BookOpen,
   BarChart3,
-  FileText,
-  FileQuestion,
   LucideIcon,
   Clock,
   Shield,
   Zap,
-  Users2,
-  Video,
 } from "lucide-react";
+
+import crm from "@/app/assets/greenIcons/crm.svg";
+import bot from "@/app/assets/greenIcons/bot.svg";
+import unified from "@/app/assets/greenIcons/unified.svg";
+import bulk from "@/app/assets/greenIcons/bulk.svg";
+import blog from "@/app/assets/greenIcons/blogs.svg";
+import video from "@/app/assets/greenIcons/videos.svg";
+import faq from "@/app/assets/greenIcons/faq.svg";
+import support from "@/app/assets/greenIcons/support.svg";
+
 export interface DropdownItem {
   name: string;
   href: string;
   description?: string;
-  icon?: React.ComponentType<{ className?: string }>;
+  icon?: string;
 }
 export interface NavigationItem {
   id: number;
@@ -29,7 +34,7 @@ export interface NavigationItem {
   description?: string;
   href?: string;
   dropdown?: DropdownItem[];
-  icon?: LucideIcon;
+  icon?: string;
 }
 export const navigation: NavigationItem[] = [
   {
@@ -42,25 +47,25 @@ export const navigation: NavigationItem[] = [
         name: "CRM",
         href: "/products/crm",
         description: "Customer relationship management",
-        icon: Users,
+        icon: crm,
       },
       {
         name: "Chatbot",
         href: "/products/chatbot",
         description: "AI-powered customer support",
-        icon: MessageSquare,
+        icon: bot,
       },
       {
         name: "Unified Messaging",
         href: "/products/crm",
         description: "Vestibulum tempus imperdiet",
-        icon: Users2,
+        icon: unified,
       },
       {
         name: "Bulk Messaging",
         href: "/products/bulkmessage",
         description: "Vestibulum tempus imperdiet",
-        icon: BarChart3,
+        icon: bulk,
       },
     ],
   },
@@ -74,25 +79,25 @@ export const navigation: NavigationItem[] = [
         name: "Blogs",
         href: "/resources/blogs",
         description: "API docs and guides",
-        icon: BookOpen,
+        icon: blog,
       },
       {
         name: "Videos",
         href: "/resources/videos",
         description: "Get support and answers",
-        icon: Video,
+        icon: video,
       },
       {
         name: "FAQs",
         href: "/resources/faq",
         description: "Latest news and insights",
-        icon: FileText,
+        icon: faq,
       },
       {
         name: "Support",
         href: "/resources/support",
         description: "For more questionaires",
-        icon: FileQuestion,
+        icon: support,
       },
     ],
   },
