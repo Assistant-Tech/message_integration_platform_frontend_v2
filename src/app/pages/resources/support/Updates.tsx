@@ -1,15 +1,16 @@
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { useState } from "react";
-
-import { APP_ROUTES } from "@/app/constants/routes";
-import { Agreement, Breadcrumb, Button, Input } from "@/app/components/ui";
 import { MessageSquare } from "lucide-react";
+
 import clock from "@/app/assets/greenIcons/clock.svg";
+
+import { Agreement, Breadcrumb, Button, Input } from "@/app/components/ui";
+import { APP_ROUTES } from "@/app/constants/routes";
 import essentials from "@/app/assets/greenIcons/essentials.svg";
 import { GetStarted } from "@/app/pages/landing/";
 import { NewsLetter } from "@/app/components/common";
-import SupportCrm from "./SupportCrm";
+import { BlogCard, SupportCrm } from "@/app/pages/resources/components";
 
 const Updates = () => {
   const SupportCrumb = [
@@ -288,8 +289,10 @@ const Updates = () => {
       </div>
 
       {/* CRM section */}
-      {/* Add new section here must be responsive */}
       <SupportCrm />
+
+      {/* Blog Card Section */}
+      <BlogCard />
 
       {/* GET STARTED */}
       <div className="relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] w-screen">

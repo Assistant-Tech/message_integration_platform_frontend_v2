@@ -33,7 +33,7 @@ const SupportCrm = () => {
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.1 }}
-      className="py-16 lg:py-24"
+      className="py-16 lg:pb-24"
     >
       <div>
         {/* Mobile & Tablet Layout */}
