@@ -10,7 +10,7 @@ import {
   MenuMobileToggle,
 } from "@/app/components/common";
 import { useScrollEffect } from "@/app/hooks/ui/useScrollEffect";
-import { DemoDialog } from "@/app/features/auth";
+import { DemoDialog } from "@/app/components/common/Demo";
 
 const Navbar = ({ offsetTop = false }: { offsetTop?: boolean }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

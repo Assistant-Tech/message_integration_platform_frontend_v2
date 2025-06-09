@@ -9,6 +9,7 @@ import {
   Policy,
   TermsCondition,
   Updates,
+  Demo,
 } from "@/app/pages";
 import { APP_ROUTES } from "@/app/constants/routes";
 import { ProductLayout, ResourceLayout } from "@/app/components/layout";
@@ -17,6 +18,7 @@ const PublicRoutes = () => {
   return (
     <Routes>
       <Route path={APP_ROUTES.PUBLIC.HOME} element={<Landing />} />
+      <Route path={APP_ROUTES.PUBLIC.DEMO} element={<Demo />} />
 
       {/* Product Routes */}
       <Route

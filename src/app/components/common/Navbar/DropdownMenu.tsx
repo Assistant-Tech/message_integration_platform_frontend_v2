@@ -110,6 +110,7 @@ const DropdownMenu = ({ items, isVisible }: DropdownMenuProps) => {
                     variant="secondary"
                     IconRight={<ArrowUpRight size={24} />}
                     className="flex flex-cols justify-center items-center"
+                    redirectTo="/demo"
                   />
                 </div>
               </div>

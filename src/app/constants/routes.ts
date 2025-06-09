@@ -9,6 +9,7 @@ export const APP_ROUTES = {
     UNAUTHORIZED: "/unauthorized",
     PRICING: "/pricing",
     PRODUCTS: "/products",
+    DEMO: "/demo",
 
     // For the ["/product"]
     PRODUCTS_OVERVIEW: "/products",
