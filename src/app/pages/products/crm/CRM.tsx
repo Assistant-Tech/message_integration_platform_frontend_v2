@@ -211,11 +211,11 @@ const CRM: React.FC = () => {
         </div>
 
         {/* SCALE YOUR BUSINESS SECTION */}
-        <div className="flex flex-col lg:flex-row items-center gap-8 sm:gap-12 lg:gap-16 py-2 sm:py-16 md:py-20 lg:py-24">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20 px-4 sm:px-6 lg:px-px py-16 sm:py-20 lg:py-24">
           {/* Image Section */}
-          <motion.div className="relative w-full lg:w-1/2 max-w-7xl order-2 lg:order-1">
+          <motion.div className="relative w-full lg:w-1/2 max-w-4xl">
             {/* Background decoration */}
-            <div className="absolute -left-4 sm:-left-8 md:-left-16 bottom-0 -z-10">
+            <div className="absolute -left-6 sm:-left-10 md:-left-16 bottom-0 -z-10">
               <Circle
                 size={80}
                 className="opacity-65 sm:w-[100px] sm:h-[100px] md:w-[150px] md:h-[150px] text-orange-400"
@@ -223,7 +223,7 @@ const CRM: React.FC = () => {
             </div>
 
             {/* Main image */}
-            <motion.figure className="rounded-2xl overflow-hidden pe-20">
+            <motion.figure className="rounded-2xl overflow-hidden">
               <img
                 src={business}
                 alt="Online business dashboard"
@@ -232,60 +232,48 @@ const CRM: React.FC = () => {
             </motion.figure>
 
             {/* Overlapping image */}
-            <motion.figure className="absolute -bottom-4 sm:-bottom-8 md:-bottom-12 right-2 sm:right-6 md:right-10 w-32 sm:w-48 md:w-64 lg:w-72 rounded-xl sm:rounded-2xl overflow-hidden border-2 sm:border-4 border-white">
+            <motion.figure className="absolute -bottom-6 sm:-bottom-10 md:-bottom-14 right-4 sm:right-8 md:right-12 w-36 sm:w-48 md:w-64 lg:w-72 rounded-2xl overflow-hidden border-4 border-white shadow-xl">
               <img
                 src={purchase}
                 alt="Purchase analytics"
-                className="w-full h-auto object-cover rounded-xl sm:rounded-2xl"
+                className="w-full h-auto object-cover"
               />
             </motion.figure>
           </motion.div>
-
-          {/* Content Section */}
-          <motion.div className="w-full lg:w-1/2 lg:max-w-xl space-y-4 sm:space-y-6 md:space-y-8 order-1 lg:order-2">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-base-black leading-tight">
+          {/* Text Content Section */}
+          <motion.div className="w-full lg:w-1/2 lg:max-w-xl space-y-6 md:space-y-8">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-base-black leading-tight">
               Scale Your Business
             </h2>
-            <p className="text-grey-medium text-sm sm:text-base md:text-lg leading-relaxed">
+            <p className="text-grey-medium text-base sm:text-lg md:text-xl leading-relaxed">
               Whether you're a startup or an enterprise, our AI-enabled CRM
-              helps take your business to next level with intelligent automation
-              and insights.
+              helps take your business to the next level with intelligent
+              automation and insights.
             </p>
 
             {/* Features List */}
-            <ul className="space-y-3 sm:space-y-4 md:space-y-6">
-              <li className="flex items-start gap-3 sm:gap-4">
-                <div className="flex-shrink-0 p-1.5 sm:p-2 bg-primary-light rounded-full mt-0.5">
-                  <Check className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-teal-600" />
-                </div>
-                <span className="text-grey-medium text-sm sm:text-base md:text-lg leading-relaxed">
-                  Online store owners who want to reply fast on social media
-                </span>
-              </li>
-              <li className="flex items-start gap-3 sm:gap-4">
-                <div className="flex-shrink-0 p-1.5 sm:p-2 bg-primary-light rounded-full mt-0.5">
-                  <Check className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-teal-600" />
-                </div>
-                <span className="text-grey-medium text-sm sm:text-base md:text-lg leading-relaxed">
-                  Small businesses that want to support customers better
-                </span>
-              </li>
-              <li className="flex items-start gap-3 sm:gap-4">
-                <div className="flex-shrink-0 p-1.5 sm:p-2 bg-primary-light rounded-full mt-0.5">
-                  <Check className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-teal-600" />
-                </div>
-                <span className="text-grey-medium text-sm sm:text-base md:text-lg leading-relaxed">
-                  Big enterprises looking for efficiency, control and long-term
-                  value
-                </span>
-              </li>
+            <ul className="space-y-4 md:space-y-5">
+              {[
+                "Online store owners who want to reply fast on social media",
+                "Small businesses that want to support customers better",
+                "Big enterprises looking for efficiency, control and long-term value",
+              ].map((text, idx) => (
+                <li key={idx} className="flex items-start gap-4">
+                  <div className="flex-shrink-0 p-2 bg-primary-light rounded-full mt-1">
+                    <Check className="w-4 h-4 md:w-5 md:h-5 text-teal-600" />
+                  </div>
+                  <span className="text-grey-medium text-base md:text-lg leading-relaxed">
+                    {text}
+                  </span>
+                </li>
+              ))}
             </ul>
 
             <Button
               label="Book a Demo"
               variant="primary"
               redirectTo="/demo"
-              className="w-full sm:w-auto sm:px-8 md:px-10 h-12 sm:h-14 text-base font-medium mt-6 sm:mt-8"
+              className="w-full sm:w-auto px-6 sm:px-8 md:px-10 h-12 sm:h-14 text-base font-medium mt-8"
             />
           </motion.div>
         </div>

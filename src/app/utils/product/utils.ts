@@ -77,7 +77,7 @@ export const benefits: BenefitProps[] = [
 */
 
 import onboarding from "@/app/assets/greenIcons/onboarding.svg";
-import subscription from "@/app/assets/greenIcons/subscription.svg";
+import subscription from "@/app/assets/greenIcons/unified.svg";
 import updates from "@/app/assets/greenIcons/updates.svg";
 
 export const smartCardData = [
