@@ -9,6 +9,7 @@ import clock from "@/app/assets/greenIcons/clock.svg";
 import essentials from "@/app/assets/greenIcons/essentials.svg";
 import { GetStarted } from "@/app/pages/landing/";
 import { NewsLetter } from "@/app/components/common";
+import SupportCrm from "./SupportCrm";
 
 const Updates = () => {
   const SupportCrumb = [
@@ -285,6 +286,10 @@ const Updates = () => {
           </div>
         </motion.div>
       </div>
+
+      {/* CRM section */}
+      {/* Add new section here must be responsive */}
+      <SupportCrm />
 
       {/* GET STARTED */}
       <div className="relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] w-screen">

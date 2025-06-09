@@ -110,10 +110,10 @@ const CRM: React.FC = () => {
                 />
               </div>
 
-              <p className="body-regular-16 text-grey-medium">
+              <div className="body-regular-16 text-grey-medium">
                 No credit card needed.
                 <Agreement />
-              </p>
+              </div>
             </div>
 
             {/* Features Grid */}

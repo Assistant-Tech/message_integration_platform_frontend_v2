@@ -16,7 +16,9 @@ const NewsLetter = () => {
       <div className="flex flex-col justify-center items-center gap-4 w-full max-w-md">
         <Input placeholder="Enter your email address" className="w-full py-3" />
         <Button label="Subscribe" variant="primary" className="w-full py-3" />
-        <Agreement />
+        <div className="text-start text-grey-medium">
+          <Agreement />
+        </div>
       </div>
     </Flex>
   );
