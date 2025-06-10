@@ -9,20 +9,8 @@ const SupportCrm = () => {
     visible: {
       opacity: 1,
       transition: {
-        duration: 0.8,
-        staggerChildren: 0.3,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        ease: "easeOut",
+        duration: 0.1,
+        staggerChildren: 0.4,
       },
     },
   };
@@ -33,22 +21,19 @@ const SupportCrm = () => {
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.1 }}
-      className="py-16 lg:pb-24"
+      className="py-10 lg:pb-24"
     >
       <div>
         {/* Mobile & Tablet Layout */}
         <div className="block lg:hidden space-y-8">
           {/* Title */}
-          <motion.h2
-            variants={itemVariants}
-            className="h2-bold-40 text-grey text-center"
-          >
+          <motion.h2 className="h2-bold-40 text-grey text-center">
             Streamline Customer Relations with Advanced{" "}
             <span className="text-primary">CRM Solutions</span>
           </motion.h2>
 
           {/* Left Image with Play Button */}
-          <motion.div variants={itemVariants} className="w-full">
+          <motion.div className="w-full">
             <div className="relative rounded-2xl overflow-hidden w-full">
               <figure>
                 <img
@@ -73,7 +58,7 @@ const SupportCrm = () => {
           </motion.div>
 
           {/* Right Image */}
-          <motion.div variants={itemVariants} className="w-full">
+          <motion.div className="w-full">
             <div className="w-full rounded-2xl overflow-hidden">
               <img
                 src={crm1}
@@ -84,11 +69,8 @@ const SupportCrm = () => {
           </motion.div>
 
           {/* Text Content */}
-          <motion.div variants={itemVariants} className="w-full">
-            <motion.p
-              variants={itemVariants}
-              className="body-regular-16 text-grey-medium text-center md:text-left"
-            >
+          <motion.div className="w-full">
+            <motion.p className="body-regular-16 text-grey-medium text-center md:text-left">
               Fusce volutpat lectus et nisl consectetur finibus. In vitae
               scelerisque augue, in varius eros. Nunc sapien diam, euismod et
               pretium id, volutpat et tortor. In vulputate lorem quis dui
@@ -102,11 +84,8 @@ const SupportCrm = () => {
         {/* Desktop Layout */}
         <div className="hidden lg:grid lg:grid-cols-5 gap-12 items-start">
           {/* Left: Image & Play Button - Takes 3/5 of width */}
-          <motion.div
-            variants={itemVariants}
-            className="lg:col-span-3 space-y-6"
-          >
-            <motion.h2 variants={itemVariants} className="h2-bold-40 text-grey">
+          <motion.div className="lg:col-span-3 space-y-6">
+            <motion.h2 className="h2-bold-40 text-grey">
               Streamline Customer Relations with Advanced{" "}
               <span className="text-primary">CRM Solutions</span>
             </motion.h2>
@@ -136,10 +115,7 @@ const SupportCrm = () => {
           </motion.div>
 
           {/* Right: Info & Secondary Image - Takes 2/5 of width */}
-          <motion.div
-            variants={itemVariants}
-            className="lg:col-span-2 flex flex-col h-full"
-          >
+          <motion.div className="lg:col-span-2 flex flex-col h-full">
             <motion.div className="w-full flex-1 rounded-2xl overflow-hidden">
               <img
                 src={crm1}
@@ -149,10 +125,7 @@ const SupportCrm = () => {
             </motion.div>
 
             <div className="pt-6 flex-shrink-0">
-              <motion.p
-                variants={itemVariants}
-                className="body-regular-16 text-grey-medium"
-              >
+              <motion.p className="body-regular-16 text-grey-medium">
                 Fusce volutpat lectus et nisl consectetur finibus. In vitae
                 scelerisque augue, in varius eros. Nunc sapien diam, euismod et
                 pretium id, volutpat et tortor. In vulputate lorem quis dui

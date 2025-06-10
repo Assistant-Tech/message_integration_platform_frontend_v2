@@ -14,10 +14,11 @@ export const useRedirect = () => {
 
     if (to) {
       navigate(to);
+
       if (scroll) {
-        requestAnimationFrame(() => {
+        setTimeout(() => {
           window.scrollTo({ top: scrollTop, behavior: scrollBehavior });
-        });
+        }, 0);
       }
     }
   };

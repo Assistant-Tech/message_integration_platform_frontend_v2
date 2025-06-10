@@ -13,6 +13,7 @@ import {
 } from "@/app/pages";
 import { APP_ROUTES } from "@/app/constants/routes";
 import { ProductLayout, ResourceLayout } from "@/app/components/layout";
+import Product from "../pages/products/Product";
 
 const PublicRoutes = () => {
   return (
@@ -25,6 +26,11 @@ const PublicRoutes = () => {
         path={APP_ROUTES.PUBLIC.PRODUCTS_OVERVIEW}
         element={<ProductLayout />}
       >
+        <Route
+          path={APP_ROUTES.PUBLIC.PRODUCTS_OVERVIEW}
+          element={<Product />}
+        />
+
         <Route path={APP_ROUTES.PUBLIC.CRM} element={<CRM />} />
       </Route>
 

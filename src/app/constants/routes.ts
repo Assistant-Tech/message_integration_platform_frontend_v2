@@ -9,6 +9,7 @@ export const APP_ROUTES = {
     UNAUTHORIZED: "/unauthorized",
     PRICING: "/pricing",
     PRODUCTS: "/products",
+    SLUG: (slug: string) => `/${slug}`,
     DEMO: "/demo",
 
     // For the ["/product"]

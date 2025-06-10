@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import testImage from "@/app/assets/images/navbar-image-test.webp";
 import { Button } from "@/app/components/ui";
 import { ArrowUpRight } from "lucide-react";
+import { APP_ROUTES } from "@/app/constants/routes";
 
 interface DropdownItem {
   name: string;
@@ -37,9 +38,12 @@ const DropdownMenu = ({ items, isVisible }: DropdownMenuProps) => {
                   {/* ---------- left column ---------- */}
                   <div className="flex flex-col">
                     <article className="flex flex-col items-start">
-                      <h1 className="h4-bold-24 text-base-black">
-                        {items.name}
-                      </h1>
+                      <Link to={APP_ROUTES.PUBLIC.SLUG(items.name)}>
+                        <h1 className="h4-bold-24 text-primary">
+                          {items.name}
+                        </h1>
+                      </Link>
+
                       <p className="body-regular-16 text-base-black">
                         Vestibulum tempus imperdiet sem ac porttitor. Vivamus
                         pulvinar commodo orci, suscipit porttitor velit
