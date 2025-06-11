@@ -48,7 +48,7 @@ const About = () => {
     },
     {
       element: (
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-16 items-center w-full">
           {/* Left */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -210,7 +210,7 @@ const About = () => {
   ];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pt-20">
       <Theme>
         <Navbar />
         {sections.map(({ element, useContainer = true }, idx) => (

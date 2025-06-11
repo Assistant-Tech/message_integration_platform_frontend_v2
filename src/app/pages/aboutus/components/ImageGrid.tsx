@@ -26,7 +26,7 @@ const ImageGrid: React.FC = () => {
   ];
 
   return (
-    <div className="grid grid-cols-3 grid-rows-3 gap-4 w-full ">
+    <div className="grid grid-cols-3 grid-rows-3 gap-4 min-w-full ">
       {images.map((image, index) => (
         <motion.div
           key={image.id}

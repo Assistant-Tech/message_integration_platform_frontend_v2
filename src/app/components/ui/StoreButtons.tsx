@@ -19,7 +19,7 @@ const StoreButtons: React.FC<StoreButtonsProps> = ({
   const layoutClass = direction === "row" ? "flex-row" : "flex-col";
 
   return (
-    <div className={`flex ${layoutClass} gap-2 w-fit pb-6 ${className}`}>
+    <div className={`flex ${layoutClass} gap-4 w-fit pb-6 ${className}`}>
       {stores.map((store, i) => (
         <motion.div
           key={i}

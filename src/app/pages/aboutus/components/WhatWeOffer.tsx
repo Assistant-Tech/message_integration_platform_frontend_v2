@@ -46,7 +46,7 @@ const WhatWeOffer = () => {
 
   return (
     <Section>
-      <motion.div className="flex flex-col lg:flex-row justify-between gap-16 ">
+      <motion.div className="flex flex-col lg:flex-row justify-between gap-16 py-20">
         {/* Left Side Typo Section */}
         <article className="max-w-2xl flex flex-col justify-center items-start">
           <div className="flex flex-col items-center text-start">
