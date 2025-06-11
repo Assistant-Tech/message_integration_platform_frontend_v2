@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { services } from "@/app/utils/product/utils";
 import ProductCard from "@/app/components/ui/ProductCard";
+import { Badge } from "@/app/components/ui";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -30,6 +31,7 @@ const ProductGrid = () => {
         variants={containerVariants}
         className="text-center"
       >
+        <Badge title="WHAT WE OFFER" className="my-6"/>
         <motion.h2
           variants={itemVariants}
           className="h2-bold-40 mb-4 text-gray-900"

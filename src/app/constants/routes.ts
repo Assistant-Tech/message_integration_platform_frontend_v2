@@ -4,7 +4,7 @@ export const APP_ROUTES = {
     HOME: "/",
     LOGIN: "/login",
     REGISTER: "/register",
-    ABOUT: "/about",
+    ABOUT: "/aboutus",
     CONTACT: "/contact",
     UNAUTHORIZED: "/unauthorized",
     PRICING: "/pricing",

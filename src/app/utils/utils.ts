@@ -101,7 +101,7 @@ export const navigation: NavigationItem[] = [
       },
     ],
   },
-  { id: 3, name: "About Us", href: "/about" },
+  { id: 3, name: "About Us", href: "/aboutus" },
   { id: 4, name: "Pricing", href: "/pricing" },
 ];
 
@@ -553,4 +553,21 @@ export const SocialFooter: SocialLink[] = [
     color: "#25D366",
     size: 44,
   },
+];
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ ABout US data utils
+─────────────────────────────────────────────────────────────────────────────
+*/
+export const features: string[] = [
+  "Online store owners who want to reply fast on social media",
+  "Small businesses that want to support customers better",
+  "Big enterprises looking for efficiency, control and long-term value.",
+];
+export const companies: string[] = [
+  "TechCorp Solutions",
+  "Digital Dynamics",
+  "Innovation Labs",
+  "Future Systems",
+  "Cloud Ventures",
 ];

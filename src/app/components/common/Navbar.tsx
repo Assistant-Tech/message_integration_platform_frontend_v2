@@ -57,7 +57,7 @@ const Navbar = ({ offsetTop = false }: { offsetTop?: boolean }) => {
           <nav className="flex gap-2 lg:hidden items-center">
             {!mobileMenuOpen && (
               <Link to={APP_ROUTES.PUBLIC.REGISTER}>
-                <Button label="Start Free Trial" variant="primary" />
+                <Button label="Start Free Trial" variant="primary" className="py-3" />
               </Link>
             )}
             <MenuMobileToggle

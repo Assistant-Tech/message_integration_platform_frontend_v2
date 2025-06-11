@@ -4,10 +4,10 @@ import { useState } from "react";
 import { MessageSquare } from "lucide-react";
 
 import clock from "@/app/assets/greenIcons/clock.svg";
+import essentials from "@/app/assets/greenIcons/essentials.svg";
 
 import { Agreement, Breadcrumb, Button, Input } from "@/app/components/ui";
 import { APP_ROUTES } from "@/app/constants/routes";
-import essentials from "@/app/assets/greenIcons/essentials.svg";
 import { GetStarted } from "@/app/pages/landing/";
 import { NewsLetter } from "@/app/components/common";
 import { BlogCard, SupportCrm } from "@/app/pages/resources/components";
