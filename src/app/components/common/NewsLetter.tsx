@@ -6,7 +6,7 @@ const NewsLetter = () => {
     <Flex
       justify="between"
       align="center"
-      className="flex-col md:flex-col lg:flex-row py-8 border border-grey-light bg-base-white px-6 md:px-10 lg:px-16 rounded-2xl gap-6"
+      className="flex-col md:flex-col lg:flex-row py-8 border border-grey-light bg-base-white px-6 md:px-10 lg:px-16 rounded-2xl gap-6 mb-20"
     >
       <div className="text-start lg:max-w-1/2 w-full">
         <h3 className="h3-bold-32 text-base-black">

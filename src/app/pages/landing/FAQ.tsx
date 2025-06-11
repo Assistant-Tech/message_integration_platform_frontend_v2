@@ -1,11 +1,12 @@
+import Section from "@/app/components/layout/Section";
 import { Accordian, Badge } from "@/app/components/ui";
 import { faqData } from "@/app/utils/utils";
 import { Flex, Box } from "@radix-ui/themes";
 
 const FAQ = () => {
   return (
-    <div className="py-20" id="faq">
-      <div className="max-w-[1600px] mx-auto">
+    <Section>
+      <div className="py-20" id="faq">
         <div className="bg-base-white rounded-2xl border-2 border-grey-light overflow-hidden">
           {/* Responsive Flex Container */}
           <Flex
@@ -40,7 +41,7 @@ const FAQ = () => {
           </Flex>
         </div>
       </div>
-    </div>
+    </Section>
   );
 };
 

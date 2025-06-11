@@ -1,148 +1,168 @@
-import React from "react";
-import { motion } from "framer-motion";
-import { Check } from "lucide-react";
-import { CompanyLogo, ImageGrid, Marquee } from "./components";
-import { Button } from "@/app/components/ui";
-import { Navbar } from "@/app/components/common";
-import Section from "@/app/components/layout/Section";
+import { Suspense, lazy } from "react";
+import { Theme } from "@radix-ui/themes";
+import "@radix-ui/themes/styles.css";
 
+import { Navbar, Footer, NewsLetter } from "@/app/components/common";
+import Section from "@/app/components/layout/Section";
+import { Breadcrumb } from "@/app/components/ui";
+import {
+  CompanyLogo,
+  ImageGrid,
+  Marquee,
+  OurTeam,
+  WhatWeOffer,
+} from "@/app/pages/aboutus/components";
+
+import { APP_ROUTES } from "@/app/constants/routes";
+import { companies, features } from "@/app/utils/utils";
 import clock from "@/app/assets/greenIcons/clock.svg";
 import essentials from "@/app/assets/greenIcons/essentials.svg";
-import { companies, features } from "@/app/utils/utils";
 
-const AboutUs: React.FC = () => {
-  return (
-    <Section>
-      <div className="min-h-screen bg-white">
-        <Navbar />
-        {/* Main About Section */}
-        <div className="px-2 lg:px-px pt-20">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Left Content */}
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              className="space-y-8 max-w-xl"
+// Lazy loaded
+const FAQ = lazy(() => import("@/app/pages/landing/FAQ"));
+const GetStarted = lazy(() => import("@/app/pages/landing/GetStarted"));
+const Testimonials = lazy(() => import("@/app/pages/landing/Testimonials"));
+
+import { Check } from "lucide-react";
+import { motion } from "framer-motion";
+import { Button } from "@/app/components/ui";
+
+const About = () => {
+  const AboutCrumb = [
+    { label: "Main Page", href: APP_ROUTES.PUBLIC.HOME },
+    { label: "About Us" },
+  ];
+
+  const sections = [
+    {
+      element: (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="mb-4 sm:mb-6 md:mb-8"
+        >
+          <Breadcrumb items={AboutCrumb} />
+        </motion.div>
+      ),
+    },
+    {
+      element: (
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          {/* Left */}
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            className="space-y-8 max-w-xl"
+          >
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="h3-bold-32 text-grey"
             >
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="h2-bold-40 text-base-black "
-              >
-                About Us
-              </motion.h1>
+              Talk to All Your Customers in One Place
+            </motion.h2>
 
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="h3-bold-32 text-grey"
-              >
-                Talk to All Your Customers in One Place
-              </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="h5-regular-16 text-grey-medium"
+            >
+              Just one clean, easy AI powered app to manage all your chats —
+              WhatsApp, Instagram, Facebook, Telegram, and more.
+            </motion.p>
 
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="h5-reulgar-16 text-grey-medium"
-              >
-                Just one clean, easy AI powered app to manage all your chats —
-                WhatsApp, Instagram, Facebook, Telegram, and more.
-              </motion.p>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-                className="space-y-4"
-              >
-                {features.map((feature, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.6 + index * 0.1 }}
-                    className="flex items-start space-x-3"
-                  >
-                    <div className="flex-shrink-0 w-6 h-6 bg-primary-light rounded-full flex items-center justify-center mt-0.5">
-                      <Check className="w-4 h-4 text-primary" />
-                    </div>
-                    <p className="body-regular-16 text-grey-medium">
-                      {feature}
-                    </p>
-                  </motion.div>
-                ))}
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.9 }}
-                className="flex flex-col lg:flex-row gap-4"
-              >
-                <Button
-                  label="Start 14-days Free Trial"
-                  variant="primary"
-                  className="w-56 button-semi-bold-16 px-4 py-3"
-                />
-                <Button
-                  label="Book a Demo"
-                  variant="outlined"
-                  className="w-56 button-semi-bold-16 px-4 py-3"
-                />
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.0 }}
-                className="flex flex-wrap gap-8"
-              >
-                <div className="flex items-center space-x-2">
-                  <img src={clock} alt="round_clock.svg" className="w-8 h-8" />
-                  <span className="text-primary font-semibold">
-                    Round the Clock Reliability
-                  </span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <img
-                    src={essentials}
-                    alt="essentials.svg"
-                    className="w-8 h-8"
-                  />
-                  <span className="text-primary font-semibold">
-                    All Essential Solutions
-                  </span>
-                </div>
-              </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="space-y-4"
+            >
+              {features.map((feature, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.6 + index * 0.1 }}
+                  className="flex items-start space-x-3"
+                >
+                  <div className="w-6 h-6 bg-primary-light rounded-full flex items-center justify-center mt-0.5">
+                    <Check className="w-4 h-4 text-primary" />
+                  </div>
+                  <p className="body-regular-16 text-grey-medium">{feature}</p>
+                </motion.div>
+              ))}
             </motion.div>
 
-            {/* Right Image Grid */}
             <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              className="flex justify-center lg:justify-end items-center max-w-full"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9 }}
+              className="flex flex-col lg:flex-row gap-4"
             >
-              <ImageGrid />
+              <Button
+                label="Start 14-days Free Trial"
+                variant="primary"
+                className="w-56 button-semi-bold-16 px-4 py-3"
+              />
+              <Button
+                label="Book a Demo"
+                variant="outlined"
+                className="w-56 button-semi-bold-16 px-4 py-3"
+              />
             </motion.div>
-          </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.0 }}
+              className="flex flex-wrap gap-8"
+            >
+              <div className="flex items-center space-x-2">
+                <img src={clock} alt="clock icon" className="w-8 h-8" />
+                <span className="text-primary font-semibold">
+                  Round the Clock Reliability
+                </span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <img
+                  src={essentials}
+                  alt="essentials icon"
+                  className="w-8 h-8"
+                />
+                <span className="text-primary font-semibold">
+                  All Essential Solutions
+                </span>
+              </div>
+            </motion.div>
+          </motion.div>
+
+          {/* Right Image Grid */}
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="flex justify-center lg:justify-end items-center max-w-full"
+          >
+            <ImageGrid />
+          </motion.div>
         </div>
-
-        {/* Marquee Section */}
+      ),
+    },
+    {
+      element: (
         <div className="relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] w-screen py-10">
           <Marquee speed={30}>
             <div className="flex">
               {companies.map((company, index) => (
                 <CompanyLogo key={index} name={company} index={index} />
               ))}
-              {/* Duplicate for seamless loop */}
               {companies.map((company, index) => (
                 <CompanyLogo
-                  key={`duplicate-${index}`}
+                  key={`dupe-${index}`}
                   name={company}
                   index={index}
                 />
@@ -150,9 +170,57 @@ const AboutUs: React.FC = () => {
             </div>
           </Marquee>
         </div>
-      </div>
-    </Section>
+      ),
+      useContainer: false,
+    },
+    { element: <WhatWeOffer /> },
+    {
+      element: (
+        <Suspense fallback={<div>Loading FAQ...</div>}>
+          <FAQ />
+        </Suspense>
+      ),
+    },
+    {
+      element: (
+        <Suspense fallback={<div>Loading Get Started...</div>}>
+          <GetStarted />
+        </Suspense>
+      ),
+      useContainer: false,
+    },
+    {
+      element: (
+        <Suspense fallback={<div>Loading Get Started...</div>}>
+          <OurTeam />
+        </Suspense>
+      ),
+      useContainer: false,
+    },
+    {
+      element: (
+        <Suspense fallback={<div>Loading Testimonials...</div>}>
+          <Testimonials />
+        </Suspense>
+      ),
+      useContainer: false,
+    },
+    { element: <NewsLetter /> },
+    { element: <Footer />, useContainer: false },
+  ];
+
+  return (
+    <div className="min-h-screen">
+      <Theme>
+        <Navbar />
+        {sections.map(({ element, useContainer = true }, idx) => (
+          <Section key={idx} useContainer={useContainer}>
+            {element}
+          </Section>
+        ))}
+      </Theme>
+    </div>
   );
 };
 
-export default AboutUs;
+export default About;

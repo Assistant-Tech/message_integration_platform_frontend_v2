@@ -571,3 +571,124 @@ export const companies: string[] = [
   "Future Systems",
   "Cloud Ventures",
 ];
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ ABout US TEAM data utils
+─────────────────────────────────────────────────────────────────────────────
+*/
+
+export interface cardLink {
+  platform: "linkedin" | "instagram" | "facebook";
+  url: string;
+}
+
+export interface TeamMember {
+  name: string;
+  title: string;
+  imageUrl: string;
+  socialLinks?: cardLink[];
+  className?: string;
+}
+
+export const teamMembers: TeamMember[] = [
+  {
+    name: "Rhonda Rhodes",
+    title: "CEO",
+    imageUrl:
+      "https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    socialLinks: [
+      { platform: "facebook", url: "https://facebook.com/sarahjohnson" },
+      { platform: "instagram", url: "https://instagram.com/sarahjohnson" },
+      { platform: "linkedin", url: "https://linkedin.com/in/sarahjohnson" },
+    ],
+  },
+  {
+    name: "John Smith",
+    title: "CTO",
+    imageUrl:
+      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    socialLinks: [
+      { platform: "facebook", url: "https://facebook.com/sarahjohnson" },
+      { platform: "instagram", url: "https://instagram.com/sarahjohnson" },
+      { platform: "linkedin", url: "https://linkedin.com/in/sarahjohnson" },
+    ],
+  },
+  {
+    name: "Sarah Johnson",
+    title: "MD",
+    imageUrl:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    socialLinks: [
+      { platform: "facebook", url: "https://facebook.com/sarahjohnson" },
+      { platform: "instagram", url: "https://instagram.com/sarahjohnson" },
+      { platform: "linkedin", url: "https://linkedin.com/in/sarahjohnson" },
+    ],
+  },
+  {
+    name: "Michael Lee",
+    title: "Product Manager",
+    imageUrl:
+      "https://images.unsplash.com/photo-1527980965255-d3b416303d12?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    socialLinks: [
+      { platform: "facebook", url: "https://facebook.com/sarahjohnson" },
+      { platform: "instagram", url: "https://instagram.com/sarahjohnson" },
+      { platform: "linkedin", url: "https://linkedin.com/in/sarahjohnson" },
+    ],
+  },
+  {
+    name: "Emily Davis",
+    title: "UX Designer",
+    imageUrl:
+      "https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    socialLinks: [
+      { platform: "facebook", url: "https://facebook.com/sarahjohnson" },
+      { platform: "instagram", url: "https://instagram.com/sarahjohnson" },
+      { platform: "linkedin", url: "https://linkedin.com/in/sarahjohnson" },
+    ],
+  },
+  {
+    name: "David Kim",
+    title: "Lead Developer",
+    imageUrl:
+      "https://images.unsplash.com/photo-1552058544-f2b08422138a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    socialLinks: [
+      { platform: "facebook", url: "https://facebook.com/sarahjohnson" },
+      { platform: "instagram", url: "https://instagram.com/sarahjohnson" },
+      { platform: "linkedin", url: "https://linkedin.com/in/sarahjohnson" },
+    ],
+  },
+  {
+    name: "Sophia Martinez",
+    title: "Content Strategist",
+    imageUrl:
+      "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    socialLinks: [
+      { platform: "facebook", url: "https://facebook.com/sarahjohnson" },
+      { platform: "instagram", url: "https://instagram.com/sarahjohnson" },
+      { platform: "linkedin", url: "https://linkedin.com/in/sarahjohnson" },
+    ],
+  },
+  {
+    name: "James Wilson",
+    title: "QA Engineer",
+    imageUrl:
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    socialLinks: [
+      { platform: "facebook", url: "https://facebook.com/sarahjohnson" },
+      { platform: "instagram", url: "https://instagram.com/sarahjohnson" },
+      { platform: "linkedin", url: "https://linkedin.com/in/sarahjohnson" },
+    ],
+  },
+  {
+    name: "Ava Thompson",
+    title: "Community Manager",
+    imageUrl:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    socialLinks: [
+      { platform: "facebook", url: "https://facebook.com/sarahjohnson" },
+      { platform: "instagram", url: "https://instagram.com/sarahjohnson" },
+      { platform: "linkedin", url: "https://linkedin.com/in/sarahjohnson" },
+    ],
+  },
+];

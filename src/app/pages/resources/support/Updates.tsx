@@ -83,7 +83,7 @@ const Updates = () => {
           <Breadcrumb items={SupportCrumb} />
         </motion.div>
 
-        {/* CREATE CHATBOT  */}
+        {/* CREATE CHATBOT  */}q
         <motion.div
           variants={containerVariants}
           initial="hidden"
