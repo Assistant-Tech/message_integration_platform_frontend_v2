@@ -30,21 +30,23 @@ import { Button } from "@/app/components/ui";
 
 const About = () => {
   const AboutCrumb = [
-    { label: "Main Page", href: APP_ROUTES.PUBLIC.HOME },
+    { label: "Home", href: APP_ROUTES.PUBLIC.HOME },
     { label: "About Us" },
   ];
 
   const sections = [
     {
       element: (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-4 sm:mb-6 md:mb-8"
-        >
-          <Breadcrumb items={AboutCrumb} />
-        </motion.div>
+        <div className="pt-4">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mb-4 sm:mb-6 md:mb-8"
+          >
+            <Breadcrumb items={AboutCrumb} />
+          </motion.div>
+        </div>
       ),
     },
     {
