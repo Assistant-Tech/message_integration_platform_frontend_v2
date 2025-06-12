@@ -9,6 +9,7 @@ import {
   CompanyLogo,
   ImageGrid,
   Marquee,
+  OurProcess,
   OurTeam,
   WhatWeOffer,
 } from "@/app/pages/aboutus/components";
@@ -174,6 +175,14 @@ const About = () => {
       useContainer: false,
     },
     { element: <WhatWeOffer /> },
+    {
+      element: (
+        <Suspense fallback={<div>Loading Testimonials...</div>}>
+          <OurProcess />
+        </Suspense>
+      ),
+      useContainer: false,
+    },
     {
       element: (
         <Suspense fallback={<div>Loading FAQ...</div>}>
