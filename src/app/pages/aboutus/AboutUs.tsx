@@ -4,7 +4,6 @@ import "@radix-ui/themes/styles.css";
 
 import { Navbar, Footer, NewsLetter, Loading } from "@/app/components/common";
 import Section from "@/app/components/layout/Section";
-import { Breadcrumb } from "@/app/components/ui";
 import {
   CompanyLogo,
   ImageGrid,
@@ -14,7 +13,6 @@ import {
   WhatWeOffer,
 } from "@/app/pages/aboutus/components";
 
-import { APP_ROUTES } from "@/app/constants/routes";
 import { companies, features } from "@/app/utils/utils";
 import clock from "@/app/assets/greenIcons/clock.svg";
 import essentials from "@/app/assets/greenIcons/essentials.svg";
@@ -50,11 +48,6 @@ const About = () => {
     },
   };
 
-  const AboutCrumb = [
-    { label: "Home", href: APP_ROUTES.PUBLIC.HOME },
-    { label: "About Us" },
-  ];
-
   const sections = [
     {
       element: (
@@ -65,7 +58,7 @@ const About = () => {
             transition={{ duration: 0.5 }}
             className="mb-4 sm:mb-6 md:mb-8"
           >
-            <Breadcrumb items={AboutCrumb} />
+            <h1 className="h2-bold-40 text-base-black pt-10">About Us</h1>
           </motion.div>
         </div>
       ),

@@ -5,9 +5,7 @@ import "@radix-ui/themes/styles.css";
 
 import { Navbar, Footer, Loading } from "@/app/components/common";
 import Section from "@/app/components/layout/Section";
-import { Breadcrumb } from "@/app/components/ui";
 
-import { APP_ROUTES } from "@/app/constants/routes";
 import { PricingPlansTable } from "@/app/pages/pricing/components";
 
 // Lazy loaded
@@ -36,10 +34,6 @@ const PricingPage = () => {
       },
     },
   };
-  const Price = [
-    { label: "Home", href: APP_ROUTES.PUBLIC.HOME },
-    { label: "Pricing" },
-  ];
 
   const sections = [
     {
@@ -51,7 +45,7 @@ const PricingPage = () => {
             transition={{ duration: 0.5 }}
             className="mb-4 sm:mb-6 md:mb-8"
           >
-            <Breadcrumb items={Price} />
+            <h1 className="h2-bold-40 text-base-black pt-10">Pricing</h1>
           </motion.div>
         </div>
       ),
