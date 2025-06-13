@@ -10,7 +10,7 @@ import {
   MenuMobileToggle,
 } from "@/app/components/common";
 import { useScrollEffect } from "@/app/hooks/ui/useScrollEffect";
-import { DemoDialog } from "@/app/components/common/Demo";
+import { DemoDialog } from "@/app/components/common/BookADemo";
 
 const Navbar = ({ offsetTop = false }: { offsetTop?: boolean }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -57,7 +57,11 @@ const Navbar = ({ offsetTop = false }: { offsetTop?: boolean }) => {
           <nav className="flex gap-2 lg:hidden items-center">
             {!mobileMenuOpen && (
               <Link to={APP_ROUTES.PUBLIC.REGISTER}>
-                <Button label="Start Free Trial" variant="primary" className="py-3" />
+                <Button
+                  label="Start Free Trial"
+                  variant="primary"
+                  className="py-3"
+                />
               </Link>
             )}
             <MenuMobileToggle

@@ -1,7 +1,7 @@
 export { default as NotFound } from "./NotFound";
 export { default as Unauthorized } from "./Unauthorized";
 export { default as Landing } from "./Landing";
-export { default as Demo } from "./Demo";
+export { default as Demo } from "./DemoPage";
 
 // About us Exports
 export { default as AboutUs } from "./aboutus/AboutUs";

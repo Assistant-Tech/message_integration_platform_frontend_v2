@@ -1,7 +1,7 @@
 import Section from "@/app/components/layout/Section";
 
 import { Footer, Navbar } from "@/app/components/common";
-import { DemoComponent } from "@/app/components/common/Demo/";
+import { DemoComponent } from "@/app/components/common/BookADemo";
 import { FAQ, GetStarted, Pricing } from "@/app/pages/landing/";
 
 const Demo = () => {
