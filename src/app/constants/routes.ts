@@ -21,6 +21,13 @@ export const APP_ROUTES = {
     // For the ["/resources"]
     RESOURCES_OVERVIEW: "/resources",
     SUPPORT: "/resources/support",
+    BLOG: "/resources/blog",
+    VIDEOS: "/resources/videos",
+    FAQ: "/resources/faq",
+
+    // ["resources/faq"]
+    FAQ_CRM: "/resources/faq/crm",
+
     // ["resources/support"]
     ONBOARDING: "/resources/support/onboarding",
     SUBSCRIPTIONS: "/resources/subscription",

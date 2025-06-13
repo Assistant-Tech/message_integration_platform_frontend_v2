@@ -1,8 +1,12 @@
 import Section from "@/app/components/layout/Section";
 
-import { Footer, Navbar } from "@/app/components/common";
+import {
+  Footer,
+  FrequentlyAskedQuestion,
+  Navbar,
+} from "@/app/components/common";
 import { DemoComponent } from "@/app/components/common/BookADemo";
-import { FAQ, GetStarted, Pricing } from "@/app/pages/landing/";
+import { GetStarted, Pricing } from "@/app/pages/landing/";
 
 const Demo = () => {
   return (
@@ -36,7 +40,7 @@ const Demo = () => {
 
           {/* FAQ Section */}
           <div>
-            <FAQ />
+            <FrequentlyAskedQuestion />
           </div>
         </div>
       </Section>

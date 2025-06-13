@@ -61,7 +61,7 @@ const GetStarted = () => {
             <Button
               label="Start 14-days Free Trial"
               variant="secondary"
-              className="cursor-pointer"
+              className="cursor-pointer px-3 py-3"
             />
           </div>
         </Flex>

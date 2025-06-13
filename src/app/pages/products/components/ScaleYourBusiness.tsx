@@ -8,7 +8,7 @@ import { Button } from "@/app/components/ui";
 
 const ScaleYourBusiness = () => {
   return (
-    <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20 px-4 sm:px-6 lg:px-px py-16 sm:py-20 lg:py-24">
+    <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20 px-4 sm:px-6 lg:px-px py-6 sm:py-20 lg:py-24">
       {/* Image Section */}
       <motion.div className="relative w-full lg:w-1/2 max-w-4xl">
         {/* Background decoration */}

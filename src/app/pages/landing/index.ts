@@ -9,6 +9,6 @@ export { default as ScaleBusiness } from "./ScaleBusiness";
 export { default as BuiltAssistant } from "./BuiltAssistant";
 export { default as Testimonials } from "./Testimonials";
 export { default as Pricing } from "./Pricing";
-export { default as FAQ } from "./FAQ";
+export { default as FAQ } from "./FAQSection";
 export { default as OrderManagement } from "./OrderManagement";
 export { default as SeemlessExperience } from "./SeemlessExperience";

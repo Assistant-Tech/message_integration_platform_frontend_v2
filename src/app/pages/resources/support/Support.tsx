@@ -6,9 +6,9 @@ import { RegisterForm } from "@/app/pages/resources/components";
 import { Breadcrumb, SmartCard } from "@/app/components/ui";
 import { APP_ROUTES } from "@/app/constants/routes";
 import { smartCards } from "@/app/utils/resource/utils";
-import { FAQ, GetStarted } from "@/app/pages/landing/";
+import { GetStarted } from "@/app/pages/landing/";
 import support from "@/app/assets/images/support.webp";
-import { NewsLetter } from "@/app/components/common";
+import { FrequentlyAskedQuestion, NewsLetter } from "@/app/components/common";
 
 const Support = () => {
   const SupportCrumb = [
@@ -132,7 +132,7 @@ const Support = () => {
       </motion.div>
 
       {/* FAQ's Section  */}
-      <FAQ />
+      <FrequentlyAskedQuestion />
       {/* Newsletter */}
       <div className="pb-12">
         <NewsLetter />

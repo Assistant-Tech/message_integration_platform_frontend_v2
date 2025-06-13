@@ -1,20 +1,19 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-import {
-  FAQ,
-  GetStarted,
-  Pricing,
-  SeemlessExperience,
-} from "@/app/pages/landing/";
+import { GetStarted, Pricing, SeemlessExperience } from "@/app/pages/landing/";
 import { APP_ROUTES } from "@/app/constants/routes";
-import { LearnMoreCRM, SmartSolutions, EmpowerBusiness } from "@/app/pages/products/components/";
+import {
+  LearnMoreCRM,
+  SmartSolutions,
+  EmpowerBusiness,
+} from "@/app/pages/products/components/";
 
 import ScaleYourBusiness from "../components/ScaleYourBusiness";
 import { Breadcrumb } from "@/app/components/ui";
+import { FrequentlyAskedQuestion } from "@/app/components/common";
 
 const CRM: React.FC = () => {
-
   const CrmBreadCrumb = [
     { label: "Products", href: APP_ROUTES.PUBLIC.PRODUCTS_OVERVIEW },
     { label: "CRM" },
@@ -34,7 +33,7 @@ const CRM: React.FC = () => {
         </motion.div>
 
         {/* EMPOWER BUSINESS SECTION */}
-       <EmpowerBusiness />
+        <EmpowerBusiness />
 
         {/* SCALE YOUR BUSINESS SECTION */}
 
@@ -58,7 +57,7 @@ const CRM: React.FC = () => {
         <Pricing />
 
         {/* FAQ SECTION */}
-        <FAQ />
+        <FrequentlyAskedQuestion />
       </div>
     </div>
   );

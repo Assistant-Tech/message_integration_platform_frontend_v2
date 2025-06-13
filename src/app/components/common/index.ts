@@ -4,6 +4,7 @@ export { default as Footer } from "./Footer";
 export { default as TrialBanner } from "./TrialBanner";
 export { default as PopupModal } from "./PopupModal";
 export { default as NewsLetter } from "./NewsLetter";
+export { default as FrequentlyAskedQuestion } from "./FrequentlyAskedQuestion";
 
 //Navbar Components
 export { default as NavigationItem } from "./Navbar/NavigationItem";

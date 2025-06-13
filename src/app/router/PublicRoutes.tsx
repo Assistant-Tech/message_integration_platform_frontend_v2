@@ -12,6 +12,7 @@ import {
   Demo,
   AboutUs,
   PricingPage,
+  FAQPage,
 } from "@/app/pages";
 import { APP_ROUTES } from "@/app/constants/routes";
 import { ProductLayout, ResourceLayout } from "@/app/components/layout";
@@ -41,6 +42,14 @@ const PublicRoutes = () => {
         path={APP_ROUTES.PUBLIC.RESOURCES_OVERVIEW}
         element={<ResourceLayout />}
       >
+        {/* Blogs */}
+
+        {/* Videos */}
+
+        {/* FAQ's */}
+        <Route path={APP_ROUTES.PUBLIC.FAQ} element={<FAQPage />} />
+
+        {/* Support */}
         <Route path={APP_ROUTES.PUBLIC.SUPPORT} element={<Support />} />
         {/* Resources/Support/Routes */}
         <Route path={APP_ROUTES.PUBLIC.ONBOARDING} element={<Onboarding />} />

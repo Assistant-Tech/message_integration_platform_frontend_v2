@@ -52,7 +52,6 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
         featuresList.push(`${readableKey}: ${value}`);
       }
     });
-
     return featuresList;
   };
 
@@ -67,14 +66,22 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
       className={cn(
         "relative rounded-2xl p-6 sm:p-8 transition-all duration-300 w-full h-full",
         plan.isPopular
-          ? "bg-primary text-white transform scale-105"
-          : "bg-white border-2 border-grey-light",
+          ? "bg-primary text-white transform scale-105 shadow-2xl shadow-primary/25 border-2 border-primary-light z-10 overflow-hidden"
+          : "bg-white border-2 border-grey-light shadow-lg hover:shadow-xl",
         "min-w-[280px] max-w-sm md:max-w-full flex-shrink-0",
       )}
+      style={
+        plan.isPopular
+          ? {
+              boxShadow:
+                "0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
+            }
+          : {}
+      }
     >
       {plan.isPopular && (
-        <div className="absolute -top-3 -right-3 w-36 h-36 overflow-hidden">
-          <div className="absolute transform rotate-45 bg-secondary text-white text-xs font-semibold py-1 w-[140%] top-6 right-[-40%] text-center shadow-lg">
+        <div className="absolute -top-0 -right-0 z-20 overflow-hidden w-32 h-32">
+          <div className="absolute transform rotate-45 bg-orange-500 text-white text-xs font-bold py-2 px-1 w-[140px] top-[22px] right-[-35px] text-center shadow-lg">
             Most Popular
           </div>
         </div>
@@ -84,7 +91,7 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
         <h3
           className={cn(
             "text-2xl font-bold mb-2",
-            plan.isPopular ? "text-white" : "text-gray-900",
+            plan.isPopular ? "text-white drop-shadow-sm" : "text-gray-900",
           )}
         >
           {formatTitle(plan.title || plan.name)}
@@ -92,19 +99,26 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
         <p
           className={cn(
             "text-sm mb-6",
-            plan.isPopular ? "text-primary-light" : "text-gray-600",
+            plan.isPopular ? "text-primary-light opacity-90" : "text-gray-600",
           )}
         >
           {plan.subtitle || plan.description}
         </p>
 
-        <div className="w-full border border-grey-light my-6" />
+        <div
+          className={cn(
+            "w-full my-6",
+            plan.isPopular
+              ? "border border-primary-light/30"
+              : "border border-grey-light",
+          )}
+        />
 
         <div className="h-full">
           <div
             className={cn(
               "h3-bold-32",
-              plan.isPopular ? "text-white" : "text-grey",
+              plan.isPopular ? "text-white drop-shadow-sm" : "text-grey",
             )}
           >
             {displayPrice}
@@ -112,10 +126,10 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
           </div>
           <Button
             className={cn(
-              "w-full py-4 mt-4",
+              "w-full py-4 mt-4 font-semibold transition-all duration-200",
               plan.isPopular
-                ? "bg-white text-primary hover:text-white hover:bg-primary"
-                : "bg-primary text-white hover:text-primary hover:bg-base-white",
+                ? "bg-white text-primary hover:text-white hover:bg-primary-light shadow-lg hover:shadow-xl transform hover:scale-105"
+                : "bg-primary text-white hover:text-primary hover:bg-base-white shadow-md hover:shadow-lg",
             )}
             label={buttonText}
             variant="primary"
@@ -123,7 +137,14 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
         </div>
       </div>
 
-      <div className="w-full border border-grey-light my-6" />
+      <div
+        className={cn(
+          "w-full my-6",
+          plan.isPopular
+            ? "border border-primary-light/30"
+            : "border border-grey-light",
+        )}
+      />
 
       <ul className="space-y-4">
         {displayFeatures.map((feature: string, i: number) => (
@@ -131,13 +152,17 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
             <Check
               className={cn(
                 "w-5 h-5 mt-0.5 flex-shrink-0",
-                plan.isPopular ? "text-primary-light" : "text-primary",
+                plan.isPopular
+                  ? "text-primary-light drop-shadow-sm"
+                  : "text-primary",
               )}
             />
             <span
               className={cn(
                 "text-sm",
-                plan.isPopular ? "text-primary-light" : "text-gray-600",
+                plan.isPopular
+                  ? "text-primary-light opacity-90"
+                  : "text-gray-600",
               )}
             >
               {feature}
@@ -150,9 +175,9 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
         <a
           href="#"
           className={cn(
-            "text-sm underline",
+            "text-sm underline transition-colors duration-200",
             plan.isPopular
-              ? "text-primary-light hover:text-white"
+              ? "text-primary-light/80 hover:text-white"
               : "text-grey hover:text-grey-medium",
           )}
         >

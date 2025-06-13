@@ -2,7 +2,8 @@ import { motion } from "framer-motion";
 import { Agreement, Button } from "@/app/components/ui";
 import crm from "@/app/assets/images/crm.webp";
 import ProductGrid from "./ProductGrid";
-import { FAQ, GetStarted, Pricing } from "@/app/pages/landing/";
+import { GetStarted, Pricing } from "@/app/pages/landing/";
+import { FrequentlyAskedQuestion } from "@/app/components/common";
 
 const Product = () => {
   const containerVariants = {
@@ -127,7 +128,7 @@ const Product = () => {
 
       {/* FAQ */}
       <div className="px-4 sm:px-8 md:px-12 lg:px-20 py-16">
-        <FAQ />
+        <FrequentlyAskedQuestion />
       </div>
     </div>
   );

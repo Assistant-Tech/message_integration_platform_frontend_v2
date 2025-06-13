@@ -113,7 +113,7 @@ const OurProcess: React.FC = () => {
         />
       </svg>
 
-      <div className="relative z-10 max-w-[1600px] mx-auto">
+      <div className="relative z-10 max-w-[1700px] mx-auto">
         <motion.div
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}

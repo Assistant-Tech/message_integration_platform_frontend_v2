@@ -2,7 +2,13 @@ import { Suspense, lazy } from "react";
 import { Theme } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
 
-import { Navbar, Footer, NewsLetter, Loading } from "@/app/components/common";
+import {
+  Navbar,
+  Footer,
+  NewsLetter,
+  Loading,
+  FrequentlyAskedQuestion,
+} from "@/app/components/common";
 import Section from "@/app/components/layout/Section";
 import {
   CompanyLogo,
@@ -18,7 +24,6 @@ import clock from "@/app/assets/greenIcons/clock.svg";
 import essentials from "@/app/assets/greenIcons/essentials.svg";
 
 // Lazy loaded
-const FAQ = lazy(() => import("@/app/pages/landing/FAQ"));
 const GetStarted = lazy(() => import("@/app/pages/landing/GetStarted"));
 const Testimonials = lazy(() => import("@/app/pages/landing/Testimonials"));
 
@@ -177,7 +182,7 @@ const About = () => {
       useContainer: false,
     },
     {
-      element: <FAQ />,
+      element: <FrequentlyAskedQuestion />,
     },
     {
       element: (
