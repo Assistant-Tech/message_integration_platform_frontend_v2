@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Theme } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
 
-import { Navbar, Footer } from "@/app/components/common";
+import { Navbar, Footer, Loading } from "@/app/components/common";
 import Section from "@/app/components/layout/Section";
 import { Breadcrumb } from "@/app/components/ui";
 
@@ -80,7 +80,7 @@ const PricingPage = () => {
     },
     {
       element: (
-        <Suspense fallback={<div>Loading FAQ...</div>}>
+        <Suspense fallback={<Loading />}>
           <div className="py-20">
             <Pricing />
           </div>
@@ -93,7 +93,7 @@ const PricingPage = () => {
     },
     {
       element: (
-        <Suspense fallback={<div>Loading Get Started...</div>}>
+        <Suspense fallback={<Loading />}>
           <GetStarted />
         </Suspense>
       ),

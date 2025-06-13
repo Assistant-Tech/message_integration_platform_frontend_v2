@@ -2,7 +2,7 @@ import { Suspense, lazy } from "react";
 import { Theme } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
 
-import { Navbar, Footer, NewsLetter } from "@/app/components/common";
+import { Navbar, Footer, NewsLetter, Loading } from "@/app/components/common";
 import Section from "@/app/components/layout/Section";
 import { Breadcrumb } from "@/app/components/ui";
 import {
@@ -177,22 +177,18 @@ const About = () => {
     { element: <WhatWeOffer /> },
     {
       element: (
-        <Suspense fallback={<div>Loading Testimonials...</div>}>
+        <Suspense fallback={<Loading />}>
           <OurProcess />
         </Suspense>
       ),
       useContainer: false,
     },
     {
-      element: (
-        <Suspense fallback={<div>Loading FAQ...</div>}>
-          <FAQ />
-        </Suspense>
-      ),
+      element: <FAQ />,
     },
     {
       element: (
-        <Suspense fallback={<div>Loading Get Started...</div>}>
+        <Suspense fallback={<Loading />}>
           <GetStarted />
         </Suspense>
       ),
@@ -200,7 +196,7 @@ const About = () => {
     },
     {
       element: (
-        <Suspense fallback={<div>Loading Get Started...</div>}>
+        <Suspense fallback={<Loading />}>
           <OurTeam />
         </Suspense>
       ),
@@ -208,7 +204,7 @@ const About = () => {
     },
     {
       element: (
-        <Suspense fallback={<div>Loading Testimonials...</div>}>
+        <Suspense fallback={<Loading />}>
           <Testimonials />
         </Suspense>
       ),
