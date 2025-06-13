@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
-import dash1 from "@/app/assets/images/dash1.png";
-import dash2 from "@/app/assets/images/dash2.png";
+import dash1 from "@/app/assets/images/dash1.webp";
+import dash2 from "@/app/assets/images/dash2.webp";
 
 const DashboardPreview: React.FC = () => {
   const ref = useRef(null);
@@ -24,7 +24,7 @@ const DashboardPreview: React.FC = () => {
   );
 
   return (
-    <div ref={containerRef} className="relative -mt-32 pb-32 bg-primary-light">
+    <div ref={containerRef} className="relative -mt-32 pb-32 bg-primary-light -z-50">
       <div className="relative">
         <motion.div
           className="absolute w-96 h-96 bg-primary opacity-70 rounded-full blur-3xl bottom-0 left-0"
@@ -147,7 +147,7 @@ const DashboardPreview: React.FC = () => {
             ease: [0.25, 0.1, 0.25, 1],
             delay: 0.2,
           }}
-          className="relative z-20"
+          className="relative"
         >
           <figure className="flex justify-center items-center gap-6 px-8">
             {/* Dashboard 1 - Left positioned */}

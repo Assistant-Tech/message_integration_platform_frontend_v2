@@ -9,9 +9,9 @@ interface Feature {
 
 const FeatureCard: React.FC<Feature> = ({ img, title, description }) => {
   return (
-    <Box className="bg-base-white rounded-2xl p-4 cursor-pointer">
+    <Box className="w-full bg-white rounded-2xl p-4 cursor-pointer">
       <Flex direction="row" align="center" gap="4">
-        <Box className="flex-shrink-0">
+        <Box className="flex">
           <img
             src={img}
             alt={title}

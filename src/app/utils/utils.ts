@@ -24,13 +24,19 @@ export interface DropdownItem {
   icon: LucideIcon;
 }
 export interface NavigationItem {
+  id: number;
   name: string;
+  description?: string;
   href?: string;
   dropdown?: DropdownItem[];
+  icon?: LucideIcon;
 }
 export const navigation: NavigationItem[] = [
   {
+    id: 1,
     name: "Products",
+    description:
+      "Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, suscipit porttitor velit elementum non.",
     dropdown: [
       {
         name: "CRM",
@@ -59,7 +65,10 @@ export const navigation: NavigationItem[] = [
     ],
   },
   {
+    id: 2,
     name: "Resources",
+    description:
+      "Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, suscipit porttitor velit elementum non.",
     dropdown: [
       {
         name: "Blogs",
@@ -87,8 +96,8 @@ export const navigation: NavigationItem[] = [
       },
     ],
   },
-  { name: "Contact", href: "/contact" },
-  { name: "Pricing", href: "/pricing" },
+  { id: 3, name: "Contact Us", href: "/contact" },
+  { id: 4, name: "Pricing", href: "/pricing" },
 ];
 
 /*
@@ -121,7 +130,7 @@ export const SOCIAL_LINKS_CONFIG = [
     color: "#1877F2",
     size: 42,
     mobileSize: 30,
-    top: "20%",
+    top: "46%",
     left: "85%",
   },
   {
@@ -131,8 +140,8 @@ export const SOCIAL_LINKS_CONFIG = [
     color: "#E4405F",
     size: 36,
     mobileSize: 26,
-    top: "35%",
-    left: "100%",
+    top: "15%",
+    left: "90%",
   },
   {
     name: "X",
@@ -141,7 +150,7 @@ export const SOCIAL_LINKS_CONFIG = [
     color: "#000",
     size: 28,
     mobileSize: 20,
-    top: "50%",
+    top: "58%",
     left: "75%",
   },
   {
@@ -151,8 +160,8 @@ export const SOCIAL_LINKS_CONFIG = [
     color: "#0088cc",
     size: 42,
     mobileSize: 30,
-    top: "50%",
-    left: "25%",
+    top: "38%",
+    left: "21%",
   },
   {
     name: "Tiktok",
@@ -161,8 +170,8 @@ export const SOCIAL_LINKS_CONFIG = [
     color: "#000",
     size: 28,
     mobileSize: 20,
-    top: "35%",
-    left: "0%",
+    top: "19%",
+    left: "10%",
   },
   {
     name: "Viber",
@@ -171,8 +180,8 @@ export const SOCIAL_LINKS_CONFIG = [
     color: "#000",
     size: 28,
     mobileSize: 20,
-    top: "20%",
-    left: "15%",
+    top: "75%",
+    left: "29%",
   },
   {
     name: "WhatsApp",
@@ -182,7 +191,7 @@ export const SOCIAL_LINKS_CONFIG = [
     size: 44,
     mobileSize: 32,
     top: "65%",
-    left: "10%",
+    left: "5%",
   },
 ];
 /*
@@ -195,7 +204,7 @@ export type FeatureCard = {
   title: string;
   description: string;
   iconColor: string;
-  icon: LucideIcon; // <— store the icon component, not JSX
+  icon: LucideIcon;
   animate: boolean;
 };
 
@@ -205,30 +214,30 @@ export const featureCards: FeatureCard[] = [
     description:
       "No more switching between apps! Brings all your messages together in one place, so you can reply faster and stay organized.",
     icon: MessageSquare,
-    iconColor: "#4A6FFF",
+    iconColor: "#1cb496",
     animate: true,
   },
   {
-    title: "Lightning Fast Responses",
+    title: "Team Work Made Easy",
     description:
-      "Respond to customers instantly with smart templates and automated workflows that save time.",
-    iconColor: "#4A6FFF",
+      "Have a team? Assign chats to the right person so customers always get a fast reply. No more missed messages or double replies.",
+    iconColor: "#1cb496",
     icon: Zap,
     animate: true,
   },
   {
-    title: "Secure & Private",
+    title: "You Know What`s Working",
     description:
-      "Enterprise-grade security ensures your conversations and data remain protected at all times.",
-    iconColor: "#FF6B6B",
+      "Get simple reports showing how many messages you’ve handled, how quickly you’re replying, and how your team is doing.",
+    iconColor: "#1cb496",
     icon: Shield,
     animate: true,
   },
   {
-    title: "Team Collaboration",
+    title: "Your Data is Safe",
     description:
-      "Work seamlessly with your team members to provide the best customer support experience.",
-    iconColor: "#9B59B6",
+      "Assistant uses strong security measures to keep your conversations private and protected. You’re in control.",
+    iconColor: "#1cb496",
     icon: Users,
     animate: true,
   },
@@ -445,12 +454,12 @@ export const faqData: FAQ[] = [
       "Vestibulum tempus imperdiet sem ac porttitor. Fusce nec pellentesque erat. Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, suscipit porttitor velit elementum non. Fusce nec pellentesque erat, id lobortis nunc. Donec dui leo, ultrices quis turpis nec, sollicitudin sodales",
   },
 ];
-
 /*
 ─────────────────────────────────────────────────────────────────────────────
  📦 ▶ Footer data utils
- ─────────────────────────────────────────────────────────────────────────────
+─────────────────────────────────────────────────────────────────────────────
 */
+import { Mail, Phone, MapPin } from "lucide-react";
 import fbBNW from "@/app/assets/icons/fb1.svg";
 import instaBNW from "@/app/assets/icons/in.svg";
 import LinkBNW from "@/app/assets/icons/link.svg";
@@ -462,12 +471,42 @@ export type Footer = {
   color: string;
   size: number;
 };
-interface product {
-  name: string;
-  url: string;
-}
-export type FooterLinks = {
-  products: product[];
+
+export const footerLinks: FooterLinks = {
+  products: [
+    { name: "Products One", url: "#" },
+    { name: "Products Two", url: "#" },
+    { name: "Products Three", url: "#" },
+    { name: "Products Four", url: "#" },
+  ],
+  resources: [
+    { name: "FAQs", url: "#" },
+    { name: "Support", url: "#" },
+    { name: "Blogs", url: "#" },
+    { name: "Videos", url: "#" },
+  ],
+  pricing: [
+    { name: "Starter Plan", url: "#" },
+    { name: "Growth Plan", url: "#" },
+    { name: "Pro Plan", url: "#" },
+  ],
+  contact: [
+    {
+      name: "assistant@gmail.com",
+      url: "mailto:assistant@gmail.com",
+      icon: Mail,
+    },
+    {
+      name: "+977-9810000000",
+      url: "tel:+9779810000000",
+      icon: Phone,
+    },
+    {
+      name: "123 Main Street, Anytown",
+      url: "#",
+      icon: MapPin,
+    },
+  ],
 };
 
 export const SocialFooter: SocialLink[] = [

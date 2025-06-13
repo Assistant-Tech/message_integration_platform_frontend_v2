@@ -19,6 +19,7 @@
   "dependencies": {
     "@fontsource/merriweather": "^5.2.7",
     "@fontsource/nunito-sans": "^5.2.5",
+    "@hookform/resolvers": "^5.0.1",
     "@radix-ui/react-accordion": "^1.2.11",
     "@radix-ui/react-collapsible": "^1.1.11",
     "@radix-ui/react-dialog": "^1.1.13",
@@ -41,6 +42,7 @@
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.56.4",
     "react-router-dom": "^7.6.0",
+    "sonner": "^2.0.3",
     "tailwind-merge": "^3.3.0",
     "zod": "^3.24.4",
     "zustand": "^5.0.4"

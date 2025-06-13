@@ -8,6 +8,19 @@ export const APP_ROUTES = {
     CONTACT: "/contact",
     UNAUTHORIZED: "/unauthorized",
     PRICING: "/pricing",
+    PRODUCTS: "/products",
+
+    // For the product
+    PRODUCTS_OVERVIEW: "/products",
+    CRM: "/products/crm",
+    ERP: "/products/erp",
+    HRMS: "/products/hrms",
+
+    // For the resources
+    RESOURCES_OVERVIEW: "/resources",
+    VIDEOS: "/resources/videos",
+    // ERP: "/resources/erp",
+    // HRMS: "/resources/hrms",
   },
 
   // Admin routes
