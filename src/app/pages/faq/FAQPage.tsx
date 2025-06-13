@@ -83,7 +83,7 @@ const FAQPage = () => {
       {/* No results message */}
       {filteredFAQs.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-gray-500 text-lg">
+          <p className="text-grey-medium text-lg">
             No FAQs found matching your criteria.
           </p>
         </div>

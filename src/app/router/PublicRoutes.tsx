@@ -43,7 +43,7 @@ const PublicRoutes = () => {
         element={<ResourceLayout />}
       >
         {/* Blogs */}
-
+        
         {/* Videos */}
 
         {/* FAQ's */}
