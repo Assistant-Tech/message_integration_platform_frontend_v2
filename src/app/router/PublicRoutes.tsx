@@ -11,6 +11,7 @@ import {
   Updates,
   Demo,
   AboutUs,
+  PricingPage,
 } from "@/app/pages";
 import { APP_ROUTES } from "@/app/constants/routes";
 import { ProductLayout, ResourceLayout } from "@/app/components/layout";
@@ -53,6 +54,9 @@ const PublicRoutes = () => {
 
       {/* About Us Routes */}
       <Route path={APP_ROUTES.PUBLIC.ABOUT} element={<AboutUs />} />
+
+      {/* Pricing Routes */}
+      <Route path={APP_ROUTES.PUBLIC.PRICING} element={<PricingPage />} />
 
       {/* 401 - UnAuth Page  */}
       <Route path={APP_ROUTES.PUBLIC.UNAUTHORIZED} element={<Unauthorized />} />

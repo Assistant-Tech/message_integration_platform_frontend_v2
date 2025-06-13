@@ -4,7 +4,10 @@ export { default as Landing } from "./Landing";
 export { default as Demo } from "./Demo";
 
 // About us Exports
-export { default as AboutUs } from "./aboutus/AboutUs"
+export { default as AboutUs } from "./aboutus/AboutUs";
+
+// Pricing Exports
+export { default as PricingPage } from "./pricing/PricingPage";
 
 // Product exports
 export { default as CRM } from "./products/crm/CRM";

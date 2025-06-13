@@ -3,6 +3,9 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { X } from "lucide-react";
 
+import test from "@/app/assets/video/test_clip.mp4";
+import crmIntro from "@/app/assets/images/crm_video.webp";
+
 const LearnMoreCRM = () => {
   const [open, setOpen] = useState(false);
 
@@ -29,9 +32,9 @@ const LearnMoreCRM = () => {
       {/* Video Thumbnail with Play Button */}
       <div className="relative w-full max-w-6xl mx-auto aspect-video rounded-3xl overflow-hidden">
         <img
-          src="/images/crm-thumbnail.jpg"
+          src={crmIntro}
           alt="CRM Intro"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-full"
         />
         <Dialog.Root open={open} onOpenChange={setOpen}>
           <Dialog.Trigger asChild>
@@ -68,7 +71,7 @@ const LearnMoreCRM = () => {
                     </button>
                   </Dialog.Close>
                   <video
-                    src="/videos/dummy-crm-video.mp4"
+                    src={test}
                     autoPlay
                     controls
                     className="w-full h-full object-cover"

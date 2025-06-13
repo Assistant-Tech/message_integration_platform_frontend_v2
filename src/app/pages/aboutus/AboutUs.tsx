@@ -29,6 +29,27 @@ import { motion } from "framer-motion";
 import { Button } from "@/app/components/ui";
 
 const About = () => {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+      },
+    },
+  };
+
   const AboutCrumb = [
     { label: "Home", href: APP_ROUTES.PUBLIC.HOME },
     { label: "About Us" },
@@ -51,45 +72,26 @@ const About = () => {
     },
     {
       element: (
-        <div className="grid lg:grid-cols-2 gap-16 items-center w-full">
+        <div className="grid lg:grid-cols-2 gap-16 items-center w-full ">
           {/* Left */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="space-y-8 max-w-xl"
-          >
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="h3-bold-32 text-grey"
-            >
+          <motion.div variants={itemVariants} className="space-y-8 max-w-xl">
+            <motion.h2 variants={itemVariants} className="h3-bold-32 text-grey">
               Talk to All Your Customers in One Place
             </motion.h2>
 
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
+              variants={itemVariants}
               className="h5-regular-16 text-grey-medium"
             >
               Just one clean, easy AI powered app to manage all your chats —
               WhatsApp, Instagram, Facebook, Telegram, and more.
             </motion.p>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="space-y-4"
-            >
+            <motion.div variants={itemVariants} className="space-y-4">
               {features.map((feature, index) => (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.6 + index * 0.1 }}
+                  variants={itemVariants}
                   className="flex items-start space-x-3"
                 >
                   <div className="w-6 h-6 bg-primary-light rounded-full flex items-center justify-center mt-0.5">
@@ -101,9 +103,7 @@ const About = () => {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9 }}
+              variants={itemVariants}
               className="flex flex-col lg:flex-row gap-4"
             >
               <Button
@@ -119,9 +119,7 @@ const About = () => {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.0 }}
+              variants={itemVariants}
               className="flex flex-wrap gap-8"
             >
               <div className="flex items-center space-x-2">
@@ -224,11 +222,17 @@ const About = () => {
     <div className="min-h-screen pt-20">
       <Theme>
         <Navbar />
-        {sections.map(({ element, useContainer = true }, idx) => (
-          <Section key={idx} useContainer={useContainer}>
-            {element}
-          </Section>
-        ))}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {sections.map(({ element, useContainer = true }, idx) => (
+            <Section key={idx} useContainer={useContainer}>
+              {element}
+            </Section>
+          ))}
+        </motion.div>
       </Theme>
     </div>
   );
