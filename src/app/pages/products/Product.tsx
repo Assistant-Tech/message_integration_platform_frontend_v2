@@ -1,9 +1,8 @@
 import { motion } from "framer-motion";
-import { Agreement, Breadcrumb, Button } from "@/app/components/ui";
+import { Agreement, Button } from "@/app/components/ui";
 import crm from "@/app/assets/images/crm.webp";
 import ProductGrid from "./ProductGrid";
 import { FAQ, GetStarted, Pricing } from "@/app/pages/landing/";
-import { APP_ROUTES } from "@/app/constants/routes";
 
 const Product = () => {
   const containerVariants = {
@@ -27,11 +26,6 @@ const Product = () => {
     },
   };
 
-  const ProductCrumb = [
-    { label: "Home", href: APP_ROUTES.PUBLIC.HOME },
-    { label: "Product" },
-  ];
-
   return (
     <div className="pt-24">
       {/* Hero Section */}
@@ -41,14 +35,16 @@ const Product = () => {
         initial="hidden"
         animate="visible"
       >
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-4 sm:mb-6 md:mb-8"
-        >
-          <Breadcrumb items={ProductCrumb} />
-        </motion.div>
+        <div className="pt-4">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mb-4 sm:mb-6 md:mb-8"
+          >
+            <h1 className="h2-bold-40 text-base-black pt-6">Product</h1>
+          </motion.div>
+        </div>
         <div className="grid lg:grid-cols-2 items-center gap-12">
           {/* Left Side */}
           <motion.div variants={itemVariants} className="space-y-6 max-w-2xl">
