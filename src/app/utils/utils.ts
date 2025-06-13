@@ -21,7 +21,7 @@ export interface DropdownItem {
   name: string;
   href: string;
   description?: string;
-  icon?: React.ComponentType<{ className?: string }>;
+  icon: LucideIcon;
 }
 export interface NavigationItem {
   id: number;
@@ -112,6 +112,15 @@ import TelegramIcon from "@/app/assets/icons/telegram.svg";
 import X from "@/app/assets/icons/x.svg";
 import Tiktok from "@/app/assets/icons/tiktok.svg";
 import viber from "@/app/assets/icons/viber.svg";
+
+export type SocialLink = {
+  [x: string]: string | number;
+  name: string;
+  src: string;
+  href: string;
+  color: string;
+  size: number;
+};
 
 export const SOCIAL_LINKS_CONFIG = [
   {
@@ -455,26 +464,7 @@ import fbBNW from "@/app/assets/icons/fb1.svg";
 import instaBNW from "@/app/assets/icons/in.svg";
 import LinkBNW from "@/app/assets/icons/link.svg";
 import xBNW from "@/app/assets/icons/xx.svg";
-
-export type FooterLink = {
-  name: string;
-  url: string;
-};
-
-export type FooterContact = {
-  name: string;
-  url: string;
-  icon: LucideIcon;
-};
-
-export type FooterLinks = {
-  products: FooterLink[];
-  resources: FooterLink[];
-  pricing: FooterLink[];
-  contact: FooterContact[];
-};
-
-export type SocialLink = {
+export type Footer = {
   name: string;
   src: string;
   href: string;
@@ -549,3 +539,43 @@ export const SocialFooter: SocialLink[] = [
     size: 44,
   },
 ];
+
+export interface item {
+  name: string;
+  url: string;
+  icon?: LucideIcon;
+}
+export interface footerLinksProps {
+  products: item[];
+  resources: item[];
+  contact: item[];
+  pricing: item[];
+}
+export const footerLinks: footerLinksProps = {
+  products: [
+    { name: "Products One", url: "#" },
+    { name: "Products Two", url: "#" },
+    { name: "Products Three", url: "#" },
+    { name: "Products Four", url: "#" },
+  ],
+  resources: [
+    { name: "FAQs", url: "#" },
+    { name: "Support", url: "#" },
+    { name: "Blogs", url: "#" },
+    { name: "Videos", url: "#" },
+  ],
+  pricing: [
+    { name: "Starter Plan", url: "#" },
+    { name: "Growth Plan", url: "#" },
+    { name: "Pro Plan", url: "#" },
+  ],
+  contact: [
+    {
+      name: "assistant@gmail.com",
+      url: "mailto:assistant@gmail.com",
+      icon: "✉️",
+    },
+    { name: "+977-9810000000", url: "tel:+9779810000000", icon: "📞" },
+    { name: "123 Main Street, Anytown", url: "#", icon: "📍" },
+  ],
+};
