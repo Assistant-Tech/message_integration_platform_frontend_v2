@@ -71,7 +71,7 @@ const Pricing = () => {
           color="teal"
           className="w-full pb-4 md:pb-8"
         >
-          <Flex gap="4" justify="end" align="center">
+          <Flex justify="end" align="center" className="py-4 gap-4">
             {["NPR", "USD"].map((cur) => (
               <Flex key={cur} direction="row" align="center" gap="2">
                 <RadioGroup.Item value={cur} id={cur.toLowerCase()} />

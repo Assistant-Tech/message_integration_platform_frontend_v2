@@ -16,7 +16,7 @@ import {
   ScaleBusiness,
   Pricing,
   FAQ,
-  OrderManagement,
+  // OrderManagement,
 } from "@/app/pages/landing/index";
 import Section from "@/app/components/layout/Section";
 
@@ -49,7 +49,7 @@ const Landing = () => {
     // Built Assistant
     { element: <BuiltAssistant /> },
     //Order Mangement
-    { element: <OrderManagement /> },
+    // { element: <OrderManagement /> },
     //Testimonials
     {
       element: (

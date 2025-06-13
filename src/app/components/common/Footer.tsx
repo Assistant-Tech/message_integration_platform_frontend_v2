@@ -60,7 +60,7 @@ const Footer = () => {
 
             {/* Store Buttons */}
             <div className="flex flex-col gap-2 w-48 pb-6">
-              <StoreButtons stores={storeLinks} />;
+              <StoreButtons stores={storeLinks} />
             </div>
           </div>
 

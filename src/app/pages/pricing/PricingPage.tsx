@@ -8,6 +8,7 @@ import Section from "@/app/components/layout/Section";
 import { Breadcrumb } from "@/app/components/ui";
 
 import { APP_ROUTES } from "@/app/constants/routes";
+import { PricingPlansTable } from "@/app/pages/pricing/components";
 
 // Lazy loaded
 const FAQ = lazy(() => import("@/app/pages/landing/FAQ"));
@@ -67,7 +68,7 @@ const PricingPage = () => {
             </motion.h2>
             <motion.p
               variants={itemVariants}
-              className="h5-regular-16 text-grey-medium max-w-4xl"
+              className="h4-regular-24 text-grey-medium max-w-4xl"
             >
               Whether you're just starting out or ready to scale, we have a plan
               designed to fit your goals. Choose the one that works best for you
@@ -86,6 +87,10 @@ const PricingPage = () => {
         </Suspense>
       ),
     },
+
+    {
+      element: <PricingPlansTable />,
+    },
     {
       element: (
         <Suspense fallback={<div>Loading Get Started...</div>}>
@@ -95,11 +100,7 @@ const PricingPage = () => {
       useContainer: false,
     },
     {
-      element: (
-        <Suspense fallback={<div>Loading FAQ...</div>}>
-          <FAQ />
-        </Suspense>
-      ),
+      element: <FAQ />,
     },
     { element: <Footer />, useContainer: false },
   ];

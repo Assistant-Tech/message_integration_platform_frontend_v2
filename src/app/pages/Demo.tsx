@@ -25,7 +25,7 @@ const Demo = () => {
           </div>
 
           {/* Pricing */}
-          <div className="py-20">
+          <div className="py-24">
             <Pricing />
           </div>
 

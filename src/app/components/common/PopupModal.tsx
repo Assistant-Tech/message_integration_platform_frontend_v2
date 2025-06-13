@@ -71,7 +71,7 @@ const PopupModal = () => {
                   <Button
                     label="Subscribe"
                     variant="primary"
-                    className="w-full"
+                    className="w-full px-2 py-3"
                     name="close"
                   />
                 </Dialog.Close>
