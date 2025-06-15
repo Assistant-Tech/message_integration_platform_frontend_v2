@@ -13,16 +13,21 @@ import {
   AboutUs,
   PricingPage,
   FAQPage,
+  Product,
 } from "@/app/pages";
 import { APP_ROUTES } from "@/app/constants/routes";
 import { ProductLayout, ResourceLayout } from "@/app/components/layout";
-import Product from "../pages/products/Product";
+import { LoginPage, RegisterPage } from "@/app/features/auth";
 
 const PublicRoutes = () => {
   return (
     <Routes>
       <Route path={APP_ROUTES.PUBLIC.HOME} element={<Landing />} />
       <Route path={APP_ROUTES.PUBLIC.DEMO} element={<Demo />} />
+
+      {/* Login & Registration Page Routes */}
+      <Route path={APP_ROUTES.PUBLIC.LOGIN} element={<LoginPage />} />
+      <Route path={APP_ROUTES.PUBLIC.REGISTER} element={<RegisterPage />} />
 
       {/* Product Routes */}
       <Route
@@ -43,7 +48,7 @@ const PublicRoutes = () => {
         element={<ResourceLayout />}
       >
         {/* Blogs */}
-        
+
         {/* Videos */}
 
         {/* FAQ's */}

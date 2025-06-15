@@ -4,8 +4,8 @@ import { Routes } from "react-router-dom";
 // Lazy load user components --> Advance component handling
 // const UserDashboard = lazy(() => import("@/app/pages/user/"));
 
-const AdminRoutes = () => {
+const UserRoutes = () => {
   return <Routes></Routes>;
 };
 
-export default AdminRoutes;
+export default UserRoutes;

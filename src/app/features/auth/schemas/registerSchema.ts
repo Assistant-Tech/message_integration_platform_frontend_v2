@@ -1,5 +1,5 @@
 // ----------------------
-// Register Schema & Types
+// Regist Schema & Types
 // ----------------------
 
 import { z } from "zod";
