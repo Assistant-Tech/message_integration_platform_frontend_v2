@@ -45,7 +45,7 @@ const BlogHero: React.FC = () => {
             <button
               key={category}
               onClick={() => setActiveCategory(category)}
-              className={`px-4 py-2 rounded-full text-sm font-medium ${
+              className={`px-4 py-2 rounded-lg text-sm font-medium ${
                 activeCategory === category
                   ? "bg-primary text-white"
                   : "bg-base-white text-grey hover:bg-grey-light"
@@ -68,6 +68,9 @@ const BlogHero: React.FC = () => {
         </div>
       </motion.div>
 
+      <motion.div variants={fadeInUp} initial="hidden" animate="visible">
+        <h1 className="h3-bold-32 text-base-black my-10">Feature Blogs</h1>
+      </motion.div>
       {/* Featured Post and Regular Posts */}
       {featuredPost && (
         <motion.div
@@ -86,20 +89,20 @@ const BlogHero: React.FC = () => {
                 <img
                   src={featuredPost.image}
                   alt={featuredPost.title}
-                  className="w-full h-72 object-cover"
+                  className="w-full h-96 object-cover"
                 />
-                <span className="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-full text-sm">
+                <span className="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-full h5-regular-16">
                   {featuredPost.category}
                 </span>
-                <span className="absolute top-4 right-4 text-white text-sm">
+                <span className="absolute top-4 right-4 text-white h5-regular-16">
                   {featuredPost.date}
                 </span>
               </div>
               <div className="p-6">
-                <h3 className="text-xl font-bold mb-3 line-clamp-2">
+                <h3 className="h4-bold-24 text-base-black mb-3 line-clamp-2">
                   {featuredPost.title}
                 </h3>
-                <p className="text-grey mb-4 line-clamp-3">
+                <p className="text-grey-medium h5-regular-16 mb-4 line-clamp-3">
                   {featuredPost.excerpt}
                 </p>
                 <div className="flex items-center">
@@ -120,7 +123,7 @@ const BlogHero: React.FC = () => {
           </div>
 
           {/* Regular Posts */}
-          <div className="space-y-4">
+          <div className="space-y-4 h-full">
             {regularPosts.slice(0, 3).map((post, idx) => (
               <motion.div
                 key={post.id}
@@ -128,38 +131,40 @@ const BlogHero: React.FC = () => {
                 initial="hidden"
                 animate="visible"
                 transition={{ delay: 0.1 * idx }}
-                className="bg-white rounded-lg overflow-hidden shadow-sm cursor-pointer"
+                className="bg-white rounded-lg overflow-hidden shadow-sm cursor-pointer p-4"
                 onClick={() => navigate(`/resources/blogs/${post.id}`)}
               >
-                <div className="flex">
-                  <div className="w-24 h-20">
+                <div className="flex items-center ">
+                  <div className="w-24 h-36">
                     <img
                       src={post.image}
                       alt={post.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full rounded-2xl p-2 object-fill"
                     />
                   </div>
-                  <div className="flex-1 p-4">
+                  <div className="flex-1 pb-4 h-32">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="bg-primary text-white px-2 py-1 rounded text-xs font-medium">
+                      <span className=" text-primary label-bold-14">
                         {post.category}
                       </span>
                       <span className="text-xs text-gray-500">{post.date}</span>
                     </div>
-                    <h4 className="font-bold text-sm mb-2 line-clamp-2">
+                    <h4 className="body-bold-16 text-base-black mb-2 line-clamp-2">
                       {post.title}
                     </h4>
                     <div className="flex items-center">
                       <img
                         src={post.author.avatar}
                         alt={post.author.name}
-                        className="w-6 h-6 rounded-full mr-2"
+                        className="w-10 h-10 rounded-full mr-2"
                       />
                       <div>
-                        <p className="text-xs font-medium">
+                        <p className="body-bold-16 text-base-black">
                           {post.author.name}
                         </p>
-                        <p className="text-xs text-grey">{post.author.role}</p>
+                        <p className="h5-regular-16 text-grey-medium">
+                          {post.author.role}
+                        </p>
                       </div>
                     </div>
                   </div>

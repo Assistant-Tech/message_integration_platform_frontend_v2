@@ -8,7 +8,7 @@ export const APP_ROUTES = {
     CONTACT: "/contact",
     UNAUTHORIZED: "/unauthorized",
     PRICING: "/pricing",
-    PRODUCTS: "/products",
+    PRODUCTS: "/products",  
     SLUG: (slug: string) => `/${slug}`,
     DEMO: "/demo",
 

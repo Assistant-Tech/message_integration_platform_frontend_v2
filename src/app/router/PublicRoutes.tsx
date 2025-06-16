@@ -16,6 +16,7 @@ import {
   BlogPage,
   Product,
   BlogDetailPage,
+  VideosPage,
 } from "@/app/pages";
 import { APP_ROUTES } from "@/app/constants/routes";
 import { ProductLayout, ResourceLayout } from "@/app/components/layout";
@@ -49,6 +50,7 @@ const PublicRoutes = () => {
         <Route path={APP_ROUTES.PUBLIC.BLOG_ID} element={<BlogDetailPage />} />
 
         {/* Videos */}
+        <Route path={APP_ROUTES.PUBLIC.VIDEOS} element={<VideosPage />} />
 
         {/* FAQ's */}
         <Route path={APP_ROUTES.PUBLIC.FAQ} element={<FAQPage />} />

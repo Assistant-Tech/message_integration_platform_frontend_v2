@@ -4,6 +4,9 @@ export { default as Unauthorized } from "./Unauthorized";
 export { default as Landing } from "./Landing";
 export { default as Demo } from "./DemoPage";
 
+// Videos Exports
+export { default as VideosPage } from "@/app/pages/videos/VideosPage";
+
 // Blog Exports
 export { default as BlogPage } from "./blog/BlogPage";
 export { default as BlogDetailPage } from "../pages/blog/BlogDetails";

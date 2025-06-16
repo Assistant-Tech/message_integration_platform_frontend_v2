@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useParams } from "react-router-dom";
-import { Clock, Calendar, ArrowLeft, ArrowRight } from "lucide-react";
+import { Clock, Calendar, ArrowRight } from "lucide-react";
 import {
   getBlogPostById,
   getTableOfContents,
@@ -43,12 +43,6 @@ const BlogDetailPage: React.FC = () => {
           <p className="text-grey-medium mb-6">
             The blog post you're looking for doesn't exist.
           </p>
-          <Button
-            variant="primary"
-            label="Go Back"
-            IconLeft={<ArrowLeft className="w-4 h-4" />}
-            onClick={() => window.history.back()}
-          />
         </div>
       </div>
     );

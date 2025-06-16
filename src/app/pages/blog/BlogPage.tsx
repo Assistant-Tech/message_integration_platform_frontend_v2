@@ -4,9 +4,11 @@ import { GetStarted } from "@/app/pages/landing/";
 
 const BlogPage = () => {
   return (
-    <div className="pt-32">
+    <div className="pt-20 lg:pt-32">
       <div className="pb-10">
-        <h1 className="h2-bold-40 text-base-black mb-8">Blogs</h1>
+        <h1 className="h2-bold-40 text-base-black mb-8 px-4 sm:px-6 lg:px-px">
+          Blogs
+        </h1>
         <BlogHero />
       </div>
 
