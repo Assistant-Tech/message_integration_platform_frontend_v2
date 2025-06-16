@@ -21,7 +21,8 @@ export const APP_ROUTES = {
     // For the ["/resources"]
     RESOURCES_OVERVIEW: "/resources",
     SUPPORT: "/resources/support",
-    BLOG: "/resources/blog",
+    BLOG: "/resources/blogs",
+    BLOG_ID: "/resources/blogs/:id",
     VIDEOS: "/resources/videos",
     FAQ: "/resources/faq",
 

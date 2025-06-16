@@ -13,10 +13,12 @@ import {
   AboutUs,
   PricingPage,
   FAQPage,
+  BlogPage,
+  Product,
+  BlogDetailPage,
 } from "@/app/pages";
 import { APP_ROUTES } from "@/app/constants/routes";
 import { ProductLayout, ResourceLayout } from "@/app/components/layout";
-import Product from "../pages/products/Product";
 
 const PublicRoutes = () => {
   return (
@@ -43,7 +45,9 @@ const PublicRoutes = () => {
         element={<ResourceLayout />}
       >
         {/* Blogs */}
-        
+        <Route path={APP_ROUTES.PUBLIC.BLOG} element={<BlogPage />} />
+        <Route path={APP_ROUTES.PUBLIC.BLOG_ID} element={<BlogDetailPage />} />
+
         {/* Videos */}
 
         {/* FAQ's */}

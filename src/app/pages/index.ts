@@ -4,6 +4,10 @@ export { default as Unauthorized } from "./Unauthorized";
 export { default as Landing } from "./Landing";
 export { default as Demo } from "./DemoPage";
 
+// Blog Exports
+export { default as BlogPage } from "./blog/BlogPage";
+export { default as BlogDetailPage } from "../pages/blog/BlogDetails";
+
 // Faq Exports
 export { default as FAQPage } from "./faq/FAQPage";
 
@@ -14,6 +18,7 @@ export { default as AboutUs } from "./aboutus/AboutUs";
 export { default as PricingPage } from "./pricing/PricingPage";
 
 // Product exports
+export { default as Product } from "./products/Product";
 export { default as CRM } from "./products/crm/CRM";
 
 // Support exports
