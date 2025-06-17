@@ -77,11 +77,11 @@ const BlogHero: React.FC = () => {
           variants={fadeInUp}
           initial="hidden"
           animate="visible"
-          className="mb-8 grid grid-cols-1 lg:grid-cols-3 gap-6"
+          className="mb-8 grid grid-cols-1 lg:grid-cols-3"
         >
           {/* Featured Post */}
           <div
-            className="lg:col-span-2 cursor-pointer pt-2"
+            className="max-w-5xl lg:col-span-2 cursor-pointer pt-2"
             onClick={() => navigate(`/resources/blogs/${featuredPost.id}`)}
           >
             <div className="bg-white rounded-lg overflow-hidden shadow-sm">
@@ -91,14 +91,16 @@ const BlogHero: React.FC = () => {
                   alt={featuredPost.title}
                   className="w-full h-96 object-cover"
                 />
-                <span className="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-full h5-regular-16">
-                  {featuredPost.category}
-                </span>
-                <span className="absolute top-4 right-4 text-white h5-regular-16">
-                  {featuredPost.date}
-                </span>
               </div>
               <div className="p-6">
+                <div className="flex justify-between py-4">
+                  <span className=" bg-primary text-white px-3 py-1 rounded-full h5-regular-16">
+                    {featuredPost.category}
+                  </span>
+                  <span className="text-end text-grey-medium h5-regular-16">
+                    {featuredPost.date}
+                  </span>
+                </div>
                 <h3 className="h4-bold-24 text-base-black mb-3 line-clamp-2">
                   {featuredPost.title}
                 </h3>
@@ -123,27 +125,29 @@ const BlogHero: React.FC = () => {
           </div>
 
           {/* Regular Posts */}
-          <div className="space-y-4 h-full">
-            {regularPosts.slice(0, 3).map((post, idx) => (
+          <div className="space-y-8 max-w-2xl h-full">
+            {regularPosts.slice(0, 4).map((post, idx) => (
               <motion.div
                 key={post.id}
                 variants={fadeInUp}
                 initial="hidden"
                 animate="visible"
                 transition={{ delay: 0.1 * idx }}
-                className="bg-white rounded-lg overflow-hidden shadow-sm cursor-pointer p-4"
+                className="bg-white rounded-lg overflow-hidden cursor-pointer"
                 onClick={() => navigate(`/resources/blogs/${post.id}`)}
               >
-                <div className="flex items-center ">
-                  <div className="w-24 h-36">
+                <div className="flex items-center gap-4">
+                  {/* Image */}
+                  <div className="w-24 h-28">
                     <img
                       src={post.image}
                       alt={post.title}
-                      className="w-full h-full rounded-2xl p-2 object-fill"
+                      className="w-full h-full rounded-2xl object-fill"
                     />
                   </div>
+                  {/* Typo */}
                   <div className="flex-1 pb-4 h-32">
-                    <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center justify-between">
                       <span className=" text-primary label-bold-14">
                         {post.category}
                       </span>
@@ -156,7 +160,7 @@ const BlogHero: React.FC = () => {
                       <img
                         src={post.author.avatar}
                         alt={post.author.name}
-                        className="w-10 h-10 rounded-full mr-2"
+                        className="w-12 h-12 rounded-full mr-2"
                       />
                       <div>
                         <p className="body-bold-16 text-base-black">

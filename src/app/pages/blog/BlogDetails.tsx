@@ -75,6 +75,7 @@ const BlogDetailPage: React.FC = () => {
               title={blogPost.category}
               className="bg-primary-light"
               textColor="primary"
+              textStyle="font-bold"
             />
           </div>
 
@@ -158,62 +159,60 @@ const BlogDetailPage: React.FC = () => {
                   ))}
                 </section>
               ))}
-
-              {/* Related Posts Section */}
-              {relatedPosts.length > 0 && (
-                <section className="mt-12">
-                  <h3 className="text-2xl font-bold text-grey mb-6">
-                    Related Articles
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
-                    {" "}
-                    {/* Added items-stretch */}
-                    {relatedPosts.map((post) => (
-                      <div
-                        key={post.id}
-                        className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow flex flex-col" // Added flex flex-col
-                      >
-                        <img
-                          src={post.image}
-                          alt={post.title}
-                          className="w-full h-40 object-cover"
-                        />
-                        <div className="p-4 flex flex-col flex-grow">
-                          {" "}
-                          {/* Added flex flex-col flex-grow */}
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="bg-teal-500 text-white px-2 py-1 rounded text-xs font-medium">
-                              {post.category}
-                            </span>
-                            <span className="text-xs text-gray-500">
-                              {post.date}
-                            </span>
-                          </div>
-                          <h4 className="font-bold text-gray-800 text-sm mb-2 line-clamp-2 min-h-[2.5em]">
-                            {" "}
-                            {/* Added min-h for title */}
-                            {post.title}
-                          </h4>
-                          <p className="text-xs text-grey-medium mb-3 line-clamp-3 flex-grow">
-                            {" "}
-                            {/* Increased line-clamp to 3, added flex-grow */}
-                            {post.excerpt}
-                          </p>
-                          <Button
-                            variant="outlined"
-                            label="Read More"
-                            redirectTo={`/blog/${post.id}`}
-                            className="text-xs px-3 py-1 h-auto mt-auto"
-                            IconRight={<ArrowRight />}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </section>
-              )}
             </div>
           </article>
+        </div>
+
+        {/* Related Posts Section */}
+        <div className="flex flex-col lg:flex-row gap-12">
+          {relatedPosts.length > 0 && (
+            <section className="mt-12">
+              <h3 className="h3-bold-32 text-base-black mb-6">
+                Related Articles
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-full cursor-pointer">
+                {" "}
+                {/* Added items-stretch */}
+                {relatedPosts.map((post) => (
+                  <div
+                    key={post.id}
+                    className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow flex flex-col" // Added flex flex-col
+                  >
+                    <img
+                      src={post.image}
+                      alt={post.title}
+                      className="w-full h-40 object-cover"
+                    />
+                    <div className="p-4 flex flex-col flex-grow">
+                      {" "}
+                      {/* Added flex flex-col flex-grow */}
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="bg-teal-500 text-white px-2 py-1 rounded text-xs font-medium">
+                          {post.category}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          {post.date}
+                        </span>
+                      </div>
+                      <h4 className="font-bold text-gray-800 text-sm mb-2 line-clamp-2 min-h-[2.5em]">
+                        {" "}
+                        {/* Added min-h for title */}
+                        {post.title}
+                      </h4>
+                      <p className="text-xs text-grey-medium mb-3 line-clamp-3 flex-grow">
+                        {" "}
+                        {/* Increased line-clamp to 3, added flex-grow */}
+                        {post.excerpt}{" "}
+                        <span className="text-danger cursor-pointer underline">
+                          Read More
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
         </div>
       </motion.div>
     </div>
