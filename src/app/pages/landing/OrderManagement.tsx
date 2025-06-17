@@ -105,7 +105,7 @@ const OrderManagement: React.FC = () => {
 
         {/* Right Section - CTA */}
         <div className="order-1 lg:order-2">
-          <Badge title="MANAGE YOUR ORDERS" />
+          <Badge title="MANAGE YOUR ORDERS" textStyle="body-italic-bold-16" />
           <motion.article className="w-full max-w-lg space-y-4">
             <h1 className="h2-bold-40 text-grey text-start pt-4">
               Track and Manage Your Orders

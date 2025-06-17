@@ -4,10 +4,7 @@ import { featureCards } from "@/app/utils/utils";
 
 const MainFeature = () => {
   return (
-    <Box
-      className="pt-20"
-      id="feature"
-    >
+    <Box className="pt-20" id="feature">
       <Flex
         direction={{ initial: "column", lg: "row" }}
         justify="between"
@@ -17,7 +14,10 @@ const MainFeature = () => {
         {/* Typography Section */}
         <Box className="max-w-lg">
           <div className="flex lg:justify-start lg:items-start justify-center items-center">
-            <Badge title="USE IT ANYWHERE, ANYTIME " />
+            <Badge
+              title="USE IT ANYWHERE, ANYTIME "
+              textStyle="body-italic-bold-16"
+            />
           </div>
           <h1
             color="gray"
@@ -25,7 +25,10 @@ const MainFeature = () => {
           >
             What <span className="text-primary">Assistant</span> Helps You Do?
           </h1>
-          <Text as="p" className="h4-regular-24 text-grey-medium pt-4 text-center lg:text-start">
+          <Text
+            as="p"
+            className="h4-regular-24 text-grey-medium pt-4 text-center lg:text-start"
+          >
             Simple tools to manage customer messages, work with your team, and
             grow your business.
           </Text>
