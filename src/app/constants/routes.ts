@@ -11,6 +11,8 @@ export const APP_ROUTES = {
     PRODUCTS: "/products",
     SLUG: (slug: string) => `/${slug}`,
     DEMO: "/demo",
+    FORGOT_PASSWORD: "/forgot-password",
+    RESET_PASSWORD: "/reset-password",
 
     // For the ["/product"]
     PRODUCTS_OVERVIEW: "/products",

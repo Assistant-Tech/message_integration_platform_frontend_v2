@@ -17,7 +17,13 @@ import {
 } from "@/app/pages";
 import { APP_ROUTES } from "@/app/constants/routes";
 import { ProductLayout, ResourceLayout } from "@/app/components/layout";
-import { LoginPage, RegisterPage } from "@/app/features/auth";
+// Feature Login
+import {
+  ForgetPassword,
+  LoginPage,
+  RegisterPage,
+  ResetPassword,
+} from "@/app/features/auth";
 
 const PublicRoutes = () => {
   return (
@@ -28,6 +34,14 @@ const PublicRoutes = () => {
       {/* Login & Registration Page Routes */}
       <Route path={APP_ROUTES.PUBLIC.LOGIN} element={<LoginPage />} />
       <Route path={APP_ROUTES.PUBLIC.REGISTER} element={<RegisterPage />} />
+      <Route
+        path={APP_ROUTES.PUBLIC.FORGOT_PASSWORD}
+        element={<ForgetPassword />}
+      />
+      <Route
+        path={APP_ROUTES.PUBLIC.RESET_PASSWORD}
+        element={<ResetPassword />}
+      />
 
       {/* Product Routes */}
       <Route

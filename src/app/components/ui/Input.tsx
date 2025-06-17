@@ -40,7 +40,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           type={inputType}
           placeholder={placeholder}
           className={cn(
-            "w-full px-4 py-2 border rounded-lg outline-none transition-all body-regular-16 text-grey-medium",
+            // updated for mobile padding and height
+            "w-full px-4 py-3 sm:py-2 min-h-[48px] border rounded-lg outline-none transition-all body-regular-16 text-grey-medium",
             error ? "border-danger" : "border-gray-300",
             focus,
             className,

@@ -1,14 +1,12 @@
 import { Logo } from "@/app/components/ui";
 import LoginForm from "@/app/features/auth/components/form/LoginForm";
-// import LoginImage from "@/app/features/auth/components/LoginImage";
 import loginImage from "@/app/assets/images/loginImage.png";
 
 const LoginPage = () => {
   return (
     <div className="flex flex-col md:flex-row min-h-screen">
       {/* Left Section */}
-      <div className="hidden md:flex flex-col w-1/2 items-center justify-center ">
-        {/* <LoginImage /> */}
+      <div className="hidden md:flex flex-col w-1/2 items-center justify-center bg-base-white">
         <div>
           <img src={loginImage} className="w-96 h-auto" />
         </div>
