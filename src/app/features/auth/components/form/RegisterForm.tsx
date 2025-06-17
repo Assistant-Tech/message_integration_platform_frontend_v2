@@ -52,11 +52,11 @@ const RegisterForm = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-5">
       {/* Title */}
-      <div className="text-start pt-4">
+      <div className="text-start pt-8">
         <h2 className="h5-medium-16 text-grey-medium">
           Let’s get you started,
         </h2>
-        <p className="mt-1 h3-bold-32 text-base-black">Create your account</p>
+        <p className="mt-2 h3-bold-32 text-base-black">Create your account</p>
       </div>
 
       {/* Full Name */}
@@ -198,7 +198,7 @@ const RegisterForm = () => {
       </p>
 
       {/* Copyright */}
-      <p className="h5-regular-16 text-grey-medium mt-4 text-center">
+      <p className="h5-bold-16 text-grey-medium mt-4 text-center">
         © 2025 Assistant Tech. All Rights Reserved
       </p>
     </form>

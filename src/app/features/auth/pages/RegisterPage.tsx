@@ -27,7 +27,7 @@ const RegisterPage = () => {
       </div>
 
       {/* Right Section (Form) */}
-      <div className="w-full md:w-1/2 h-full flex items-center justify-center overflow-y-auto px-4 pt-36 pb-12">
+      <div className="w-full md:w-1/2 h-full flex items-center justify-center overflow-y-auto px-4 pt-48 pb-12">
         <div className="w-full max-w-md">
           <Logo />
           <RegisterForm />
