@@ -105,7 +105,11 @@ const RegisterForm = () => {
           tabIndex={-1}
           aria-label={showPassword ? "Hide password" : "Show password"}
         >
-          {showPassword ? <EyeIcon /> : <EyeOffIcon />}
+          {showPassword ? (
+            <EyeIcon color="grey" />
+          ) : (
+            <EyeOffIcon color="grey" />
+          )}
         </button>
 
         <AnimatePresence>
