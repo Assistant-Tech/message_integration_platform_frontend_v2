@@ -8,13 +8,13 @@ const LoginPage = () => {
       {/* Left Section */}
       <div className="hidden md:flex flex-col w-1/2 items-center justify-center bg-base-white">
         <div>
-          <img src={loginImage} className="w-96 h-auto" />
+          <img src={loginImage} className="max-w-xl h-auto" />
         </div>
         <div className="mt-8 max-w-md">
-          <h2 className="text-2xl font-bold text-gray-900 mb-3 text-center">
+          <h2 className="h3-bold-32 text-base-black mb-3 text-center">
             Seamless Experience, Anytime, Anywhere
           </h2>
-          <p className="text-gray-600 leading-relaxed text-center">
+          <p className="body-regular-16 text-grey-medium text-center">
             Stay synced across all devices, both mobile and desktop. No matter
             where you are, enjoy a smooth and seamless experience.
           </p>

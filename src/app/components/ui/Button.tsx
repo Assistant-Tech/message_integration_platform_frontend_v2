@@ -67,7 +67,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         onClick={handleClick}
         disabled={disabled || loading}
         className={cn(
-          "flex items-center justify-center gap-2 px-2 py-1 md:px-4 md:py-3 rounded-xl button-semi-bold-16 transition-colors duration-200 cursor-pointer",
+          "flex items-center justify-center gap-2 px-4 py-3 sm:py-2 min-h-[48px] rounded-xl button-semi-bold-16 transition-colors duration-200 cursor-pointer",
           variantStyles[variant],
           (disabled || loading) && "opacity-50 cursor-not-allowed",
           className,
