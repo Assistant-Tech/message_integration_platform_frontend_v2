@@ -20,9 +20,11 @@ import { ProductLayout, ResourceLayout } from "@/app/components/layout";
 // Feature Login
 import {
   ForgetPassword,
+  LoginOTP,
   LoginPage,
   RegisterPage,
   ResetPassword,
+  VerifyEmail,
 } from "@/app/features/auth";
 
 const PublicRoutes = () => {
@@ -42,6 +44,10 @@ const PublicRoutes = () => {
         path={APP_ROUTES.PUBLIC.RESET_PASSWORD}
         element={<ResetPassword />}
       />
+
+      {/* OTP */}
+      {/* For now -> test ko lagi matrei later on wrapped in protected Routes */}
+      <Route path={APP_ROUTES.PUBLIC.LOGIN_OTP} element={<LoginOTP />} />
 
       {/* Product Routes */}
       <Route
@@ -82,6 +88,9 @@ const PublicRoutes = () => {
 
       {/* About Us Routes */}
       <Route path={APP_ROUTES.PUBLIC.ABOUT} element={<AboutUs />} />
+
+      {/* Verify Email */}
+      <Route path={APP_ROUTES.PUBLIC.VERIFY_EMAIL} element={<VerifyEmail />} />
 
       {/* Pricing Routes */}
       <Route path={APP_ROUTES.PUBLIC.PRICING} element={<PricingPage />} />
