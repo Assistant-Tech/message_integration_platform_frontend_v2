@@ -4,3 +4,6 @@ export { default as ForgetPassword } from "./pages/ForgetPassword";
 export { default as ResetPassword } from "./pages/ResetPassword";
 export { default as VerifyEmail } from "./pages/VerifyEmail";
 export { default as LoginOTP } from "./pages/LoginOTP";
+
+// Onboarding
+export { default as OnboardingForm } from "./pages/onboarding/OnboardingForm";

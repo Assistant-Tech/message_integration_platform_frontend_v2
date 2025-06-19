@@ -16,6 +16,15 @@ export const APP_ROUTES = {
     VERIFY_EMAIL: "/verify-email",
     LOGIN_OTP: "/login-otp",
 
+    // Onboarding [[/onboarding]]
+    ONBOARDING_FORM: "/onboardingform",
+    // Steps 1,2,3,4,5
+    ONBOARDING_FORM_STEP_1: "step-1",
+    ONBOARDING_FORM_STEP_2: "step-2",
+    ONBOARDING_FORM_STEP_3: "step-3",
+    ONBOARDING_FORM_STEP_4: "step-4",
+    ONBOARDING_FORM_STEP_5: "step-5",
+
     // For the ["/product"]
     PRODUCTS_OVERVIEW: "/products",
     CRM: "/products/crm",

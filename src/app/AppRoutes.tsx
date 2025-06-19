@@ -1,16 +1,21 @@
 import { Suspense } from "react";
-
-import { PublicRoutes } from "@/app/router";
-import { Loading } from "@/app/components/common";
+import { Route, Routes } from "react-router-dom";
 import { PublicLayout } from "./components/layout";
+import { Loading } from "@/app/components/common";
+
+import PublicRoutes from "@/app/router/PublicRoutes";
+
+// import { ProtectedRoutes, AdminRoutes, UserRoutes } from "@/app/router/";
 
 const AppRoutes = () => {
   return (
     <Suspense fallback={<Loading />}>
-      {/* Public Layout && Routes  */}
-      <PublicLayout>
-        <PublicRoutes />
-      </PublicLayout>
+      <Routes>
+        {/* Public routes under public layout */}
+        <Route path="/*" element={<PublicLayout />}>
+          <Route path="*" element={<PublicRoutes />} />
+        </Route>
+      </Routes>
     </Suspense>
   );
 };
