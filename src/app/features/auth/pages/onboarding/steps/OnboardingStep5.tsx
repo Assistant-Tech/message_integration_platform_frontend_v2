@@ -1,21 +1,21 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { StepsIndicator } from "@/app/features/auth/components/ui";
+import { StepSidebar } from "@/app/features/auth/pages/onboarding/components";
 import { Button, Input, Logo } from "@/app/components/ui/";
-import { useOnboardingStore } from "@/app/features/auth/store/useOnboardingStore";
-import onboardingSteps from "@/app/utils/onboarding/onboarding";
-import { ArrowLeft, ArrowRight, PartyPopper, RotateCcw } from "lucide-react";
+import { useOnboardingStore } from "@/app/features/auth/pages/onboarding/store/useOnboardingStore";
+import { ArrowDown, ArrowLeft, ArrowRight, PartyPopper } from "lucide-react";
 import { toast } from "sonner";
+import { cn } from "@/app/utils/cn";
+import {
+  OnboardingStep5FormData,
+  onboardingStep5Schema,
+} from "@/app/features/auth/pages/onboarding/schemas/Step5.schema";
 
 interface MemberData {
   name: string;
   role: string;
   email: string;
-}
-
-interface AddMembersData {
-  members: MemberData[];
 }
 
 interface AddMembersErrors {
@@ -24,9 +24,11 @@ interface AddMembersErrors {
 
 const OnboardingStep5: React.FC = () => {
   const navigate = useNavigate();
-  const { data, setStepData, setCompletedSteps, completedSteps, reset } =
-    useOnboardingStore();
-  const [formData, setFormData] = useState<AddMembersData>(
+  const { data, setStepData, setCompletedSteps, reset } = useOnboardingStore();
+
+  const currentStep = 5;
+
+  const [formData, setFormData] = useState<OnboardingStep5FormData>(
     data.step5 || {
       members: [
         { name: "", role: "", email: "" },
@@ -34,6 +36,7 @@ const OnboardingStep5: React.FC = () => {
       ],
     },
   );
+
   const [errors, setErrors] = useState<AddMembersErrors>({});
 
   const handleMemberChange = (
@@ -62,27 +65,24 @@ const OnboardingStep5: React.FC = () => {
       members: [...prev.members, { name: "", role: "", email: "" }],
     }));
   };
-
   const validateForm = () => {
-    const newErrors: string[] = [];
-    formData.members.forEach((member, index) => {
-      if (!member.name.trim() && !member.role.trim() && !member.email.trim()) {
-        newErrors[index] = "";
-      } else if (
-        !member.name.trim() ||
-        !member.role.trim() ||
-        !member.email.trim()
-      ) {
-        newErrors[index] = "All fields are required for this member.";
-      } else if (!/\S+@\S+\.\S+/.test(member.email)) {
-        newErrors[index] = "Please enter a valid email address.";
-      } else {
-        newErrors[index] = "";
-      }
-    });
+    const result = onboardingStep5Schema.safeParse(formData);
 
-    setErrors({ members: newErrors });
-    return newErrors.every((error) => error === "");
+    if (!result.success) {
+      const memberErrors: string[] = [];
+
+      result.error.errors.forEach((err) => {
+        const index = Number(err.path[1]); // members[index].field
+        const message = err.message;
+        memberErrors[index] = message;
+      });
+
+      setErrors({ members: memberErrors });
+      return false;
+    }
+
+    setErrors({});
+    return true;
   };
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -90,21 +90,17 @@ const OnboardingStep5: React.FC = () => {
     if (validateForm()) {
       setStepData("step5", formData);
       setCompletedSteps(5);
-      navigate("/admin/dashboard");
 
       // Toast Message
       toast.success("Onboarding Complete!", {
         description: "Welcome sir/madam! Your setup is now complete.",
         icon: <PartyPopper className="text-primary" />,
       });
+      navigate("/admin/dashboard");
+
       // Pachi Hataune (REMOVE)
       reset();
     }
-  };
-
-  const handleReset = () => {
-    reset();
-    navigate("/onboardingform/step-1");
   };
 
   const handleSkip = () => {
@@ -132,19 +128,11 @@ const OnboardingStep5: React.FC = () => {
         </div>
 
         <div className="flex flex-col lg:flex-row gap-16">
-          {/* Left Stepper */}
-          <div className="w-full lg:max-w-md space-y-4">
-            {onboardingSteps.map(({ stepNumber, title, description }: any) => (
-              <StepsIndicator
-                key={stepNumber}
-                stepNumber={stepNumber}
-                title={title}
-                description={description}
-                isActive={stepNumber === 5}
-                isCompleted={completedSteps >= stepNumber}
-              />
-            ))}
-          </div>
+          {/* Step Sidebar */}
+          <StepSidebar
+            currentStep={currentStep}
+            previousStep={currentStep - 1}
+          />
 
           {/* Right Content */}
           <div className="w-full lg:flex-1">
@@ -169,15 +157,15 @@ const OnboardingStep5: React.FC = () => {
                         onChange={(e) =>
                           handleMemberChange(index, "name", e.target.value)
                         }
-                        error={
-                          errors.members?.[index] && !member.name.trim()
-                            ? "Name is required"
-                            : ""
-                        }
                       />
                       <div className="relative">
                         <select
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary appearance-none bg-white"
+                          className={cn(
+                            "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary appearance-none bg-white",
+                            member.role
+                              ? "text-grey-medium"
+                              : "text-grey-light",
+                          )}
                           value={member.role}
                           onChange={(e) =>
                             handleMemberChange(index, "role", e.target.value)
@@ -190,27 +178,16 @@ const OnboardingStep5: React.FC = () => {
                           <option value="Intern">Intern</option>
                         </select>
                         <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                          <svg
-                            className="w-4 h-4 fill-current text-gray-400"
-                            viewBox="0 0 20 20"
-                          >
-                            <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                          </svg>
+                          <ArrowDown size={20} color="grey" />
                         </div>
                       </div>
+
                       <Input
                         placeholder="Enter email address"
                         type="email"
                         value={member.email}
                         onChange={(e) =>
                           handleMemberChange(index, "email", e.target.value)
-                        }
-                        error={
-                          errors.members?.[index] &&
-                          (!member.email.trim() ||
-                            !/\S+@\S+\.\S+/.test(member.email))
-                            ? "Valid email is required"
-                            : ""
                         }
                       />
                     </div>
@@ -241,19 +218,10 @@ const OnboardingStep5: React.FC = () => {
                 />
                 <div className="flex items-center gap-4">
                   <Button
-                    label="Reset All"
-                    onClick={handleReset}
-                    variant="outlined"
-                    IconLeft={<RotateCcw size={24} />}
-                    className="border-red-400 text-red-600 hover:bg-red-50"
-                  />
-                  <button
-                    type="button"
+                    label="Skip this step"
                     onClick={handleSkip}
-                    className="text-primary hover:text-primary font-medium"
-                  >
-                    Skip this step
-                  </button>
+                    className="bg-white text-primary hover:bg-white underline body-regular-underline-16"
+                  />
                   <Button
                     label="Save and Finish"
                     onClick={handleSubmit}

@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-import { StepsIndicator } from "@/app/features/auth/components/ui";
+import {
+  FileUploadProgress,
+  StepSidebar,
+} from "@/app/features/auth/pages/onboarding/components";
 import { Button, Input, Logo } from "@/app/components/ui/";
-import { useOnboardingStore } from "@/app/features/auth/store/useOnboardingStore";
-import onboardingSteps from "@/app/utils/onboarding/onboarding";
+import { useOnboardingStore } from "@/app/features/auth/pages/onboarding/store/useOnboardingStore";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
 interface LegalDocsData {
   panNumber: string;
   panFile: File | null;
+  uploadProgress: FileUploadProgress[];
 }
 
 interface LegalDocsErrors {
@@ -19,29 +21,185 @@ interface LegalDocsErrors {
 
 const OnboardingStep4: React.FC = () => {
   const navigate = useNavigate();
-  const { data, setStepData, setCompletedSteps, completedSteps } =
-    useOnboardingStore();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { data, setStepData, setCompletedSteps } = useOnboardingStore();
+
+  const currentStep = 4;
 
   const [formData, setFormData] = useState<LegalDocsData>(
     data.step4 || {
       panNumber: "",
       panFile: null,
+      uploadProgress: [],
     },
   );
-  console.log("🚀 ~ formData ~ 4:", formData);
 
   const [errors, setErrors] = useState<LegalDocsErrors>({});
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
+  const simulateFileUpload = (file: File): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      let progress = 0;
+
+      const newUpload: FileUploadProgress = {
+        file,
+        progress: 0,
+        status: "uploading",
+        timeLeft: "2 min left",
+      };
+
+      setFormData((prev) => ({
+        ...prev,
+        uploadProgress: [...prev.uploadProgress, newUpload],
+      }));
+
+      const interval = setInterval(() => {
+        progress += Math.random() * 15 + 5;
+
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(interval);
+
+          setFormData((prev) => ({
+            ...prev,
+            uploadProgress: prev.uploadProgress.map((upload, index) =>
+              index === prev.uploadProgress.length - 1
+                ? {
+                    ...upload,
+                    progress: 100,
+                    status: "completed",
+                    timeLeft: undefined,
+                  }
+                : upload,
+            ),
+          }));
+
+          if (Math.random() > 0.3) {
+            resolve();
+          } else {
+            setTimeout(() => {
+              setFormData((prev) => ({
+                ...prev,
+                uploadProgress: prev.uploadProgress.map((upload, index) =>
+                  index === prev.uploadProgress.length - 1
+                    ? { ...upload, status: "failed", progress: 80 }
+                    : upload,
+                ),
+              }));
+              reject(new Error("Upload failed"));
+            }, 500);
+          }
+        } else {
+          const timeLeft =
+            progress < 50
+              ? "2 min left"
+              : progress < 80
+                ? "1 min left"
+                : "30 sec left";
+
+          setFormData((prev) => ({
+            ...prev,
+            uploadProgress: prev.uploadProgress.map((upload, index) =>
+              index === prev.uploadProgress.length - 1
+                ? { ...upload, progress: Math.floor(progress), timeLeft }
+                : upload,
+            ),
+          }));
+        }
+      }, 200);
+    });
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ["image/jpeg", "image/png", "application/pdf"];
+    if (!allowedTypes.includes(file.type)) {
+      setErrors((prev) => ({
+        ...prev,
+        panFile: "Please upload only .jpeg, .png or .pdf files",
+      }));
+      return;
+    }
+
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      setErrors((prev) => ({
+        ...prev,
+        panFile: "File size must be less than 10MB",
+      }));
+      return;
+    }
+
     setFormData((prev) => ({ ...prev, panFile: file }));
     if (errors.panFile) setErrors((prev) => ({ ...prev, panFile: "" }));
+
+    try {
+      await simulateFileUpload(file);
+    } catch (error) {
+      console.error("Upload failed:", error);
+    }
+
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handleRemoveUpload = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      uploadProgress: prev.uploadProgress.filter((_, i) => i !== index),
+    }));
+
+    // If this was the current panFile, clear it
+    if (
+      formData.uploadProgress[index] &&
+      formData.panFile?.name === formData.uploadProgress[index].file.name
+    ) {
+      setFormData((prev) => ({ ...prev, panFile: null }));
+    }
+  };
+
+  const handleRetryUpload = async (index: number) => {
+    const upload = formData.uploadProgress[index];
+    if (!upload) return;
+
+    // Reset upload status
+    setFormData((prev) => ({
+      ...prev,
+      uploadProgress: prev.uploadProgress.map((u, i) =>
+        i === index ? { ...u, progress: 0, status: "uploading" as const } : u,
+      ),
+    }));
+
+    try {
+      await simulateFileUpload(upload.file);
+    } catch (error) {
+      console.error("Retry upload failed:", error);
+    }
   };
 
   const validateForm = () => {
     const newErrors: LegalDocsErrors = {};
-    if (!formData.panNumber.trim()) newErrors.panNumber = "PAN is required.";
-    if (!formData.panFile) newErrors.panFile = "PAN file is required.";
+    if (!formData.panNumber.trim()) {
+      newErrors.panNumber = "PAN number is required.";
+    } else if (
+      !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.panNumber.toUpperCase())
+    ) {
+      newErrors.panNumber =
+        "Please enter a valid PAN number (e.g., ABCDE1234F).";
+    }
+
+    const completedUploads = formData.uploadProgress.filter(
+      (u) => u.status === "completed",
+    );
+    if (completedUploads.length === 0) {
+      newErrors.panFile =
+        "Please upload and complete at least one PAN document.";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -53,6 +211,13 @@ const OnboardingStep4: React.FC = () => {
       setCompletedSteps(4);
       navigate("/onboardingform/step-5");
     }
+  };
+
+  const handleSkip = () => {
+    // Set step as completed but with minimal data
+    setStepData("step4", { panNumber: "", panFile: null, uploadProgress: [] });
+    setCompletedSteps(4);
+    navigate("/onboardingform/step-5");
   };
 
   return (
@@ -74,19 +239,11 @@ const OnboardingStep4: React.FC = () => {
         </div>
 
         <div className="flex flex-col lg:flex-row gap-16">
-          {/* Left Stepper */}
-          <div className="w-full lg:max-w-md space-y-4">
-            {onboardingSteps.map(({ stepNumber, title, description }: any) => (
-              <StepsIndicator
-                key={stepNumber}
-                stepNumber={stepNumber}
-                title={title}
-                description={description}
-                isActive={stepNumber === 4}
-                isCompleted={completedSteps >= stepNumber}
-              />
-            ))}
-          </div>
+          {/* Step Sidebar */}
+          <StepSidebar
+            currentStep={currentStep}
+            previousStep={currentStep - 1}
+          />
 
           {/* Right Content */}
           <div className="w-full lg:flex-1">
@@ -95,7 +252,7 @@ const OnboardingStep4: React.FC = () => {
             </h2>
 
             {/* INPUT SECTION */}
-            <div className="space-y-4">
+            <div className="space-y-6">
               {/* PAN Input */}
               <div>
                 <label
@@ -106,24 +263,26 @@ const OnboardingStep4: React.FC = () => {
                 </label>
                 <Input
                   id="pan"
-                  placeholder="Enter your pan"
+                  placeholder="Enter your PAN (e.g., ABCDE1234F)"
                   value={formData.panNumber}
                   onChange={(e) => {
+                    const value = e.target.value.toUpperCase();
                     setFormData((prev) => ({
                       ...prev,
-                      panNumber: e.target.value,
+                      panNumber: value,
                     }));
                     if (errors.panNumber)
                       setErrors((prev) => ({ ...prev, panNumber: "" }));
                   }}
                   error={errors.panNumber}
+                  maxLength={10}
                 />
               </div>
 
               {/* File Upload */}
               <div>
                 <label className="block mb-2 body-bold-16 text-grey">
-                  Upload Company’s PAN Card{" "}
+                  Upload Company's PAN Card{" "}
                   <span className="text-danger">*</span>
                 </label>
                 <div className="border border-dashed border-gray-300 rounded-lg p-6 bg-gray-50 text-center">
@@ -133,29 +292,32 @@ const OnboardingStep4: React.FC = () => {
                   <p className="text-sm text-gray-500 my-2">Or</p>
                   <label
                     htmlFor="panUpload"
-                    className="inline-block bg-black text-white px-6 py-2 rounded-md cursor-pointer"
+                    className="inline-block bg-black text-white px-6 py-2 rounded-md cursor-pointer hover:bg-gray-800 transition-colors"
                   >
                     + Add Attachment
                   </label>
                   <input
+                    ref={fileInputRef}
                     id="panUpload"
                     type="file"
-                    accept=".jpeg,.png,.pdf"
+                    accept=".jpeg,.jpg,.png,.pdf"
                     className="hidden"
                     onChange={handleFileChange}
                   />
-                  {formData.panFile && (
-                    <p className="mt-2 text-sm text-gray-600">
-                      Attached: {formData.panFile.name}
-                    </p>
-                  )}
-                  <p className="text-xs text-gray-400 mt-1">
-                    You can attach .jpeg, .png or .pdf Files
+                  <p className="text-xs text-gray-400 mt-2">
+                    You can attach .jpeg, .png or .pdf files (Max 10MB)
                   </p>
                   {errors.panFile && (
-                    <p className="text-danger text-sm mt-1">{errors.panFile}</p>
+                    <p className="text-danger text-sm mt-2">{errors.panFile}</p>
                   )}
                 </div>
+
+                {/* File Upload Progress */}
+                <FileUploadProgress
+                  uploads={formData.uploadProgress}
+                  onRemove={handleRemoveUpload}
+                  onRetry={handleRetryUpload}
+                />
               </div>
 
               {/* Navigation Buttons */}
@@ -167,6 +329,11 @@ const OnboardingStep4: React.FC = () => {
                   IconLeft={<ArrowLeft size={24} />}
                 />
                 <div className="flex items-center gap-4">
+                  <Button
+                    label="Skip this step"
+                    onClick={handleSkip}
+                    className="bg-white text-primary hover:bg-white underline body-regular-underline-16"
+                  />
                   <Button
                     label="Next"
                     onClick={handleSubmit}

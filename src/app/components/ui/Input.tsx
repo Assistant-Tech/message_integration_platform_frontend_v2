@@ -19,6 +19,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       className,
       error,
       type,
+      required,
       ...props
     },
     ref,
@@ -35,7 +36,12 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <div className="flex flex-col gap-1 w-full">
-        {label && <label className="body-bold-16 text-grey">{label}</label>}
+        {label && (
+          <label className="body-bold-16 text-grey">
+            {label}
+            {required && <span className="text-danger"> *</span>}
+          </label>
+        )}
         <input
           type={inputType}
           placeholder={placeholder}

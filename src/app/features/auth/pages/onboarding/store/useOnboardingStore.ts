@@ -1,6 +1,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+interface FileUploadProgress {
+  file: File;
+  progress: number;
+  status: "uploading" | "completed" | "failed";
+  timeLeft?: string;
+}
+
 type OnboardingData = {
   step1: {
     companyName: string;
@@ -20,6 +27,7 @@ type OnboardingData = {
   step4: {
     panNumber: string;
     panFile: File | null;
+    uploadProgress: FileUploadProgress[];
   };
   step5: {
     members: {
@@ -59,6 +67,21 @@ export const useOnboardingStore = create<Store>()(
     }),
     {
       name: "onboarding-data",
+      // Note: File objects cannot be serialized to localStorage
+      // You may want to consider storing only file metadata
+      partialize: (state) => ({
+        ...state,
+        data: {
+          ...state.data,
+          step4: state.data.step4
+            ? {
+                ...state.data.step4,
+                panFile: null,
+                uploadProgress: [],
+              }
+            : undefined,
+        },
+      }),
     },
   ),
 );

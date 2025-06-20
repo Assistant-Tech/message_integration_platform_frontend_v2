@@ -33,7 +33,7 @@ import {
   OnboardingStep3,
   OnboardingStep4,
   OnboardingStep5,
-} from "@/app/features/auth/pages/onboarding";
+} from "@/app/features/auth/pages/onboarding/steps";
 
 const PublicRoutes = () => {
   return (

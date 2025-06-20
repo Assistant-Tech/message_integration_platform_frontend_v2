@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { StepsIndicator } from "@/app/features/auth/components/ui";
+import { StepSidebar } from "@/app/features/auth/pages/onboarding/components";
 import { Button, Input, Logo } from "@/app/components/ui/";
-import { useOnboardingStore } from "@/app/features/auth/store/useOnboardingStore";
-import onboardingSteps from "@/app/utils/onboarding/onboarding"; // Assuming this array is correctly imported
+import { useOnboardingStore } from "@/app/features/auth/pages/onboarding/store/useOnboardingStore";
+import {
+  OnboardingStep2FormData,
+  onboardingStep2Schema,
+} from "@/app/features/auth/pages/onboarding/schemas/Step2.schema";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
-interface LocationData {
-  country: string;
-  state: string;
-  city: string;
-}
 interface LocationErrors {
   country?: string;
   state?: string;
@@ -19,21 +18,23 @@ interface LocationErrors {
 
 const OnboardingStep2: React.FC = () => {
   const navigate = useNavigate();
-  const { data, setStepData, setCompletedSteps, completedSteps } =
-    useOnboardingStore();
+  const { data, setStepData, setCompletedSteps } = useOnboardingStore();
+  const currentStep = 2;
 
-  const [formData, setFormData] = useState<LocationData>(
+  const [formData, setFormData] = useState<OnboardingStep2FormData>(
     data.step2 || {
       country: "",
       state: "",
       city: "",
     },
   );
-  console.log("🚀 ~ formData ~ 2:", formData);
 
   const [errors, setErrors] = useState<LocationErrors>({});
 
-  const handleChange = (field: keyof LocationData, value: string) => {
+  const handleChange = (
+    field: keyof OnboardingStep2FormData,
+    value: string,
+  ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: "" }));
@@ -41,11 +42,20 @@ const OnboardingStep2: React.FC = () => {
   };
 
   const validateForm = (): boolean => {
-    const newErrors: LocationErrors = {};
-    if (!formData.country.trim()) newErrors.country = "Country is required";
-    if (!formData.city.trim()) newErrors.city = "City is required";
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    const result = onboardingStep2Schema.safeParse(formData);
+
+    if (!result.success) {
+      const newErrors: LocationErrors = {};
+      result.error.errors.forEach((err) => {
+        const field = err.path[0] as keyof LocationErrors;
+        newErrors[field] = err.message;
+      });
+      setErrors(newErrors);
+      return false;
+    }
+
+    setErrors({});
+    return true;
   };
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -76,34 +86,23 @@ const OnboardingStep2: React.FC = () => {
         </div>
 
         <div className="flex flex-col lg:flex-row items-start max-w-full gap-16">
-          {/* Sidebar: Dynamically render steps */}
-          <div className="w-full lg:max-w-md space-y-4">
-            {onboardingSteps.map(({ stepNumber, title, description }: any) => (
-              <StepsIndicator
-                key={stepNumber}
-                stepNumber={stepNumber}
-                title={title}
-                description={description}
-                isActive={stepNumber === 2}
-                isCompleted={completedSteps >= stepNumber}
-              />
-            ))}
-          </div>
+          <StepSidebar
+            currentStep={currentStep}
+            previousStep={currentStep - 1}
+          />
 
-          {/* Right Form */}
           <div className="w-full lg:flex-1">
-            <h2 className="text-2xl font-semibold text-grey mb-6">
-              Company’s Location
-            </h2>
+            <h2 className="h4-bold-24 text-grey mb-6">Company’s Location</h2>
 
             <div className="space-y-6">
               <Input
                 id="country"
-                label="Country *"
+                label="Country"
                 placeholder="Select your country"
                 value={formData.country}
                 onChange={(e) => handleChange("country", e.target.value)}
                 error={errors.country}
+                required
               />
 
               <Input
@@ -122,18 +121,21 @@ const OnboardingStep2: React.FC = () => {
                 value={formData.city}
                 onChange={(e) => handleChange("city", e.target.value)}
                 error={errors.city}
+                required
               />
 
               <div className="flex justify-between pt-4">
                 <Button
-                  label="← Go Back"
+                  label="Go Back"
                   onClick={() => navigate("/onboardingform/step-1")}
                   variant="outlined"
+                  IconLeft={<ArrowLeft size={20} />}
                 />
                 <Button
-                  label="Next →"
+                  label="Next"
                   onClick={handleSubmit}
                   variant="primary"
+                  IconRight={<ArrowRight size={20} />}
                 />
               </div>
             </div>

@@ -1,15 +1,14 @@
-import React, { useState } from "react"; // Ensure useState is imported
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-import { StepsIndicator } from "@/app/features/auth/components/ui";
+import { StepSidebar } from "@/app/features/auth/pages/onboarding/components";
 import { Button, Input, Logo } from "@/app/components/ui/";
-import { useOnboardingStore } from "@/app/features/auth/store/useOnboardingStore";
-import onboardingSteps from "@/app/utils/onboarding/onboarding";
+import { useOnboardingStore } from "@/app/features/auth/pages/onboarding/store/useOnboardingStore";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
-interface IndustryData {
-  selectedIndustry: string;
-  customIndustry?: string;
-}
+import {
+  onboardingStep3Schema,
+  OnboardingStep3FormData,
+} from "@/app/features/auth/pages/onboarding/schemas/Step3.schema";
 
 interface IndustryErrors {
   selectedIndustry?: string;
@@ -18,16 +17,16 @@ interface IndustryErrors {
 
 const OnboardingStep3: React.FC = () => {
   const navigate = useNavigate();
-  const { data, setStepData, setCompletedSteps, completedSteps } =
-    useOnboardingStore();
+  const { data, setStepData, setCompletedSteps } = useOnboardingStore();
 
-  const [formData, setFormData] = useState<IndustryData>(
+  const currentStep = 3;
+
+  const [formData, setFormData] = useState<OnboardingStep3FormData>(
     data.step3 || {
       selectedIndustry: "",
       customIndustry: "",
     },
   );
-  console.log("🚀 ~ formData ~ 3:", formData)
 
   const [errors, setErrors] = useState<IndustryErrors>({});
 
@@ -65,21 +64,18 @@ const OnboardingStep3: React.FC = () => {
   };
 
   const validateForm = (): boolean => {
-    const newErrors: IndustryErrors = {};
-
-    if (!formData.selectedIndustry) {
-      newErrors.selectedIndustry = "Please select an industry";
+    const result = onboardingStep3Schema.safeParse(formData);
+    if (!result.success) {
+      const newErrors: IndustryErrors = {};
+      result.error.errors.forEach((err) => {
+        const field = err.path[0] as keyof IndustryErrors;
+        newErrors[field] = err.message;
+      });
+      setErrors(newErrors);
+      return false;
     }
-
-    if (
-      formData.selectedIndustry === "Others" &&
-      (!formData.customIndustry || !formData.customIndustry.trim())
-    ) {
-      newErrors.customIndustry = "Please specify your industry";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    setErrors({});
+    return true;
   };
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -109,23 +105,13 @@ const OnboardingStep3: React.FC = () => {
         </div>
 
         <div className="flex flex-col lg:flex-row items-start max-w-full gap-16">
-          {/* Left Sidebar: Dynamically render steps */}
-          <div className="w-full lg:max-w-md space-y-4">
-            {onboardingSteps.map(({ stepNumber, title, description }: any) => (
-              <StepsIndicator
-                key={stepNumber}
-                stepNumber={stepNumber}
-                title={title}
-                description={description}
-                isActive={stepNumber === 3}
-                isCompleted={completedSteps >= stepNumber}
-              />
-            ))}
-          </div>
+          <StepSidebar
+            currentStep={currentStep}
+            previousStep={currentStep - 1}
+          />
 
-          {/* Right Form Section */}
           <div className="w-full lg:flex-1">
-            <h2 className="text-2xl font-semibold text-grey mb-6">
+            <h2 className="h4-bold-24 text-grey mb-6">
               Choose your Industry <span className="text-danger">*</span>
             </h2>
 
@@ -183,7 +169,7 @@ const OnboardingStep3: React.FC = () => {
                     id="customIndustry"
                     label=""
                     placeholder="Please specify your industry"
-                    value={formData.customIndustry || ""} // Ensure string value for input
+                    value={formData.customIndustry || ""}
                     onChange={(e) => handleCustomIndustryChange(e.target.value)}
                     error={errors.customIndustry}
                   />
@@ -192,14 +178,16 @@ const OnboardingStep3: React.FC = () => {
 
               <div className="flex justify-between pt-4">
                 <Button
-                  label="← Go Back"
+                  label="Go Back"
                   onClick={() => navigate("/onboardingform/step-2")}
                   variant="outlined"
+                  IconLeft={<ArrowLeft size={20} />}
                 />
                 <Button
-                  label="Next →"
+                  label="Next"
                   onClick={handleSubmit}
                   variant="primary"
+                  IconRight={<ArrowRight size={20} />}
                 />
               </div>
             </div>
