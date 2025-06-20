@@ -1,5 +1,6 @@
 import { useDemoDialogStore } from "@/app/store/useDemoDialogStore";
 import { motion } from "framer-motion";
+
 import { X, CircleCheckBig } from "lucide-react";
 import logo from "@/app/assets/icons/logo-white.svg";
 import feature1 from "@/app/assets/images/demo.webp";
@@ -20,7 +21,7 @@ const DemoTextArea = () => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-primary to-primary-dark rounded-3xl w-full overflow-hidden max-w-2xl">
+    <div className="bg-gradient-to-br from-primary to-primary-dark rounded-3xl overflow-hidden w-full xl:w-1/2 max-w-full">
       {/* Header */}
       <div className="p-4 sm:p-6 pb-4 relative">
         <motion.div
@@ -93,13 +94,13 @@ const DemoTextArea = () => {
             <p className="text-white body-semi-bold-16">{feature}</p>
           </motion.div>
         ))}
-        <figure className="flex justify-center items-center">
+        <figure className="flex justify-center pt-12">
           <img
             src={feature1}
             alt="feature/image.webp"
             width={620}
             height={142}
-            className="w-fill h-auto object-contain rounded-2xl"
+            className="w-full h-auto object-contain rounded-2xl"
           />
         </figure>
       </div>

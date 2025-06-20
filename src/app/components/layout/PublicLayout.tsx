@@ -1,4 +1,3 @@
-import { PopupModal } from "@/app/components/common";
 import React, { ReactNode } from "react";
 
 interface PublicLayoutProps {
@@ -7,8 +6,7 @@ interface PublicLayoutProps {
 
 const PublicLayout: React.FC<PublicLayoutProps> = ({ children }) => {
   return (
-    <div className="flex flex-col">
-      <PopupModal />
+    <div className="flex flex-col overflow-x-hidden">
       <main>{children}</main>
     </div>
   );

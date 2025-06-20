@@ -10,6 +10,7 @@ import {
   MenuMobileToggle,
 } from "@/app/components/common";
 import { useScrollEffect } from "@/app/hooks/ui/useScrollEffect";
+import { DemoDialog } from "@/app/components/common/Demo";
 
 const Navbar = ({ offsetTop = false }: { offsetTop?: boolean }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -31,6 +32,8 @@ const Navbar = ({ offsetTop = false }: { offsetTop?: boolean }) => {
         isScrolled ? navbarStyles.scrolled : navbarStyles.default
       } ${offsetTop ? "mt-16" : ""}`}
     >
+      {/* Demo Dialog Box */}
+      <DemoDialog />
       <div className="mx-auto max-w-[1600px] px-4 sm:px-6 md:px-8 xl:px-12 2xl:px-0">
         <div className="flex h-16 justify-between items-center">
           <div
@@ -54,7 +57,7 @@ const Navbar = ({ offsetTop = false }: { offsetTop?: boolean }) => {
           <nav className="flex gap-2 lg:hidden items-center">
             {!mobileMenuOpen && (
               <Link to={APP_ROUTES.PUBLIC.REGISTER}>
-                <Button label="Start Free Trial" variant="primary" />
+                <Button label="Start Free Trial" variant="primary" className="py-3" />
               </Link>
             )}
             <MenuMobileToggle

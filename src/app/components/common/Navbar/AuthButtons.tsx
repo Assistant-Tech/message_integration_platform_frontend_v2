@@ -34,14 +34,14 @@ const AuthButtons: React.FC<AuthButtonsProps> = ({
         >
           Start Free Trial
         </Link>
-        <Link to="/">
-          <Button
-            label="Book a Demo"
-            variant="neutral"
-            className="w-full text-center mt-2 rounded-md border border-primary px-4 py-2 button-semi-bold-16 text-primary hover:bg-primary hover:text-white transition-colors"
-            onClick={handleDemo}
-          />
-        </Link>
+        {/* <Link to="/"> */}
+        <Button
+          label="Book a Demo"
+          variant="neutral"
+          className="w-full text-center mt-2 rounded-md border border-primary px-4 py-2 button-semi-bold-16 text-primary hover:bg-primary hover:text-white transition-colors"
+          onClick={handleDemo}
+        />
+        {/* </Link> */}
       </div>
     );
   }
@@ -64,7 +64,7 @@ const AuthButtons: React.FC<AuthButtonsProps> = ({
       <Link to="#" className="cursor-pointer">
         <Button
           label="Book a Demo"
-          variant="neutral"
+          variant="outlined"
           className="cursor-pointer"
           onClick={handleDemo}
         />

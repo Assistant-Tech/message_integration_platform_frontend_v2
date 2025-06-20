@@ -4,10 +4,29 @@ export const APP_ROUTES = {
     HOME: "/",
     LOGIN: "/login",
     REGISTER: "/register",
-    ABOUT: "/about",
+    ABOUT: "/aboutus",
     CONTACT: "/contact",
     UNAUTHORIZED: "/unauthorized",
     PRICING: "/pricing",
+    PRODUCTS: "/products",
+    SLUG: (slug: string) => `/${slug}`,
+    DEMO: "/demo",
+
+    // For the ["/product"]
+    PRODUCTS_OVERVIEW: "/products",
+    CRM: "/products/crm",
+    ERP: "/products/erp",
+    HRMS: "/products/hrms",
+
+    // For the ["/resources"]
+    RESOURCES_OVERVIEW: "/resources",
+    SUPPORT: "/resources/support",
+    // ["resources/support"]
+    ONBOARDING: "/resources/support/onboarding",
+    SUBSCRIPTIONS: "/resources/subscription",
+    TERMSCONDITION: "/resources/support/terms&condition",
+    POLICY: "/resources/support/policy",
+    UPDATES: "/resources/support/updates",
   },
 
   // Admin routes

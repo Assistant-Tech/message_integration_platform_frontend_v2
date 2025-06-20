@@ -46,7 +46,7 @@ const Pricing = () => {
   ];
 
   return (
-    <Box className="px-6 max-w-full mx-auto">
+    <Box className="px-6 md:px-2 max-w-full mx-auto">
       <Flex direction="column" align="center" gap="3" mb="6">
         <article className="flex flex-col items-center text-center space-y-4">
           <Badge title="PLANS TAILORED TO YOUR NEEDS" />
@@ -57,20 +57,19 @@ const Pricing = () => {
           </p>
         </article>
 
-        <div className="py-6">
+        <div className="pt-6">
           <DynamicToggle
             options={pricingOptions}
             defaultSelected={duration}
             onChange={(val) => setDuration(val.value as APIDuration)}
-            variant="primary"
-            size="lg"
           />
         </div>
 
         <RadioGroup.Root
           value={currency}
           onValueChange={(val) => setCurrency(val as any)}
-          className="w-full"
+          color="teal"
+          className="w-full pb-4 md:pb-8"
         >
           <Flex gap="4" justify="end" align="center">
             {["NPR", "USD"].map((cur) => (

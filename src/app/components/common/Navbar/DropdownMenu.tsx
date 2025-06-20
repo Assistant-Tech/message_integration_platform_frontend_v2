@@ -3,12 +3,13 @@ import { Link } from "react-router-dom";
 import testImage from "@/app/assets/images/navbar-image-test.webp";
 import { Button } from "@/app/components/ui";
 import { ArrowUpRight } from "lucide-react";
+import { APP_ROUTES } from "@/app/constants/routes";
 
 interface DropdownItem {
   name: string;
   href: string;
   description?: string;
-  icon?: React.ElementType;
+  icon?: string;
 }
 
 interface DropdownMenuProps {
@@ -37,9 +38,12 @@ const DropdownMenu = ({ items, isVisible }: DropdownMenuProps) => {
                   {/* ---------- left column ---------- */}
                   <div className="flex flex-col">
                     <article className="flex flex-col items-start">
-                      <h1 className="h4-bold-24 text-base-black">
-                        {items.name}
-                      </h1>
+                      <Link to={APP_ROUTES.PUBLIC.SLUG(items.name)}>
+                        <h1 className="h4-bold-24 text-primary">
+                          {items.name}
+                        </h1>
+                      </Link>
+
                       <p className="body-regular-16 text-base-black">
                         Vestibulum tempus imperdiet sem ac porttitor. Vivamus
                         pulvinar commodo orci, suscipit porttitor velit
@@ -57,7 +61,7 @@ const DropdownMenu = ({ items, isVisible }: DropdownMenuProps) => {
                           <div className="flex items-center p-2">
                             <div className="w-14 h-14 p-2 bg-primary-light flex justify-center items-center mr-3 rounded-lg">
                               {item.icon && (
-                                <item.icon className="h-6 w-6 text-primary group-hover:text-primary transition-colors" />
+                                <img src={item.icon} className="h-8 w-8" />
                               )}
                             </div>
                             <div>
@@ -110,6 +114,7 @@ const DropdownMenu = ({ items, isVisible }: DropdownMenuProps) => {
                     variant="secondary"
                     IconRight={<ArrowUpRight size={24} />}
                     className="flex flex-cols justify-center items-center"
+                    redirectTo="/demo"
                   />
                 </div>
               </div>

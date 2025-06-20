@@ -2,7 +2,12 @@ import "@radix-ui/themes/styles.css";
 import { Theme } from "@radix-ui/themes";
 import { useState, Suspense, lazy } from "react";
 
-import { Footer, Navbar, TrialBanner } from "@/app/components/common";
+import {
+  Footer,
+  Navbar,
+  PopupModal,
+  TrialBanner,
+} from "@/app/components/common";
 import {
   BuiltAssistant,
   GetStarted,
@@ -11,20 +16,20 @@ import {
   ScaleBusiness,
   Pricing,
   FAQ,
-} from "@/app/features/landing/";
-import { DemoDialog } from "@/app/features/auth";
+  OrderManagement,
+} from "@/app/pages/landing/index";
 import Section from "@/app/components/layout/Section";
 
 // Lazy-load large components
-const ChatBot = lazy(() => import("@/app/features/landing/ChatBot"));
-const Testimonials = lazy(() => import("@/app/features/landing/Testimonials"));
+const ChatBot = lazy(() => import("@/app/pages/landing/ChatBot"));
+const Testimonials = lazy(() => import("@/app/pages/landing/Testimonials"));
 
 const Landing = () => {
   const [isBannerVisible, setIsBannerVisible] = useState(true);
 
   const sections = [
-    // Demo dialog
-    { element: <DemoDialog /> },
+    // Popup Modal
+    { element: <PopupModal /> },
     // Hero Section
     { element: <HeroSection /> },
     // Main Feature
@@ -43,6 +48,9 @@ const Landing = () => {
     { element: <ScaleBusiness /> },
     // Built Assistant
     { element: <BuiltAssistant /> },
+    //Order Mangement
+    { element: <OrderManagement /> },
+    //Testimonials
     {
       element: (
         <Suspense fallback={<div>Loading testimonials...</div>}>

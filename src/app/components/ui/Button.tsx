@@ -17,6 +17,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   redirectTo?: string;
   IconLeft?: React.ReactElement;
   IconRight?: React.ReactElement;
+  type?: "button" | "submit" | "reset";
+  loading?: boolean;
 }
 
 const variantStyles: Record<string, string> = {
@@ -41,6 +43,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       className,
       IconLeft,
       IconRight,
+      type = "button",
+      loading = false,
+      disabled,
       ...props
     },
     ref,
@@ -58,17 +63,26 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         ref={ref}
+        type={type}
         onClick={handleClick}
+        disabled={disabled || loading}
         className={cn(
           "flex items-center justify-center gap-2 px-2 py-1 md:px-4 md:py-3 rounded-xl button-semi-bold-16 transition-colors duration-200 cursor-pointer",
           variantStyles[variant],
-          className, 
+          (disabled || loading) && "opacity-50 cursor-not-allowed",
+          className,
         )}
         {...props}
       >
-        {IconLeft && <span>{IconLeft} </span>}
-        <span>{label}</span>
-        {IconRight && <span>{IconRight} </span>}
+        {loading ? (
+          <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
+        ) : (
+          <>
+            {IconLeft && <span>{IconLeft}</span>}
+            <span>{label}</span>
+            {IconRight && <span>{IconRight}</span>}
+          </>
+        )}
       </button>
     );
   },

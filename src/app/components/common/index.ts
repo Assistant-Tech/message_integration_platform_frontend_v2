@@ -3,6 +3,7 @@ export { default as Navbar } from "./Navbar";
 export { default as Footer } from "./Footer";
 export { default as TrialBanner } from "./TrialBanner";
 export { default as PopupModal } from "./PopupModal";
+export { default as NewsLetter } from "./NewsLetter";
 
 //Navbar Components
 export { default as NavigationItem } from "./Navbar/NavigationItem";

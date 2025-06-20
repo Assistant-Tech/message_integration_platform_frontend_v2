@@ -21,8 +21,8 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
     if (!rawTitle) return "";
     return rawTitle
       .toLowerCase()
-      .replace(/_/g, " ") // Replace underscores with spaces
-      .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize each word
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase());
   };
 
   const getFeaturesList = (

@@ -7,7 +7,7 @@ import { Circle } from "lucide-react";
 
 const GetStarted = () => {
   return (
-    <Box className="relative w-full h-auto md:h-96 overflow-hidden bg-primary-dark flex items-center justify-center">
+    <Box className="relative w-full h-auto md:h-96 overflow-hidden bg-primary-dark flex items-center justify-center scrollbar-hidden">
       {/* Abstract background shapes */}
       <div className="absolute bottom-0 -left-70">
         <motion.img
@@ -40,7 +40,7 @@ const GetStarted = () => {
         direction={{ initial: "column", md: "row" }}
         align="center"
         justify="between"
-        className="relative z-10 w-full max-w-[1600px] mx-auto px-4 md:px-px gap-16 py-10"
+        className="relative z-10 w-full max-w-[1600px] mx-auto px-4 md:px-12 gap-16 py-10"
       >
         {/* Left Section: Text + Button */}
         <Flex
