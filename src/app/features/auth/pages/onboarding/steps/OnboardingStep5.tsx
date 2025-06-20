@@ -91,6 +91,8 @@ const OnboardingStep5: React.FC = () => {
       setStepData("step5", formData);
       setCompletedSteps(5);
       navigate("/admin/dashboard");
+
+      // Toast Message
       toast.success("Onboarding Complete!", {
         description: "Welcome sir/madam! Your setup is now complete.",
         icon: <PartyPopper className="text-primary" />,

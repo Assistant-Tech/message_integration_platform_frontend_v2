@@ -13,10 +13,13 @@ import google from "@/app/assets/icons/google.svg";
 import circlefb from "@/app/assets/icons/circlefb.svg";
 import CheckItem from "@/app/features/auth/components/ui/CheckItem";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const [showPasswordChecks, setShowPasswordChecks] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
+
+  const navigate = useNavigate();
 
   const {
     register,
@@ -41,6 +44,7 @@ const LoginPage = () => {
   const onSubmit = (data: LoginFormData) => {
     toast.success("Form Submitted Successfully");
     console.log("Submitted:", data);
+    navigate("/onboardingform/step-1")
     reset();
   };
 
