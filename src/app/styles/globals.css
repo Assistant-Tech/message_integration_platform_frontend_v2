@@ -1,0 +1,740 @@
+@import "tailwindcss";
+/* Main Nunito Import */
+@import "@fontsource/nunito-sans/400.css";
+@import "@fontsource/nunito-sans/500.css";
+@import "@fontsource/nunito-sans/600.css";
+@import "@fontsource/nunito-sans/700.css";
+@import "@fontsource/nunito-sans/400-italic.css";
+@import "@fontsource/nunito-sans/700-italic.css";
+
+/* Accent Typo Import */
+@import "@fontsource/merriweather";
+@import "@fontsource/merriweather/400.css";
+@import "@fontsource/merriweather/400-italic.css";
+
+@theme {
+  /* Breakpoints */
+  --breakpoint-mobile: 480px; /* Mobile devices (phones) */
+  --breakpoint-tablet: 768px; /* Tablets (iPad, etc.) */
+  --breakpoint-desktop: 1024px; /* Desktop computers */
+  --breakpoint-large: 1440px; /* Large desktop/monitors */
+
+  /* Font families */
+  --font-sans: "Nunito Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-nunito: "Nunito Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-meri: "Merriweather", ui-sans-serif, system-ui, sans-serif;
+
+  /* Custom gradient */
+  --custom-gradient: linear-gradient(to bottom, #1cb496 8%, #169078 81.5%);
+
+  /*PrimaryColor*/
+  --color-primary-light: #e4f7f3;
+  --color-primary-inactive: #a1e0d4;
+  --color-primary: #1cb496;
+  --color-primary-dark: #169078;
+  --color-white: #ffffff;
+
+  /* Secondary Color */
+  --color-secondary-light: #fef3e6;
+  --color-secondary-inactive: #f9cf99;
+  --color-secondary: #f08700;
+  --color-secondary-dark: #c06c00;
+
+  /* Text Color */
+  --color-base-white: #f8f9fa;
+  --color-grey-medium: #666666;
+  --color-grey: #333333;
+  --color-base-black: #03120f;
+  --color-primary: #1cb496;
+  --color-secondary: #f08700;
+
+  /* Border color */
+  --color-grey-light: #e3e3e3;
+
+  /* Success color */
+  --color-success-light: #dbf7ea;
+  --color-success: #009951;
+  --color-success-dark: #006b38;
+
+  /* Warning color */
+  --color-warning-light: #fff3d1;
+  --color-warning: #ffc21a;
+  --color-warning-dark: #daa000;
+
+  /* Danger color */
+  --color-danger-light: #f8cac7;
+  --color-danger: #b3261e;
+  --color-danger-dark: #8d0800;
+
+  /* Information color */
+  --color-information-light: #e6f2fc;
+  --color-information: #007b35;
+  --color-information-dark: #004a89;
+}
+
+/* Scroll bar hide */
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Base Styles
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+body {
+  @apply bg-white text-primary-dark font-sans;
+}
+
+/* Base typography classes (mobile-first) */
+.bold-64 {
+  @apply text-[32px] leading-[36px] tracking-[-0.012em] font-meri;
+}
+
+/* Responsive variants for bold-64 */
+@media (min-width: theme(breakpoint-tablet)) {
+  .bold-64 {
+    @apply text-[48px] leading-[52px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .bold-64 {
+    @apply text-[56px] leading-[60px];
+  }
+}
+
+@media (min-width: theme(breakpoint-large)) {
+  .bold-64 {
+    @apply text-[64px] leading-[68px];
+  }
+}
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Heading 1 - Responsive
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+.h1-bold-48 {
+  @apply text-2xl leading-[32px] tracking-[-0.012em] font-bold font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h1-bold-48 {
+    @apply text-4xl leading-[48px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h1-bold-48 {
+    @apply text-5xl leading-[60px];
+  }
+}
+
+.h1-semi-bold-48 {
+  @apply text-2xl leading-[32px] tracking-[-0.012em] font-semibold font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h1-semi-bold-48 {
+    @apply text-4xl leading-[48px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h1-semi-bold-48 {
+    @apply text-5xl leading-[60px];
+  }
+}
+
+.h1-medium-48 {
+  @apply text-2xl leading-[32px] tracking-[-0.012em] font-medium font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h1-medium-48 {
+    @apply text-4xl leading-[48px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h1-medium-48 {
+    @apply text-5xl leading-[60px];
+  }
+}
+
+.h1-regular-48 {
+  @apply text-2xl leading-[32px] tracking-[-0.012em] font-normal font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h1-regular-48 {
+    @apply text-4xl leading-[48px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h1-regular-48 {
+    @apply text-5xl leading-[60px];
+  }
+}
+
+.h1-italic-bold-48 {
+  @apply text-2xl leading-[32px] tracking-[-0.012em] font-bold font-nunito italic;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h1-italic-bold-48 {
+    @apply text-4xl leading-[48px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h1-italic-bold-48 {
+    @apply text-5xl leading-[60px];
+  }
+}
+
+.h1-italic-regular-48 {
+  @apply text-2xl leading-[32px] tracking-[-0.012em] font-normal font-nunito italic;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h1-italic-regular-48 {
+    @apply text-4xl leading-[48px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h1-italic-regular-48 {
+    @apply text-5xl leading-[60px];
+  }
+}
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Heading 2 - Responsive
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+.h2-bold-40 {
+  @apply text-xl leading-[28px] tracking-[-0.002em] font-bold font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h2-bold-40 {
+    @apply text-3xl leading-[40px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h2-bold-40 {
+    @apply text-[40px] leading-[50px];
+  }
+}
+
+.h2-semi-bold-40 {
+  @apply text-xl leading-[28px] tracking-[-0.002em] font-semibold font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h2-semi-bold-40 {
+    @apply text-3xl leading-[40px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h2-semi-bold-40 {
+    @apply text-[40px] leading-[50px];
+  }
+}
+
+.h2-medium-40 {
+  @apply text-xl leading-[28px] tracking-[-0.002em] font-medium font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h2-medium-40 {
+    @apply text-3xl leading-[40px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h2-medium-40 {
+    @apply text-[40px] leading-[50px];
+  }
+}
+
+.h2-regular-40 {
+  @apply text-xl leading-[28px] tracking-[-0.002em] font-normal font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h2-regular-40 {
+    @apply text-3xl leading-[40px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h2-regular-40 {
+    @apply text-[40px] leading-[50px];
+  }
+}
+
+.h2-italic-bold-40 {
+  @apply text-xl leading-[28px] tracking-[-0.002em] font-bold font-nunito italic;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h2-italic-bold-40 {
+    @apply text-3xl leading-[40px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h2-italic-bold-40 {
+    @apply text-[40px] leading-[50px];
+  }
+}
+
+.h2-italic-regular-40 {
+  @apply text-xl leading-[28px] tracking-[-0.002em] font-normal font-nunito italic;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h2-italic-regular-40 {
+    @apply text-3xl leading-[40px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h2-italic-regular-40 {
+    @apply text-[40px] leading-[50px];
+  }
+}
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Heading 3 - Responsive
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+.h3-bold-32 {
+  @apply text-lg leading-[26px] tracking-[0em] font-bold font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h3-bold-32 {
+    @apply text-2xl leading-[32px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h3-bold-32 {
+    @apply text-3xl leading-[40px];
+  }
+}
+
+.h3-semi-bold-32 {
+  @apply text-lg leading-[26px] tracking-[0em] font-semibold font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h3-semi-bold-32 {
+    @apply text-2xl leading-[32px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h3-semi-bold-32 {
+    @apply text-3xl leading-[40px];
+  }
+}
+
+.h3-medium-32 {
+  @apply text-lg leading-[26px] tracking-[0em] font-medium font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h3-medium-32 {
+    @apply text-2xl leading-[32px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h3-medium-32 {
+    @apply text-3xl leading-[40px];
+  }
+}
+
+.h3-regular-32 {
+  @apply text-lg leading-[26px] tracking-[0em] font-normal font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h3-regular-32 {
+    @apply text-2xl leading-[32px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h3-regular-32 {
+    @apply text-3xl leading-[40px];
+  }
+}
+
+.h3-italic-bold-32 {
+  @apply text-lg leading-[26px] tracking-[0em] font-bold font-nunito italic;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h3-italic-bold-32 {
+    @apply text-2xl leading-[32px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h3-italic-bold-32 {
+    @apply text-3xl leading-[40px];
+  }
+}
+
+.h3-italic-regular-32 {
+  @apply text-lg leading-[26px] tracking-[0em] font-normal font-nunito italic;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h3-italic-regular-32 {
+    @apply text-2xl leading-[32px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h3-italic-regular-32 {
+    @apply text-3xl leading-[40px];
+  }
+}
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Heading 4 - Responsive
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+.h4-bold-24 {
+  @apply text-base leading-[22px] tracking-[0em] font-bold font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h4-bold-24 {
+    @apply text-xl leading-[26px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h4-bold-24 {
+    @apply text-2xl leading-[30px];
+  }
+}
+
+.h4-semi-bold-24 {
+  @apply text-base leading-[22px] tracking-[0em] font-semibold font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h4-semi-bold-24 {
+    @apply text-xl leading-[26px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h4-semi-bold-24 {
+    @apply text-2xl leading-[30px];
+  }
+}
+
+.h4-medium-24 {
+  @apply text-base leading-[22px] tracking-[0em] font-medium font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h4-medium-24 {
+    @apply text-xl leading-[26px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h4-medium-24 {
+    @apply text-2xl leading-[30px];
+  }
+}
+
+.h4-regular-24 {
+  @apply text-base leading-[22px] tracking-[0em] font-normal font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h4-regular-24 {
+    @apply text-xl leading-[26px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h4-regular-24 {
+    @apply text-2xl leading-[30px];
+  }
+}
+
+.h4-italic-bold-24 {
+  @apply text-base leading-[22px] tracking-[0em] font-bold font-nunito italic;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h4-italic-bold-24 {
+    @apply text-xl leading-[26px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h4-italic-bold-24 {
+    @apply text-2xl leading-[30px];
+  }
+}
+
+.h4-italic-regular-24 {
+  @apply text-base leading-[22px] tracking-[0em] font-normal font-nunito italic;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h4-italic-regular-24 {
+    @apply text-xl leading-[26px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h4-italic-regular-24 {
+    @apply text-2xl leading-[30px];
+  }
+}
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Heading 5 - Responsive
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+.h5-bold-16 {
+  @apply text-sm leading-[20px] tracking-[0.01em] font-bold font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h5-bold-16 {
+    @apply text-base leading-[24px];
+  }
+}
+
+.h5-semi-bold-16 {
+  @apply text-sm leading-[20px] tracking-[0.01em] font-semibold font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h5-semi-bold-16 {
+    @apply text-base leading-[24px];
+  }
+}
+
+.h5-medium-16 {
+  @apply text-sm leading-[20px] tracking-[0.01em] font-medium font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h5-medium-16 {
+    @apply text-base leading-[24px];
+  }
+}
+
+.h5-regular-16 {
+  @apply text-sm leading-[20px] tracking-[0.01em] font-normal font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h5-regular-16 {
+    @apply text-base leading-[24px];
+  }
+}
+
+.h5-italic-bold-16 {
+  @apply text-sm leading-[20px] tracking-[0.01em] font-bold font-nunito italic;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h5-italic-bold-16 {
+    @apply text-base leading-[24px];
+  }
+}
+
+.h5-italic-regular-16 {
+  @apply text-sm leading-[20px] tracking-[0.01em] font-normal font-nunito italic;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h5-italic-regular-16 {
+    @apply text-base leading-[24px];
+  }
+}
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ BODY Section - Responsive
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+.body-bold-16 {
+  @apply font-bold text-sm leading-[20px] tracking-[0.01em] font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .body-bold-16 {
+    @apply text-base leading-[24px];
+  }
+}
+
+.body-semi-bold-16 {
+  @apply font-semibold text-sm leading-[20px] tracking-[0.01em] font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .body-semi-bold-16 {
+    @apply text-base leading-[24px];
+  }
+}
+
+.body-medium-16 {
+  @apply font-medium text-sm leading-[20px] tracking-[0.01em] font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .body-medium-16 {
+    @apply text-base leading-[24px];
+  }
+}
+
+.body-regular-16 {
+  @apply font-normal text-sm leading-[20px] tracking-[0.01em] font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .body-regular-16 {
+    @apply text-base leading-[24px];
+  }
+}
+
+.body-regular-underlined-16 {
+  @apply font-semibold text-sm leading-[20px] tracking-[0.01em] font-nunito underline underline-offset-1;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .body-regular-underlined-16 {
+    @apply text-base leading-[24px];
+  }
+}
+
+.body-italic-bold-16 {
+  @apply font-bold text-sm leading-[20px] tracking-[0.01em] font-nunito italic;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .body-italic-bold-16 {
+    @apply text-base leading-[24px];
+  }
+}
+
+.body-italic-regular-16 {
+  @apply font-normal text-sm leading-[20px] tracking-[0.01em] font-nunito italic;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .body-italic-regular-16 {
+    @apply text-base leading-[24px];
+  }
+}
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Button Text - Responsive
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+.button-semi-bold-16 {
+  @apply font-nunito font-medium text-sm leading-[20px] tracking-[0.01em];
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .button-semi-bold-16 {
+    @apply text-base leading-[24px];
+  }
+}
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Label Text - Responsive
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+.label-bold-14 {
+  @apply font-nunito font-bold text-xs leading-[18px] tracking-[0.02em];
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .label-bold-14 {
+    @apply text-sm leading-[22px];
+  }
+}
+
+.label-semi-bold-14 {
+  @apply font-nunito font-semibold text-xs leading-[18px] tracking-[0.02em];
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .label-semi-bold-14 {
+    @apply text-sm leading-[22px];
+  }
+}
+
+.label-medium-14 {
+  @apply font-nunito font-medium text-xs leading-[18px] tracking-[0.02em];
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .label-medium-14 {
+    @apply text-sm leading-[22px];
+  }
+}
+
+.label-regular-14 {
+  @apply font-nunito font-normal text-xs leading-[18px] tracking-[0.02em];
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .label-regular-14 {
+    @apply text-sm leading-[22px];
+  }
+}
+
+.label-italic-bold-14 {
+  @apply font-nunito font-bold text-xs leading-[18px] tracking-[0.02em] italic;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .label-italic-bold-14 {
+    @apply text-sm leading-[22px];
+  }
+}
+
+.label-italic-regular-14 {
+  @apply font-nunito font-normal text-xs leading-[18px] tracking-[0.02em] italic;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .label-italic-regular-14 {
+    @apply text-sm leading-[22px];
+  }
+}
