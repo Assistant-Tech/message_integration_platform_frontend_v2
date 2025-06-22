@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": path.resolve(__dirname, "./src/app"),
       "@/components": path.resolve(__dirname, "./src/app/components"),
       "@/hooks": path.resolve(__dirname, "./src/app/hooks"),
       "@/lib": path.resolve(__dirname, "./src/app/lib"),
@@ -17,18 +17,11 @@ export default defineConfig({
       "@/utils": path.resolve(__dirname, "./src/app/utils"),
       "@/assets": path.resolve(__dirname, "./src/app/assets"),
       "@/pages": path.resolve(__dirname, "./src/app/pages"),
-      "@/features": path.resolve(__dirname, "./src/app/features"),
-      "@/router": path.resolve(__dirname, "./src/app/router"),
-      "@/styles": path.resolve(__dirname, "./src/app/styles"),
-    },
-  },
-  css: {
-    postcss: {
-      plugins: [],
+      "@/features": path.resolve(__dirname, "./src/features"),
     },
   },
   server: {
-    port: 5173,
+    port: 3000,
     open: true,
   },
   build: {
