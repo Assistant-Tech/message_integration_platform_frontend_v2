@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { StepSidebar } from "@/app/features/auth/pages/onboarding/components";
 import { Button, Input, Logo } from "@/app/components/ui/";
-import { useOnboardingStore } from "@/app/features/auth/pages/onboarding/store/useOnboardingStore";
+import { useOnboardingStore } from "@/app/features/auth/pages/onboarding/hooks/useOnboardingStore";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
 import {
   onboardingStep3Schema,
   OnboardingStep3FormData,
-} from "@/app/features/auth/pages/onboarding/schemas/Step3.schema";
+} from "@/app/features/auth/pages/onboarding/schemas/Onboarding.schema";
 
 interface IndustryErrors {
   selectedIndustry?: string;

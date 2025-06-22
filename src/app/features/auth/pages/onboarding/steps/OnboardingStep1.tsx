@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Button, Input, Logo } from "@/app/components/ui/";
 import { useNavigate } from "react-router-dom";
-import { useOnboardingStore } from "@/app/features/auth/pages/onboarding/store/useOnboardingStore";
+import { useOnboardingStore } from "@/app/features/auth/pages/onboarding/hooks/useOnboardingStore";
 import { StepSidebar } from "@/app/features/auth/pages/onboarding/components/";
 import {
   onboardingStep1Schema,
   OnboardingStep1FormData,
-} from "@/app/features/auth/pages/onboarding/schemas/Step1.schema";
+} from "@/app/features/auth/pages/onboarding/schemas/Onboarding.schema";
 import { ZodError } from "zod";
 import { ArrowRight } from "lucide-react";
 
@@ -94,9 +94,7 @@ const OnboardingStep1: React.FC = () => {
 
           {/* Form Section */}
           <div className="w-full lg:flex-1">
-            <h2 className="h4-bold-24 text-grey mb-6">
-              General Information
-            </h2>
+            <h2 className="h4-bold-24 text-grey mb-6">General Information</h2>
 
             <div className="space-y-6">
               <Input

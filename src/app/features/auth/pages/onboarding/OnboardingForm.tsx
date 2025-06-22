@@ -1,6 +1,6 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { useOnboardingStore } from "@/app/features/auth/pages/onboarding/store/useOnboardingStore";
+import { useOnboardingStore } from "@/app/features/auth/pages/onboarding/hooks/useOnboardingStore";
 
 const Onboarding = () => {
   const location = useLocation();

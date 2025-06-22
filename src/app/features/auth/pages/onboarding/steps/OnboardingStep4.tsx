@@ -1,12 +1,16 @@
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { z } from "zod";
+
 import {
   FileUploadProgress,
   StepSidebar,
 } from "@/app/features/auth/pages/onboarding/components";
 import { Button, Input, Logo } from "@/app/components/ui/";
-import { useOnboardingStore } from "@/app/features/auth/pages/onboarding/store/useOnboardingStore";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useOnboardingStore } from "@/app/features/auth/pages/onboarding/hooks/useOnboardingStore";
+import { onboardingStep4Schema } from "@/app/features/auth/pages/onboarding/schemas/Onboarding.schema";
+import Delete_icon_large from "@/app/assets/icons/warning_fill.svg";
 
 interface LegalDocsData {
   panNumber: string;
@@ -21,6 +25,11 @@ interface LegalDocsErrors {
 
 const OnboardingStep4: React.FC = () => {
   const navigate = useNavigate();
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [fileToRemoveIndex, setFileToRemoveIndex] = useState<number | null>(
+    null,
+  );
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { data, setStepData, setCompletedSteps } = useOnboardingStore();
 
@@ -113,7 +122,10 @@ const OnboardingStep4: React.FC = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+
     const allowedTypes = ["image/jpeg", "image/png", "application/pdf"];
     if (!allowedTypes.includes(file.type)) {
       setErrors((prev) => ({
@@ -123,7 +135,7 @@ const OnboardingStep4: React.FC = () => {
       return;
     }
 
-    // Validate file size (max 10MB)
+    // Validate size
     if (file.size > 10 * 1024 * 1024) {
       setErrors((prev) => ({
         ...prev,
@@ -140,26 +152,34 @@ const OnboardingStep4: React.FC = () => {
     } catch (error) {
       console.error("Upload failed:", error);
     }
-
-    // Reset file input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
   };
 
   const handleRemoveUpload = (index: number) => {
+    setFileToRemoveIndex(index);
+    setShowConfirmDialog(true);
+  };
+
+  const confirmRemoveUpload = () => {
+    if (fileToRemoveIndex === null) return;
+
+    const fileNameToRemove =
+      formData.uploadProgress[fileToRemoveIndex]?.file.name;
+
     setFormData((prev) => ({
       ...prev,
-      uploadProgress: prev.uploadProgress.filter((_, i) => i !== index),
+      uploadProgress: prev.uploadProgress.filter(
+        (_, i) => i !== fileToRemoveIndex,
+      ),
+      panFile: prev.panFile?.name === fileNameToRemove ? null : prev.panFile,
     }));
 
-    // If this was the current panFile, clear it
-    if (
-      formData.uploadProgress[index] &&
-      formData.panFile?.name === formData.uploadProgress[index].file.name
-    ) {
-      setFormData((prev) => ({ ...prev, panFile: null }));
-    }
+    setFileToRemoveIndex(null);
+    setShowConfirmDialog(false);
+  };
+
+  const cancelRemoveUpload = () => {
+    setFileToRemoveIndex(null);
+    setShowConfirmDialog(false);
   };
 
   const handleRetryUpload = async (index: number) => {
@@ -182,26 +202,33 @@ const OnboardingStep4: React.FC = () => {
   };
 
   const validateForm = () => {
-    const newErrors: LegalDocsErrors = {};
-    if (!formData.panNumber.trim()) {
-      newErrors.panNumber = "PAN number is required.";
-    } else if (
-      !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.panNumber.toUpperCase())
-    ) {
-      newErrors.panNumber =
-        "Please enter a valid PAN number (e.g., ABCDE1234F).";
-    }
+    try {
+      const result = onboardingStep4Schema.parse(formData);
 
-    const completedUploads = formData.uploadProgress.filter(
-      (u) => u.status === "completed",
-    );
-    if (completedUploads.length === 0) {
-      newErrors.panFile =
-        "Please upload and complete at least one PAN document.";
-    }
+      if (
+        result.panNumber &&
+        result.uploadProgress?.filter((u) => u.status === "completed")
+          .length === 0
+      ) {
+        setErrors({
+          panFile: "Please upload and complete at least one PAN document.",
+        });
+        return false;
+      }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+      setErrors({});
+      return true;
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        const fieldErrors: LegalDocsErrors = {};
+        err.errors.forEach((e) => {
+          const field = e.path[0] as keyof LegalDocsErrors;
+          fieldErrors[field] = e.message;
+        });
+        setErrors(fieldErrors);
+      }
+      return false;
+    }
   };
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -214,7 +241,6 @@ const OnboardingStep4: React.FC = () => {
   };
 
   const handleSkip = () => {
-    // Set step as completed but with minimal data
     setStepData("step4", { panNumber: "", panFile: null, uploadProgress: [] });
     setCompletedSteps(4);
     navigate("/onboardingform/step-5");
@@ -259,7 +285,7 @@ const OnboardingStep4: React.FC = () => {
                   htmlFor="pan"
                   className="block mb-2 body-bold-16 text-grey"
                 >
-                  Enter Your PAN <span className="text-danger">*</span>
+                  Enter Your PAN
                 </label>
                 <Input
                   id="pan"
@@ -283,35 +309,77 @@ const OnboardingStep4: React.FC = () => {
               <div>
                 <label className="block mb-2 body-bold-16 text-grey">
                   Upload Company's PAN Card{" "}
-                  <span className="text-danger">*</span>
                 </label>
-                <div className="border border-dashed border-gray-300 rounded-lg p-6 bg-gray-50 text-center">
-                  <p className="text-sm text-gray-500">
-                    Drag & drop attachment here
-                  </p>
-                  <p className="text-sm text-gray-500 my-2">Or</p>
-                  <label
-                    htmlFor="panUpload"
-                    className="inline-block bg-black text-white px-6 py-2 rounded-md cursor-pointer hover:bg-gray-800 transition-colors"
-                  >
-                    + Add Attachment
-                  </label>
-                  <input
-                    ref={fileInputRef}
-                    id="panUpload"
-                    type="file"
-                    accept=".jpeg,.jpg,.png,.pdf"
-                    className="hidden"
-                    onChange={handleFileChange}
-                  />
-                  <p className="text-xs text-gray-400 mt-2">
-                    You can attach .jpeg, .png or .pdf files (Max 10MB)
-                  </p>
-                  {errors.panFile && (
-                    <p className="text-danger text-sm mt-2">{errors.panFile}</p>
-                  )}
-                </div>
+                {/* Deletion Confirmation */}
+                {showConfirmDialog && fileToRemoveIndex !== null && (
+                  <div className="fixed inset-0 z-50 bg-black/65 bg-opacity-90 flex items-center justify-center">
+                    <div className="bg-white rounded-lg text-center shadow-lg p-6 max-w-md w-full">
+                      {/* Danger Icon */}
+                      <figure className="flex justify-center items-center pb-4">
+                        <img
+                          src={Delete_icon_large}
+                          alt="delete_icon.svg"
+                          width="48"
+                          height="48"
+                        />
+                      </figure>
+                      <h2 className="h5-bold-16 text-base-black mb-4">
+                        Delete Document?
+                      </h2>
+                      <p className="h5-regular-16 text-grey-medium mb-6">
+                        Are you sure you want to delete this document? Once
+                        deleted, this action cannot be reversed.
+                      </p>
+                      {/* Both Buttons */}
+                      <div className="flex justify-center max-w-md gap-4 w-full">
+                        <Button
+                          label="Cancel"
+                          onClick={cancelRemoveUpload}
+                          variant="neutral"
+                          className="w-full bg-grey text-white hover:bg-base-black"
+                        />
+                        <Button
+                          label="Delete"
+                          onClick={confirmRemoveUpload}
+                          variant="danger"
+                          className="w-full"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
 
+                {/* Upload Progress */}
+                {formData.uploadProgress.length === 0 && (
+                  <div className="border border-dashed border-gray-300 rounded-lg p-6 bg-gray-50 text-center">
+                    <p className="text-sm text-grey-medium">
+                      Drag & drop attachment here
+                    </p>
+                    <p className="text-sm text-grey-medium my-2">Or</p>
+                    <label
+                      htmlFor="panUpload"
+                      className="inline-block bg-primary text-white px-6 py-2 rounded-md cursor-pointer hover:bg-primary-dark transition-colors"
+                    >
+                      + Add Attachment
+                    </label>
+                    <input
+                      ref={fileInputRef}
+                      id="panUpload"
+                      type="file"
+                      accept=".jpeg,.jpg,.png,.pdf"
+                      className="hidden"
+                      onChange={handleFileChange}
+                    />
+                    <p className="text-xs text-gray-400 mt-2">
+                      You can attach .jpeg, .png or .pdf files (Max 10MB)
+                    </p>
+                    {errors.panFile && (
+                      <p className="text-danger text-sm mt-2">
+                        {errors.panFile}
+                      </p>
+                    )}
+                  </div>
+                )}
                 {/* File Upload Progress */}
                 <FileUploadProgress
                   uploads={formData.uploadProgress}
@@ -333,7 +401,11 @@ const OnboardingStep4: React.FC = () => {
                     label="Skip this step"
                     onClick={handleSkip}
                     className="bg-white text-primary hover:bg-white underline body-regular-underline-16"
+                    disabled={formData.uploadProgress.some(
+                      (u) => u.status === "uploading",
+                    )}
                   />
+
                   <Button
                     label="Next"
                     onClick={handleSubmit}

@@ -3,14 +3,20 @@ import { useNavigate } from "react-router-dom";
 
 import { StepSidebar } from "@/app/features/auth/pages/onboarding/components";
 import { Button, Input, Logo } from "@/app/components/ui/";
-import { useOnboardingStore } from "@/app/features/auth/pages/onboarding/store/useOnboardingStore";
-import { ArrowDown, ArrowLeft, ArrowRight, PartyPopper } from "lucide-react";
+import { useOnboardingStore } from "@/app/features/auth/pages/onboarding/hooks/useOnboardingStore";
+import {
+  ArrowDown,
+  ArrowLeft,
+  ArrowRight,
+  CirclePlus,
+  PartyPopper,
+} from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/app/utils/cn";
 import {
   OnboardingStep5FormData,
   onboardingStep5Schema,
-} from "@/app/features/auth/pages/onboarding/schemas/Step5.schema";
+} from "@/app/features/auth/pages/onboarding/schemas/Onboarding.schema";
 
 interface MemberData {
   name: string;
@@ -69,37 +75,33 @@ const OnboardingStep5: React.FC = () => {
     const result = onboardingStep5Schema.safeParse(formData);
 
     if (!result.success) {
-      const memberErrors: string[] = [];
-
-      result.error.errors.forEach((err) => {
-        const index = Number(err.path[1]); // members[index].field
-        const message = err.message;
-        memberErrors[index] = message;
-      });
-
-      setErrors({ members: memberErrors });
+      toast.error("Please check your member inputs.");
       return false;
     }
-
     setErrors({});
     return true;
   };
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+
     if (validateForm()) {
-      setStepData("step5", formData);
+      const cleanedMembers = formData.members.filter(
+        (m) => m.name?.trim() || m.role?.trim() || m.email?.trim(),
+      );
+
+      setStepData("step5", { members: cleanedMembers });
       setCompletedSteps(5);
 
-      // Toast Message
       toast.success("Onboarding Complete!", {
         description: "Welcome sir/madam! Your setup is now complete.",
         icon: <PartyPopper className="text-primary" />,
       });
       navigate("/admin/dashboard");
 
-      // Pachi Hataune (REMOVE)
-      reset();
+      setTimeout(() => {
+        reset();
+      }, 100);
     }
   };
 
@@ -203,9 +205,9 @@ const OnboardingStep5: React.FC = () => {
               {/* Add Staff Members Button */}
               <Button
                 label="Add Staff Members"
-                type="button"
                 onClick={addStaffMember}
-                IconRight={<ArrowRight size={24} />}
+                IconLeft={<CirclePlus size={24} />}
+                variant="none"
               />
 
               {/* Navigation Buttons */}

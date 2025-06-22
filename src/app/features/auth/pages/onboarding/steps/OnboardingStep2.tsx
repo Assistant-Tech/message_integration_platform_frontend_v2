@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 
 import { StepSidebar } from "@/app/features/auth/pages/onboarding/components";
 import { Button, Input, Logo } from "@/app/components/ui/";
-import { useOnboardingStore } from "@/app/features/auth/pages/onboarding/store/useOnboardingStore";
+import { useOnboardingStore } from "@/app/features/auth/pages/onboarding/hooks/useOnboardingStore";
 import {
   OnboardingStep2FormData,
   onboardingStep2Schema,
-} from "@/app/features/auth/pages/onboarding/schemas/Step2.schema";
+} from "@/app/features/auth/pages/onboarding/schemas/Onboarding.schema";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
 interface LocationErrors {
