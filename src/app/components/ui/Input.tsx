@@ -15,7 +15,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       placeholder,
       label,
       variant = "username",
-      focus = "focus:ring-2 focus:ring-blue-500",
+      focus = "focus:ring-2 focus:ring-primary",
       className,
       error,
       type,
@@ -46,8 +46,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           type={inputType}
           placeholder={placeholder}
           className={cn(
-            // updated for mobile padding and height
-            "w-full px-4 py-3 sm:py-2 min-h-[48px] border rounded-lg outline-none transition-all body-regular-16 text-grey-medium",
+            // updated for mobile padding and height with grey background
+            "w-full px-4 py-3 sm:py-2 min-h-[48px] border rounded-lg outline-none transition-all body-regular-16 text-grey-medium bg-base-white",
             error ? "border-danger" : "border-gray-300",
             focus,
             className,
