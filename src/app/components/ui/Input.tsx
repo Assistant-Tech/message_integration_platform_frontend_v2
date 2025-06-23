@@ -48,7 +48,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           className={cn(
             // updated for mobile padding and height with grey background
             "w-full px-4 py-3 sm:py-2 min-h-[48px] border rounded-lg outline-none transition-all body-regular-16 text-grey-medium bg-base-white",
-            error ? "border-danger" : "border-gray-300",
+            error ? "border-danger" : "border-grey-light",
             focus,
             className,
           )}
