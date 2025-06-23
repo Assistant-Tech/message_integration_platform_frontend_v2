@@ -32,7 +32,7 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({
               ? "bg-primary  text-white"
               : isActive
                 ? "bg-primary text-white"
-                : "bg-grey-light text-white"
+                : "bg-base-white border border-primary text-primary"
           }`}
         >
           {isCompleted ? <Check size={20} /> : stepNumber}
