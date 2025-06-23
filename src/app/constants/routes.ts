@@ -52,6 +52,18 @@ export const APP_ROUTES = {
   // Admin routes
   ADMIN: {
     DASHBOARD: "/admin/dashboard",
+    CONVERSATION: "/admin/conversation",
+    CHATBOT: "/admin/chatbot",
+    CHANNEL: "/admin/channel",
+    ORDERS: "/admin/orders",
+    TAGS: "/admin/tags",
+    ANALYTICS: "/admin/analytics",
+
+    // Sub Settings
+    SETTINGS: "/admin/settings",
+
+    // Sub Products
+    PRODUCTS: "/admin/product",
   },
 
   // User routes
@@ -62,15 +74,3 @@ export const APP_ROUTES = {
 
 export type RouteKeys = keyof typeof APP_ROUTES;
 export type RouteValues = (typeof APP_ROUTES)[RouteKeys];
-
-// Helper function to build dynamic routes
-export const buildRoute = (
-  route: string,
-  params: Record<string, string | number>,
-) => {
-  let builtRoute = route;
-  Object.entries(params).forEach(([key, value]) => {
-    builtRoute = builtRoute.replace(`:${key}`, String(value));
-  });
-  return builtRoute;
-};

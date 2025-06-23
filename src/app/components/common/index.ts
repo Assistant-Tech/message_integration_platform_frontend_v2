@@ -21,3 +21,4 @@ export { default as DashboardPreview } from "./Hero/DashboardPreview";
 
 // pricing compoenents
 export { default as PricingCard } from "./PricingCard";
+

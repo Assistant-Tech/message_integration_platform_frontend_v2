@@ -1,4 +1,3 @@
-import type React from "react";
 import { forwardRef, type ButtonHTMLAttributes } from "react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/app/utils/cn";

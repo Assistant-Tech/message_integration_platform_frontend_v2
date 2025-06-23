@@ -3,11 +3,8 @@ import { Route, Routes } from "react-router-dom";
 import { PublicLayout } from "./components/layout";
 import { Loading } from "@/app/components/common";
 
-import PublicRoutes from "@/app/router/PublicRoutes";
-import AdminRoutes from "@/app/router/guards/AdminRoutes";
-import UserRoutes from "@/app/router/guards/UserRoutes";
-
-import { AdminLayout, UserLayout } from "./components/layout";
+import { PublicRoutes, AdminRoutes, UserRoutes } from "@/app/router/";
+import DashboardLayout from "./features/dashboard/admin/component/DashboardLayout";
 
 const AppRoutes = () => {
   return (
@@ -19,12 +16,12 @@ const AppRoutes = () => {
         </Route>
 
         {/* Admin routes under admin layout */}
-        <Route path="/admin/*" element={<AdminLayout />}>
-          <Route path="*" element={<AdminRoutes />} />
+        <Route path="/admin" element={<DashboardLayout />}>
+          {AdminRoutes()}
         </Route>
 
         {/* User routes under user layout */}
-        <Route path="/user/*" element={<UserLayout />}>
+        <Route path="/user/*" element={<DashboardLayout />}>
           <Route path="*" element={<UserRoutes />} />
         </Route>
       </Routes>
