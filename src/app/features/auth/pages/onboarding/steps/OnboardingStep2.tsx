@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { StepSidebar } from "@/app/features/auth/pages/onboarding/components";
+import {
+  CustomDropdown,
+  StepSidebar,
+} from "@/app/features/auth/pages/onboarding/components";
 import { Button, Input, Logo } from "@/app/components/ui/";
 import { useOnboardingStore } from "@/app/features/auth/pages/onboarding/hooks/useOnboardingStore";
 import {
@@ -9,6 +12,9 @@ import {
   onboardingStep2Schema,
 } from "@/app/features/auth/pages/onboarding/schemas/Onboarding.schema";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { getCitiesByCountry } from "@/app/features/auth/pages/onboarding/hooks/getCitiesByCountry";
+
+const countries = ["Nepal", "India", "United States", "Australia", "Canada"];
 
 interface LocationErrors {
   country?: string;
@@ -30,12 +36,19 @@ const OnboardingStep2: React.FC = () => {
   );
 
   const [errors, setErrors] = useState<LocationErrors>({});
+  const [cities, setCities] = useState<string[]>([]);
+  const [loadingCities, setLoadingCities] = useState(false);
 
   const handleChange = (
     field: keyof OnboardingStep2FormData,
     value: string,
   ) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+      ...(field === "country" ? { city: "" } : {}),
+    }));
+
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: "" }));
     }
@@ -67,9 +80,33 @@ const OnboardingStep2: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchCities = async () => {
+      if (!formData.country) {
+        setCities([]);
+        return;
+      }
+
+      setLoadingCities(true);
+      try {
+        const response = await getCitiesByCountry({
+          country: formData.country,
+        });
+        setCities(response.data);
+      } catch (error) {
+        console.error("Error fetching cities:", error);
+        setCities([]);
+      } finally {
+        setLoadingCities(false);
+      }
+    };
+
+    fetchCities();
+  }, [formData.country]);
+
   return (
-    <div className="min-h-screen bg-base-white py-12 px-4">
-      <div className="max-w-7xl mx-auto flex flex-col justify-center">
+    <div className="min-h-screen h-full bg-base-white py-12 px-4">
+      <div className="max-w-7xl mx-auto flex flex-col justify-center overflow-visible">
         <article className="pb-12">
           <Logo />
         </article>
@@ -85,45 +122,87 @@ const OnboardingStep2: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex flex-col lg:flex-row items-start max-w-full gap-16">
+        <div className="flex flex-col lg:flex-row items-start max-w-full gap-16 overflow-visible">
           <StepSidebar
             currentStep={currentStep}
             previousStep={currentStep - 1}
           />
 
           <div className="w-full lg:flex-1">
-            <h2 className="h4-bold-24 text-grey mb-6">Company’s Location</h2>
+            <h2 className="h4-bold-24 text-grey mb-6">Company's Location</h2>
 
             <div className="space-y-6">
-              <Input
-                id="country"
-                label="Country"
-                placeholder="Select your country"
-                value={formData.country}
-                onChange={(e) => handleChange("country", e.target.value)}
-                error={errors.country}
-                required
-              />
+              {/* Country Dropdown */}
+              <div className="flex flex-col">
+                <label
+                  htmlFor="country"
+                  className="mb-1 body-bold-16 text-grey"
+                >
+                  Country <span className="text-danger">*</span>
+                </label>
+                <CustomDropdown
+                  id="country"
+                  options={countries}
+                  value={formData.country}
+                  onChange={(value) => handleChange("country", value)}
+                  placeholder="Select a country"
+                  error={!!errors.country}
+                />
+                {errors.country && (
+                  <span className="text-danger text-sm mt-1">
+                    {errors.country}
+                  </span>
+                )}
+              </div>
 
-              <Input
-                id="state"
-                label="State/ Province"
-                placeholder="Select your state or province"
-                value={formData.state}
-                onChange={(e) => handleChange("state", e.target.value)}
-                error={errors.state}
-              />
+              {/* State Input */}
+              <div className="flex flex-col">
+                <label htmlFor="state" className="mb-1 body-bold-16 text-grey">
+                  State/Province
+                </label>
+                <Input
+                  id="state"
+                  className={`border p-2 rounded ${
+                    errors.state ? "border-danger" : "border-grey-light"
+                  }`}
+                  placeholder="Enter your state or province"
+                  value={formData.state}
+                  onChange={(e) => handleChange("state", e.target.value)}
+                />
+                {errors.state && (
+                  <span className="text-danger text-sm mt-1">
+                    {errors.state}
+                  </span>
+                )}
+              </div>
 
-              <Input
-                id="city"
-                label="City"
-                placeholder="Enter your city"
-                value={formData.city}
-                onChange={(e) => handleChange("city", e.target.value)}
-                error={errors.city}
-                required
-              />
+              {/* City Dropdown */}
+              <div className="flex flex-col">
+                <label htmlFor="city" className="mb-1 body-bold-16 text-grey">
+                  City <span className="text-danger">*</span>
+                </label>
+                <CustomDropdown
+                  id="city"
+                  options={cities}
+                  value={formData.city}
+                  onChange={(value) => handleChange("city", value)}
+                  placeholder={
+                    !formData.country
+                      ? "Select a country first"
+                      : "Select a city"
+                  }
+                  disabled={!formData.country}
+                  loading={loadingCities}
+                  error={!!errors.city}
+                />
+                {errors.city && (
+                  <span className="text-danger text-sm mt-1">
+                    {errors.city}
+                  </span>
+                )}
+              </div>
 
+              {/* Navigation Buttons */}
               <div className="flex justify-between pt-4">
                 <Button
                   label="Go Back"
