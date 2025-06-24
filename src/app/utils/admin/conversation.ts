@@ -5,6 +5,7 @@ export const conversations = [
     time: "2:24 PM",
     avatar: "https://i.pravatar.cc/150?img=1",
     unread: true,
+    platform: "whatsapp",
   },
   {
     name: "Jerry Helfer",
@@ -12,6 +13,7 @@ export const conversations = [
     time: "22/05/2024",
     avatar: "https://i.pravatar.cc/150?img=2",
     unread: false,
+    platform: "facebook",
   },
   {
     name: "Jerry Helfer",
@@ -19,5 +21,6 @@ export const conversations = [
     time: "22/05/2024",
     avatar: "https://i.pravatar.cc/150?img=3",
     unread: false,
+    platform: "instagram",
   },
 ];

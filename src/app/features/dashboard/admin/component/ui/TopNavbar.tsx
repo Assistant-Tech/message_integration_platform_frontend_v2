@@ -4,7 +4,7 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 
 const TopNavbar = () => {
   return (
-    <header className="w-full bg-base-white shadow-sm h-auto flex items-center px-6 py-4 justify-between">
+    <header className="w-full bg-base-white border-b border-grey-light h-auto flex items-center px-6 py-4 justify-between">
       {/* Search Bar */}
       <div className="flex justify-start items-center mx-4 gap-6 w-full max-w-full">
         <div className="relative w-full max-w-md sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl">
