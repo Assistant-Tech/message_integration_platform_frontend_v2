@@ -24,6 +24,16 @@ interface ChatPanelProps {
   };
 }
 
+import facebook from "@/app/assets/icons/fb.svg";
+import instagram from "@/app/assets/icons/insta.svg";
+import whatsapp from "@/app/assets/icons/whatsapp.svg";
+
+const platformIcons: Record<string, string> = {
+  facebook,
+  instagram,
+  whatsapp,
+};
+
 const ChatPannel = ({ chat }: ChatPanelProps) => {
   const [message, setMessage] = useState("");
   const [showDetails, setShowDetails] = useState(false);
@@ -31,12 +41,12 @@ const ChatPannel = ({ chat }: ChatPanelProps) => {
 
   const handleShowOrdersClick = () => {
     setShowOrders((prev) => !prev);
-    setShowDetails(false); 
+    setShowDetails(false);
   };
 
   const handleShowDetailsClick = () => {
-    setShowDetails((prev) => !prev); 
-    setShowOrders(false); 
+    setShowDetails((prev) => !prev);
+    setShowOrders(false);
   };
 
   const handleSendMessage = () => {
@@ -48,8 +58,8 @@ const ChatPannel = ({ chat }: ChatPanelProps) => {
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault(); // Prevent new line on Enter
-      handleSendMessage(); // Send message
+      e.preventDefault();
+      handleSendMessage();
     }
   };
 
@@ -75,15 +85,22 @@ const ChatPannel = ({ chat }: ChatPanelProps) => {
         {/* Header section of the chat panel */}
         <header className="flex justify-between items-center px-6 py-[9px] border-b border-grey-light">
           <div className="flex items-center gap-4">
-            <img
-              src={chat.avatar}
-              alt={chat.name}
-              className="w-10 h-10 rounded-full"
-            />
+            <div className="flex flex-col items-end relative">
+              <img
+                src={chat.avatar}
+                alt={chat.name}
+                className="w-10 h-10 rounded-full"
+              />
+              {platformIcons[chat.platform] && (
+                <img
+                  src={platformIcons[chat.platform]}
+                  alt={chat.platform}
+                  className="w-6 h-6 absolute bottom-0 -right-2 rounded-3xl p-px bg-white"
+                />
+              )}
+            </div>
             <div>
-              <h4 className="font-semibold text-base text-black">
-                {chat.name}
-              </h4>
+              <h4 className="body-bold-16 text-grey">{chat.name}</h4>
               <p className="text-sm text-grey-medium">Online</p>
             </div>
           </div>

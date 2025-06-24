@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Heading } from "@/app/features/dashboard/admin/component/ui/";
 import { conversations } from "@/app/utils/admin/conversation";
 import { ChatPannel } from "@/app/features/dashboard/admin/component/";
-                                                                                                                         
+
 import facebook from "@/app/assets/icons/fb.svg";
 import instagram from "@/app/assets/icons/insta.svg";
 import whatsapp from "@/app/assets/icons/whatsapp.svg";
@@ -36,10 +36,11 @@ const ConversationPage = () => {
             <div
               key={index}
               onClick={() => setSelectedChatIndex(index)}
-              className={`flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-primary-light cursor-pointer ${
-                selectedChatIndex === index ? "bg-primary-light" : ""
+              className={`flex items-start gap-3 px-3 py-2 hover:bg-primary-light cursor-pointer border-b border-grey-light ${
+                selectedChatIndex === index ? "bg-primary-light rounded-lg" : ""
               }`}
             >
+              {/* Chat Icon && the application icon */}
               <div className="flex flex-col items-end relative">
                 <img
                   src={chat.avatar}
@@ -72,7 +73,7 @@ const ConversationPage = () => {
           ))}
         </div>
       </aside>
-          
+
       {/* Chat Panel */}
       <ChatPannel chat={selectedChat || undefined} />
     </div>
