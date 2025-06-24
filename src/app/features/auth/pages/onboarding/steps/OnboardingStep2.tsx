@@ -12,7 +12,7 @@ import {
   onboardingStep2Schema,
 } from "@/app/features/auth/pages/onboarding/schemas/Onboarding.schema";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { getCitiesByCountry } from "@/app/features/auth/pages/onboarding/hooks/getCitiesByCountry";
+import { getCitiesByCountry } from "@/app/features/auth/pages/onboarding/hooks/useCitiesByCountry";
 
 const countries = ["Nepal", "India", "United States", "Australia", "Canada"];
 
