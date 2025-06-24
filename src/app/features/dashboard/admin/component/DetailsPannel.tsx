@@ -1,11 +1,56 @@
+import { useState } from "react";
 import { Button, Input } from "@/app/components/ui";
-import { Plus, Search } from "lucide-react";
-import { TagDialog } from "@/app/features/dashboard/admin/component";
+import { Plus, Search, X } from "lucide-react";
+import {
+  AssignDialog,
+  TagDialog,
+} from "@/app/features/dashboard/admin/component";
+
+// Define staff type
+interface Staff {
+  id: number;
+  name: string;
+  role: string;
+  avatar: string;
+}
+
+// You might fetch this list from a backend or shared context
+const allStaff: Staff[] = [
+  {
+    id: 1,
+    name: "John Dukes",
+    role: "Staff",
+    avatar: "https://i.pravatar.cc/150?img=12",
+  },
+  {
+    id: 2,
+    name: "Sophia Lee",
+    role: "Manager",
+    avatar: "https://i.pravatar.cc/150?img=32",
+  },
+  {
+    id: 3,
+    name: "Alex Kim",
+    role: "Staff",
+    avatar: "https://i.pravatar.cc/150?img=18",
+  },
+];
 
 const DetailsPanel = () => {
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [assignedStaff, setAssignedStaff] = useState<Staff[]>([]);
+
+  const removeTag = (tag: string) => {
+    setSelectedTags((prev) => prev.filter((t) => t !== tag));
+  };
+
+  const removeStaff = (id: number) => {
+    setAssignedStaff((prev) => prev.filter((s) => s.id !== id));
+  };
+
   return (
     <aside className="w-full bg-white">
-      {/* Search Product */}
+      {/* Search */}
       <div className="border-b border-grey-light py-[6.5px] px-4">
         <Input
           type="text"
@@ -16,7 +61,7 @@ const DetailsPanel = () => {
       </div>
 
       <div className="px-4 py-4 space-y-4">
-        {/* Tags */}
+        {/* TAGS */}
         <div className="border border-grey-light py-3 px-3 rounded-lg">
           <div className="flex justify-between items-center border-b border-grey-light mb-3">
             <span className="body-bold-16 text-grey-medium">Tags</span>
@@ -24,25 +69,81 @@ const DetailsPanel = () => {
               trigger={
                 <Button label="Add Tag" IconLeft={<Plus />} variant="none" />
               }
+              selected={selectedTags}
+              setSelected={setSelectedTags}
             />
           </div>
-          <p className="text-grey-light label-regular-14 text-center">
-            No tags available
-          </p>
+
+          {selectedTags.length === 0 ? (
+            <p className="text-grey-light label-regular-14 text-center">
+              No tags available
+            </p>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {selectedTags.map((tag, index) => (
+                <span
+                  key={index}
+                  className="flex items-center bg-base-white text-grey-medium hover:bg-primary-light px-3 py-2 rounded-lg label-regular-14 cursor-pointer"
+                >
+                  {tag}
+                  <button
+                    onClick={() => removeTag(tag)}
+                    className="ml-2 text-grey hover:text-danger cursor-pointer"
+                  >
+                    <X size={14} />
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Assigned To */}
+        {/* ASSIGNED TO */}
         <div className="border border-grey-light py-3 px-3 rounded-lg">
           <div className="flex justify-between items-center border-b border-grey-light mb-3">
             <span className="body-bold-16 text-grey-medium">Assigned To</span>
-            <Button label="Assigned To" IconLeft={<Plus />} variant="none" />
+            <AssignDialog
+              trigger={
+                <Button label="Add Staff" IconLeft={<Plus />} variant="none" />
+              }
+              allStaff={allStaff}
+              selectedStaff={assignedStaff}
+              setSelectedStaff={setAssignedStaff}
+            />
           </div>
-          <p className="text-grey-light label-regular-14 text-center">
-            No assigns available
-          </p>
+
+          {assignedStaff.length === 0 ? (
+            <p className="text-grey-light label-regular-14 text-center">
+              No assigns available
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {assignedStaff.map((staff) => (
+                <div key={staff.id} className="flex items-center gap-3">
+                  <img
+                    src={staff.avatar}
+                    alt={staff.name}
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                  <div className="flex justify-between items-center w-full">
+                    <div className="text-base text-gray-800">{staff.name}</div>
+                    <div className="text-sm text-grey-light flex items-center gap-2">
+                      {staff.role}
+                      <button
+                        onClick={() => removeStaff(staff.id)}
+                        className="text-grey hover:text-danger"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Notes */}
+        {/* NOTES */}
         <div className="border border-grey-light py-3 px-3 rounded-lg">
           <div className="flex justify-between items-center border-b border-grey-light mb-3">
             <span className="body-bold-16 text-grey-medium">Notes</span>

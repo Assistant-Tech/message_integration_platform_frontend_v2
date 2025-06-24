@@ -72,7 +72,7 @@ const ConversationPage = () => {
           ))}
         </div>
       </aside>
-
+          
       {/* Chat Panel */}
       <ChatPannel chat={selectedChat || undefined} />
     </div>

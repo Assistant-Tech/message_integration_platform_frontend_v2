@@ -1,7 +1,18 @@
-import { MessagesSquare, Send, Paperclip, Smile, Info } from "lucide-react";
+import {
+  MessagesSquare,
+  Send,
+  Paperclip,
+  Smile,
+  Info,
+  ListOrdered,
+} from "lucide-react";
 import { useState } from "react";
-import { DetailsPanel } from "@/app/features/dashboard/admin/component/";
 import { AnimatePresence, motion } from "framer-motion";
+
+import {
+  DetailsPanel,
+  OrderPannel,
+} from "@/app/features/dashboard/admin/component/";
 
 interface ChatPanelProps {
   chat?: {
@@ -16,6 +27,17 @@ interface ChatPanelProps {
 const ChatPannel = ({ chat }: ChatPanelProps) => {
   const [message, setMessage] = useState("");
   const [showDetails, setShowDetails] = useState(false);
+  const [showOrders, setShowOrders] = useState(false);
+
+  const handleShowOrdersClick = () => {
+    setShowOrders((prev) => !prev);
+    setShowDetails(false); 
+  };
+
+  const handleShowDetailsClick = () => {
+    setShowDetails((prev) => !prev); 
+    setShowOrders(false); 
+  };
 
   const handleSendMessage = () => {
     if (message.trim()) {
@@ -26,11 +48,12 @@ const ChatPannel = ({ chat }: ChatPanelProps) => {
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
+      e.preventDefault(); // Prevent new line on Enter
+      handleSendMessage(); // Send message
     }
   };
 
+  // Render a placeholder if no chat is selected
   if (!chat) {
     return (
       <main className="flex-1 flex items-center justify-center text-center">
@@ -45,10 +68,11 @@ const ChatPannel = ({ chat }: ChatPanelProps) => {
     );
   }
 
+  // Main chat panel rendering
   return (
     <div className="flex flex-1 h-full">
       <main className="flex-1 flex flex-col h-full">
-        {/* Header */}
+        {/* Header section of the chat panel */}
         <header className="flex justify-between items-center px-6 py-[9px] border-b border-grey-light">
           <div className="flex items-center gap-4">
             <img
@@ -63,17 +87,29 @@ const ChatPannel = ({ chat }: ChatPanelProps) => {
               <p className="text-sm text-grey-medium">Online</p>
             </div>
           </div>
-          <button
-            onClick={() => setShowDetails((prev) => !prev)}
-            className="text-grey-medium hover:text-primary transition-colors"
-            title="Show Details"
-          >
-            <Info className="w-5 h-5 cursor-pointer" />
-          </button>
+          <div className="flex justify-end items-center gap-4">
+            {/* Button to toggle Order Panel */}
+            <button
+              onClick={handleShowOrdersClick}
+              className="text-grey-medium hover:text-primary transition-colors"
+              title="Show Order"
+            >
+              <ListOrdered className="w-5 h-5 cursor-pointer" />
+            </button>
+            {/* Button to toggle Details Panel */}
+            <button
+              onClick={handleShowDetailsClick}
+              className="text-grey-medium hover:text-primary transition-colors"
+              title="Show Details"
+            >
+              <Info className="w-5 h-5 cursor-pointer" />
+            </button>
+          </div>
         </header>
 
-        {/* Messages */}
+        {/* Message display section */}
         <section className="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-grey-lightest">
+          {/* Example chat messages */}
           <div className="bg-white w-max px-4 py-2 rounded-lg shadow text-sm text-black">
             {chat.message}
           </div>
@@ -88,7 +124,7 @@ const ChatPannel = ({ chat }: ChatPanelProps) => {
           </div>
         </section>
 
-        {/* Message Input */}
+        {/* Message input footer */}
         <footer className="px-6 py-2 border-t border-grey-light bg-white">
           <div className="flex items-center gap-3">
             <button className="p-2 text-grey-medium hover:text-grey transition-colors">
@@ -123,15 +159,28 @@ const ChatPannel = ({ chat }: ChatPanelProps) => {
         </footer>
       </main>
 
-      {/* Right Sidebar */}
-      <AnimatePresence>    
+      {/* Right Sidebar for Order and Details panels */}
+      <AnimatePresence mode="wait">
+        {showOrders && (
+          <motion.div
+            key="order-panel"
+            initial={{ x: "100%", opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: "100%", opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="w-96 border-l border-grey-light py-px space-y-6 bg-white overflow-y-auto overflow-x-hidden"
+          >
+            <OrderPannel />
+          </motion.div>
+        )}
         {showDetails && (
           <motion.div
             key="details-panel"
-            initial={{ x: 0, opacity: 0 }}
+            initial={{ x: "100%", opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            exit={{ x: 0, opacity: 0 }}
-            className="w-96 border-l border-grey-light py-px space-y-6 bg-white overflow-x-hidden"
+            exit={{ x: "100%", opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="w-96 border-l border-grey-light py-px space-y-6 bg-white overflow-y-auto overflow-x-hidden"
           >
             <DetailsPanel />
           </motion.div>

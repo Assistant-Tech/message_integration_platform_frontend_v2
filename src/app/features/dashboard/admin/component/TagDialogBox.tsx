@@ -14,9 +14,13 @@ const tags = [
   "Return Product",
 ];
 
-const TagDialog = ({ trigger }: { trigger: React.ReactNode }) => {
+interface TagDialogProps {
+  trigger: React.ReactNode;
+  selected: string[];
+  setSelected: React.Dispatch<React.SetStateAction<string[]>>;
+}
+const TagDialog = ({ trigger, selected, setSelected }: TagDialogProps) => {
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState<string[]>([]);
   const [showInput, setShowInput] = useState(false);
   const [newTag, setNewTag] = useState("");
 
@@ -58,7 +62,7 @@ const TagDialog = ({ trigger }: { trigger: React.ReactNode }) => {
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: 20, opacity: 0 }}
-                className="fixed z-50 left-1/2 top-1/2 w-[90vw] max-w-3xl -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white px-8 py-6 shadow-lg"
+                className="fixed z-50 left-1/2 top-1/2 w-[90vw] max-w-3xl -translate-x-1/2 -translate-y-1/2 rounded-md bg-white px-8 py-6 shadow-lg"
               >
                 <div className="flex justify-between items-center mb-4 pb-4 border-b border-grey-light">
                   <Dialog.Title className="h4-bold-24 text-grey">
@@ -79,7 +83,7 @@ const TagDialog = ({ trigger }: { trigger: React.ReactNode }) => {
                       className={`label-regular-14 px-3 py-2 rounded-md border border-grey-light hover:bg-grey-light cursor-pointer ${
                         selected.includes(tag)
                           ? "bg-primary text-white border-primary"
-                          : "bg-gray-100 text-grey-medium"
+                          : "bg-base-white text-grey-medium"
                       }`}
                     >
                       {tag}
