@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { BadgeCheck, Calendar } from "lucide-react";
+import { BadgeCheck, ChevronDown, Search } from "lucide-react";
 
 import { APP_ROUTES } from "@/app/constants/routes";
 import { Breadcrumb, Button, Input } from "@/app/components/ui";
@@ -98,60 +98,80 @@ const CreateOrderPage = () => {
           </div>
 
           {/* Customer Info */}
-          <div className="border border-grey-light rounded-md p-4">
-            <h3 className="label-bold-14 text-grey">Customer Information</h3>
-            <div className="space-y-4 pt-4">
-              <label
-                htmlFor="customer"
-                className="body-medium-16 text-grey-medium pb-1"
-              >
-                Select Customer
-              </label>
-              <Input {...register("customer")} placeholder="Select customer" />
-              <label
-                htmlFor="fullName"
-                className="body-medium-16 text-grey-medium pb-1"
-              >
-                Full Name
-              </label>
-              <Input {...register("fullName")} placeholder="Enter full name" />
-              <label
-                htmlFor="phone"
-                className="body-medium-16 text-grey-medium pb-1"
-              >
-                Phone Number
-              </label>
-              <Input {...register("phone")} placeholder="Enter phone number" />
-              <label
-                htmlFor="email"
-                className="body-medium-16 text-grey-medium pb-1"
-              >
-                E-mail Address
-              </label>
-              <Input {...register("email")} placeholder="Enter email address" />
-              <label
-                htmlFor="location="
-                className="body-medium-16 text-grey-medium pb-1"
-              >
-                Location
-              </label>
-              <Input
-                {...register("location")}
-                placeholder="Enter the location"
-              />
-
-              <div className="relative">
+          <div className="border border-grey-light rounded-md">
+            <h3 className="h5-bold-16 text-grey px-8 py-4 rounded-t-lg  bg-base-white">
+              Customer Information
+            </h3>
+            <div className="w-full px-8 py-6">
+              <div className="space-y-4 pt-4">
                 <label
-                  htmlFor="exp_delivery"
-                  className="body-medium-16 text-grey-medium"
+                  htmlFor="customer"
+                  className="body-medium-16 text-grey-medium pb-1"
                 >
-                  Expected Delivery
+                  Select Customer
                 </label>
                 <Input
-                  {...register("expectedDelivery")}
-                  placeholder="Select expected delivery"
+                  iconLeft={<Search size={20} color="grey" justify-center />}
+                  {...register("customer")}
+                  placeholder="Select customer"
                 />
-                <Calendar className="absolute top-1/2 right-3 transform -translate-y-1/2 w-4 h-4 text-grey" />
+                <label
+                  htmlFor="fullName"
+                  className="body-medium-16 text-grey-medium pb-1"
+                >
+                  Full Name
+                </label>
+                <Input
+                  {...register("fullName")}
+                  placeholder="Enter full name"
+                />
+                <label
+                  htmlFor="phone"
+                  className="body-medium-16 text-grey-medium pb-1"
+                >
+                  Phone Number
+                </label>
+                <Input
+                  {...register("phone")}
+                  placeholder="Enter phone number"
+                />
+                <label
+                  htmlFor="email"
+                  className="body-medium-16 text-grey-medium pb-1"
+                >
+                  E-mail Address
+                </label>
+                <Input
+                  {...register("email")}
+                  placeholder="Enter email address"
+                />
+                <label
+                  htmlFor="location="
+                  className="body-medium-16 text-grey-medium pb-1"
+                >
+                  Location
+                </label>
+                <Input
+                  {...register("location")}
+                  placeholder="Enter the location"
+                />
+
+                <div className="relative">
+                  <label
+                    htmlFor="exp_delivery"
+                    className="body-medium-16 text-grey-medium"
+                  >
+                    Expected Delivery
+                  </label>
+                  <Input
+                    {...register("expectedDelivery")}
+                    placeholder="Select expected delivery"
+                  />
+                  <ChevronDown
+                    className="absolute top-12 right-3 transform -translate-y-1/2 text-grey"
+                    size={20}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -192,7 +212,7 @@ const CreateOrderPage = () => {
                 {paymentOptions.map((option) => (
                   <label
                     key={option.id}
-                    className="relative border border-grey-light rounded-lg p-8 flex flex-col items-center gap-1 cursor-pointer transition hover:shadow-sm"
+                    className="relative border border-grey-light rounded-lg p-px flex flex-col items-center gap-1 cursor-pointer transition hover:shadow-sm"
                   >
                     {/* Tick icon when selected */}
                     <input
@@ -208,7 +228,7 @@ const CreateOrderPage = () => {
                     <img
                       src={option.image}
                       alt={option.label}
-                      className="h-12 object-contain"
+                      className="h-48 object-contain"
                     />
                     <span className="label-bold-14 text-grey">
                       {option.label === "Cash On Delivery" && (
