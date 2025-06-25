@@ -33,6 +33,24 @@ export const sidebarItems = [
     icon: ShoppingCart,
     href: APP_ROUTES.ADMIN.PRODUCTS,
     hasSubmenu: true,
+    submenu: [
+      {
+        label: "All Products",
+        href: APP_ROUTES.ADMIN.PRODUCTS_ALL,
+      },
+      {
+        label: "Category",
+        href: APP_ROUTES.ADMIN.PRODUCTS_CATEGORY,
+      },
+      {
+        label: "Variants",
+        href: APP_ROUTES.ADMIN.PRODUCTS_VARIANTS,
+      },
+      {
+        label: "Inventory",
+        href: APP_ROUTES.ADMIN.PRODUCTS_INVENTORY,
+      },
+    ],
   },
   {
     label: "Settings",

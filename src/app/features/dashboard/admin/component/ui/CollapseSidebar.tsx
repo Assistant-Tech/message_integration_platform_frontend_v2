@@ -13,7 +13,12 @@ import { sidebarItems } from "@/app/utils/admin/Sidebar";
 
 const CollapsibleSidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const location = useLocation();
+
+  const toggleSubmenu = (label: string) => {
+    setOpenSubmenu((prev) => (prev === label ? null : label));
+  };
 
   return (
     <TooltipProvider delayDuration={100}>
@@ -56,20 +61,32 @@ const CollapsibleSidebar = () => {
             <ul className="space-y-2">
               {sidebarItems.map((item, index) => {
                 const Icon = item.icon;
+                const isActive = location.pathname.startsWith(item.href);
+                const isOpen = openSubmenu === item.label;
+
                 const linkContent = (
                   <div
-                    className={`flex items-center p-3 rounded-lg transition-colors group relative ${
-                      location.pathname === item.href
+                    className={`flex items-center p-3 rounded-lg transition-colors group relative cursor-pointer ${
+                      isActive
                         ? "bg-primary-dark text-white"
                         : "text-primary-light hover:bg-primary-dark hover:text-white"
                     }`}
+                    onClick={
+                      item.hasSubmenu && !isCollapsed
+                        ? () => toggleSubmenu(item.label)
+                        : undefined
+                    }
                   >
                     <Icon className="w-5 h-5 flex-shrink-0" />
                     {!isCollapsed && (
                       <>
                         <span className="body-bold-16 ml-3">{item.label}</span>
                         {item.hasSubmenu && (
-                          <ChevronRight className="w-4 h-4 ml-auto" />
+                          <ChevronRight
+                            className={`w-4 h-4 ml-auto transition-transform ${
+                              isOpen ? "rotate-90" : ""
+                            }`}
+                          />
                         )}
                       </>
                     )}
@@ -90,6 +107,28 @@ const CollapsibleSidebar = () => {
                           {item.label}
                         </TooltipContent>
                       </Tooltip>
+                    ) : item.hasSubmenu && item.submenu ? (
+                      <>
+                        <div>{linkContent}</div>
+                        {isOpen && (
+                          <ul className="pl-10 mt-1 space-y-1">
+                            {item.submenu.map((sub, i) => (
+                              <li key={i}>
+                                <Link
+                                  to={sub.href}
+                                  className={`block py-1.5 px-2 rounded-md text-sm ${
+                                    location.pathname === sub.href
+                                      ? "bg-primary-dark text-white"
+                                      : "text-primary-light hover:bg-primary-dark hover:text-white"
+                                  }`}
+                                >
+                                  {sub.label}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </>
                     ) : (
                       <Link to={item.href}>{linkContent}</Link>
                     )}
