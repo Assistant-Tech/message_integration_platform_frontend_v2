@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Input } from "@/app/components/ui";
 import { Heading } from "@/app/features/dashboard/admin/component/ui/";
-import { EllipsisVertical } from "lucide-react";
+import { EllipsisVertical, Search, X } from "lucide-react";
 import { ModalMessageBox } from "@/app/features/dashboard/admin/component/ui";
 
 interface OrderFormData {
@@ -14,6 +14,7 @@ interface OrderFormData {
 }
 
 const OrderPannel: React.FC = () => {
+  const [isOpen, setIsoOpen] = useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
@@ -65,6 +66,27 @@ const OrderPannel: React.FC = () => {
     });
   };
 
+  const handleOpenProductDialog = () => {
+    setIsoOpen(true);
+  };
+
+  const categories = [
+    "Clothing",
+    "T-shirts",
+    "Electronics",
+    "Shoes",
+    "Groceries",
+    "Home Applicants",
+    "Pet Goods",
+  ];
+
+  const [selected, setSelected] = useState<string[]>([]);
+
+  const toggleTag = (tag: string) => {
+    setSelected((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
+    );
+  };
   return (
     <aside className="w-full bg-white">
       <div className="flex justify-between items-center border-b border-grey-light py-4 px-4">
@@ -80,12 +102,11 @@ const OrderPannel: React.FC = () => {
         {/* Product Search */}
         <div className="flex flex-col py-3">
           <h2 className="body-medium-16 text-grey pb-1">Product</h2>
+
           <Input
             name="product"
-            value={formData.product}
-            type="text"
             placeholder="Search"
-            onChange={handleChange}
+            onClick={handleOpenProductDialog}
             className="w-full py-3 border border-grey-light rounded-lg"
           />
         </div>
@@ -194,6 +215,47 @@ const OrderPannel: React.FC = () => {
           />
         </div>
       </div>
+
+      {/* Product Dialog Box */}
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+          <div className="max-w-2xl w-full p-6 bg-white rounded-2xl">
+            <div className="flex justify-between items-center">
+              <Heading title="Add Product" align="left" className="text-grey" />
+              <X
+                size={24}
+                onClick={() => setIsoOpen(false)}
+                className="cursor-pointer"
+                color="grey"
+              />
+            </div>
+            <Input
+              name="product"
+              placeholder="Search by Product Name, SKN or Category"
+              type="search"
+              onClick={handleOpenProductDialog}
+              className="w-full py-3 my-4 border border-grey-light rounded-lg ring-1 ring-primary"
+              iconLeft={<Search size={24} />}
+            />
+            <h2 className="h5-bold-16 text-start text-grey">Category</h2>
+            <div className="grid grid-cols-3 gap-4 mb-4 pt-3">
+              {categories.map((tag, i) => (
+                <button
+                  key={i}
+                  onClick={() => toggleTag(tag)}
+                  className={`label-regular-14 px-3 py-2 rounded-md border border-grey-light hover:bg-primary hover:text-white cursor-pointer ${
+                    selected.includes(tag)
+                      ? "bg-primary text-white border-primary"
+                      : "bg-base-white text-grey-medium"
+                  }`}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modal: Confirm Order */}
       {showConfirmModal && (
