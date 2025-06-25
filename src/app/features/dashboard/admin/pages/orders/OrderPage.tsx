@@ -5,20 +5,34 @@ import {
   OrderTable,
 } from "@/app/features/dashboard/admin/component/";
 import { Input, Button } from "@/app/components/ui/";
-import { Settings2, SlidersHorizontal } from "lucide-react";
+import { Plus, Settings2, SlidersHorizontal } from "lucide-react";
 import { DUMMY_DATA, Order } from "@/app/utils/admin/Order";
+import { useNavigate } from "react-router-dom";
+import { APP_ROUTES } from "@/app/constants/routes";
 
 const OrderPage = () => {
   const [search, setSearch] = useState("");
   const [orders] = useState<Order[]>(DUMMY_DATA);
+  const navigate = useNavigate();
 
   const filteredData = orders.filter((order) =>
     order.name.toLowerCase().includes(search.toLowerCase()),
   );
+  const handleCreateNewOrder = () => {
+    navigate(APP_ROUTES.ADMIN.ORDERS_CREATE);
+  };
 
   return (
     <div className="p-6 space-y-6">
-      <Heading title="Orders" align="left" className="text-base-black" />
+      <div className="w-full flex justify-between items-center">
+        <Heading title="Orders" align="left" className="text-base-black" />
+        <Button
+          label="Create New Order"
+          IconLeft={<Plus size={24} />}
+          variant="primary"
+          onClick={handleCreateNewOrder}
+        />
+      </div>
 
       <OrderStats />
 

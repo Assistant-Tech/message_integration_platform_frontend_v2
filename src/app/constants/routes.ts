@@ -55,9 +55,10 @@ export const APP_ROUTES = {
     CONVERSATION: "/admin/conversation",
     CHATBOT: "/admin/chatbot",
     CHANNEL: "/admin/channel",
-    ORDERS: "/admin/orders",
     TAGS: "/admin/tags",
     ANALYTICS: "/admin/analytics",
+    ORDERS: "/admin/orders",
+    ORDERS_CREATE: "/admin/orders/createOrder",
 
     // Sub Settings
     SETTINGS: "/admin/settings",

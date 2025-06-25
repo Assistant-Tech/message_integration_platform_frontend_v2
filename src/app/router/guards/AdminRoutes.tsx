@@ -11,6 +11,7 @@ import {
   AnalyticsPage,
   SettingsPage,
   ProductPage,
+  CreateOrderPage,
 } from "@/app/features/dashboard/admin/pages/";
 
 const AdminRoutes = () => {
@@ -27,6 +28,10 @@ const AdminRoutes = () => {
       <Route path={APP_ROUTES.ADMIN.CHATBOT} element={<ChatbotPage />} />
       <Route path={APP_ROUTES.ADMIN.CHANNEL} element={<ChannelPage />} />
       <Route path={APP_ROUTES.ADMIN.ORDERS} element={<OrderPage />} />
+      <Route
+        path={APP_ROUTES.ADMIN.ORDERS_CREATE}
+        element={<CreateOrderPage />}
+      />
       <Route path={APP_ROUTES.ADMIN.TAGS} element={<TagsPage />} />
       <Route path={APP_ROUTES.ADMIN.ANALYTICS} element={<AnalyticsPage />} />
       <Route path={APP_ROUTES.ADMIN.SETTINGS} element={<SettingsPage />} />
