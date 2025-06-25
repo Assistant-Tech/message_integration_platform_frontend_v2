@@ -6,57 +6,7 @@ import {
 } from "@/app/features/dashboard/admin/component/";
 import { Input, Button } from "@/app/components/ui/";
 import { Settings2, SlidersHorizontal } from "lucide-react";
-
-interface Order {
-  id: string;
-  name: string;
-  createdAt: string;
-  total: number;
-  payment: "Paid" | "Unpaid" | "Pending";
-  status: "Confirmed" | "Shipped" | "Delivered" | "Cancelled";
-}
-const DUMMY_DATA: Order[] = [
-  {
-    id: "ORD-001",
-    name: "John Doe",
-    createdAt: "2025-06-20",
-    total: 2499,
-    payment: "Paid",
-    status: "Confirmed",
-  },
-  {
-    id: "ORD-002",
-    name: "Jane Smith",
-    createdAt: "2025-06-21",
-    total: 3499,
-    payment: "Pending",
-    status: "Shipped",
-  },
-  {
-    id: "ORD-003",
-    name: "Alice Johnson",
-    createdAt: "2025-06-22",
-    total: 1799,
-    payment: "Paid",
-    status: "Delivered",
-  },
-  {
-    id: "ORD-004",
-    name: "Bob Lee",
-    createdAt: "2025-06-23",
-    total: 2999,
-    payment: "Unpaid",
-    status: "Cancelled",
-  },
-  {
-    id: "ORD-005",
-    name: "Charlie Brown",
-    createdAt: "2025-06-24",
-    total: 1599,
-    payment: "Paid",
-    status: "Confirmed",
-  },
-];
+import { DUMMY_DATA, Order } from "@/app/utils/admin/Order";
 
 const OrderPage = () => {
   const [search, setSearch] = useState("");
