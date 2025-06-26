@@ -1,4 +1,3 @@
-// components/AddProduct.tsx
 import { Input } from "@/app/components/ui";
 import { Heading } from "@/app/features/dashboard/admin/component/ui";
 import { Search, X } from "lucide-react";

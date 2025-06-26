@@ -1,17 +1,15 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { BadgeCheck, ChevronDown, Search } from "lucide-react";
+import { ChevronDown, Search } from "lucide-react";
 
 import { APP_ROUTES } from "@/app/constants/routes";
 import { Breadcrumb, Button, Input } from "@/app/components/ui";
 import { Heading } from "@/app/features/dashboard/admin/component/ui";
-import { AddProduct } from "@/app/features/dashboard/admin/component/";
-
-// images import
-import Khalti from "@/app/assets/icons/khalti.png";
-import eSewa from "@/app/assets/icons/esewa.png";
-import Stripe from "@/app/assets/icons/stripe.png";
-import cod from "@/app/assets/icons/cod.jpg";
+import {
+  AddProduct,
+  PaymentDetails,
+  PaymentMethods,
+} from "@/app/features/dashboard/admin/component/";
 
 interface OrderFormValues {
   customer: string;
@@ -52,14 +50,6 @@ const CreateOrderPage = () => {
   const OrderBreadCrumb = [
     { label: "Order", href: APP_ROUTES.ADMIN.ORDERS },
     { label: "Create New Order" },
-  ];
-
-  // Mapping the images && Texts for payment methods
-  const paymentOptions = [
-    { id: "Khalti", image: Khalti, label: "Khalti" },
-    { id: "eSewa", image: eSewa, label: "eSewa" },
-    { id: "Stripe", image: Stripe, label: "Stripe" },
-    { id: "Cash On Delivery", image: cod, label: "Cash On Delivery" },
   ];
 
   return (
@@ -180,67 +170,9 @@ const CreateOrderPage = () => {
         {/* Right Column */}
         <div className="space-y-6">
           {/* Payment Details */}
-          <div className="border border-grey-light rounded-md">
-            <h3 className="h5-bold-16 text-grey px-8 py-4 rounded-t-lg  bg-base-white">
-              Payment Details
-            </h3>
-            <div className="px-8 py-6">
-              <div className="space-y-3 border-b border-grey-light mb-4 pb-4">
-                <div className="flex justify-between body-medium-16 text-grey-medium">
-                  <span>Subtotal</span>
-                  <span>Rs.0.00</span>
-                </div>
-                <div className="flex justify-between body-medium-16 text-grey-medium">
-                  <span>Delivery Charge</span>
-                  <span>Rs.0.00</span>
-                </div>
-              </div>
-              <div className="flex justify-between body-medium-16 text-grey-medium">
-                <span>Total</span>
-                <span>Rs.0.00</span>
-              </div>
-            </div>
-          </div>
-
+          <PaymentDetails />
           {/* Payment Method */}
-          <div className="border border-grey-light rounded-md">
-            <h3 className="h5-bold-16 text-grey px-8 py-4 rounded-t-lg bg-base-white">
-              Payment Methods
-            </h3>
-            <div className="px-8 py-6">
-              <div className="grid grid-cols-2 gap-3">
-                {paymentOptions.map((option) => (
-                  <label
-                    key={option.id}
-                    className="relative border border-grey-light rounded-lg p-px flex flex-col items-center gap-1 cursor-pointer transition hover:shadow-sm"
-                  >
-                    {/* Tick icon when selected */}
-                    <input
-                      type="radio"
-                      value={option.id}
-                      {...register("paymentMethod")}
-                      className="peer hidden"
-                    />
-                    <BadgeCheck
-                      className="absolute top-2 right-2 text-white rounded-2xl bg-primary-dark bg- opacity-20 peer-checked:opacity-80 transition-opacity"
-                      size={24}
-                    />
-                    <img
-                      src={option.image}
-                      alt={option.label}
-                      className="h-48 object-contain"
-                    />
-                    <span className="label-bold-14 text-grey">
-                      {option.label === "Cash On Delivery" && (
-                        <span>{option.label}</span>
-                      )}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            </div>
-          </div>
-
+          <PaymentMethods />
           {/* Action Buttons */}
           <div className="flex items-center justify-end gap-4">
             <Button
