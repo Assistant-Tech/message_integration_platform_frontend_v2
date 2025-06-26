@@ -69,7 +69,7 @@ const columns: ColumnDef<Order>[] = [
 
       const statusStyles: Record<string, string> = {
         Confirmed: "bg-secondary",
-        Shipped: "bg-information-dark",
+        Shipped: "bg-information",
         Delivered: "bg-success",
         Cancelled: "bg-danger",
       };
