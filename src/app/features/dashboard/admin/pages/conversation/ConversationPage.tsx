@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Heading } from "@/app/features/dashboard/admin/component/ui/";
 import { conversations } from "@/app/utils/admin/conversation";
 import { ChatPannel } from "@/app/features/dashboard/admin/component/";
+import { Input } from "@/app/components/ui";
 
 import facebook from "@/app/assets/icons/fb.svg";
 import instagram from "@/app/assets/icons/insta.svg";
@@ -13,17 +14,30 @@ const platformIcons: Record<string, string> = {
   whatsapp,
 };
 
+const statusFilters = ["All", "Unassigned", "Assigned", "Resolved"];
+
 const ConversationPage = () => {
   const [selectedChatIndex, setSelectedChatIndex] = useState<number | null>(
     null,
   );
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
+
   const selectedChat =
     selectedChatIndex !== null ? conversations[selectedChatIndex] : null;
+
+  // Add filtering logic here if you plan to implement status filtering
+  const filteredConversations = conversations.filter(
+    (chat) =>
+      chat.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      chat.message.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
   return (
     <div className="flex h-full">
       <aside className="w-full max-w-sm border-r border-grey-light h-full overflow-y-auto">
-        <article className="px-6 py-4  border-b border-grey-light">
+        {/* Header */}
+        <article className="px-6 py-4 border-b border-grey-light">
           <Heading
             title="Conversation"
             align="left"
@@ -31,8 +45,36 @@ const ConversationPage = () => {
           />
         </article>
 
-        <div className="px-4 py-2 space-y-2">
-          {conversations.map((chat, index) => (
+        {/* Filter Tabs */}
+        <div className="w-full  flex justify-between items-center gap-3 px-4 pt-4 body-regular-16 text-grey-medium border-b-1 border-grey-light">
+          {statusFilters.map((filter) => (
+            <button
+              key={filter}
+              onClick={() => setStatusFilter(filter)}
+              className={`pb-4 cursor-pointer ${
+                statusFilter === filter
+                  ? "text-primary border-b-2 border-primary"
+                  : "hover:text-primary"
+              }`}
+            >
+              {filter}
+            </button>
+          ))}
+        </div>
+
+        {/* Search Input */}
+        <div className="px-4 py-3">
+          <Input
+            placeholder="Search"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full"
+          />
+        </div>
+
+        {/* Chat List */}
+        <div className="px-4 space-y-2 pb-4">
+          {filteredConversations.map((chat, index) => (
             <div
               key={index}
               onClick={() => setSelectedChatIndex(index)}
@@ -40,7 +82,7 @@ const ConversationPage = () => {
                 selectedChatIndex === index ? "bg-primary-light rounded-lg" : ""
               }`}
             >
-              {/* Chat Icon && the application icon */}
+              {/* Avatar and Platform Icon */}
               <div className="flex flex-col items-end relative">
                 <img
                   src={chat.avatar}
@@ -56,6 +98,7 @@ const ConversationPage = () => {
                 )}
               </div>
 
+              {/* Message Content */}
               <div className="flex justify-between w-full">
                 <div>
                   <h4 className="body-bold-16 text-grey">{chat.name}</h4>
