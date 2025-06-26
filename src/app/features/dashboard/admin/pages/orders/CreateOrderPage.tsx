@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { ChevronDown, Search } from "lucide-react";
 
@@ -10,6 +9,7 @@ import {
   PaymentDetails,
   PaymentMethods,
 } from "@/app/features/dashboard/admin/component/";
+import { useState } from "react";
 
 interface OrderFormValues {
   customer: string;
@@ -25,24 +25,6 @@ const CreateOrderPage = () => {
   const { register, handleSubmit, reset } = useForm<OrderFormValues>();
 
   const [isProductModalOpen, setProductModalOpen] = useState(false);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-
-  const categories = [
-    "Clothing",
-    "T-shirts",
-    "Electronics",
-    "Shoes",
-    "Groceries",
-    "Home Applicants",
-    "Pet Goods",
-  ];
-
-  const toggleTag = (tag: string) => {
-    setSelectedTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
-    );
-  };
-
   const onSubmit = (data: OrderFormValues) => {
     console.log("Order Form Data:", data);
   };
@@ -72,7 +54,11 @@ const CreateOrderPage = () => {
             </h3>
             <div className="w-full px-8 py-6">
               <div className="flex gap-2">
-                <Input placeholder="Search Product" className="w-full" />
+                <Input
+                  placeholder="Search Product"
+                  className="w-full"
+                  onClick={() => setProductModalOpen(true)}
+                />
                 <Button
                   label="Browse"
                   variant="primary"
@@ -189,9 +175,6 @@ const CreateOrderPage = () => {
       <AddProduct
         isOpen={isProductModalOpen}
         onClose={() => setProductModalOpen(false)}
-        categories={categories}
-        selected={selectedTags}
-        toggleTag={toggleTag}
       />
     </div>
   );

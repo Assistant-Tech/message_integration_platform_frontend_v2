@@ -92,8 +92,8 @@ const AddTag: React.FC<AddTagProps> = ({
             disabled={!tagName}
             className={`px-6 py-2 rounded-lg ${
               tagName
-                ? "bg-green-300 text-white"
-                : "bg-green-100 text-gray-400 cursor-not-allowed"
+                ? "bg-primary-light text-grey-medium"
+                : "bg-primary text-white cursor-not-allowed"
             }`}
           >
             Save

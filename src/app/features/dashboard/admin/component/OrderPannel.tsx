@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Button, Input } from "@/app/components/ui";
 import { Heading } from "@/app/features/dashboard/admin/component/ui/";
-import { EllipsisVertical, Search, X } from "lucide-react";
+import { EllipsisVertical } from "lucide-react";
 import { ModalMessageBox } from "@/app/features/dashboard/admin/component/ui";
-import AddProduct from "./AddProduct";
+import { AddProduct } from "@/app/features/dashboard/admin/component/";
 
 interface OrderFormData {
   product: string;
@@ -71,23 +71,6 @@ const OrderPannel: React.FC = () => {
     setIsOpen(true);
   };
 
-  const categories = [
-    "Clothing",
-    "T-shirts",
-    "Electronics",
-    "Shoes",
-    "Groceries",
-    "Home Applicants",
-    "Pet Goods",
-  ];
-
-  const [selected, setSelected] = useState<string[]>([]);
-
-  const toggleTag = (tag: string) => {
-    setSelected((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
-    );
-  };
   return (
     <aside className="w-full bg-white">
       <div className="flex justify-between items-center border-b border-grey-light py-4 px-4">
@@ -218,13 +201,7 @@ const OrderPannel: React.FC = () => {
       </div>
 
       {/* Product Dialog Box */}
-      <AddProduct
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        categories={categories}
-        selected={selected}
-        toggleTag={toggleTag}
-      />
+      <AddProduct isOpen={isOpen} onClose={() => setIsOpen(false)} />
 
       {/* Modal: Confirm Order */}
       {showConfirmModal && (
