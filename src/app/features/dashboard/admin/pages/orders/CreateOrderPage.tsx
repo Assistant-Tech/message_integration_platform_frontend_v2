@@ -91,7 +91,7 @@ const CreateOrderPage = () => {
                   Select Customer
                 </label>
                 <Input
-                  iconLeft={<Search size={20} color="grey" justify-center />}
+                  iconLeft={<Search size={20} color="grey" />}
                   {...register("customer")}
                   placeholder="Select customer"
                   onClick={() => setIsSelectAllCustomerModalOpen(true)}
