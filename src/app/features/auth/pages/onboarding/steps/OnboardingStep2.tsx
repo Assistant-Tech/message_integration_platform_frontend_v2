@@ -1,20 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
   CustomDropdown,
   StepSidebar,
 } from "@/app/features/auth/pages/onboarding/components";
-import { Button, Input, Logo } from "@/app/components/ui/";
+import { Button, Logo } from "@/app/components/ui/";
 import { useOnboardingStore } from "@/app/features/auth/pages/onboarding/hooks/useOnboardingStore";
 import {
   OnboardingStep2FormData,
   onboardingStep2Schema,
 } from "@/app/features/auth/pages/onboarding/schemas/Onboarding.schema";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { getCitiesByCountry } from "@/app/features/auth/pages/onboarding/hooks/useCitiesByCountry";
 
-const countries = ["Nepal", "India", "United States", "Australia", "Canada"];
+import { Country, State, City } from "country-state-city";
 
 interface LocationErrors {
   country?: string;
@@ -36,8 +35,40 @@ const OnboardingStep2: React.FC = () => {
   );
 
   const [errors, setErrors] = useState<LocationErrors>({});
-  const [cities, setCities] = useState<string[]>([]);
-  const [loadingCities, setLoadingCities] = useState(false);
+
+  const countries = useMemo(
+    () =>
+      Country.getAllCountries().map(({ name, isoCode }) => ({ name, isoCode })),
+    [],
+  );
+
+  const selectedCountry = useMemo(
+    () => countries.find((c) => c.name === formData.country),
+    [formData.country, countries],
+  );
+
+  const states = useMemo(() => {
+    if (!selectedCountry) return [];
+    return State.getStatesOfCountry(selectedCountry.isoCode).map(
+      ({ name, isoCode }) => ({
+        name,
+        isoCode,
+      }),
+    );
+  }, [selectedCountry]);
+
+  const selectedState = useMemo(
+    () => states.find((s) => s.name === formData.state),
+    [formData.state, states],
+  );
+
+  const cities = useMemo(() => {
+    if (!selectedCountry || !selectedState) return [];
+    return City.getCitiesOfState(
+      selectedCountry.isoCode,
+      selectedState.isoCode,
+    ).map(({ name }) => ({ name }));
+  }, [selectedCountry, selectedState]);
 
   const handleChange = (
     field: keyof OnboardingStep2FormData,
@@ -46,7 +77,8 @@ const OnboardingStep2: React.FC = () => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
-      ...(field === "country" ? { city: "" } : {}),
+      ...(field === "country" ? { state: "", city: "" } : {}),
+      ...(field === "state" ? { city: "" } : {}),
     }));
 
     if (errors[field]) {
@@ -80,30 +112,6 @@ const OnboardingStep2: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchCities = async () => {
-      if (!formData.country) {
-        setCities([]);
-        return;
-      }
-
-      setLoadingCities(true);
-      try {
-        const response = await getCitiesByCountry({
-          country: formData.country,
-        });
-        setCities(response.data);
-      } catch (error) {
-        console.error("Error fetching cities:", error);
-        setCities([]);
-      } finally {
-        setLoadingCities(false);
-      }
-    };
-
-    fetchCities();
-  }, [formData.country]);
-
   return (
     <div className="min-h-screen h-full bg-base-white py-12 px-4">
       <div className="max-w-7xl mx-auto flex flex-col justify-center overflow-visible">
@@ -116,9 +124,7 @@ const OnboardingStep2: React.FC = () => {
             Welcome to Chatblix, Jane!
           </h1>
           <p className="text-grey-medium body-regular-16 max-w-2xl">
-            Complete your onboarding process by setting up your workplace. The
-            next few steps will contain all the necessary information you will
-            need to enter to personalize your Chatblix account.
+            Complete your onboarding process by setting up your workplace.
           </p>
         </div>
 
@@ -142,7 +148,7 @@ const OnboardingStep2: React.FC = () => {
                 </label>
                 <CustomDropdown
                   id="country"
-                  options={countries}
+                  options={countries.map((c) => c.name)}
                   value={formData.country}
                   onChange={(value) => handleChange("country", value)}
                   placeholder="Select a country"
@@ -155,19 +161,23 @@ const OnboardingStep2: React.FC = () => {
                 )}
               </div>
 
-              {/* State Input */}
+              {/* State Dropdown */}
               <div className="flex flex-col">
                 <label htmlFor="state" className="mb-1 body-bold-16 text-grey">
                   State/Province
                 </label>
-                <Input
+                <CustomDropdown
                   id="state"
-                  className={`border p-2 rounded ${
-                    errors.state ? "border-danger" : "border-grey-light"
-                  }`}
-                  placeholder="Enter your state or province"
+                  options={states.map((s) => s.name)}
                   value={formData.state}
-                  onChange={(e) => handleChange("state", e.target.value)}
+                  onChange={(value) => handleChange("state", value)}
+                  placeholder={
+                    !formData.country
+                      ? "Select a country first"
+                      : "Select a state"
+                  }
+                  disabled={!formData.country}
+                  error={!!errors.state}
                 />
                 {errors.state && (
                   <span className="text-danger text-sm mt-1">
@@ -183,16 +193,13 @@ const OnboardingStep2: React.FC = () => {
                 </label>
                 <CustomDropdown
                   id="city"
-                  options={cities}
+                  options={cities.map((c) => c.name)}
                   value={formData.city}
                   onChange={(value) => handleChange("city", value)}
                   placeholder={
-                    !formData.country
-                      ? "Select a country first"
-                      : "Select a city"
+                    !formData.state ? "Select a state first" : "Select a city"
                   }
-                  disabled={!formData.country}
-                  loading={loadingCities}
+                  disabled={!formData.state}
                   error={!!errors.city}
                 />
                 {errors.city && (

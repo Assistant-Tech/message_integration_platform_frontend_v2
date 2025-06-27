@@ -31,6 +31,7 @@ interface AddMembersErrors {
 const OnboardingStep5: React.FC = () => {
   const navigate = useNavigate();
   const { data, setStepData, setCompletedSteps, reset } = useOnboardingStore();
+  console.log("🚀 ~ data:", data);
 
   const currentStep = 5;
 

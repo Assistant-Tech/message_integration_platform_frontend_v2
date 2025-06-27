@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 
 interface CustomDropdownProps {
   options: string[];
-  value: string;
+  value: string | undefined;
   onChange: (value: string) => void;
   placeholder: string;
   disabled?: boolean;
