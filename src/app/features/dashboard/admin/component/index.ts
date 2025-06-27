@@ -13,6 +13,8 @@ export { default as PaymentMethods } from "./payment/PaymentMethods";
 
 export { default as TagDialog } from "./TagDialogBox";
 export { default as AddTag } from "./tag/AddTag";
-export { default as TagTable } from "./tag/TagTable";
+export { default as TagTable } from "./tag/Tagtable";
 
 export { default as AssignDialog } from "./AssignDialogBox";
+
+export { default as SelectAllCustomer } from "./SelectAllCustomer";

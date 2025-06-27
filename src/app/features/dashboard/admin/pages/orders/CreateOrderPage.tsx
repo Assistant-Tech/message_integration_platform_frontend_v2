@@ -8,6 +8,7 @@ import {
   AddProduct,
   PaymentDetails,
   PaymentMethods,
+  SelectAllCustomer,
 } from "@/app/features/dashboard/admin/component/";
 import { useState } from "react";
 
@@ -25,6 +26,9 @@ const CreateOrderPage = () => {
   const { register, handleSubmit, reset } = useForm<OrderFormValues>();
 
   const [isProductModalOpen, setProductModalOpen] = useState(false);
+  const [isSelectAllCustomerModalOpen, setIsSelectAllCustomerModalOpen] =
+    useState<boolean>(false);
+
   const onSubmit = (data: OrderFormValues) => {
     console.log("Order Form Data:", data);
   };
@@ -90,6 +94,7 @@ const CreateOrderPage = () => {
                   iconLeft={<Search size={20} color="grey" justify-center />}
                   {...register("customer")}
                   placeholder="Select customer"
+                  onClick={() => setIsSelectAllCustomerModalOpen(true)}
                 />
                 <label
                   htmlFor="fullName"
@@ -175,6 +180,12 @@ const CreateOrderPage = () => {
       <AddProduct
         isOpen={isProductModalOpen}
         onClose={() => setProductModalOpen(false)}
+      />
+
+      {/* Select all the Customers */}
+      <SelectAllCustomer
+        isOpen={isSelectAllCustomerModalOpen}
+        onClose={() => setIsSelectAllCustomerModalOpen(false)}
       />
     </div>
   );

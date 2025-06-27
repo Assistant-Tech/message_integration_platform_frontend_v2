@@ -1,6 +1,3 @@
-// components/TagTable.tsx
-"use client";
-
 import {
   flexRender,
   getCoreRowModel,
