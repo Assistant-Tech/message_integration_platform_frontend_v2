@@ -65,7 +65,7 @@ export const APP_ROUTES = {
 
     // Sub Products
     PRODUCTS: "/admin/product",
-    PRODUCTS_ALL: "/admin/product",
+    PRODUCTS_ALL: "/admin/product_all",
     PRODUCTS_CATEGORY: "/admin/category",
     PRODUCTS_VARIANTS: "/admin/variants",
     PRODUCTS_INVENTORY: "/admin/inventory",
