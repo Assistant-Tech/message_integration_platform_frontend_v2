@@ -6,18 +6,13 @@ import {
 } from "@/app/features/dashboard/admin/component/";
 import { Input, Button } from "@/app/components/ui/";
 import { Plus, Settings2, SlidersHorizontal } from "lucide-react";
-import { DUMMY_DATA, Order } from "@/app/utils/admin/Order";
 import { useNavigate } from "react-router-dom";
 import { APP_ROUTES } from "@/app/constants/routes";
 
 const OrderPage = () => {
   const [search, setSearch] = useState("");
-  const [orders] = useState<Order[]>(DUMMY_DATA);
   const navigate = useNavigate();
 
-  const filteredData = orders.filter((order) =>
-    order.name.toLowerCase().includes(search.toLowerCase()),
-  );
   const handleCreateNewOrder = () => {
     navigate(APP_ROUTES.ADMIN.ORDERS_CREATE);
   };
@@ -54,7 +49,7 @@ const OrderPage = () => {
         </Button>
       </div>
 
-      <OrderTable data={filteredData} />
+      <OrderTable />
     </div>
   );
 };

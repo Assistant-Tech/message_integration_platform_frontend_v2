@@ -1,11 +1,7 @@
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  ColumnDef,
-} from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";
 import { Pencil, Trash2 } from "lucide-react";
+import GenericTable from "../table/GenericTable";
 
 interface Tag {
   name: string;
@@ -65,49 +61,7 @@ const TagTable: React.FC<TagTableProps> = ({ data }) => {
     [],
   );
 
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  });
-
-  return (
-    <div className="border border-grey-light rounded-lg overflow-x-auto">
-      <table className="min-w-full text-left ">
-        <thead className="bg-base-white">
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th
-                  className="label-bold-14 text-grey px-6 py-4"
-                  key={header.id}
-                >
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext(),
-                  )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody className="divide-y divide-grey-light">
-          {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="hover:bg-base-white">
-              {row.getVisibleCells().map((cell) => (
-                <td
-                  className="px-6 py-4   label-regular-14 text-grey-medium"
-                  key={cell.id}
-                >
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+  return <GenericTable columns={columns} data={data} />;
 };
 
 export default TagTable;

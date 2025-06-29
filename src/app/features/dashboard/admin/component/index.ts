@@ -1,6 +1,7 @@
-//PUBLIC
+//PUBLIC exports
 export { default as DashboardLayout } from "./DashboardLayout";
 export { default as SelectAllCustomer } from "./SelectAllCustomer";
+export { default as GenericTable } from "./table/GenericTable";
 
 //OTHERS
 export { default as ChatPannel } from "./ChatPannel";
@@ -19,7 +20,7 @@ export { default as PaymentMethods } from "./payment/PaymentMethods";
 // TAGS
 export { default as TagDialog } from "./TagDialogBox";
 export { default as AddTag } from "./tag/AddTag";
-export { default as TagTable } from "./tag/Tagtable";
+export { default as TagTable } from "./tag/TagTable";
 
 // PRODUCTS
 export { default as ProductTable } from "./product/ProductTable";
