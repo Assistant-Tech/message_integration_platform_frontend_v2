@@ -1,6 +1,11 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
 
 import {
   TooltipProvider,
@@ -13,7 +18,13 @@ import { sidebarItems } from "@/app/utils/admin/Sidebar";
 
 const CollapsibleSidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [expandedMenu, setExpandedMenu] = useState<string | null>(null);
+
   const location = useLocation();
+
+  const toggleMenu = (label: string) => {
+    setExpandedMenu((prev) => (prev === label ? null : label));
+  };
 
   return (
     <TooltipProvider delayDuration={100}>
@@ -23,24 +34,20 @@ const CollapsibleSidebar = () => {
             isCollapsed ? "w-20" : "w-64"
           } flex flex-col`}
         >
-          {/* Header */}
+          {/* Sidebar Header */}
           <div className="p-4 border-primary-dark relative">
-            {isCollapsed ? (
-              <div className="flex justify-center px-2">
-                <img src={logo} alt="Logo" className="w-10 h-10" />
-              </div>
-            ) : (
-              <div className="flex items-center space-x-3 px-4">
-                <img src={logo} alt="Logo" className="w-10 h-10" />
+            <div className="flex items-center justify-center px-2 space-x-3">
+              <img src={logo} alt="Logo" className="w-10 h-10" />
+              {!isCollapsed && (
                 <span className="h5-bold-16 text-white">Assistant Tech</span>
-              </div>
-            )}
+              )}
+            </div>
 
-            {/* Toggle button */}
-            <div className="absolute top-5 -right-5 w-1/2 flex justify-end">
+            {/* Collapse Toggle */}
+            <div className="absolute top-5 -right-5">
               <button
                 onClick={() => setIsCollapsed((prev) => !prev)}
-                className="bg-base-white rounded-full text-primary p-2 cursor-pointer"
+                className="bg-base-white rounded-full text-primary p-2"
               >
                 {isCollapsed ? (
                   <ChevronRight className="w-5 h-5" />
@@ -51,32 +58,43 @@ const CollapsibleSidebar = () => {
             </div>
           </div>
 
-          {/* Navigation */}
-          <nav className="flex-1 p-4">
+          {/* Sidebar Navigation */}
+          <nav className="flex-1 p-4 overflow-y-auto">
             <ul className="space-y-2">
               {sidebarItems.map((item, index) => {
                 const Icon = item.icon;
-
                 const isActive =
-                  (item.hasSubmenu &&
-                    item.submenu?.some(
-                      (sub) => location.pathname === sub.href,
-                    )) ||
                   location.pathname === item.href ||
                   location.pathname.startsWith(item.href + "/");
 
+                const isExpanded = expandedMenu === item.label;
+
                 const linkContent = (
                   <div
-                    className={`flex items-center p-3 rounded-lg transition-colors group relative cursor-pointer ${
+                    className={`flex items-center justify-between p-3 rounded-lg transition-colors group cursor-pointer ${
                       isActive
                         ? "bg-primary-dark text-white"
                         : "text-primary-light hover:bg-primary-dark hover:text-white"
                     }`}
+                    onClick={() => {
+                      if (item.hasSubmenu) {
+                        toggleMenu(item.label);
+                      }
+                    }}
                   >
-                    <Icon className="w-5 h-5 flex-shrink-0" />
-                    {!isCollapsed && (
-                      <span className="body-bold-16 ml-3">{item.label}</span>
-                    )}
+                    <div className="flex items-center">
+                      <Icon className="w-5 h-5" />
+                      {!isCollapsed && (
+                        <span className="ml-3 body-bold-16">{item.label}</span>
+                      )}
+                    </div>
+                    {!isCollapsed &&
+                      item.hasSubmenu &&
+                      (isExpanded ? (
+                        <ChevronUp className="w-4 h-4" />
+                      ) : (
+                        <ChevronDown className="w-4 h-4" />
+                      ))}
                   </div>
                 );
 
@@ -96,14 +114,19 @@ const CollapsibleSidebar = () => {
                       </Tooltip>
                     ) : (
                       <>
-                        <Link to={item.href}>{linkContent}</Link>
+                        {item.hasSubmenu ? (
+                          <div>{linkContent}</div>
+                        ) : (
+                          <Link to={item.href}>{linkContent}</Link>
+                        )}
 
-                        {item.hasSubmenu && item.submenu && (
+                        {/* Submenu */}
+                        {item.hasSubmenu && item.submenu && isExpanded && (
                           <ul className="pl-10 mt-1 space-y-1">
-                            {item.submenu.map((sub, i) => {
+                            {item.submenu.map((sub, subIndex) => {
                               const subActive = location.pathname === sub.href;
                               return (
-                                <li key={i}>
+                                <li key={subIndex}>
                                   <Link
                                     to={sub.href}
                                     className={`block py-1.5 px-2 rounded-md body-bold-16 ${
