@@ -6,6 +6,8 @@ const ProductPage = () => {
       <article className="px-6 py-4">
         <Heading title="ProductPage" align="left" className="text-base-black" />
       </article>
+
+      {/* */}
     </div>
   );
 };
