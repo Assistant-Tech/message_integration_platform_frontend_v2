@@ -13,3 +13,7 @@ export { default as CreateOrderPage } from "../pages/orders/CreateOrderPage";
 // Product Page
 export { default as ProductPage } from "../pages/products/ProductPage";
 export { default as AllProductsPage } from "../pages/products/AllProductsPage";
+export { default as ProductCategory } from "../pages/products/ProductCategory";
+export { default as ProductVariants } from "../pages/products/ProductVariants";
+export { default as ProductInventory } from "../pages/products/ProductInventory";
+export { default as CreateProductPage } from "../pages/products/CreateProductPage";

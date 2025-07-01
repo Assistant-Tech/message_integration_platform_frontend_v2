@@ -10,13 +10,11 @@ import {
 } from "@/app/features/dashboard/admin/component/";
 
 const TagsPage = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [tagName, setTagName] = useState("");
-  const [color, setColor] = useState("#cccccc");
-  const [visibility, setVisibility] = useState(false);
-
-  // Example dataset
-  const tagData = [
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentTagName, setCurrentTagName] = useState("");
+  const [currentColor, setCurrentColor] = useState("#0000FF");
+  const [currentVisibility, setCurrentVisibility] = useState(true);
+  const [tags, setTags] = useState([
     {
       name: "Purchased",
       color: "#007BFF",
@@ -53,34 +51,33 @@ const TagsPage = () => {
       createdOn: "10/10/2025",
       visibility: false,
     },
-    {
-      name: "Processing",
-      color: "#17a2b8",
-      createdOn: "09/15/2025",
-      visibility: true,
-    },
-    {
-      name: "Shipped",
-      color: "#20c997",
-      createdOn: "09/01/2025",
-      visibility: true,
-    },
-    {
-      name: "Cancelled",
-      color: "#fd7e14",
-      createdOn: "08/22/2025",
-      visibility: false,
-    },
-    {
-      name: "Awaiting Payment",
-      color: "#343a40",
-      createdOn: "08/01/2025",
-      visibility: true,
-    },
-  ];
+  ]);
+
+  const handleAddNewTagField = () => {
+    if (currentTagName.trim() === "") {
+      return;
+    }
+    const newTag = {
+      name: currentTagName,
+      color: currentColor,
+      createdOn: new Date().toLocaleDateString("en-US"),
+      visibility: currentVisibility,
+    };
+    setTags((prevTags) => [...prevTags, newTag]);
+    setCurrentTagName("");
+    setCurrentColor("#0000FF");
+    setCurrentVisibility(true);
+  };
+
+  const handleSaveTags = () => {
+    if (currentTagName.trim() !== "") {
+      handleAddNewTagField();
+    }
+    setIsModalOpen(false); // Close the modal
+  };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 font-inter">
       {/* Header */}
       <div className="flex justify-between items-center">
         <Heading title="Tags" align="left" />
@@ -88,7 +85,13 @@ const TagsPage = () => {
           label="Add New Tag"
           IconLeft={<Plus size={20} />}
           variant="primary"
-          onClick={() => setIsOpen(true)}
+          onClick={() => {
+            setIsModalOpen(true);
+            // Reset form fields when opening the modal
+            setCurrentTagName("");
+            setCurrentColor("#0000FF");
+            setCurrentVisibility(true);
+          }}
         />
       </div>
 
@@ -96,22 +99,20 @@ const TagsPage = () => {
       <OrderStats />
 
       {/* Table */}
-      <TagTable data={tagData} />
+      <TagTable data={tags} />
 
       {/* Add Tag Dialog */}
       <AddTag
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        onAddTag={() => {
-          console.log({ tagName, color, visibility });
-          setIsOpen(false);
-        }}
-        tagName={tagName}
-        setTagName={setTagName}
-        color={color}
-        setColor={setColor}
-        visibility={visibility}
-        setVisibility={setVisibility}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleSaveTags}
+        tagName={currentTagName}
+        setTagName={setCurrentTagName}
+        color={currentColor}
+        setColor={setCurrentColor}
+        visibility={currentVisibility}
+        setVisibility={setCurrentVisibility}
+        onAddNewTagField={handleAddNewTagField}
       />
     </div>
   );
