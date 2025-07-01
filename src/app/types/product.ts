@@ -1,5 +1,9 @@
 import { LucideIcon } from "lucide-react";
-
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ All-product Type utils
+ ─────────────────────────────────────────────────────────────────────────────
+*/
 export interface ServiceItem {
   id: number;
   icon: LucideIcon;
@@ -17,6 +21,7 @@ export enum Status {
 
 export interface Product {
   name: string;
+  image: string;
   price: number;
   SKU: string;
   variants: string;
@@ -28,4 +33,91 @@ export interface Product {
 
 export interface ProductTableProps {
   data: Product[];
+}
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Category Type utils
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+export interface Category {
+  name: string;
+  products: number;
+  visibility: boolean;
+  action: string;
+}
+export interface CategoryTableProps {
+  data: Category[];
+}
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Variant Type utils
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+export interface Variant {
+  name: string;
+  visibility: boolean;
+  action: string;
+}
+export interface VariantTableProps {
+  data: Variant[];
+}
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Inventory Type utils
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+export interface Name {
+  productImage: string;
+  productName: string;
+  productSubName?: string;
+}
+export enum Size {
+  small = "Small",
+  medium = "Medium",
+  large = "Large",
+  extralarge = "XL",
+  doublexl = "2XL",
+}
+
+export interface Inventory {
+  name: Name;
+  color: string;
+  size: Size;
+  quantity: number;
+  price: number;
+  stock: boolean;
+}
+
+export interface InventoryTableProps {
+  data: Inventory[];
+}
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Product Form Type utils
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+export interface ProductVariant {
+  color: string;
+  size: string;
+  price: string;
+  quantity: string;
+}
+
+export interface ProductFormData {
+  name: string;
+  category: string;
+  sku: string;
+  weight: string;
+  weightUnit: string;
+  quantity: string;
+  price: string;
+  currency: string;
+  discountPercentage: string;
+  discountAmount: string;
+  description: string;
+  visibility: "publish" | "schedule" | "draft";
+  publishDate: string;
+  variants: ProductVariant[];
+  images: File | null;
 }

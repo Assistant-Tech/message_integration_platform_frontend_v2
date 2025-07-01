@@ -69,6 +69,7 @@ export const APP_ROUTES = {
     PRODUCTS_CATEGORY: "/admin/category",
     PRODUCTS_VARIANTS: "/admin/variants",
     PRODUCTS_INVENTORY: "/admin/inventory",
+    PRODUCTS_CREATE: "/admin/product_all/createProducts",
   },
 
   // User routes

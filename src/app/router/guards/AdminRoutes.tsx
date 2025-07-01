@@ -13,6 +13,10 @@ import {
   ProductPage,
   CreateOrderPage,
   AllProductsPage,
+  ProductCategory,
+  ProductVariants,
+  ProductInventory,
+  CreateProductPage,
 } from "@/app/features/dashboard/admin/pages/";
 
 const AdminRoutes = () => {
@@ -31,6 +35,7 @@ const AdminRoutes = () => {
 
       {/* Orders */}
       <Route path={APP_ROUTES.ADMIN.ORDERS} element={<OrderPage />} />
+      {/* Create Orders */}
       <Route
         path={APP_ROUTES.ADMIN.ORDERS_CREATE}
         element={<CreateOrderPage />}
@@ -41,9 +46,28 @@ const AdminRoutes = () => {
 
       {/* Products */}
       <Route path={APP_ROUTES.ADMIN.PRODUCTS} element={<ProductPage />} />
+      {/* SUB Products */}
       <Route
         path={APP_ROUTES.ADMIN.PRODUCTS_ALL}
         element={<AllProductsPage />}
+      />
+      <Route
+        path={APP_ROUTES.ADMIN.PRODUCTS_CATEGORY}
+        element={<ProductCategory />}
+      />
+      <Route
+        path={APP_ROUTES.ADMIN.PRODUCTS_VARIANTS}
+        element={<ProductVariants />}
+      />
+      <Route
+        path={APP_ROUTES.ADMIN.PRODUCTS_INVENTORY}
+        element={<ProductInventory />}
+      />
+
+      {/* Create Products */}
+      <Route
+        path={APP_ROUTES.ADMIN.PRODUCTS_CREATE}
+        element={<CreateProductPage />}
       />
     </>
   );
