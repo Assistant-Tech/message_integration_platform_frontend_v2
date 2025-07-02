@@ -36,7 +36,7 @@ const Navbar = ({ offsetTop = false }: { offsetTop?: boolean }) => {
       <div className="mx-auto max-w-[1600px] px-4 sm:px-6 md:px-8 xl:px-12 2xl:px-0">
         <div className="flex h-16 justify-between items-center">
           <div
-            className={`transition-all duration-300 ${isScrolled ? "scale-75" : "scale-100"}`}
+            className={`transition-all duration-300 ${isScrolled ? "scale-95" : "scale-100"}`}
           >
             <Logo />
           </div>
