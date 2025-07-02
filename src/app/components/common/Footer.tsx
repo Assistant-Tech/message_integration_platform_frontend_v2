@@ -92,17 +92,24 @@ const Footer = () => {
                           className="overflow-hidden pl-2 py-2 space-y-2"
                         >
                           {footerLinks[section as keyof typeof footerLinks].map(
-                            (link, index: number) => (
-                              <li key={index}>
-                                <a
-                                  href={link.url}
-                                  className="text-grey transition-colors flex items-center text-sm"
-                                >
-                                  {link.icon && <link.icon className="mr-2" />}
-                                  {link.name}
-                                </a>
-                              </li>
-                            ),
+                            (link, index: number) => {
+                              const isContactSection = section === "contact";
+                              return (
+                                <li key={index}>
+                                  <a
+                                    href={link.url}
+                                    className="text-grey transition-colors flex items-center text-sm"
+                                  >
+                                    {isContactSection &&
+                                      "icon" in link &&
+                                      link.icon && (
+                                        <link.icon className="mr-2" />
+                                      )}
+                                    {link.name}
+                                  </a>
+                                </li>
+                              );
+                            },
                           )}
                         </motion.ul>
                       )}
@@ -129,18 +136,17 @@ const Footer = () => {
                     <ul className="space-y-4">
                       {footerLinks[section as keyof typeof footerLinks].map(
                         (link, index: number) => (
-                          <motion.li key={index} variants={itemVariants}>
+                          <li key={index}>
                             <a
-                              key={link.name}
                               href={link.url}
-                              className="flex items-center text-sm text-muted-foreground hover:underline"
+                              className="text-grey-medium hover:text-grey transition-colors flex items-center h5-regular-16"
                             >
-                              {link.icon && (
-                                <link.icon className="mr-2 w-4 h-4" />
+                              {"icon" in link && link.icon && (
+                                <link.icon className="mr-2" />
                               )}
                               {link.name}
                             </a>
-                          </motion.li>
+                          </li>
                         ),
                       )}
                     </ul>
@@ -152,40 +158,42 @@ const Footer = () => {
         </div>
 
         {/* Bottom */}
-        <div className="bg-primary text-white flex flex-col md:flex-row justify-between items-center gap-4 px-4 md:px-40 py-6">
-          {/* Copyright */}
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="h5-bold-16"
-          >
-            &copy; {currentYear} Assistant Tech. All Rights Reserved.
-          </motion.p>
+        <div className="bg-primary text-white">
+          <div className="max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4 py-6">
+            {/* Copyright */}
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="h5-bold-16"
+            >
+              &copy; {currentYear} Assistant Tech. All Rights Reserved.
+            </motion.p>
 
-          {/* Social */}
-          <motion.ul
-            initial="hidden"
-            animate="visible"
-            variants={containerVariants}
-            className="flex gap-6"
-          >
-            {SocialFooter.map((item, index) => (
-              <motion.li
-                key={index}
-                variants={itemVariants}
-                whileHover={{ scale: 1.2, rotate: 10 }}
-              >
-                <a href={item.href} aria-label={item.name}>
-                  <img
-                    src={item.src}
-                    alt={`${item.name} icon`}
-                    className="w-6 h-6 "
-                  />
-                </a>
-              </motion.li>
-            ))}
-          </motion.ul>
+            {/* Social */}
+            <motion.ul
+              initial="hidden"
+              animate="visible"
+              variants={containerVariants}
+              className="flex gap-6"
+            >
+              {SocialFooter.map((item, index) => (
+                <motion.li
+                  key={index}
+                  variants={itemVariants}
+                  whileHover={{ scale: 1.2, rotate: 10 }}
+                >
+                  <a href={item.href} aria-label={item.name}>
+                    <img
+                      src={item.src}
+                      alt={`${item.name} icon`}
+                      className="w-6 h-6 "
+                    />
+                  </a>
+                </motion.li>
+              ))}
+            </motion.ul>
+          </div>
         </div>
       </div>
     </footer>

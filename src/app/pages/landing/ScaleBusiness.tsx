@@ -6,6 +6,34 @@ import { scaleFeature } from "@/app/utils/utils";
 import { cn } from "@/app/utils/cn";
 
 const ScaleBusiness: React.FC = () => {
+  // Image Slider
+  const sliderImage = [
+    {
+      name: "Scale",
+      img: "https://res.cloudinary.com/demo/image/upload/v1616784721/cld-sample-3.jpg",
+    },
+    {
+      name: "Scale",
+      img: "https://res.cloudinary.com/demo/image/upload/w_800/sample.jpg",
+    },
+    {
+      name: "Scale",
+      img: "https://res.cloudinary.com/demo/image/upload/v1616784721/cld-sample-4.jpg",
+    },
+    {
+      name: "Scale",
+      img: "https://res.cloudinary.com/demo/image/upload/w_800/sample.jpg",
+    },
+    {
+      name: "Scale",
+      img: "https://res.cloudinary.com/demo/image/upload/v1616784721/cld-sample-3.jpg",
+    },
+    {
+      name: "Scale",
+      img: "https://res.cloudinary.com/demo/image/upload/v1616784721/cld-sample-4.jpg",
+    },
+  ];
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -30,12 +58,12 @@ const ScaleBusiness: React.FC = () => {
     <div className="pt-20">
       <div className="w-full">
         <motion.div
-          className="flex flex-col lg:flex-row items-center lg:items-start justify-between gap-10 lg:gap-16"
+          className="flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-16"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
-          {/* Left Section - Text and Features */}
+          {/* Left Section */}
           <motion.div
             className="space-y-5 w-full lg:max-w-xl text-center lg:text-left"
             variants={itemVariants}
@@ -89,16 +117,16 @@ const ScaleBusiness: React.FC = () => {
             </motion.div>
           </motion.div>
 
-          {/* Right Section - Animated Illustration */}
+          {/* Right Section - Scrolling Images */}
           <motion.div
-            className="relative h-[300px] sm:h-[400px] lg:h-[500px] w-full max-w-md"
+            className="relative h-[300px] sm:h-[400px] lg:h-[60vh] w-full max-w-1/2 overflow-hidden rounded-2xl"
             variants={itemVariants}
           >
-            {/* Floating Shopping Bag */}
+            {/* Floating Icons */}
             <motion.div
-              className="absolute top-0 left-0 w-16 h-16 bg-gradient-to-br from-secondary to-secondary-light rounded-xl shadow-lg flex items-center justify-center z-10"
+              className="absolute top-4 left-4 w-12 h-12 bg-gradient-to-br from-secondary to-secondary-light rounded-xl shadow-lg flex items-center justify-center z-20"
               animate={{
-                y: [0, -10, 0],
+                y: [0, -8, 0],
                 rotate: [0, 5, 0],
               }}
               transition={{
@@ -107,14 +135,13 @@ const ScaleBusiness: React.FC = () => {
                 ease: "easeInOut",
               }}
             >
-              <ShoppingBag className="w-8 h-8 text-white" />
+              <ShoppingBag className="w-6 h-6 text-white" />
             </motion.div>
 
-            {/* Floating Credit Card */}
             <motion.div
-              className="absolute bottom-0 right-0 w-12 h-12 bg-gradient-to-br from-primary to-primary-light rounded-lg shadow-lg flex items-center justify-center z-10"
+              className="absolute bottom-4 right-4 w-10 h-10 bg-gradient-to-br from-primary to-primary-light rounded-lg shadow-lg flex items-center justify-center z-20"
               animate={{
-                y: [0, 10, 0],
+                y: [0, 8, 0],
                 rotate: [0, -5, 0],
               }}
               transition={{
@@ -124,18 +151,38 @@ const ScaleBusiness: React.FC = () => {
                 delay: 1,
               }}
             >
-              <CreditCard className="w-6 h-6 text-white" />
+              <CreditCard className="w-5 h-5 text-white" />
             </motion.div>
 
-            {/* Placeholder Image */}
-            <motion.figure
-              className="w-full h-full bg-gray-100 border border-dashed border-gray-300 rounded-xl flex items-center justify-center"
-              variants={itemVariants}
+            {/* Gradient Overlays */}
+            <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
+            <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
+
+            {/* Scrolling Images */}
+            <motion.div
+              className="flex flex-col gap-4"
+              animate={{ y: [0, -800] }}
+              transition={{
+                duration: 20,
+                repeat: Infinity,
+                ease: "linear",
+                repeatType: "loop",
+              }}
+              style={{ height: "200%" }}
             >
-              <span className="text-gray-400 text-sm text-center px-2">
-                Insert Illustration or Dashboard Image
-              </span>
-            </motion.figure>
+              {sliderImage.map((item, index) => (
+                <div
+                  key={index}
+                  className="mx-4 h-[264px] bg-white rounded-xl shadow-md flex items-center justify-center overflow-hidden"
+                >
+                  <img
+                    src={item.img}
+                    alt={item.name}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+              ))}
+            </motion.div>
           </motion.div>
         </motion.div>
       </div>
