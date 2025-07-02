@@ -18,7 +18,6 @@ const Navbar = ({ offsetTop = false }: { offsetTop?: boolean }) => {
   const isScrolled = useScrollEffect(50);
 
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
-  const closeMobileMenu = () => setMobileMenuOpen(false);
 
   const navbarStyles = {
     default: "bg-white border-b border-transparent",
@@ -72,7 +71,7 @@ const Navbar = ({ offsetTop = false }: { offsetTop?: boolean }) => {
         </div>
       </div>
 
-      <MobileMenu isOpen={mobileMenuOpen} onClose={closeMobileMenu} />
+      <MobileMenu isOpen={mobileMenuOpen} />
     </header>
   );
 };

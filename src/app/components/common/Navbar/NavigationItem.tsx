@@ -11,7 +11,7 @@ interface NavigationItemProps {
       name: string;
       href: string;
       description?: string;
-      icon?: React.ComponentType<{ className?: string }>;
+      icon?: string;
     }>;
   };
   isActive: boolean;
@@ -64,7 +64,10 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
 
       <AnimatePresence>
         {item.dropdown && activeDropdown === item.name && (
-          <DropdownMenu items={item} isVisible={activeDropdown === item.name} />
+          <DropdownMenu
+            items={{ name: item.name, dropdown: item.dropdown }}
+            isVisible={activeDropdown === item.name}
+          />
         )}
       </AnimatePresence>
     </div>

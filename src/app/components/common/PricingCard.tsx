@@ -26,7 +26,7 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
   };
 
   const getFeaturesList = (
-    features: Record<string, any> | string[],
+    features: Record<string, string> | string[],
   ): string[] => {
     if (Array.isArray(features)) return features;
 

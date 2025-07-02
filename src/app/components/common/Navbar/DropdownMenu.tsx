@@ -15,7 +15,7 @@ interface DropdownItem {
 interface DropdownMenuProps {
   items: {
     name: string;
-    dropdown?: DropdownItem[];
+    dropdown: DropdownItem[];
   };
   isVisible: boolean;
 }
