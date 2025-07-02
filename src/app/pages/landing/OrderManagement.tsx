@@ -1,110 +1,121 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/autoplay";
-
 import { Badge, Button } from "@/app/components/ui";
 import crm from "@/app/assets/images/crm.webp";
 
+// You can replace these with actual different images
+const images = [crm, crm, crm];
 const steps = ["Create your order", "Dispatch your order", "Track your order"];
 
 const OrderManagement: React.FC = () => {
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % images.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <div className="bg-white pt-20">
-      <div className="grid lg:grid-cols-2 gap-8 lg:gap-48 items-center">
-        {/* Left Section - Image Slider with Timeline */}
-        <figure className="space-y-8 order-2 lg:order-1 w-full relative max-w-lg">
-          {/* Timeline Bar with Progress */}
-          <div className="relative mb-6">
-            <div className="flex justify-between items-center w-full">
-              {steps.map((step, index) => (
+    <div className="bg-white pt-20 overflow-hidden">
+      <div className="grid lg:grid-cols-2 gap-8 lg:gap-72 items-center">
+        {/* Left Section - Image Slider and Timeline */}
+        <div className="order-2 lg:order-1 w-full space-y-8 relative">
+          {/* Timeline */}
+          <div className="flex justify-between items-center w-full mb-6">
+            {steps.map((step, index) => (
+              <div
+                key={index}
+                className="flex flex-col items-center w-full relative"
+              >
                 <div
-                  key={index}
-                  className="flex flex-col items-center w-full relative"
+                  className={`w-4 h-4 rounded-full z-10 ${
+                    index <= activeIndex ? "bg-primary" : "bg-grey-light"
+                  }`}
+                />
+                <p
+                  className={`h5-bold-16 mt-2 text-center ${
+                    index === activeIndex
+                      ? "text-primary font-medium"
+                      : "text-grey-light"
+                  }`}
                 >
-                  {/* Dot */}
-                  <div
-                    className={`w-4 h-4 rounded-full z-10 ${index <= activeStep ? "bg-blue-600" : "bg-gray-300"}`}
-                  />
-                  <p
-                    className={`text-xs mt-2 text-center ${index === activeStep ? "text-blue-600 font-medium" : "text-gray-500"}`}
-                  >
-                    {step}
-                  </p>
-                  {/* Connecting line */}
-                  {index < steps.length - 1 && (
-                    <div className="absolute top-2 left-1/2 w-full h-0.5 bg-gray-200 z-0">
-                      <motion.div
-                        initial={false}
-                        animate={{
-                          width: activeStep > index ? "100%" : "0%",
-                        }}
-                        transition={{ duration: 0.5 }}
-                        className="h-full bg-blue-600 origin-left"
-                      />
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+                  {step}
+                </p>
+                {index < steps.length - 1 && (
+                  <div className="absolute top-2 left-1/2 w-full h-0.5 bg-grey-light z-0">
+                    <motion.div
+                      initial={false}
+                      animate={{
+                        width: activeIndex > index ? "100%" : "0%",
+                      }}
+                      transition={{ duration: 0.5 }}
+                      className="h-full bg-primary origin-left"
+                    />
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
 
-          {/* Swiper Slider with overlapping effect */}
-          <div className="relative overflow-visible h-96">
-            <Swiper
-              modules={[Autoplay]}
-              spaceBetween={-180}
-              slidesPerView={2.5}
-              centeredSlides={true}
-              loop={true}
-              autoplay={{ delay: 3000, disableOnInteraction: false }}
-              onSlideChange={(swiper) => setActiveStep(swiper.realIndex)}
-              className="w-full h-full"
-            >
-              {[1, 2, 3].map((i) => (
-                <SwiperSlide key={i}>
-                  {({ isActive, isNext, isPrev }) => (
-                    <div
-                      className={`relative w-full h-96 transition-all duration-500 ${
-                        isActive
-                          ? "z-50 scale-100 opacity-100"
-                          : isNext || isPrev
-                            ? "z-20 scale-90 opacity-60"
-                            : "z-10 scale-80 opacity-40"
-                      }`}
-                      style={{
-                        transform: isActive
-                          ? "translateX(0px) scale(1)"
-                          : isNext
-                            ? "translateX(-30px) scale(0.9)"
-                            : isPrev
-                              ? "translateX(30px) scale(0.9)"
-                              : "scale(0.8)",
-                      }}
-                    >
-                      <img
-                        src={crm}
-                        alt={`Order step ${i}`}
-                        className="rounded-xl shadow-lg w-full h-full object-cover transition-all duration-500"
-                      />
-                      {/* Overlay for non-active slides */}
-                      {!isActive && (
-                        <div className="absolute inset-0 rounded-xl bg-black opacity-20 transition-all duration-500 pointer-events-none" />
-                      )}
-                    </div>
-                  )}
-                </SwiperSlide>
-              ))}
-            </Swiper>
+          {/* Image Gallery - Overlapping Layout */}
+          <div className="relative h-[450px] w-full flex justify-start items-center pl-8">
+            {images.map((img, index) => {
+              // Calculate position based on active index
+              const position =
+                (index - activeIndex + images.length) % images.length;
+              let translateX = 0;
+              let zIndex = 10;
+              let scale = 0.9;
+              let opacity = 0.6;
+
+              if (position === 0) {
+                // Active image - front and left
+                translateX = 0;
+                zIndex = 30;
+                scale = 1;
+                opacity = 1;
+              } else if (position === 1) {
+                // Next image - middle
+                translateX = 120; // increased from 80
+                zIndex = 20;
+                scale = 0.9;
+                opacity = 0.7;
+              } else if (position === 2) {
+                // Third image - right side
+                translateX = 200; // increased from 140
+                zIndex = 10;
+                scale = 0.8;
+                opacity = 0.5;
+              }
+
+              return (
+                <motion.div
+                  key={index}
+                  className="absolute w-full h-full rounded-xl overflow-hidden shadow-lg bg-white"
+                  animate={{
+                    x: translateX,
+                    scale: scale,
+                    opacity: opacity,
+                    zIndex: zIndex,
+                  }}
+                  transition={{ duration: 0.7, ease: "easeInOut" }}
+                  style={{ zIndex }}
+                >
+                  <img
+                    src={img}
+                    alt={`Step ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                </motion.div>
+              );
+            })}
           </div>
-        </figure>
+        </div>
 
         {/* Right Section - CTA */}
-        <div className="order-1 lg:order-2">
+        <div className="order-1 lg:order-2 w-full">
           <Badge title="MANAGE YOUR ORDERS" />
           <motion.article className="w-full max-w-lg space-y-4">
             <h1 className="h2-bold-40 text-grey text-start pt-4">
