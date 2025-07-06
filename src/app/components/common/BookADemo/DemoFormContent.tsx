@@ -31,7 +31,6 @@ const DemoFormContent = ({
 
   const onSubmit = (data: DemoFormData) => {
     toast.success("Form Submitted Successfully");
-    console.log("Submitted:", data);
     reset();
     onClose?.();
   };
