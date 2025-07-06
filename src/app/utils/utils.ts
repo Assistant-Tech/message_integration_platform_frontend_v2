@@ -23,8 +23,8 @@ import faq from "@/app/assets/greenIcons/faq.svg";
 import support from "@/app/assets/greenIcons/support.svg";
 
 export interface DropdownItem {
-  name?: string;
-  href?: string;
+  name: string;
+  href: string;
   description?: string;
   icon?: string;
 }
@@ -36,6 +36,7 @@ export interface NavigationItem {
   dropdown?: DropdownItem[];
   icon?: string;
 }
+
 export const navigation: NavigationItem[] = [
   {
     id: 1,

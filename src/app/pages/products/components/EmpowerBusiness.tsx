@@ -15,7 +15,6 @@ const EmpowerBusiness = () => {
   const handleGetStarted = async () => {
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log("Starting trial with email:", email);
   };
 
   return (

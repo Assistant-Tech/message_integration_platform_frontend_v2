@@ -21,9 +21,6 @@ const RegisterForm = () => {
 
   const onSubmit: SubmitHandler<RegisterFormInputs> = async (data) => {
     try {
-      console.log("🚀 ~ constonSubmit: ~ data: ", data);
-      // Simulate API call
-
       await new Promise((res) => setTimeout(res, 1000));
       toast.success("Form Submitted Successfully");
     } catch (error) {

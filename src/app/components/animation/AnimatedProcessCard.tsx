@@ -13,7 +13,7 @@ const AnimatedProcessCard: React.FC<AnimatedProcessCardProps> = ({
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % processes.length);
-    }, 1500);
+    }, 15000);
 
     return () => clearInterval(interval);
   }, [processes.length]);

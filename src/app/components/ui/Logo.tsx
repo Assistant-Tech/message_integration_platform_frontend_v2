@@ -13,7 +13,7 @@ const Logo: React.FC<LogoProps> = ({ className = "" }) => (
     <figure className="flex justify-center items-center gap-2">
       <img
         src="https://res.cloudinary.com/dtoqwn0gx/image/upload/v1751347733/Chatblix_Logo_xtkjmp.png"
-        className="h-10 w-48 lg:w-52"
+        className="w-36 md:w-48 lg:w-52"
         alt="Assistant Tech Logo"
       />
     </figure>

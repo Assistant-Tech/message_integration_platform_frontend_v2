@@ -15,7 +15,6 @@ interface PricingCardProps {
 }
 
 const PricingCard = ({ plan, duration }: PricingCardProps) => {
-  // console.log("🚀 ~ PricingCard ~ plan:", plan);
 
   const formatTitle = (rawTitle?: string): string => {
     if (!rawTitle) return "";
