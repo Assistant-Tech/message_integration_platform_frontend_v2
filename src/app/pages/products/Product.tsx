@@ -3,7 +3,7 @@ import { Agreement, Button } from "@/app/components/ui";
 import crm from "@/app/assets/images/crm.webp";
 import ProductGrid from "./ProductGrid";
 import { GetStarted, Pricing } from "@/app/pages/landing/";
-import { FrequentlyAskedQuestion } from "@/app/components/common";
+import { FAQ } from "@/app/components/common";
 
 const Product = () => {
   const containerVariants = {
@@ -128,7 +128,7 @@ const Product = () => {
 
       {/* FAQ */}
       <div className="px-4 sm:px-8 md:px-12 lg:px-20 py-16">
-        <FrequentlyAskedQuestion />
+        <FAQ variant="default" />
       </div>
     </div>
   );

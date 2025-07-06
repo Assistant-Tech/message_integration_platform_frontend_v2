@@ -63,6 +63,7 @@ const ScaleBusiness: React.FC = () => {
           initial="hidden"
           animate="visible"
         >
+          
           {/* Left Section */}
           <motion.div
             className="space-y-5 w-full lg:max-w-xl text-center lg:text-left"
@@ -184,6 +185,7 @@ const ScaleBusiness: React.FC = () => {
               ))}
             </motion.div>
           </motion.div>
+
         </motion.div>
       </div>
     </div>

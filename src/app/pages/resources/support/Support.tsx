@@ -8,7 +8,7 @@ import { APP_ROUTES } from "@/app/constants/routes";
 import { smartCards } from "@/app/utils/resource/utils";
 import { GetStarted } from "@/app/pages/landing/";
 import support from "@/app/assets/images/support.webp";
-import { FrequentlyAskedQuestion, NewsLetter } from "@/app/components/common";
+import { FAQ, NewsLetter } from "@/app/components/common";
 
 const Support = () => {
   const SupportCrumb = [
@@ -132,7 +132,7 @@ const Support = () => {
       </motion.div>
 
       {/* FAQ's Section  */}
-      <FrequentlyAskedQuestion />
+      <FAQ variant="default" />
       {/* Newsletter */}
       <div className="pb-12">
         <NewsLetter />

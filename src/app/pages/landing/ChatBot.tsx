@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Box, Flex } from "@radix-ui/themes";
-import { AnimatedProcessCard } from "@/app/components/animations/";
+import { AnimatedProcessCard } from "@/app/components/animation";
 import createbot from "@/app/assets/images/createbot.webp";
 import { Badge, Button } from "@/app/components/ui";
 

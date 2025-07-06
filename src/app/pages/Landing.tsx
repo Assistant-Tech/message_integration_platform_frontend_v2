@@ -1,12 +1,12 @@
-import "@radix-ui/themes/styles.css";
 import { Theme } from "@radix-ui/themes";
-import { useState, Suspense, lazy } from "react";
+import { Suspense, lazy } from "react";
 
 import {
   Footer,
+  NewsLetterModalPopUp,
+  AnnoucementBanner,
   Navbar,
-  PopupModal,
-  TrialBanner,
+  FAQ,
 } from "@/app/components/common";
 import {
   BuiltAssistant,
@@ -15,26 +15,27 @@ import {
   MainFeature,
   ScaleBusiness,
   Pricing,
-  FAQ,
   OrderManagement,
 } from "@/app/pages/landing/index";
 import Section from "@/app/components/layout/Section";
+import { useBanner } from "@/app/context/BannerContext";
+import { useWindowSize } from "react-use";
 
-// Lazy-load large components
 const ChatBot = lazy(() => import("@/app/pages/landing/ChatBot"));
 const Testimonials = lazy(() => import("@/app/pages/landing/Testimonials"));
 
-const Landing = () => {
-  const [isBannerVisible, setIsBannerVisible] = useState(true);
+// const BANNER_HEIGHT = 68;
+
+const LandingContent = () => {
+  const { bannerVisible } = useBanner();
+  const { width } = useWindowSize();
+
+  const BANNER_HEIGHT = width < 768 ? 78 : 50;
 
   const sections = [
-    // Popup Modal
-    { element: <PopupModal /> },
-    // Hero Section
+    { element: <NewsLetterModalPopUp /> },
     { element: <HeroSection /> },
-    // Main Feature
     { element: <MainFeature /> },
-    // Chatbot with fallbacks
     {
       element: (
         <Suspense fallback={<div>Loading...</div>}>
@@ -42,15 +43,10 @@ const Landing = () => {
         </Suspense>
       ),
     },
-    // Get Started
     { element: <GetStarted />, useContainer: false },
-    // Scale Your Business
     { element: <ScaleBusiness /> },
-    // Built Assistant
     { element: <BuiltAssistant /> },
-    //Order Mangement
     { element: <OrderManagement /> },
-    //Testimonials
     {
       element: (
         <Suspense fallback={<div>Loading testimonials...</div>}>
@@ -59,26 +55,44 @@ const Landing = () => {
       ),
       useContainer: false,
     },
-    // Pricing
     { element: <Pricing /> },
-    // Faq
-    { element: <FAQ /> },
-    // Footer
+    { element: <FAQ variant="landing" /> },
     { element: <Footer />, useContainer: false },
   ];
 
   return (
+    <>
+      {bannerVisible && (
+        <div
+          className="fixed top-0 left-0 right-0 z-[60] transition-all duration-500 ease-in-out"
+          style={{ height: BANNER_HEIGHT }}
+        >
+          <AnnoucementBanner>
+            <h1>
+              🚀 Start your free trial today and enjoy 20% off the starter plan!
+              Don't miss out on this limited time offer.{" "}
+              <span className="underline cursor-pointer">Learn More</span>
+            </h1>
+          </AnnoucementBanner>
+        </div>
+      )}
+
+      <Navbar offsetTop={bannerVisible ? BANNER_HEIGHT : 0} />
+
+      {sections.map(({ element, useContainer = true }, idx) => (
+        <Section key={idx} useContainer={useContainer}>
+          {element}
+        </Section>
+      ))}
+    </>
+  );
+};
+
+const Landing = () => {
+  return (
     <div className="min-h-screen">
       <Theme>
-        {/* Trial banner or Ads Type Section */}
-        <TrialBanner onClose={() => setIsBannerVisible(false)} />
-        {/* Navbar */}
-        <Navbar offsetTop={isBannerVisible} />
-        {sections.map(({ element, useContainer = true }, idx) => (
-          <Section key={idx} useContainer={useContainer}>
-            {element}
-          </Section>
-        ))}
+        <LandingContent />
       </Theme>
     </div>
   );

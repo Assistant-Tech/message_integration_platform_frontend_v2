@@ -2,111 +2,125 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Badge, Button } from "@/app/components/ui";
 import crm from "@/app/assets/images/crm.webp";
+import CRM from "@/app/assets/images/CRM1.webp";
+import support from "@/app/assets/images/support.webp";
 
-// You can replace these with actual different images
-const images = [crm, crm, crm];
+const images = [crm, support, CRM];
 const steps = ["Create your order", "Dispatch your order", "Track your order"];
 
 const OrderManagement: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [prevIndex, setPrevIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
+      setPrevIndex(activeIndex);
       setActiveIndex((prev) => (prev + 1) % images.length);
     }, 3000);
     return () => clearInterval(interval);
-  }, []);
+  }, [activeIndex]);
 
   return (
     <div className="bg-white pt-20 overflow-hidden">
-      <div className="grid lg:grid-cols-2 gap-8 lg:gap-72 items-center">
-        {/* Left Section - Image Slider and Timeline */}
-        <div className="order-2 lg:order-1 w-full space-y-8 relative">
-          {/* Timeline */}
-          <div className="flex justify-between items-center w-full mb-6">
-            {steps.map((step, index) => (
-              <div
-                key={index}
-                className="flex flex-col items-center w-full relative"
-              >
+      <div className="grid lg:grid-cols-2 gap-12 lg:gap-28 items-center px-4 lg:px-0">
+        {/* Left Section */}
+        <div className="order-2 lg:order-1 w-full space-y-4 ">
+          {/* Step Timeline */}
+          <div className="flex justify-between items-center relative w-full">
+            {steps.map((step, index) => {
+              const isActive = index === activeIndex;
+              const isDone =
+                index < activeIndex ||
+                (activeIndex === 0 && prevIndex === steps.length - 1);
+
+              return (
                 <div
-                  className={`w-4 h-4 rounded-full z-10 ${
-                    index <= activeIndex ? "bg-primary" : "bg-grey-light"
-                  }`}
-                />
-                <p
-                  className={`h5-bold-16 mt-2 text-center ${
-                    index === activeIndex
-                      ? "text-primary font-medium"
-                      : "text-grey-light"
-                  }`}
+                  key={index}
+                  className="flex flex-col items-center w-full relative"
                 >
-                  {step}
-                </p>
-                {index < steps.length - 1 && (
-                  <div className="absolute top-2 left-1/2 w-full h-0.5 bg-grey-light z-0">
-                    <motion.div
-                      initial={false}
-                      animate={{
-                        width: activeIndex > index ? "100%" : "0%",
-                      }}
-                      transition={{ duration: 0.5 }}
-                      className="h-full bg-primary origin-left"
-                    />
-                  </div>
-                )}
-              </div>
-            ))}
+                  {/* Dot */}
+                  <motion.div
+                    animate={{
+                      backgroundColor:
+                        isDone || isActive ? "#1cb496" : "#e3e3e3",
+                      scale: isActive ? 1.5 : 1,
+                    }}
+                    transition={{ duration: 0.3 }}
+                    className="w-4 h-4 rounded-full z-10"
+                  />
+
+                  {/* Label */}
+                  <motion.p
+                    className={`mt-2 text-sm text-center font-medium ${
+                      isActive ? "text-primary" : "text-grey-medium"
+                    }`}
+                  >
+                    {step}
+                  </motion.p>
+
+                  {/* Connecting Line */}
+                  {index < steps.length - 1 && (
+                    <div className="absolute top-2 left-1/2 w-full h-0.5 bg-grey-light z-0 overflow-hidden">
+                      <motion.div
+                        key={`${activeIndex === 0 && prevIndex === steps.length - 1 ? "reset" : "progress"}-${index}`}
+                        initial={{ width: 0 }}
+                        animate={{
+                          width: isDone ? "100%" : "0%",
+                        }}
+                        transition={{
+                          duration:
+                            activeIndex === 0 && prevIndex === steps.length - 1
+                              ? 0
+                              : 0.5,
+                        }}
+                        className="h-full bg-primary origin-left"
+                      />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
 
-          {/* Image Gallery - Overlapping Layout */}
-          <div className="relative h-[450px] w-full flex justify-start items-center pl-8">
+          {/* Image Gallery */}
+          <div className="relative h-[550px] w-full flex justify-center items-center">
             {images.map((img, index) => {
-              // Calculate position based on active index
               const position =
                 (index - activeIndex + images.length) % images.length;
-              let translateX = 0;
-              let zIndex = 10;
-              let scale = 0.9;
-              let opacity = 0.6;
+
+              let x = 0,
+                scale = 0.9,
+                zIndex = 10,
+                opacity = 0.3;
 
               if (position === 0) {
-                // Active image - front and left
-                translateX = 0;
-                zIndex = 30;
-                scale = 1;
-                opacity = 1;
-              } else if (position === 1) {
-                // Next image - middle
-                translateX = 120; // increased from 80
-                zIndex = 20;
+                x = -160;
                 scale = 0.9;
-                opacity = 0.7;
+                zIndex = 5;
+              } else if (position === 1) {
+                x = 0;
+                scale = 1;
+                zIndex = 30;
+                opacity = 1;
               } else if (position === 2) {
-                // Third image - right side
-                translateX = 200; // increased from 140
-                zIndex = 10;
+                x = 160;
                 scale = 0.8;
-                opacity = 0.5;
+                zIndex = 5;
+              } else {
+                return null;
               }
-
               return (
                 <motion.div
                   key={index}
-                  className="absolute w-full h-full rounded-xl overflow-hidden shadow-lg bg-white"
-                  animate={{
-                    x: translateX,
-                    scale: scale,
-                    opacity: opacity,
-                    zIndex: zIndex,
-                  }}
-                  transition={{ duration: 0.7, ease: "easeInOut" }}
+                  className="absolute w-[400px] h-[400px] rounded-xl overflow-hidden shadow-lg"
+                  animate={{ x, scale, opacity, zIndex }}
+                  transition={{ duration: 0.6, ease: "easeInOut" }}
                   style={{ zIndex }}
                 >
                   <img
                     src={img}
-                    alt={`Step ${index + 1}`}
-                    className="w-full h-full object-cover"
+                    alt={`Order Step ${index + 1}`}
+                    className="w-full h-full object-cover rounded-xl"
                   />
                 </motion.div>
               );
@@ -114,24 +128,29 @@ const OrderManagement: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Section - CTA */}
-        <div className="order-1 lg:order-2 w-full">
+        {/* Right Section */}
+        <div className="order-1 lg:order-2 w-full max-w-4xl text-center md:text-start max-h-72">
           <Badge title="MANAGE YOUR ORDERS" />
-          <motion.article className="w-full max-w-lg space-y-4">
-            <h1 className="h2-bold-40 text-grey text-start pt-4">
+          <motion.article className="space-y-6 pt-4">
+            <h1 className="h2-bold-40 text-grey">
               Track and Manage Your Orders
             </h1>
             <p className="h4-regular-24 text-grey-medium">
-              Track and manage all your orders with the help of our Order
-              Management features. View stats and insights for all your orders
-              easily.
+              Stay on top of your operations with our intuitive order management
+              tools. Monitor, track, and streamline your order lifecycle
+              effortlessly.
             </p>
-            <div className="flex justify-start items-start gap-4">
-              <Button label="Start Free Trial" variant="primary" />
+            <div className="flex gap-4 pt-2 justify-center items-center lg:justify-start lg:items-start">
               <Button
-                label="Book a demo"
+                label="Start Free Trial"
+                variant="primary"
+                className="px-3 py-2"
+              />
+              <Button
+                label="Book a Demo"
                 variant="outlined"
                 redirectTo="/demo"
+                className="px-3 py-2"
               />
             </div>
           </motion.article>
