@@ -8,13 +8,12 @@ import Section from "@/app/components/layout/Section";
 
 import { PricingPlansTable } from "@/app/pages/pricing/components";
 
-// Lazy loaded
 const GetStarted = lazy(() => import("@/app/pages/landing/GetStarted"));
 const Pricing = lazy(() => import("@/app/pages/landing/Pricing"));
 
 const PricingPage = () => {
   const containerVariants = {
-    hidden: { opacity: 0 },
+    hidden: { opacity: 0 }, 
     visible: {
       opacity: 1,
       transition: {

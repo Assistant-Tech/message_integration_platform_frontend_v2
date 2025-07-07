@@ -2,7 +2,6 @@ import { useAuthStore } from "@/app/store/useAuthStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { LoginRequest, RegisterRequest, LoginResponse } from "@/app/types/auth";
 
-// API functions (replace with your actual API calls)
 const authAPI = {
   login: async (credentials: LoginRequest): Promise<LoginResponse> => {
     const response = await fetch("/api/auth/login", {
