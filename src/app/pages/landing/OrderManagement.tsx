@@ -91,7 +91,7 @@ const OrderManagement: React.FC = () => {
               let x = 0,
                 scale = 0.9,
                 zIndex = 10,
-                opacity = 0.3;
+                opacity = 0.5;
 
               if (position === 0) {
                 x = -160;
@@ -109,6 +109,7 @@ const OrderManagement: React.FC = () => {
               } else {
                 return null;
               }
+
               return (
                 <motion.div
                   key={index}
@@ -117,11 +118,17 @@ const OrderManagement: React.FC = () => {
                   transition={{ duration: 0.6, ease: "easeInOut" }}
                   style={{ zIndex }}
                 >
+                  {/* Image */}
                   <img
                     src={img}
                     alt={`Order Step ${index + 1}`}
                     className="w-full h-full object-cover rounded-xl"
                   />
+
+                  {/* Overlay only if not active */}
+                  {position !== 1 && (
+                    <div className="absolute inset-0 bg-black/55 rounded-xl pointer-events-none" />
+                  )}
                 </motion.div>
               );
             })}

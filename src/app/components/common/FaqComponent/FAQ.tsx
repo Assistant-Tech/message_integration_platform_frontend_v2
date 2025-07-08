@@ -30,7 +30,7 @@ const FAQ: React.FC<FAQProps> = ({ variant = "landing" }) => {
                 width={{ initial: "100%", lg: "50%" }}
                 className="px-6 sm:px-10 lg:px-16"
               >
-                <div className="space-y-4 max-w-xl mx-auto lg:mx-0 text-center lg:text-left">
+                <div className="space-y-4 max-w-xl mx-auto lg:mx-0 text-center lg:text-left pt-4">
                   <Badge title="YOU ASK, WE ANSWER" />
                   <h2 className="h2-bold-40 text-grey">
                     Frequently Asked Questions
