@@ -35,7 +35,7 @@ const ChatBot: React.FC = () => {
   ];
 
   return (
-    <Box className="pt-20 pb-4" id="chatbot">
+    <Box className="pt-20 mb-20" id="chatbot">
       <motion.div
         className="w-full"
         variants={containerVariants}
