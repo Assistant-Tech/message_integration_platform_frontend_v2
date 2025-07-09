@@ -6,6 +6,7 @@ import { Agreement, Input } from "@/app/components/ui";
 import { Button } from "@/app/components/ui";
 import { benefits, features } from "@/app/utils/product/utils";
 import { cn } from "@/app/utils/cn";
+import { FeatureBadge } from "@/app/pages/products/components";
 
 import crm from "@/app/assets/images/crm.webp";
 
@@ -26,6 +27,7 @@ const EmpowerBusiness = () => {
         transition={{ duration: 0.6, delay: 0.2 }}
         className="space-y-4 sm:space-y-6 md:space-y-8 order-2 lg:order-1 max-w-2xl"
       >
+        <FeatureBadge text="AI-Powered CRM" />
         <div className="space-y-3 sm:space-y-4 md:space-y-6">
           <h1 className="h2-bold-40 text-base-black">
             Empowering Your Business with Assistant's

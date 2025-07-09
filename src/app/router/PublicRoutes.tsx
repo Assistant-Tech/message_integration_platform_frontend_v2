@@ -9,14 +9,17 @@ import {
   Policy,
   TermsCondition,
   Updates,
+  Product,
   Demo,
   AboutUs,
   PricingPage,
   FAQPage,
+  ChatbotPage,
+  UnifiedMessagePage,
+  BulkMessagingPage,
 } from "@/app/pages";
 import { APP_ROUTES } from "@/app/constants/routes";
 import { ProductLayout, ResourceLayout } from "@/app/components/layout";
-import Product from "../pages/products/Product";
 
 const PublicRoutes = () => {
   return (
@@ -35,6 +38,15 @@ const PublicRoutes = () => {
         />
 
         <Route path={APP_ROUTES.PUBLIC.CRM} element={<CRM />} />
+        <Route path={APP_ROUTES.PUBLIC.CHATBOT} element={<ChatbotPage />} />
+        <Route
+          path={APP_ROUTES.PUBLIC.UNIFIED_MESSAGE}
+          element={<UnifiedMessagePage />}
+        />
+        <Route
+          path={APP_ROUTES.PUBLIC.BULK_MESSAGING}
+          element={<BulkMessagingPage />}
+        />
       </Route>
 
       {/* Resources Routes */}
@@ -43,7 +55,7 @@ const PublicRoutes = () => {
         element={<ResourceLayout />}
       >
         {/* Blogs */}
-        
+
         {/* Videos */}
 
         {/* FAQ's */}

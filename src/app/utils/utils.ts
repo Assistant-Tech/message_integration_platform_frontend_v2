@@ -46,25 +46,25 @@ export const navigation: NavigationItem[] = [
     dropdown: [
       {
         name: "CRM",
-        href: "/products/crm",
+        href: APP_ROUTES.PUBLIC.CRM,
         description: "Customer relationship management",
         icon: crm,
       },
       {
         name: "Chatbot",
-        href: "/products/chatbot",
+        href: APP_ROUTES.PUBLIC.CHATBOT,
         description: "AI-powered customer support",
         icon: bot,
       },
       {
         name: "Unified Messaging",
-        href: "/products/crm",
+        href: APP_ROUTES.PUBLIC.UNIFIED_MESSAGE,
         description: "Vestibulum tempus imperdiet",
         icon: unified,
       },
       {
         name: "Bulk Messaging",
-        href: "/products/bulkmessage",
+        href: APP_ROUTES.PUBLIC.BULK_MESSAGING,
         description: "Vestibulum tempus imperdiet",
         icon: bulk,
       },
