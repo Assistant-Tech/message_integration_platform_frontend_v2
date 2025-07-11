@@ -15,7 +15,7 @@ import {
   TermsContent,
 } from "@/app/pages/resources/components";
 
-const TermsCondition: React.FC = () => {
+const Policy: React.FC = () => {
   const SupportCrumb = [
     { label: "Resources", href: APP_ROUTES.PUBLIC.RESOURCES_OVERVIEW },
     { label: "Support", href: APP_ROUTES.PUBLIC.SUPPORT },
@@ -98,4 +98,4 @@ const TermsCondition: React.FC = () => {
   );
 };
 
-export default TermsCondition;
+export default Policy;

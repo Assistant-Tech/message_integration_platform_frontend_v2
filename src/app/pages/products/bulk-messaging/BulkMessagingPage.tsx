@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { GetStarted, Pricing, SeemlessExperience } from "@/app/pages/landing/";
 import { APP_ROUTES } from "@/app/constants/routes";
 import {
-  LearnMoreCRM,
   SmartSolutions,
   BulkMessageHeader,
 } from "@/app/pages/products/components/";
@@ -39,7 +38,7 @@ const BulkMessagingPage: React.FC = () => {
         <ScaleYourBusiness />
 
         {/* LEARN MORE ABOUT CRM SECTION */}
-        <LearnMoreCRM />
+        {/* <LearnMoreCRM /> */}
 
         {/* GET STARTED */}
         <div className="relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] w-screen">
