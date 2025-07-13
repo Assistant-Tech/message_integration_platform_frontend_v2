@@ -2,7 +2,6 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Input, Agreement } from "@/app/components/ui";
 import { features } from "@/app/utils/product/utils";
-import { FeatureBadge } from "@/app/pages/products/components";
 import chatbot from "@/app/assets/video/chatbot.mp4";
 
 const stats = [
@@ -23,10 +22,8 @@ const ChatbotHeader = () => {
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
-            className="space-y-8"
+            className="space-y-8 max-w-xl"
           >
-            <FeatureBadge text="AI Chatbot Solutions" />
-
             <h1 className="h2-bold-40 text-base-black leading-tight">
               Transform Customer Service with
               <span className="text-primary block sm:inline sm:pl-2">

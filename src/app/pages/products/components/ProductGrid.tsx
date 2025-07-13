@@ -31,7 +31,7 @@ const ProductGrid = () => {
         variants={containerVariants}
         className="text-center"
       >
-        <Badge title="WHAT WE OFFER" className="my-6"/>
+        <Badge title="WHAT WE OFFER" className="my-6" />
         <motion.h2
           variants={itemVariants}
           className="h2-bold-40 mb-4 text-gray-900"
@@ -88,7 +88,7 @@ const ProductGrid = () => {
                     <img
                       src={group[1].img}
                       alt={`${group[0]?.title}.png`}
-                      className="w-full h-64 md:h-80 px-2 md:px-px px-2"
+                      className="w-full h-64 md:h-80 px-2 md:px-px"
                     />
                   )}
                   {group[2] && (

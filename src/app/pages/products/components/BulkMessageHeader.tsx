@@ -2,7 +2,6 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Input, Agreement } from "@/app/components/ui";
 import { features } from "@/app/utils/product/utils";
-import { FeatureBadge } from "@/app/pages/products/components";
 import bulkmessaging from "@/app/assets/images/bulk-messaging.webp";
 
 const stats = [
@@ -23,9 +22,8 @@ const BulkMessageHeader = () => {
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
-            className="space-y-8"
+            className="space-y-8 max-w-xl"
           >
-            <FeatureBadge text="Bulk Messaging Platform" />
 
             <h1 className="h2-bold-40 text-base-black leading-tight">
               Scale Your Outreach with

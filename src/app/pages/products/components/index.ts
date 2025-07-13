@@ -4,7 +4,6 @@ export { default as ScaleYourBusiness } from "./ScaleYourBusiness";
 export { default as EmpowerBusiness } from "./EmpowerBusiness";
 export { default as ProductGrid } from "./ProductGrid";
 export { default as ChatbotHeader } from "./ChatbotHeader";
-export { default as FeatureBadge } from "./FeatureBadge";
 export { default as UnifiedMessageHeader } from "./UnifiedMessageHeader";
 export { default as BulkMessageHeader } from "./BulkMessageHeader";
 export { default as ConversationalImpact } from "./ConversationalImpact";
