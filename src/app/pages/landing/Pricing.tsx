@@ -36,13 +36,13 @@ const Pricing = () => {
   }, [fetchedPlans]);
 
   const pricingOptions = [
-    { id: "MONTHLY", label: "Monthly", value: "MONTHLY" },
     {
       id: "YEARLY",
       label: "Bill Yearly",
       value: "YEARLY",
       extraLabel: "Save 10%",
     },
+    { id: "MONTHLY", label: "Monthly", value: "MONTHLY" },
   ];
 
   return (
@@ -78,10 +78,10 @@ const Pricing = () => {
                 <label
                   className={cn(
                     currency === cur ? "text-primary" : "text-base-black",
-                    "body-regular-16 cursor-pointer lowercase",
+                    "body-regular-16 cursor-pointer",
                   )}
                 >
-                  {cur === "NPR" ? "Nepal (रु)" : "USD ($)"}
+                  {cur === "NPR" ? "NPL (रु)" : "USD ($)"}
                 </label>
               </Flex>
             ))}
@@ -93,7 +93,7 @@ const Pricing = () => {
         {isLoading ? (
           <div className="text-center py-10">Loading plans...</div>
         ) : isError ? (
-          <div className="text-center py-10 text-red-500">
+          <div className="text-center py-10 text-danger">
             Failed to load plans.
           </div>
         ) : (
@@ -158,7 +158,6 @@ const Pricing = () => {
                       )}
                     >
                       {plan.price}
-                      /month
                     </div>
 
                     <Button

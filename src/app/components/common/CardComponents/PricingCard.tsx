@@ -65,7 +65,7 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
         "relative rounded-2xl p-6 sm:p-8 transition-all duration-300 w-full h-full",
         plan.isPopular
           ? "bg-primary text-white transform scale-105 shadow-2xl shadow-primary/25 border-2 border-primary-light z-10 overflow-hidden"
-          : "bg-white border-2 border-grey-light shadow-lg hover:shadow-xl",
+          : "bg-white border-2 border-grey-light",
         "min-w-[280px] max-w-sm md:max-w-full flex-shrink-0",
       )}
       style={
@@ -122,7 +122,9 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
             )}
           >
             {displayPrice}
-            {plan.amount !== 0 && <span className="ps-2">/{duration}</span>}
+            {plan.amount !== 0 && (
+              <span className="h5-regular-16 ps-px">/{duration}</span>
+            )}
           </div>
           <Button
             className={cn(
@@ -154,7 +156,7 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
                 "w-5 h-5 mt-0.5 flex-shrink-0",
                 plan.isPopular
                   ? "text-primary-light drop-shadow-sm"
-                  : "text-primary",
+                  : "text-grey-medium",
               )}
             />
             <span

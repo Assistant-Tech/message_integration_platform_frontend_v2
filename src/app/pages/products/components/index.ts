@@ -8,3 +8,4 @@ export { default as FeatureBadge } from "./FeatureBadge";
 export { default as UnifiedMessageHeader } from "./UnifiedMessageHeader";
 export { default as BulkMessageHeader } from "./BulkMessageHeader";
 export { default as ConversationalImpact } from "./ConversationalImpact";
+export { default as MessageIntegrationShowcase } from "./MessageIntegrationShowcase";

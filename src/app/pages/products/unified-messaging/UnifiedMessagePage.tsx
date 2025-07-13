@@ -5,6 +5,7 @@ import { GetStarted, Pricing, SeemlessExperience } from "@/app/pages/landing/";
 import { APP_ROUTES } from "@/app/constants/routes";
 import {
   SmartSolutions,
+  MessageIntegrationShowcase,
   UnifiedMessageHeader,
 } from "@/app/pages/products/components/";
 import ScaleYourBusiness from "../components/ScaleYourBusiness";
@@ -33,8 +34,10 @@ const UnifiedMessagePage: React.FC = () => {
         {/* Chatbot Header */}
         <UnifiedMessageHeader />
 
-        {/* SCALE YOUR BUSINESS SECTION */}
+        {/* UnifedMesasgeFeature */}
+        <MessageIntegrationShowcase />
 
+        {/* SCALE YOUR BUSINESS SECTION */}
         <ScaleYourBusiness />
 
         {/* GET STARTED */}
