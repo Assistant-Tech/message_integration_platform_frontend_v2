@@ -2,6 +2,7 @@ import { Check } from "lucide-react";
 import { cn } from "@/app/utils/cn";
 import { Button } from "@/app/components/ui";
 import { Plan } from "@/app/types/plan";
+import Ribbon from "@/app/pages/aboutus/components/Ribbon";
 
 interface PricingCardProps {
   plan: Plan & {
@@ -64,7 +65,7 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
       className={cn(
         "relative rounded-2xl p-6 sm:p-8 transition-all duration-300 w-full h-full",
         plan.isPopular
-          ? "bg-primary text-white transform scale-105 shadow-2xl shadow-primary/25 border-2 border-primary-light z-10 overflow-hidden"
+          ? "bg-primary text-white transform scale-105 shadow-2xl shadow-primary/25 border-2 border-primary-light z-10 overflow-visible"
           : "bg-white border-2 border-grey-light",
         "min-w-[280px] max-w-sm md:max-w-full flex-shrink-0",
       )}
@@ -77,13 +78,7 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
           : {}
       }
     >
-      {plan.isPopular && (
-        <div className="absolute -top-0 -right-0 z-20 overflow-hidden w-32 h-32">
-          <div className="absolute transform rotate-45 bg-secondary text-white text-xs font-bold py-2 px-1 w-[140px] top-[22px] right-[-35px] text-center shadow-lg">
-            Most Popular
-          </div>
-        </div>
-      )}
+      {plan.isPopular && <Ribbon />}
 
       <div className="text-start">
         <h3

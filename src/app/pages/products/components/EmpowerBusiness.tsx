@@ -1,21 +1,12 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
 
-import { Agreement, Input } from "@/app/components/ui";
-import { Button } from "@/app/components/ui";
 import { benefits, features } from "@/app/utils/product/utils";
 import { cn } from "@/app/utils/cn";
 
 import crm from "@/app/assets/images/crm.webp";
+import { EmailSignupCTA } from "@/app/pages/products/components/";
 
 const EmpowerBusiness = () => {
-  const [email, setEmail] = useState("");
-
-  const handleGetStarted = async () => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-  };
-
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-12 lg:gap-16 items-center mb-12 sm:mb-16 md:mb-20 lg:mb-24">
       {/* Left Content */}
@@ -41,36 +32,13 @@ const EmpowerBusiness = () => {
           </p>
         </div>
 
-        {/* CTA Section */}
-        <div className="space-y-3 sm:space-y-4">
-          <p className="body-regular-16 text-grey-medium">
-            Start your 14-days free trial today!
-          </p>
-
-          {/* Input & Button */}
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
-            <div className="flex-1">
-              <Input
-                placeholder="Enter your email"
-                variant="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="focus:border-primary focus:ring-1 focus:ring-primary w-full h-12 sm:h-14 text-base"
-              />
-            </div>
-            <Button
-              label={"Get Started"}
-              variant="primary"
-              onClick={handleGetStarted}
-              className="py-3"
-            />
-          </div>
-
-          <div className="body-regular-16 text-grey-medium">
-            No credit card needed.
-            <Agreement />
-          </div>
-        </div>
+        <EmailSignupCTA
+          title="Join 1,000+ businesses using our platform"
+          placeholder="Your work email"
+          buttonLabel="Start Free Trial"
+          note="Free for 14 days. Cancel anytime."
+          onSubmit={(email) => console.log("Submitted email:", email)}
+        />
 
         {/* Features Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 md:gap-8 pt-4">

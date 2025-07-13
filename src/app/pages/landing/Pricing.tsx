@@ -9,6 +9,7 @@ import { Badge, Button, DynamicToggle } from "@/app/components/ui";
 import { Plan, Duration, APIDuration } from "@/app/types/plan";
 import { extractFeatures } from "@/app/utils/helper";
 import { Check } from "lucide-react";
+import Ribbon from "../aboutus/components/Ribbon";
 
 const Pricing = () => {
   const { currency, duration, setCurrency, setDuration } = usePricingStore();
@@ -98,7 +99,7 @@ const Pricing = () => {
           </div>
         ) : (
           <>
-            <div className="hidden md:grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="hidden md:grid grid-cols-1 lg:grid-cols-3 gap-12">
               {plans.map((plan: any) => (
                 <PricingCard
                   key={plan.id}
@@ -120,13 +121,14 @@ const Pricing = () => {
                   <motion.div
                     key={plan.id}
                     className={cn(
-                      "min-w-[85%] max-w-[85%] flex-shrink-0 rounded-2xl border p-6 shadow-sm",
+                      "relative min-w-[85%] max-w-[85%] flex-shrink-0 rounded-2xl border p-6 shadow-sm",
                       plan.isPopular
                         ? "bg-primary text-white border-primary"
                         : "bg-white text-grey border-gray-200",
                     )}
                     whileTap={{ scale: 0.98 }}
                   >
+                    {plan.isPopular && <Ribbon />}
                     <div className="mb-4">
                       <h2
                         className={cn(

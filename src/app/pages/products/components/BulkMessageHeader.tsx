@@ -1,6 +1,6 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
-import { Input, Agreement } from "@/app/components/ui";
+import { EmailSignupCTA } from "@/app/pages/products/components/";
+
 import { features } from "@/app/utils/product/utils";
 import bulkmessaging from "@/app/assets/images/bulk-messaging.webp";
 
@@ -11,8 +11,6 @@ const stats = [
 ];
 
 const BulkMessageHeader = () => {
-  const [email, setEmail] = useState("");
-
   return (
     <section className="relative overflow-hidden pb-20">
       <div className="relative z-10">
@@ -24,7 +22,6 @@ const BulkMessageHeader = () => {
             transition={{ duration: 0.6 }}
             className="space-y-8 max-w-xl"
           >
-
             <h1 className="h2-bold-40 text-base-black leading-tight">
               Scale Your Outreach with
               <span className="text-primary block sm:inline sm:pl-2">
@@ -56,28 +53,13 @@ const BulkMessageHeader = () => {
               ))}
             </div>
 
-            {/* CTA */}
-            <div className="space-y-4 pt-2">
-              <p className="body-regular-16 text-grey-medium">
-                Get started with smart campaigns today.
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Input
-                  type="email"
-                  variant="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="h-12 sm:h-14 w-full focus:ring-1 focus:ring-primary"
-                />
-              </div>
-
-              <div className="text-sm text-grey-medium">
-                No credit card needed. Setup in minutes.
-                <Agreement />
-              </div>
-            </div>
+            <EmailSignupCTA
+              title="Join 1,000+ businesses using our platform"
+              placeholder="Your work email"
+              buttonLabel="Start Free Trial"
+              note="Free for 14 days. Cancel anytime."
+              onSubmit={(email) => console.log("Submitted email:", email)}
+            />
 
             {/* Features Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 md:gap-8 pt-4">
