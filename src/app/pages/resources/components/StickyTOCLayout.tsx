@@ -62,13 +62,11 @@ const StickyTOCLayout: React.FC<StickyTOCLayoutProps> = ({
               transition={{ duration: 0.6 }}
               className="mb-8 lg:mb-12"
             >
-              {title && (
-                <h1 className="text-3xl lg:text-4xl font-bold text-grey mb-4">
-                  {title}
-                </h1>
-              )}
+              {title && <h1 className="h2-bold-40 text-grey mb-4">{title}</h1>}
               {subtitle && (
-                <p className="text-lg text-grey-medium max-w-3xl">{subtitle}</p>
+                <p className="body-medium-16 text-grey-medium max-w-3xl">
+                  {subtitle}
+                </p>
               )}
             </motion.div>
           )}
@@ -111,7 +109,7 @@ const StickyTOCLayout: React.FC<StickyTOCLayoutProps> = ({
                         key={item.id}
                         onClick={() => onSectionClick(item.id)}
                         className={`
-                          block w-full text-left px-3 py-2 rounded-md text-sm
+                          block w-full text-left px-3 py-2 rounded-md h5-regular-16
                           transition-colors duration-200
                           ${(item.level || 1) === 2 ? "ml-4" : ""}
                           ${(item.level || 1) === 3 ? "ml-8" : ""}

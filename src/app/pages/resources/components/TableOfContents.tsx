@@ -40,7 +40,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({
               ${(item.level || 1) === 3 ? "ml-8" : ""}
               ${
                 activeSection === item.id
-                  ? "bg-primary-light text-primary font-medium"
+                  ? "bg-primary-light text-primary"
                   : "text-grey-medium hover:text-primary hover:bg-primary-light cursor-pointer"
               }
             `}
