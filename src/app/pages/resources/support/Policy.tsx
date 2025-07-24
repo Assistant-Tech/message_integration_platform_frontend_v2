@@ -71,7 +71,7 @@ const Policy: React.FC = () => {
         {/* Sidebar - Table of Contents */}
         <div className="lg:col-span-1 order-2 lg:order-1">
           <div className="hidden lg:block relative h-full">
-            <div className="fixed top-[270px] max-h-[calc(100vh-128px)] overflow-y-auto pr-2">
+            <div className="sticky top-20 max-h-[calc(100vh-5rem)] overflow-y-auto pr-2 transition-all duration-300">
               <TableOfContents
                 items={tableOfContentsItems}
                 activeSection={activeSection}

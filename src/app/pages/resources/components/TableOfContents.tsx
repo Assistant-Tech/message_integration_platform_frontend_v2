@@ -18,7 +18,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
-      className="bg-white rounded-lg border border-grey-light p-4 lg:p-6 sticky top-6"
+      className="bg-white rounded-lg border border-grey-light p-4 lg:p-6"
     >
       <h3 className="h3-bold-32 text-grey mb-4">Table of Contents</h3>
       <nav className="space-y-2">

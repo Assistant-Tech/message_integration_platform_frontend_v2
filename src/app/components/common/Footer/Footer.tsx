@@ -42,7 +42,7 @@ const Footer = () => {
     >
       <div>
         {/* Top */}
-        <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-x-40 w-full max-w-[1600px] mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-x-40 w-full max-w-[1600px] mx-auto px-6">
           {/* Brand */}
           <div className="flex flex-col items-center text-center md:items-start md:text-left">
             <motion.div
@@ -159,7 +159,7 @@ const Footer = () => {
 
         {/* Bottom */}
         <div className="bg-primary text-white">
-          <div className="max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4 py-6">
+          <div className="max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4 py-6 px-4">
             {/* Copyright */}
             <motion.p
               initial={{ opacity: 0 }}
