@@ -1,4 +1,5 @@
 import { Check } from "lucide-react";
+
 import { cn } from "@/app/utils/cn";
 import { Button } from "@/app/components/ui";
 import { Plan } from "@/app/types/plan";
@@ -121,6 +122,7 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
               <span className="h5-regular-16 ps-px">/{duration}</span>
             )}
           </div>
+
           <Button
             className={cn(
               "w-full py-4 mt-4 font-semibold transition-all duration-200",
@@ -130,6 +132,7 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
             )}
             label={buttonText}
             variant="primary"
+            redirectTo={`/checkout/${plan.id}`}
           />
         </div>
       </div>

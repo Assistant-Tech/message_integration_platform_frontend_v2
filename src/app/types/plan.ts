@@ -20,3 +20,25 @@ export interface Plan {
   isPopular: boolean;
   currency: Currency;
 }
+
+// Types
+export type CheckoutFormData = {
+  fullName: string;
+  country: string;
+  staffCount: number;
+  paymentType: string;
+  paymentOption: string;
+  promoCode?: string;
+};
+
+export type PlanType = {
+  id: string;
+  name: string;
+  description: string;
+  amount: number;
+  durationInDays: number;
+  interval: string;
+  currency: string;
+  isPopular: boolean;
+  features: Record<string, any>;
+};

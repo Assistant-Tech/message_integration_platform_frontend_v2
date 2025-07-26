@@ -17,6 +17,7 @@ import {
   ChatbotPage,
   UnifiedMessagePage,
   BulkMessagingPage,
+  CheckoutPage,
 } from "@/app/pages";
 import { APP_ROUTES } from "@/app/constants/routes";
 import { ProductLayout, ResourceLayout } from "@/app/components/layout";
@@ -78,6 +79,9 @@ const PublicRoutes = () => {
 
       {/* Pricing Routes */}
       <Route path={APP_ROUTES.PUBLIC.PRICING} element={<PricingPage />} />
+
+      {/* Checkout Routes */}
+      <Route path={APP_ROUTES.PUBLIC.CHECKOUT} element={<CheckoutPage />} />
 
       {/* 401 - UnAuth Page  */}
       <Route path={APP_ROUTES.PUBLIC.UNAUTHORIZED} element={<Unauthorized />} />

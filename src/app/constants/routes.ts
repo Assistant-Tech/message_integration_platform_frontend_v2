@@ -12,6 +12,9 @@ export const APP_ROUTES = {
     SLUG: (slug: string) => `/${slug}`,
     DEMO: "/demo",
 
+    //Checkout Page
+    CHECKOUT: "/checkout/:planId",
+
     // For the ["/product"]
     PRODUCTS_OVERVIEW: "/products",
     CRM: "/products/crm",

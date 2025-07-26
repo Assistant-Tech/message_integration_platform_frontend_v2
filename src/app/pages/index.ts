@@ -26,3 +26,7 @@ export { default as Onboarding } from "./resources/support/OnBoarding";
 export { default as TermsCondition } from "./resources/support/TermsCondition";
 export { default as Policy } from "./resources/support/Policy";
 export { default as Updates } from "./resources/support/Updates";
+
+//Checkout exports
+export { default as CheckoutPage } from "./checkout/CheckoutPage";
+export { default as Invoice } from "./checkout/Invoice";
