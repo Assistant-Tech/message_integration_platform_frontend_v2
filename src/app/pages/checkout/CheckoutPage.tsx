@@ -15,6 +15,7 @@ import tickIcon_filled from "@/app/assets/icons/tick_filled.svg";
 import khaltiIcon from "@/app/assets/images/khalti.webp";
 import esewaIcon from "@/app/assets/images/esewa.webp";
 import stripeIcon from "@/app/assets/images/stripe.webp";
+import { toast } from "sonner";
 
 const CheckoutPage = () => {
   const { planId } = useParams<{ planId: string }>();
@@ -115,6 +116,7 @@ const CheckoutPage = () => {
       ...data,
       selectedPlan: plan,
     });
+      toast.success("Payment successful!");
   };
 
   const handleFinalSubmit = handleSubmit(onSubmit);
@@ -334,7 +336,7 @@ const CheckoutPage = () => {
                   className="w-full px-4 py-3"
                   {...register("promoCode")}
                 />
-                <Button label="Apply" className="bg-base-black text-white" />
+                <Button label="Apply" className="bg-base-black text-white px-4 py-3" />
               </div>
             </div>
           </form>

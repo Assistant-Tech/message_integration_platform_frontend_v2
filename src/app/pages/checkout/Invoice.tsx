@@ -17,9 +17,7 @@ const Invoice: React.FC<InvoiceProps> = ({
   onConfirm,
 }) => {
   const VAT_RATE = 0.13;
-
   const additionalStaffs = Math.max(0, staffCount - 1) * 150;
-
   const getPlanAmount = () => {
     if (!paymentType) return plan.amount;
 
@@ -38,11 +36,8 @@ const Invoice: React.FC<InvoiceProps> = ({
 
     return plan.amount;
   };
-
   const currentPlanAmount = getPlanAmount();
-
   const baseAmount = currentPlanAmount / (1 + VAT_RATE);
-
   const baseTotal = baseAmount + additionalStaffs;
   const vat = baseTotal * VAT_RATE;
   const total = baseTotal + vat;
@@ -139,7 +134,7 @@ const Invoice: React.FC<InvoiceProps> = ({
 
         <Button
           label="Confirm and Pay"
-          className="w-full mt-6 mb-3"
+          className="w-full mt-6 mb-3 px-4 py-3"
           disabled={!paymentType || !paymentOption}
           onClick={onConfirm}
         />
