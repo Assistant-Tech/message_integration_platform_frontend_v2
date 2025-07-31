@@ -7,8 +7,6 @@ import {
 } from "@/app/components/common/";
 import logo from "@/app/assets/logo.svg";
 import { Circle } from "lucide-react";
-import dash1 from "@/app/assets/images/dash1.webp";
-import dash2 from "@/app/assets/images/dash2.webp";
 
 const HeroSection: React.FC = () => {
   return (
@@ -60,14 +58,18 @@ const HeroSection: React.FC = () => {
       {/* Mobile/tablet image preview (only for smaller than md) */}
       <div className="relative flex md:hidden z-10 -mt-20 px-4">
         <img
-          src={dash1}
+          src={
+            "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/dash1_qvgd1t.png"
+          }
           alt="Dashboard 1"
           className="w-full h-auto object-cover shadow-2xl rounded
                hover:shadow-3xl transition-shadow duration-300
                border border-white/20"
         />
         <img
-          src={dash2}
+          src={
+            "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920903/dash2_wuvsmu.webp"
+          }
           alt="Dashboard 1"
           className="w-1/2 h-auto object-cover rounded shadow-2xl 
                hover:shadow-3xl transition-shadow duration-300

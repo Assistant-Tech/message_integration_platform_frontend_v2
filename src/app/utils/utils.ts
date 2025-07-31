@@ -315,9 +315,6 @@ export const imageSlides: ImageSlide[] = [
  📦 ▶ Built Assistant Feature data utils
  ─────────────────────────────────────────────────────────────────────────────
 */
-import feature1 from "@/app/assets/images/feature1.png";
-import feature2 from "@/app/assets/images/feature2.png";
-import feature3 from "@/app/assets/images/feature3.png";
 
 export type BuildFeature = {
   title: string;
@@ -330,19 +327,19 @@ export const buildFeature: BuildFeature[] = [
   {
     title: "All Messages in One Inbox",
     description: "A clean inbox for all your chats",
-    img: feature1,
+    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920904/feature1_msvw3f.png",
     animate: true,
   },
   {
     title: "Lightning Fast Responses",
     description: "Easy tools for your team to reply faster",
-    img: feature2,
+    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920904/feature2_qcnqm3.png",
     animate: true,
   },
   {
     title: "Secure & Private",
     description: "Reports to see how you're doing",
-    img: feature3,
+    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920904/feature3_lfvett.png",
     animate: true,
   },
 ];

@@ -1,7 +1,5 @@
 import React, { useRef } from "react";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
-import dash1 from "@/app/assets/images/dash1.webp";
-import dash2 from "@/app/assets/images/dash2.webp";
 
 const DashboardPreview: React.FC = () => {
   const ref = useRef(null);
@@ -24,7 +22,10 @@ const DashboardPreview: React.FC = () => {
   );
 
   return (
-    <div ref={containerRef} className="relative -mt-32 pb-32 bg-primary-light -z-50">
+    <div
+      ref={containerRef}
+      className="relative pb-32 bg-primary-light -z-50"
+    >
       <div className="relative">
         <motion.div
           className="absolute w-96 h-96 bg-primary opacity-70 rounded-full blur-3xl bottom-0 left-0"
@@ -162,7 +163,12 @@ const DashboardPreview: React.FC = () => {
               className="relative transform-gpu p-2 border-4 border-base-white rounded-lg"
             >
               <img
-                src={dash1}
+                src={
+                  "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/dash1_qvgd1t.png"
+                }
+                loading="lazy"
+                decoding="async"
+                fetchPriority="high"
                 alt="Dashboard 1"
                 className="w-4xl h-auto object-cover rounded-2xl shadow-2xl 
                           hover:shadow-3xl transition-shadow duration-300
@@ -182,8 +188,13 @@ const DashboardPreview: React.FC = () => {
               className="relative transform-gpu -ml-10 mt-8 p-2 border-4 border-base-white rounded-lg"
             >
               <img
-                src={dash2}
+                src={
+                  "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920903/dash2_wuvsmu.webp"
+                }
                 alt="Dashboard 2"
+                loading="lazy"
+                decoding="async"
+                fetchPriority="high"
                 className="w-lg h-auto object-cover rounded-2xl shadow-2xl 
                           hover:shadow-3xl transition-shadow duration-300
                           border border-white/20"

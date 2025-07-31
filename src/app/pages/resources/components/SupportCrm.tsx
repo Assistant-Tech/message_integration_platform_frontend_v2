@@ -1,7 +1,5 @@
 import { motion } from "framer-motion";
 import { Play } from "lucide-react";
-import crm from "@/app/assets/images/crm_video.webp";
-import crm1 from "@/app/assets/images/crm.webp";
 
 const SupportCrm = () => {
   const containerVariants = {
@@ -37,7 +35,9 @@ const SupportCrm = () => {
             <div className="relative rounded-2xl overflow-hidden w-full">
               <figure>
                 <img
-                  src={crm}
+                  src={
+                    "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920901/crm_awlskb.webp"
+                  }
                   alt="CRM video preview"
                   className="w-full h-auto object-cover rounded-2xl opacity-40"
                 />
@@ -61,7 +61,9 @@ const SupportCrm = () => {
           <motion.div className="w-full">
             <div className="w-full rounded-2xl overflow-hidden">
               <img
-                src={crm1}
+                src={
+                  "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp"
+                }
                 alt="CRM illustration"
                 className="w-full h-64 md:h-80 object-cover"
               />
@@ -93,7 +95,9 @@ const SupportCrm = () => {
             <div className="relative rounded-2xl overflow-hidden w-full">
               <figure>
                 <img
-                  src={crm}
+                  src={
+                    "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp"
+                  }
                   alt="CRM video preview"
                   className="w-full h-auto object-cover rounded-2xl opacity-40"
                 />
@@ -118,7 +122,9 @@ const SupportCrm = () => {
           <motion.div className="lg:col-span-2 flex flex-col h-full">
             <motion.div className="w-full flex-1 rounded-2xl overflow-hidden">
               <img
-                src={crm1}
+                src={
+                  "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp"
+                }
                 alt="CRM illustration"
                 className="w-full h-full object-cover min-h-[400px]"
               />

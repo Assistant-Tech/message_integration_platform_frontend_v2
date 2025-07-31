@@ -1,9 +1,6 @@
 import { Calendar } from "lucide-react";
 import { motion } from "framer-motion";
 
-import crmlaptop from "@/app/assets/images/crmlaptop.webp";
-import jane from "@/app/assets/images/jane.png";
-
 const BlogCard = () => {
   return (
     <motion.div
@@ -13,7 +10,9 @@ const BlogCard = () => {
     >
       <div className="rounded-2xl bg-base-white mb-20 p-8">
         <img
-          src={crmlaptop}
+          src={
+            "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753878938/feature1_mss3ho.png"
+          }
           alt="CRM Dashboard"
           className="w-full h-96 object-cover rounded-xl"
         />
@@ -36,7 +35,9 @@ const BlogCard = () => {
           </p>
           <div className="flex items-center gap-3 mt-6">
             <img
-              src={jane}
+              src={
+                "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753878936/jane_iasge7.png"
+              }
               alt="Jane Doe"
               className="w-10 h-10 rounded-full object-cover"
             />

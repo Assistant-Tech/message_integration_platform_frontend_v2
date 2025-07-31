@@ -4,7 +4,6 @@ import { X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Agreement, Button } from "@/app/components/ui/";
 import { cn } from "@/app/utils/cn";
-import newsletter from "@/app/assets/images/newsletter.webp";
 
 
 const LOCAL_STORAGE_KEY = import.meta.env.VITE_NEWSLETTER_MODAL_KEY;
@@ -65,7 +64,7 @@ const NewsLetterModalPopUp = () => {
                 </button>
               </Dialog.Close>
               <img
-                src={newsletter}
+                src={"https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920906/newsletter_uoa7xd.webp"}
                 alt="newsletter.png"
                 className="w-full h-full object-cover rounded-t-3xl"
               />

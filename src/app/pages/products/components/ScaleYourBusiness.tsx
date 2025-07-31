@@ -1,9 +1,6 @@
 import { motion } from "framer-motion";
 import { Circle, Check } from "lucide-react";
 
-// Images
-import business from "@/app/assets/images/CRM1.webp";
-import purchase from "@/app/assets/images/CRM2.webp";
 import { Button } from "@/app/components/ui";
 
 const ScaleYourBusiness = () => {
@@ -22,7 +19,9 @@ const ScaleYourBusiness = () => {
         {/* Main image */}
         <motion.figure className="rounded-2xl overflow-hidden">
           <img
-            src={business}
+            src={
+              "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp"
+            }
             alt="Online business dashboard"
             className="w-full h-auto object-cover rounded-2xl"
           />
@@ -31,7 +30,9 @@ const ScaleYourBusiness = () => {
         {/* Overlapping image */}
         <motion.figure className="absolute -bottom-6 sm:-bottom-10 md:-bottom-14 right-4 sm:right-8 md:right-12 w-36 sm:w-48 md:w-64 lg:w-72 rounded-2xl overflow-hidden border-4 border-white shadow-xl">
           <img
-            src={purchase}
+            src={
+              "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp"
+            }
             alt="Purchase analytics"
             className="w-full h-auto object-cover"
           />

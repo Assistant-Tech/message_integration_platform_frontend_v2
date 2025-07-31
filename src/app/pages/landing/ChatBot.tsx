@@ -2,7 +2,6 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Box, Flex } from "@radix-ui/themes";
 import { AnimatedProcessCard } from "@/app/components/animation";
-import createbot from "@/app/assets/images/createbot.webp";
 import { Badge, Button } from "@/app/components/ui";
 
 // Animation Variants
@@ -63,7 +62,9 @@ const ChatBot: React.FC = () => {
             {/* Image */}
             <figure className="w-full">
               <img
-                src={createbot}
+                src={
+                  "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920901/createbot_butboe.webp"
+                }
                 alt="Create Bot"
                 className="w-full h-auto object-fill max-w-[720px] max-h-[550px]"
                 loading="lazy"

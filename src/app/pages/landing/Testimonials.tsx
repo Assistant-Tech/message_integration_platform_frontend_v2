@@ -2,7 +2,6 @@ import React, { useState, useCallback, useEffect } from "react";
 import { Box, Flex, Heading } from "@radix-ui/themes";
 import { Badge } from "@/app/components/ui";
 import { Testimonial, defaultTestimonials } from "@/app/utils/utils";
-import testimonial from "@/app/assets/images/testimonial.webp";
 
 interface TestimonialsProps {
   testimonials?: Testimonial[];
@@ -129,7 +128,9 @@ const Testimonials: React.FC<TestimonialsProps> = ({
                 </Flex>
                 <figure className="py-3">
                   <img
-                    src={testimonial}
+                    src={
+                      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920899/testimonial_hsebxv.webp"
+                    }
                     alt={current?.author.name}
                     className="rounded-lg object-fill"
                     width={115}

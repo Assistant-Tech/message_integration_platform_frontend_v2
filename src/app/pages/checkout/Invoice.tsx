@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Agreement, Button } from "@/app/components/ui";
 import { PlanType } from "@/app/types/plan";
 
@@ -6,6 +7,9 @@ interface InvoiceProps {
   staffCount: number;
   paymentType?: string;
   paymentOption?: string;
+  currency?: string;
+  interval?: string;
+  promocode?: string;
   onConfirm?: () => void;
 }
 
@@ -14,122 +18,158 @@ const Invoice: React.FC<InvoiceProps> = ({
   staffCount,
   paymentType = "",
   paymentOption = "",
+  currency = "USD",
+  interval = "MONTHLY",
+  promocode = "",
   onConfirm,
 }) => {
-  const VAT_RATE = 0.13;
-  const additionalStaffs = Math.max(0, staffCount - 1) * 150;
-  const getPlanAmount = () => {
-    if (!paymentType) return plan.amount;
+  const effectiveCurrency = plan.currency || currency;
+  const effectiveInterval = plan.interval || interval;
 
-    if (
-      (plan.interval === "YEARLY" && paymentType === "BILL_YEARLY") ||
-      (plan.interval === "MONTHLY" && paymentType === "BILL_MONTHLY")
-    ) {
-      return plan.amount;
-    }
+  const calculations = useMemo(() => {
+    const getAdditionalStaffCost = () =>
+      effectiveCurrency === "NPR" ? 500 : 5;
 
-    if (plan.interval === "YEARLY" && paymentType === "BILL_MONTHLY") {
-      return plan.amount / 12;
-    } else if (plan.interval === "MONTHLY" && paymentType === "BILL_YEARLY") {
-      return plan.amount * 12;
-    }
+    const additionalStaffCost = getAdditionalStaffCost();
+    const extraStaffCount = Math.max(0, staffCount - 1);
+    const additionalStaffs = extraStaffCount * additionalStaffCost;
 
-    return plan.amount;
-  };
-  const currentPlanAmount = getPlanAmount();
-  const baseAmount = currentPlanAmount / (1 + VAT_RATE);
-  const baseTotal = baseAmount + additionalStaffs;
-  const vat = baseTotal * VAT_RATE;
-  const total = baseTotal + vat;
+    const baseAmount = plan.originalAmount || plan.amount;
 
-  const formatPlanName = (name: string) => {
-    return name
-      .toLowerCase()
-      .split("_")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  };
+    // Subtotal excluding VAT (since baseAmount includes VAT)
+    const subtotalExclVat = baseAmount / 1.13;
+    const vat = baseAmount - subtotalExclVat;
 
-  const getPaymentMethodDisplay = () => {
+    const baseTotal = baseAmount + additionalStaffs;
+
+    const isPromoApplied = promocode === "ABC123";
+    const promoDiscount = isPromoApplied ? baseTotal * 0.1 : 0;
+
+    const planDiscount = plan.discountAmount || 10;
+
+    const total = baseTotal + vat - promoDiscount - planDiscount;
+
+    return {
+      additionalStaffCost,
+      extraStaffCount,
+      additionalStaffs,
+      subtotalExclVat,
+      vat,
+      baseAmount,
+      baseTotal,
+      promoDiscount,
+      isPromoApplied,
+      planDiscount,
+      total,
+    };
+  }, [plan, staffCount, effectiveCurrency, promocode]);
+
+  const formatPlanName = useMemo(() => {
+    if (!plan?.name) return "";
+    return (
+      plan.name
+        .toLowerCase()
+        .replace("yearly", "")
+        .replace("monthly", "")
+        .trim()
+        .split("_")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ") + " Plan"
+    );
+  }, [plan?.name]);
+
+  const getPaymentMethodDisplay = useMemo(() => {
     if (!paymentOption || !paymentType) return "Not Selected";
+    return paymentOption.charAt(0).toUpperCase() + paymentOption.slice(1);
+  }, [paymentOption, paymentType]);
 
-    const methodName =
-      paymentOption.charAt(0).toUpperCase() + paymentOption.slice(1);
-    const billingType = paymentType === "BILL_YEARLY" ? "Yearly" : "Monthly";
+  const getCurrencySymbol = (currency: string) =>
+    currency === "NPR" ? "Rs." : "$";
 
-    return `${methodName} - ${billingType}`;
+  const formatAmount = (amount: number) => {
+    const symbol = getCurrencySymbol(effectiveCurrency);
+    return effectiveCurrency === "NPR"
+      ? `${symbol} ${Math.round(amount).toLocaleString()}`
+      : `${symbol} ${amount.toFixed(2)}`;
   };
+
+  if (!plan || !plan.amount) {
+    return (
+      <div className="px-8 py-6">
+        <div className="flex items-center justify-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="px-8 py-6">
       <div className="py-6 space-y-4 text-sm text-grey-medium">
         <div className="flex justify-between">
-          <span className="body-regular-16 text-grey-medium">Plan Name:</span>
-          <span className="body-bold-16 text-grey-medium">
-            {formatPlanName(
-              plan.name
-                ?.replace("Yearly", " ")
-                .replace("Monthly", " ")
-                .trim() ?? "",
-            )}
-            (
-            {paymentType === "BILL_YEARLY"
-              ? "Yearly"
-              : paymentType === "BILL_MONTHLY"
-                ? "Monthly"
-                : ""}
-            )
+          <span className="body-regular-16">Plan Name:</span>
+          <span className="body-bold-16">{formatPlanName}</span>
+        </div>
+
+        <div className="flex justify-between">
+          <span className="body-regular-16">Payment Type:</span>
+          <span className="body-bold-16">
+            {effectiveInterval === "YEARLY" ? "Yearly" : "Monthly"}
           </span>
         </div>
 
         <div className="flex justify-between pb-4">
-          <span className="body-regular-16 text-grey-medium">
-            Payment Type:
-          </span>
-          <span className="body-bold-16 text-grey-medium">
-            {getPaymentMethodDisplay()}
-          </span>
+          <span className="body-regular-16">Payment Method:</span>
+          <span className="body-bold-16">{getPaymentMethodDisplay}</span>
         </div>
 
         <div className="flex justify-between pt-6 border-t-2 border-grey-light">
-          <span className="body-regular-16 text-grey-medium">
-            Plan Cost ({paymentType === "BILL_YEARLY" ? "Yearly" : "Monthly"}):
-          </span>
-          <span className="body-bold-16 text-grey-medium">
-            {plan.currency} {baseAmount.toFixed(2)}
+          <span className="body-regular-16">Subtotal (Excl. VAT):</span>
+          <span className="body-bold-16">
+            {formatAmount(calculations.subtotalExclVat)}
           </span>
         </div>
 
-        {staffCount > 1 && (
+        <div className="flex justify-between">
+          <span className="body-regular-16">VAT (13%):</span>
+          <span className="body-bold-16">{formatAmount(calculations.vat)}</span>
+        </div>
+
+        {calculations.extraStaffCount > 0 && (
           <div className="flex justify-between">
-            <span className="body-regular-16 text-grey-medium">
-              Additional Staff: ({staffCount - 1} × {plan.currency} 150)
+            <span className="body-regular-16">
+              Additional Staff ({calculations.extraStaffCount} ×{" "}
+              {formatAmount(calculations.additionalStaffCost)}):
             </span>
-            <span className="body-bold-16 text-grey-medium">
-              {plan.currency} {additionalStaffs.toFixed(2)}
+            <span className="body-bold-16">
+              {formatAmount(calculations.additionalStaffs)}
             </span>
           </div>
         )}
 
-        <div className="flex justify-between">
-          <span className="body-regular-16 text-grey-medium">Sub Total:</span>
-          <span className="body-bold-16 text-grey-medium">
-            {plan.currency} {baseTotal.toFixed(2)}
-          </span>
-        </div>
+        {calculations.isPromoApplied && (
+          <div className="flex justify-between text-primary">
+            <span className="body-regular-16 text-grey-medium">
+              Promo "{promocode}" (10% off):
+            </span>
+            <span className="body-bold-16">
+              - {formatAmount(calculations.promoDiscount)}
+            </span>
+          </div>
+        )}
 
-        <div className="flex justify-between pb-4">
-          <span className="body-regular-16 text-grey-medium">VAT (13%):</span>
-          <span className="body-bold-16 text-grey-medium">
-            {plan.currency} {vat.toFixed(2)}
-          </span>
-        </div>
+        {calculations.planDiscount > 0 && (
+          <div className="flex justify-between text-primary">
+            <span className="body-regular-16 text-grey-medium">Discount:</span>
+            <span className="body-bold-16">
+              - {formatAmount(calculations.planDiscount)}
+            </span>
+          </div>
+        )}
 
         <div className="flex justify-between h4-bold-24 text-base-black border-t-2 border-grey-light pt-6">
           <span>Total:</span>
-          <span>
-            {plan.currency} {total.toFixed(2)}
-          </span>
+          <span>{formatAmount(calculations.total)}</span>
         </div>
 
         <Button

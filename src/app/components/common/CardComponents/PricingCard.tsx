@@ -55,6 +55,23 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
     return featuresList;
   };
 
+  // Convert duration to API format
+  const getInterval = () => {
+    return duration === "yearly" ? "YEARLY" : "MONTHLY";
+  };
+
+  // Get currency from plan or default to USD
+  const getCurrency = () => {
+    return plan.currency || "USD";
+  };
+
+  // Build checkout URL with proper parameters
+  const getCheckoutUrl = () => {
+    const interval = getInterval();
+    const currency = getCurrency();
+    return `/checkout/${plan.id}?interval=${interval}&currency=${currency}`;
+  };
+
   const displayFeatures = plan.features ? getFeaturesList(plan.features) : [];
   const displayPrice =
     plan.price || `${plan.currency === "NPR" ? "रु" : "$"}${plan.amount}`;
@@ -132,7 +149,7 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
             )}
             label={buttonText}
             variant="primary"
-            redirectTo={`/checkout/${plan.id}`}
+            redirectTo={getCheckoutUrl()}
           />
         </div>
       </div>

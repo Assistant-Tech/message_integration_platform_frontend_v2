@@ -1,7 +1,6 @@
 import { Box, Flex, Text } from "@radix-ui/themes";
 import { Button } from "@/app/components/ui";
 import { motion } from "framer-motion";
-import computerMockup from "@/app/assets/images/getstarted.png";
 import logo from "@/app/assets/logo.svg";
 import { Circle } from "lucide-react";
 
@@ -70,7 +69,9 @@ const GetStarted = () => {
           {/* Right Section: Image Mockup */}
           <Box className="md:max-w-xl flex justify-center -mb-12 md:mb-0 border-8 border-base-white rounded-3xl transform -rotate-3 shadow-xl">
             <img
-              src={computerMockup}
+              src={
+                "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920901/getstarted_juzd3p.png"
+              }
               alt="Assistant Dashboard Mockup"
               className="w-full h-auto max-w-xl object-contain animate-float rounded-2xl"
             />

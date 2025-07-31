@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import crm from "@/app/assets/images/crm.webp";
 
 interface ImageItem {
   id: number;
@@ -12,17 +11,47 @@ interface ImageItem {
 const ImageGrid: React.FC = () => {
   const images: ImageItem[] = [
     // Top left (tall narrow)
-    { id: 1, src: crm, colSpan: "col-span-1", rowSpan: "row-span-2" },
+    {
+      id: 1,
+      src: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+      colSpan: "col-span-1",
+      rowSpan: "row-span-2",
+    },
     // Top center (circular HUD)
-    { id: 2, src: crm, colSpan: "col-span-1", rowSpan: "row-span-2" },
+    {
+      id: 2,
+      src: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+      colSpan: "col-span-1",
+      rowSpan: "row-span-2",
+    },
     // Top right (man with email icon)
-    { id: 3, src: crm, colSpan: "col-span-1", rowSpan: "row-span-1" },
+    {
+      id: 3,
+      src: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+      colSpan: "col-span-1",
+      rowSpan: "row-span-1",
+    },
     // Middle left (developer at desk)
-    { id: 4, src: crm, colSpan: "col-span-1", rowSpan: "row-span-2" },
+    {
+      id: 4,
+      src: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+      colSpan: "col-span-1",
+      rowSpan: "row-span-2",
+    },
     // Middle right (AI robot hand)
-    { id: 5, src: crm, colSpan: "col-span-1", rowSpan: "row-span-1" },
+    {
+      id: 5,
+      src: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+      colSpan: "col-span-1",
+      rowSpan: "row-span-1",
+    },
     // Bottom center (laptop and tablet hands)
-    { id: 6, src: crm, colSpan: "col-span-1", rowSpan: "row-span-1" },
+    {
+      id: 6,
+      src: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+      colSpan: "col-span-1",
+      rowSpan: "row-span-1",
+    },
   ];
 
   return (

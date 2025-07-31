@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Badge, Button } from "@/app/components/ui";
-import crm from "@/app/assets/images/crm.webp";
-import CRM from "@/app/assets/images/CRM1.webp";
-import support from "@/app/assets/images/support.webp";
 
-const images = [crm, support, CRM];
+const images = [
+  "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+  "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920899/support_digede.webp",
+  "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+];
 const steps = ["Create your order", "Dispatch your order", "Track your order"];
 
 const OrderManagement: React.FC = () => {

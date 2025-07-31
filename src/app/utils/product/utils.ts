@@ -3,12 +3,7 @@
  📦 ▶ CRM data utils
 ─────────────────────────────────────────────────────────────────────────────
 */
-import {
-  LucideIcon,
-  Shield,
-  Target,
-  Building2,
-} from "lucide-react";
+import { LucideIcon, Shield, Target, Building2 } from "lucide-react";
 
 export interface crm {
   label: string;
@@ -100,7 +95,6 @@ export const smartCardData = [
 ];
 
 import { Users, FileText, BarChart3, Globe } from "lucide-react";
-import crm from "@/app/assets/images/crm.webp";
 import type { ServiceItem } from "@/app/types/product";
 
 export const services: ServiceItem[] = [
@@ -110,7 +104,7 @@ export const services: ServiceItem[] = [
     title: "Literature",
     description:
       "Assistant Tech’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: crm,
+    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
   },
   {
     id: 2,
@@ -118,7 +112,7 @@ export const services: ServiceItem[] = [
     title: "CRM",
     description:
       "Assistant Tech’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: crm,
+    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
   },
   {
     id: 3,
@@ -126,7 +120,7 @@ export const services: ServiceItem[] = [
     title: "Self Sourcing",
     description:
       "Assistant Tech’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: crm,
+    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
   },
   {
     id: 4,
@@ -134,7 +128,7 @@ export const services: ServiceItem[] = [
     title: "Business",
     description:
       "Assistant Tech’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: crm,
+    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
   },
   {
     id: 5,
@@ -142,7 +136,7 @@ export const services: ServiceItem[] = [
     title: "Business",
     description:
       "Assistant Tech’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: crm,
+    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
   },
   {
     id: 6,
@@ -150,7 +144,7 @@ export const services: ServiceItem[] = [
     title: "Business",
     description:
       "Assistant Tech’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: crm,
+    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
   },
   {
     id: 7,
@@ -158,7 +152,7 @@ export const services: ServiceItem[] = [
     title: "Business",
     description:
       "Assistant Tech’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: crm,
+    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
   },
   {
     id: 8,
@@ -166,7 +160,7 @@ export const services: ServiceItem[] = [
     title: "Business",
     description:
       "Assistant Tech’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: crm,
+    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
   },
   {
     id: 9,
@@ -174,6 +168,6 @@ export const services: ServiceItem[] = [
     title: "Business",
     description:
       "Assistant Tech’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: crm,
+    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
   },
 ];

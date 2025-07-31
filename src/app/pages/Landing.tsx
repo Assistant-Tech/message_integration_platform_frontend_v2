@@ -20,6 +20,7 @@ import {
 import Section from "@/app/components/layout/Section";
 import { useBanner } from "@/app/context/BannerContext";
 import { useWindowSize } from "react-use";
+import ChatToggleButton from "../components/common/ChatToggleButton";
 
 const ChatBot = lazy(() => import("@/app/pages/landing/ChatBot"));
 const Testimonials = lazy(() => import("@/app/pages/landing/Testimonials"));
@@ -93,6 +94,7 @@ const Landing = () => {
     <div className="min-h-screen">
       <Theme>
         <LandingContent />
+        <ChatToggleButton />
       </Theme>
     </div>
   );

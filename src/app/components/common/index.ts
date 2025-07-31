@@ -22,4 +22,8 @@ export { default as DashboardPreview } from "./Hero/DashboardPreview";
 // pricing compoenents
 export { default as PricingCard } from "./CardComponents/PricingCard";
 
+//chatbot components
+export { default as ChatbotPanel } from "./ChatbotPanel";
+export { default as ChatToggleButton } from "./ChatToggleButton";
+
 export { default as DemoDialog } from "./BookADemo/DemoDialog";

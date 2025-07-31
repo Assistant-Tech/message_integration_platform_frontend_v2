@@ -19,7 +19,7 @@ const RegisterForm = () => {
     resolver: zodResolver(registerSchema),
   });
 
-  const onSubmit: SubmitHandler<RegisterFormInputs> = async (data) => {
+  const onSubmit: SubmitHandler<RegisterFormInputs> = async () => {
     try {
       await new Promise((res) => setTimeout(res, 1000));
       toast.success("Form Submitted Successfully");
@@ -37,7 +37,7 @@ const RegisterForm = () => {
       className="grid grid-cols-1 sm:grid-cols-2 gap-4"
     >
       {registerFields.map((field) => {
-        const { name, label, placeholder, type, variant, component } = field;
+        const { name, label, placeholder, type, component } = field;
 
         const inputProps = {
           label,
@@ -58,7 +58,7 @@ const RegisterForm = () => {
 
         return (
           <div key={name} className={isFullWidth ? "col-span-2" : ""}>
-            <Input type={type || "text"} variant={variant} {...inputProps} />
+            <Input type={type || "text"} {...inputProps} />
           </div>
         );
       })}

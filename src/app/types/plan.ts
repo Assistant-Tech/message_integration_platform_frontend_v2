@@ -32,6 +32,11 @@ export type CheckoutFormData = {
 };
 
 export type PlanType = {
+  basePrice: any;
+  discountAmount: number;
+  originalAmount: number;
+  taxAmount: number;
+  taxRate: number;
   id: string;
   name: string;
   description: string;

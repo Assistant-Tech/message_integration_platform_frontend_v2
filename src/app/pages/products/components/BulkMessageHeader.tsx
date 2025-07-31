@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { EmailSignupCTA } from "@/app/pages/products/components/";
 
 import { features } from "@/app/utils/product/utils";
-import bulkmessaging from "@/app/assets/images/bulk-messaging.webp";
 
 const stats = [
   { value: "95%", label: "Delivery Rate" },
@@ -95,7 +94,9 @@ const BulkMessageHeader = () => {
             <div className="relative rounded-2xl overflow-hidden shadow-lg border border-grey-light/20 bg-white">
               <div className="aspect-[4/3]">
                 <img
-                  src={bulkmessaging}
+                  src={
+                    "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920901/unified-message_mcy7rj.webp"
+                  }
                   alt="Bulk Messaging Preview"
                   className="w-full h-full object-cover"
                   loading="eager"
