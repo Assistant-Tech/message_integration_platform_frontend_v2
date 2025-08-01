@@ -1,5 +1,5 @@
 import { Theme } from "@radix-ui/themes";
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, memo } from "react";
 
 import {
   Footer,
@@ -22,10 +22,22 @@ import { useBanner } from "@/app/context/BannerContext";
 import { useWindowSize } from "react-use";
 import ChatToggleButton from "../components/common/ChatToggleButton";
 
+// Lazy load heavy components
 const ChatBot = lazy(() => import("@/app/pages/landing/ChatBot"));
 const Testimonials = lazy(() => import("@/app/pages/landing/Testimonials"));
 
-// const BANNER_HEIGHT = 68;
+// Memoized loading components for better performance
+const LoadingSpinner = memo(() => (
+  <div className="flex justify-center items-center py-8">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  </div>
+));
+
+const LoadingTestimonials = memo(() => (
+  <div className="flex justify-center items-center py-8">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  </div>
+));
 
 const LandingContent = () => {
   const { bannerVisible } = useBanner();
@@ -39,7 +51,7 @@ const LandingContent = () => {
     { element: <MainFeature /> },
     {
       element: (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<LoadingSpinner />}>
           <ChatBot />
         </Suspense>
       ),
@@ -50,7 +62,7 @@ const LandingContent = () => {
     { element: <OrderManagement /> },
     {
       element: (
-        <Suspense fallback={<div>Loading testimonials...</div>}>
+        <Suspense fallback={<LoadingTestimonials />}>
           <Testimonials />
         </Suspense>
       ),

@@ -53,11 +53,18 @@
     <!-- Canonical link: avoids SEO penalties for duplicate content -->
     <link rel="canonical" href="https://chatblix.com/" />
 
-    <!-- Google Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Preload critical resources -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700&display=swap"></noscript>
+    
+    <!-- Preload hero images -->
+    <link rel="preload" as="image" href="https://res.cloudinary.com/dtoqwn0gx/image/upload/w_800/v1753920902/dash1_qvgd1t.png" media="(min-width: 768px)">
+    <link rel="preload" as="image" href="https://res.cloudinary.com/dtoqwn0gx/image/upload/w_400/v1753920902/dash1_qvgd1t.png" media="(max-width: 767px)">
+    
+    <!-- DNS prefetch for external domains -->
+    <link rel="dns-prefetch" href="//res.cloudinary.com">
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
 
     <title>Chatblix | Unified Messaging Solution</title>
   </head>
