@@ -23,39 +23,6 @@ const DashboardPreview: React.FC = () => {
   return (
     <div ref={containerRef} className="relative pb-32 bg-primary-light -z-50">
       <div className="relative">
-        {/* Reduced number of animated blobs for better performance */}
-        <motion.div
-          className="absolute w-96 h-96 bg-primary opacity-70 rounded-full blur-xl bottom-0 left-0"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.7 }}
-          transition={{
-            duration: 2,
-            delay: 0.5,
-          }}
-        />
-
-        {/* Top right mesh blob */}
-        <motion.div
-          className="absolute w-96 h-96 bg-primary-dark opacity-40 rounded-full blur-3xl bottom-0 right-10"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.4 }}
-          transition={{
-            duration: 2,
-            delay: 1,
-          }}
-        />
-
-        {/* Center mesh blob */}
-        <motion.div
-          className="absolute w-80 h-80 bg-primary opacity-30 rounded-full blur-3xl top-[50%] left-2/3 translate(-50%, -50%)"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.3 }}
-          transition={{
-            duration: 2,
-            delay: 1.5,
-          }}
-        />
-
         <motion.div
           ref={ref}
           style={{ y, opacity }}
@@ -81,11 +48,9 @@ const DashboardPreview: React.FC = () => {
               className="relative transform-gpu p-2 border-4 border-base-white rounded-lg"
             >
               <img
-                src="https://res.cloudinary.com/dtoqwn0gx/image/upload/w_800/v1753920902/dash1_qvgd1t.png"
+                src="https://res.cloudinary.com/dtoqwn0gx/image/upload/v1754284164/dash1_nvbxo9.png"
                 srcSet="
-                  https://res.cloudinary.com/dtoqwn0gx/image/upload/w_600/v1753920902/dash1_qvgd1t.png 600w,
-                  https://res.cloudinary.com/dtoqwn0gx/image/upload/w_800/v1753920902/dash1_qvgd1t.png 800w,
-                  https://res.cloudinary.com/dtoqwn0gx/image/upload/w_1000/v1753920902/dash1_qvgd1t.png 1000w
+                  https://res.cloudinary.com/dtoqwn0gx/image/upload/v1754284164/dash1_nvbxo9.png 600w,
                 "
                 sizes="(max-width: 768px) 100vw, 50vw"
                 loading="eager"
@@ -112,11 +77,9 @@ const DashboardPreview: React.FC = () => {
               className="relative transform-gpu -ml-10 mt-8 p-2 border-4 border-base-white rounded-lg"
             >
               <img
-                src="https://res.cloudinary.com/dtoqwn0gx/image/upload/w_600/v1753920903/dash2_wuvsmu.webp"
+                src="https://res.cloudinary.com/dtoqwn0gx/image/upload/v1754284165/dash2_nzxj83.png"
                 srcSet="
-                  https://res.cloudinary.com/dtoqwn0gx/image/upload/w_400/v1753920903/dash2_wuvsmu.webp 400w,
-                  https://res.cloudinary.com/dtoqwn0gx/image/upload/w_600/v1753920903/dash2_wuvsmu.webp 600w,
-                  https://res.cloudinary.com/dtoqwn0gx/image/upload/w_800/v1753920903/dash2_wuvsmu.webp 800w
+                  https://res.cloudinary.com/dtoqwn0gx/image/upload/v1754284165/dash2_nzxj83.png 600w,
                 "
                 sizes="(max-width: 768px) 100vw, 40vw"
                 alt="Dashboard 2"
@@ -124,7 +87,7 @@ const DashboardPreview: React.FC = () => {
                 decoding="async"
                 fetchPriority="low"
                 width="600"
-                height="450"
+                height="550"
                 className="w-lg h-auto object-cover rounded-2xl shadow-2xl 
                           hover:shadow-3xl transition-shadow duration-100
                           border border-white/20"

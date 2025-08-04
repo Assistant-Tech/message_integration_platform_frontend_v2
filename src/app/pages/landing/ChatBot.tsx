@@ -1,6 +1,5 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Box, Flex } from "@radix-ui/themes";
 import { AnimatedProcessCard } from "@/app/components/animation";
 import { Badge, Button } from "@/app/components/ui";
 
@@ -34,7 +33,10 @@ const ChatBot: React.FC = () => {
   ];
 
   return (
-    <Box className="pt-20 mb-20" id="chatbot">
+    <motion.div
+      className="pt-10 md:pt-16 lg:pt-20 mb-10 md:mb-16 lg:mb-20"
+      id="chatbot"
+    >
       <motion.div
         className="w-full"
         variants={containerVariants}
@@ -42,31 +44,30 @@ const ChatBot: React.FC = () => {
         whileInView="visible"
         viewport={{ once: true }}
       >
-        <Flex
-          direction={{ initial: "column", lg: "row" }}
-          align="center"
-          justify="between"
-          gap="8"
-          className="relative"
-        >
+        <motion.div className="flex flex-col md:flex-col lg:flex-row items-center justify-between gap-6 relative">
           {/* Left Section: Image + Animation */}
           <motion.div
             variants={itemVariants}
-            className="relative w-full lg:w-1/2 px-4 md:px-16 lg:px-0"
+            className="relative w-full md:w-full lg:w-[70vw] px-4 md:px-0 lg:px-0"
           >
-            {/* Floating Animated Cards */}
-            <div className="absolute left-0 lg:-left-10 top-20 -translate-y-1/2 z-10">
+            {/* Floating Animated Cards - Responsive positioning */}
+            <div className="absolute left-0 lg:-left-10 top-10 md:top-16 lg:top-20 -translate-y-1/2 z-10 hidden sm:block">
+              <AnimatedProcessCard processes={processes} />
+            </div>
+
+            {/* Mobile Floating Cards - Show only on mobile */}
+            <div className="absolute left-4 top-4 z-10 sm:hidden">
               <AnimatedProcessCard processes={processes} />
             </div>
 
             {/* Image */}
-            <figure className="w-full">
+            <figure className="w-full flex justify-center">
               <img
                 src={
                   "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920901/createbot_butboe.webp"
                 }
                 alt="Create Bot"
-                className="w-full h-auto object-fill max-w-[720px] max-h-[550px]"
+                className="w-full h-40 md:h-40 lg:h-40 object-contain"
                 loading="lazy"
                 width="620"
                 height="450"
@@ -77,13 +78,15 @@ const ChatBot: React.FC = () => {
           {/* Right Section: Text & CTA */}
           <motion.div
             variants={itemVariants}
-            className="w-full lg:w-1/2 max-w-2xl px-4"
+            className="w-full md:w-full lg:w-full px-4 md:px-8 lg:px-14"
           >
-            <Badge title="AI DRIVEN CHATBOTS " />
+            <div className="flex xs:justify-start sm:justify-center md:justify-center lg:justify-start items-center">
+              <Badge title="AI DRIVEN CHATBOTS " />
+            </div>
 
             <motion.h1
               variants={itemVariants}
-              className="h2-bold-40 text-grey pt-4"
+              className="h2-bold-40 text-grey pt-4 xs:text-start sm:text-center md:text-center lg:text-start"
             >
               Create Your Chatbots in{" "}
               <span className="text-primary">Minutes</span>
@@ -91,7 +94,7 @@ const ChatBot: React.FC = () => {
 
             <motion.p
               variants={itemVariants}
-              className="h4-regular-24 text-grey-medium pt-4"
+              className="h4-regular-24 text-grey-medium pt-4 xs:text-start sm:text-center md:text-center lg:text-start"
             >
               Create chatbots for sales, support, and more. Build intelligent
               conversational experiences that engage your customers 24/7 with
@@ -101,44 +104,53 @@ const ChatBot: React.FC = () => {
             {/* CTA Buttons */}
             <motion.div
               variants={itemVariants}
-              className="flex flex-wrap gap-4 pt-6"
+              className="flex gap-3 md:gap-4 pt-6 justify-center md:justify-center lg:justify-start"
             >
-              <Button label="Start Free Trial" className="cursor-pointer" />
+              <Button
+                label="Start Free Trial"
+                className="cursor-pointer w-full sm:w-auto p-3"
+              />
               <Button
                 label="Book a Demo"
                 variant="outlined"
-                className="cursor-pointer"
+                className="cursor-pointer w-full sm:w-auto p-3"
               />
             </motion.div>
 
             {/* Stats */}
             <motion.div
               variants={itemVariants}
-              className="flex flex-wrap gap-6 pt-8"
+              className="flex flex-wrap gap-4 md:gap-6 pt-6 md:pt-8 justify-center md:justify-center lg:justify-start"
             >
-              <div className="text-center min-w-[90px]">
-                <div className="text-2xl font-bold text-primary-inactive">
+              <div className="text-center min-w-[80px] md:min-w-[90px]">
+                <div className="text-xl md:text-2xl font-bold text-primary-inactive">
                   10k+
                 </div>
-                <div className="text-sm text-primary-dark">Active Chatbots</div>
+                <div className="text-xs md:text-sm text-primary-dark">
+                  Active Chatbots
+                </div>
               </div>
-              <div className="text-center min-w-[90px]">
-                <div className="text-2xl font-bold text-primary-inactive">
+              <div className="text-center min-w-[80px] md:min-w-[90px]">
+                <div className="text-xl md:text-2xl font-bold text-primary-inactive">
                   99.9%
                 </div>
-                <div className="text-sm text-primary-dark">Uptime</div>
+                <div className="text-xs md:text-sm text-primary-dark">
+                  Uptime
+                </div>
               </div>
-              <div className="text-center min-w-[90px]">
-                <div className="text-2xl font-bold text-primary-inactive">
+              <div className="text-center min-w-[80px] md:min-w-[90px]">
+                <div className="text-xl md:text-2xl font-bold text-primary-inactive">
                   24/7
                 </div>
-                <div className="text-sm text-primary-dark">Support</div>
+                <div className="text-xs md:text-sm text-primary-dark">
+                  Support
+                </div>
               </div>
             </motion.div>
           </motion.div>
-        </Flex>
+        </motion.div>
       </motion.div>
-    </Box>
+    </motion.div>
   );
 };
 

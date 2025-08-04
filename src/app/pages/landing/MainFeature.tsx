@@ -12,9 +12,9 @@ const MainFeature = () => {
         className="gap-4"
       >
         {/* Typography Section */}
-        <Box className="lg:max-w-lg max-w-full">
+        <Box className="lg:max-w-7xl max-w-full">
           <div className="flex lg:justify-start lg:items-start justify-center items-center">
-            <Badge title="USE IT ANYWHERE, ANYTIME " />
+            <Badge title="USE IT ANYWHERE, ANYTIME" />
           </div>
           <h1
             color="gray"
@@ -52,3 +52,4 @@ const MainFeature = () => {
 };
 
 export default MainFeature;
+

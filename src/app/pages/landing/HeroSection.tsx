@@ -16,19 +16,16 @@ const HeroSection: React.FC = () => {
     >
       {/* Background abstract shapes - reduced animation complexity */}
       <div className="absolute inset-0 overflow-hidden -z-10">
-        <motion.div 
+        <motion.div
           className="absolute top-40 -left-14"
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.4 }}
           transition={{ duration: 1, delay: 0.5 }}
         >
-          <Circle
-            className="w-24 h-24 md:w-24 md:h-24"
-            color="teal"
-          />
+          <Circle className="w-24 h-24 md:w-24 md:h-24" color="teal" />
         </motion.div>
 
-        <motion.div 
+        <motion.div
           className="absolute -top-10 -right-10"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 0.4, scale: 1 }}
@@ -60,11 +57,9 @@ const HeroSection: React.FC = () => {
       {/* Mobile/tablet image preview (only for smaller than md) */}
       <div className="relative flex md:hidden z-10 -mt-20 px-4">
         <img
-          src="https://res.cloudinary.com/dtoqwn0gx/image/upload/w_400/v1753920902/dash1_qvgd1t.png"
+          src="https://res.cloudinary.com/dtoqwn0gx/image/upload/v1754284164/dash1_nvbxo9.png"
           srcSet="
-            https://res.cloudinary.com/dtoqwn0gx/image/upload/w_300/v1753920902/dash1_qvgd1t.png 300w,
-            https://res.cloudinary.com/dtoqwn0gx/image/upload/w_400/v1753920902/dash1_qvgd1t.png 400w,
-            https://res.cloudinary.com/dtoqwn0gx/image/upload/w_600/v1753920902/dash1_qvgd1t.png 600w
+            https://res.cloudinary.com/dtoqwn0gx/image/upload/v1754284164/dash1_nvbxo9.png 300w,
           "
           sizes="(max-width: 480px) 100vw, 50vw"
           alt="Dashboard 1"
@@ -72,22 +67,6 @@ const HeroSection: React.FC = () => {
           height="300"
           loading="eager"
           className="w-full h-auto object-cover shadow-2xl rounded
-               hover:shadow-3xl transition-shadow duration-300
-               border border-white/20"
-        />
-        <img
-          src="https://res.cloudinary.com/dtoqwn0gx/image/upload/w_200/v1753920903/dash2_wuvsmu.webp"
-          srcSet="
-            https://res.cloudinary.com/dtoqwn0gx/image/upload/w_150/v1753920903/dash2_wuvsmu.webp 150w,
-            https://res.cloudinary.com/dtoqwn0gx/image/upload/w_200/v1753920903/dash2_wuvsmu.webp 200w,
-            https://res.cloudinary.com/dtoqwn0gx/image/upload/w_300/v1753920903/dash2_wuvsmu.webp 300w
-          "
-          sizes="(max-width: 480px) 50vw, 25vw"
-          alt="Dashboard 2"
-          width="200"
-          height="150"
-          loading="lazy"
-          className="w-1/2 h-auto object-cover rounded shadow-2xl 
                hover:shadow-3xl transition-shadow duration-300
                border border-white/20"
         />
