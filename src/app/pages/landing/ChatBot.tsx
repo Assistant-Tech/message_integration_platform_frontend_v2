@@ -27,10 +27,10 @@ const itemVariants = {
 
 const ChatBot: React.FC = () => {
   const processes = [
-    "Chatbot Process One",
-    "Chatbot Process Two",
-    "Chatbot Process Three",
-    "Chatbot Process Four",
+    "Step 1 : Sign Up",
+    "Step 2 : Onboarding",
+    "Step 3 : Create Chatbot",
+    "Step 4 : Add datasets to bot",
   ];
 
   return (
