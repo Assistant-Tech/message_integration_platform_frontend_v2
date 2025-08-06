@@ -1,0 +1,131 @@
+import React from "react";
+import { useForm, useFieldArray } from "react-hook-form";
+import {
+  ProductInfo,
+  ProductImages,
+  ProductDescription,
+  ProductVisibility,
+  ActionButtons,
+  ProductVariants,
+} from "@/app/features/dashboard/admin/component/product/form";
+import { ProductFormData } from "@/app/types/product";
+import { Breadcrumb } from "@/app/components/ui";
+import { Heading } from "@/app/features/dashboard/admin/component/ui/";
+import { APP_ROUTES } from "@/app/constants/routes";
+
+const CreateProductPage: React.FC = () => {
+  const ProductsCrumbs = [
+    { label: "All Products", href: APP_ROUTES.ADMIN.PRODUCTS_ALL },
+    { label: "Create Product" },
+  ];
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    control,
+    formState: { errors, isSubmitting },
+  } = useForm<ProductFormData>({
+    defaultValues: {
+      name: "",
+      category: "",
+      sku: "",
+      weight: "",
+      weightUnit: "g",
+      quantity: "",
+      price: "",
+      currency: "Rupees",
+      discountPercentage: "",
+      discountAmount: "",
+      description: "",
+      visibility: "publish",
+      publishDate: "",
+      variants: [],
+      images: null,
+    },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "variants",
+  });
+
+  const watchVisibility = watch("visibility");
+
+  const onSubmit = async (data: ProductFormData) => {
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      console.log("✅ Product saved!", data);
+      alert("Product saved successfully!");
+    } catch (error) {
+      console.error("❌ Error:", error);
+    }
+  };
+
+  const handleClearAll = () => {
+    setValue("name", "");
+    setValue("category", "");
+    setValue("sku", "");
+    setValue("weight", "");
+    setValue("quantity", "");
+    setValue("price", "");
+    setValue("discountPercentage", "");
+    setValue("discountAmount", "");
+    setValue("description", "");
+    setValue("variants", []);
+    setValue("images", null);
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-light p-6">
+      <div className="mb-6">
+        <div className="flex flex-col justify-start items-start mb-3 gap-3">
+          <Heading title="Products" align="left" className="text-base-black" />
+          <Breadcrumb items={ProductsCrumbs} />
+        </div>
+      </div>
+
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left Side */}
+          <div className="lg:col-span-2 flex flex-col gap-6 h-full">
+            <ProductInfo
+              register={register}
+              errors={errors}
+              setValue={setValue}
+            />
+          </div>
+
+          {/* Right Side */}
+          <div className="flex flex-col gap-6 h-full">
+            <ProductDescription register={register} />
+            <ProductVisibility
+              register={register}
+              watchVisibility={watchVisibility}
+            />
+          </div>
+        </div>
+
+        <div className="mt-6">
+          <ProductImages setValue={setValue} />
+        </div>
+
+        <div className="mt-6">
+          <ProductVariants
+            register={register}
+            fields={fields}
+            append={append}
+            remove={remove}
+          />
+        </div>
+
+        <div className="mt-6 w-full flex justify-end items-end">
+          <ActionButtons isSubmitting={isSubmitting} onClear={handleClearAll} />
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default CreateProductPage;
