@@ -20,11 +20,9 @@ import { ProductLayout, ResourceLayout } from "@/app/components/layout";
 // Feature Login
 import {
   ForgetPassword,
-  LoginOTP,
   LoginPage,
   RegisterPage,
   ResetPassword,
-  VerifyEmail,
   OnboardingForm,
 } from "@/app/features/auth";
 import {
@@ -34,6 +32,7 @@ import {
   OnboardingStep4,
   OnboardingStep5,
 } from "@/app/features/auth/pages/onboarding/steps";
+import VerifyEmail from "../features/auth/pages/VerifyEmail";
 
 const PublicRoutes = () => {
   return (
@@ -80,10 +79,6 @@ const PublicRoutes = () => {
         />
       </Route>
 
-      {/* OTP */}
-      {/* For now -> test ko lagi matrei later on wrapped in protected Routes */}
-      <Route path={APP_ROUTES.PUBLIC.LOGIN_OTP} element={<LoginOTP />} />
-
       {/* Product Routes */}
       <Route
         path={APP_ROUTES.PUBLIC.PRODUCTS_OVERVIEW}
@@ -124,11 +119,11 @@ const PublicRoutes = () => {
       {/* About Us Routes */}
       <Route path={APP_ROUTES.PUBLIC.ABOUT} element={<AboutUs />} />
 
-      {/* Verify Email */}
-      <Route path={APP_ROUTES.PUBLIC.VERIFY_EMAIL} element={<VerifyEmail />} />
-
       {/* Pricing Routes */}
       <Route path={APP_ROUTES.PUBLIC.PRICING} element={<PricingPage />} />
+
+      {/* Verify Email */}
+      <Route path="/verify/:token" element={<VerifyEmail />} />
 
       {/* 401 - UnAuth Page  */}
       <Route path={APP_ROUTES.PUBLIC.UNAUTHORIZED} element={<Unauthorized />} />

@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import { PublicLayout } from "./components/layout";
 import { Loading } from "@/app/components/common";
 
-import { PublicRoutes, AdminRoutes, UserRoutes } from "@/app/router/";
+import { PublicRoutes, AdminRoutes, UserRoutes, AuthRoutes } from "@/app/router/";
 import DashboardLayout from "./features/dashboard/admin/component/DashboardLayout";
 
 const AppRoutes = () => {
@@ -14,6 +14,9 @@ const AppRoutes = () => {
         <Route path="/*" element={<PublicLayout />}>
           <Route path="*" element={<PublicRoutes />} />
         </Route>
+
+        {/* Auth routes (separated from public) */}
+        <Route path="/auth/*" element={<AuthRoutes />} />
 
         {/* Admin routes under admin layout */}
         <Route path="/admin" element={<DashboardLayout />}>

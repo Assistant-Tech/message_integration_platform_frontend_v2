@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Plan, APIDuration, Currency } from "@/app/types/plan";
-import api from "@/app/services/api/auth";
+import api from "@/app/services/api/api";
 
 export const usePlans = (duration: APIDuration, currency: Currency) => {
   return useQuery({

@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { APP_ROUTES } from "@/app/constants/routes";
-import logo from "@/app/assets/logo.svg";
 
 interface LogoProps {
   className?: string;
@@ -13,14 +12,12 @@ const Logo: React.FC<LogoProps> = ({ className = "" }) => (
   >
     <figure className="flex justify-center items-center gap-2">
       <img
-        src={logo}
-        className="h-12 w-12 text-primary"
-        alt="Assistant Tech Logo"
+        src="https://res.cloudinary.com/dtoqwn0gx/image/upload/v1751347733/Chatblix_Logo_xtkjmp.png"
+        className="w-36 md:w-48 lg:w-52"
+        alt="ChatBlix Logo"
       />
-      <h1 className="text-base sm:text-lg xl:text-2xl font-bold font-nunito">
-        ASSISTANT <span className="text-secondary">TECH</span>
-      </h1>
     </figure>
   </Link>
 );
+
 export default Logo;

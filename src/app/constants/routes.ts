@@ -13,8 +13,6 @@ export const APP_ROUTES = {
     DEMO: "/demo",
     FORGOT_PASSWORD: "/forgot-password",
     RESET_PASSWORD: "/reset-password",
-    VERIFY_EMAIL: "/verify-email",
-    LOGIN_OTP: "/login-otp",
 
     // Onboarding [[/onboarding]]
     ONBOARDING_FORM: "/onboardingform",
@@ -47,6 +45,13 @@ export const APP_ROUTES = {
     TERMSCONDITION: "/resources/support/terms&condition",
     POLICY: "/resources/support/policy",
     UPDATES: "/resources/support/updates",
+  },
+
+  // Auth routes (migrated from PUBLIC)
+  AUTH: {
+    VERIFY_EMAIL: "/verify/:token",
+    CHECK_EMAIL: "/auth/check-email",
+    LOGIN_OTP: "/auth/login-otp",
   },
 
   // Admin routes

@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 import {
   registerSchema,
@@ -11,8 +12,11 @@ import {
 import { Agreement, Button, Input } from "@/app/components/ui";
 import CheckItem from "@/app/features/auth/components/ui/CheckItem";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
+import api from "@/app/services/api/api";
+import { APP_ROUTES } from "@/app/constants/routes";
 
 const RegisterForm = () => {
+  const navigate = useNavigate();
   const [showPasswordChecks, setShowPasswordChecks] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
@@ -37,10 +41,23 @@ const RegisterForm = () => {
     hasSpecialChar: /[@$!%*?&]/.test(password),
   };
 
-  const onSubmit = (data: RegisterFormData) => {
-    toast.success("Account created successfully!");
-    console.log("Register Submitted:", data);
-    reset();
+  const onSubmit = async (data: RegisterFormData) => {
+    try {
+      await api.post("/auth/signup", {
+        name: data.fullName,
+        email: data.email,
+        password: data.password,
+        confirmPassword: data.confirmPassword,
+      });
+      toast.success("Account created successfully!");
+      reset();
+      navigate(APP_ROUTES.AUTH.CHECK_EMAIL, { state: { email: data.email } });
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message ||
+          "Registration failed. Please try again.",
+      );
+    }
   };
 
   const onError = () => {
@@ -63,14 +80,6 @@ const RegisterForm = () => {
         placeholder="Enter your email address"
         {...register("email")}
         error={errors.email?.message}
-      />
-
-      {/* Phone Number */}
-      <Input
-        label="Phone Number"
-        placeholder="Enter your phone number"
-        {...register("phoneNumber")}
-        error={errors.phoneNumber?.message}
       />
 
       {/* Password */}

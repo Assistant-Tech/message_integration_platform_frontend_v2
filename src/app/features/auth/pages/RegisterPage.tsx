@@ -83,7 +83,7 @@ const RegisterPage = () => {
 
           {/* Copyright */}
           <p className="h5-bold-16 text-grey-medium mt-4 text-center">
-            © 2025 Assistant Tech. All Rights Reserved
+            © 2025 Chatblix. All Rights Reserved
           </p>
         </div>
       </div>

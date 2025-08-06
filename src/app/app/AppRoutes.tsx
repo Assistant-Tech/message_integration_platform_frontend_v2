@@ -1,0 +1,1 @@
+import CheckEmail from "@/app/features/auth/pages/CheckEmail";

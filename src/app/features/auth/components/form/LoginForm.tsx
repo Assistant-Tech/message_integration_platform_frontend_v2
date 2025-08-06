@@ -187,7 +187,7 @@ const LoginPage = () => {
 
       {/* Copyright */}
       <p className="text-center text-xs text-gray-400 mt-4">
-        © 2025 Assistant Tech. All Rights Reserved
+        © 2025 Chatblix. All Rights Reserved
       </p>
     </form>
   );
