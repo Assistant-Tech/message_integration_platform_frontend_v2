@@ -1,1 +1,1 @@
-export { default as CheckItem } from "./CheckItem";
+export { default as CheckItem } from "./CheckItem"

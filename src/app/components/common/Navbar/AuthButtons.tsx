@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/app/components/ui";
 import { APP_ROUTES } from "@/app/constants/routes";
-import { useDemoDialogStore } from "@/app/store/useDemoDialogStore";
+import { useDemoDialogStore } from "@/app/store/DemoDialogStore";
 
 interface AuthButtonsProps {
   isMobile?: boolean;
