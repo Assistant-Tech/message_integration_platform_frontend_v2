@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, X } from "lucide-react";
 import { z } from "zod";
 
 import {
@@ -313,7 +313,15 @@ const OnboardingStep4: React.FC = () => {
                 {/* Deletion Confirmation */}
                 {showConfirmDialog && fileToRemoveIndex !== null && (
                   <div className="fixed inset-0 z-50 bg-black/65 bg-opacity-90 flex items-center justify-center">
-                    <div className="bg-white rounded-lg text-center shadow-lg p-6 max-w-md w-full">
+                    <div className="bg-white rounded-lg text-center shadow-lg p-6 max-w-md w-full relative">
+                      {/* Close Button */}
+                      <div
+                        className="absolute top-0 right-2 p-4 cursor-pointer"
+                        onClick={cancelRemoveUpload}
+                      >
+                        <X size={24} color="grey" />
+                      </div>
+
                       {/* Danger Icon */}
                       <figure className="flex justify-center items-center pb-4">
                         <img

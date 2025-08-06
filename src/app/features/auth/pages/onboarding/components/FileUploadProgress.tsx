@@ -20,7 +20,7 @@ const FileUploadProgress: React.FC<{
       {uploads?.map((upload, index) => (
         <div
           key={index}
-          className="bg-white border border-grey-light rounded-lg p-4"
+          className="bg-base-white border border-grey-light rounded-lg p-4"
         >
           {/* File Info Header */}
           <div className="flex items-center justify-between text-start">

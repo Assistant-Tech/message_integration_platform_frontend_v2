@@ -31,6 +31,7 @@ interface AddMembersErrors {
 const OnboardingStep5: React.FC = () => {
   const navigate = useNavigate();
   const { data, setStepData, setCompletedSteps, reset } = useOnboardingStore();
+  console.log("🚀 ~ data:", data);
 
   const currentStep = 5;
 
@@ -145,9 +146,9 @@ const OnboardingStep5: React.FC = () => {
               {/* Member Input Fields */}
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                  <div className="font-semibold text-grey">Name</div>
-                  <div className="font-semibold text-grey">Role</div>
-                  <div className="font-semibold text-grey">Email</div>
+                  <div className="body-bold-16 text-grey">Name</div>
+                  <div className="body-bold-16 text-grey">Role</div>
+                  <div className="body-bold-16 text-grey">Email</div>
                 </div>
 
                 {formData.members.map((member, index) => (
@@ -163,7 +164,7 @@ const OnboardingStep5: React.FC = () => {
                       <div className="relative">
                         <select
                           className={cn(
-                            "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary appearance-none bg-white",
+                            "w-full px-3 py-2 border border-grey-light rounded-md focus:outline-none focus:ring-2 focus:ring-primary appearance-none bg-base-white",
                             member.role
                               ? "text-grey-medium"
                               : "text-grey-light",
@@ -174,10 +175,18 @@ const OnboardingStep5: React.FC = () => {
                           }
                         >
                           <option value="">Select Role</option>
-                          <option value="Admin">Admin</option>
-                          <option value="Manager">Manager</option>
-                          <option value="Employee">Employee</option>
-                          <option value="Intern">Intern</option>
+                          <option value="Admin" className="text-grey">
+                            Admin
+                          </option>
+                          <option value="Manager" className="text-grey">
+                            Manager
+                          </option>
+                          <option value="Employee" className="text-grey">
+                            Employee
+                          </option>
+                          <option value="Intern" className="text-grey">
+                            Intern
+                          </option>
                         </select>
                         <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                           <ArrowDown size={20} color="grey" />
