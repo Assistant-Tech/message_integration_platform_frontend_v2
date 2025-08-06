@@ -1,4 +1,3 @@
-import type React from "react";
 import { forwardRef, type ButtonHTMLAttributes } from "react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/app/utils/cn";
@@ -13,10 +12,13 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     | "warning"
     | "danger"
     | "neutral"
-    | "outlined";
+    | "outlined"
+    | "none";
   redirectTo?: string;
   IconLeft?: React.ReactElement;
   IconRight?: React.ReactElement;
+  type?: "button" | "submit" | "reset";
+  loading?: boolean;
 }
 
 const variantStyles: Record<string, string> = {
@@ -25,10 +27,11 @@ const variantStyles: Record<string, string> = {
   success: "bg-success text-white hover:bg-success-dark",
   information: "bg-information text-white hover:bg-information-dark",
   warning: "bg-warning text-black hover:bg-warning-dark",
-  danger: "bg-danger text-white hover:bg-danger-light",
+  danger: "bg-danger text-white hover:bg-danger-dark",
   neutral: "bg-primary-light text-black hover:bg-primary-inactive",
   outlined:
     "bg-white border border-primary text-primary hover:text-white hover:bg-primary",
+  none: "bg:white p-0",
 };
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -41,6 +44,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       className,
       IconLeft,
       IconRight,
+      type = "button",
+      loading = false,
+      disabled,
       ...props
     },
     ref,
@@ -58,17 +64,26 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         ref={ref}
+        type={type}
         onClick={handleClick}
+        disabled={disabled || loading}
         className={cn(
-          "flex items-center justify-center gap-2 px-2 py-1 md:px-4 md:py-3 rounded-xl button-semi-bold-16 transition-colors duration-200 cursor-pointer",
+          "flex items-center justify-center gap-2 px-4 py-3 sm:py-2 min-h-[48px] rounded-xl button-semi-bold-16 transition-colors duration-200 cursor-pointer",
           variantStyles[variant],
-          className, 
+          (disabled || loading) && "opacity-50 cursor-not-allowed",
+          className,
         )}
         {...props}
       >
-        {IconLeft && <span>{IconLeft} </span>}
-        <span>{label}</span>
-        {IconRight && <span>{IconRight} </span>}
+        {loading ? (
+          <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
+        ) : (
+          <>
+            {IconLeft && <span>{IconLeft}</span>}
+            <span>{label}</span>
+            {IconRight && <span>{IconRight}</span>}
+          </>
+        )}
       </button>
     );
   },

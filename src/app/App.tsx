@@ -1,15 +1,19 @@
 import { BrowserRouter } from "react-router-dom";
+import { Toaster } from "sonner";
 
 import "@/app/styles/globals.css";
 import AppRoutes from "@/app/AppRoutes";
 import ErrorBoundary from "@/app/ErrorBoundary";
+import { ScrollToTop } from "@/app/hooks/ui/ScrollToTop";
 
 const App = () => {
   return (
     <ErrorBoundary>
       <BrowserRouter>
-        <div className="min-h-screen">
+        <ScrollToTop />
+        <div>
           <AppRoutes />
+          <Toaster position="top-right" richColors />
         </div>
       </BrowserRouter>
     </ErrorBoundary>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { footerLinks, SocialFooter } from "@/app/utils/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { Logo } from "@/app/components/ui";
+import { Logo, StoreButtons } from "@/app/components/ui";
 import { ChevronDown } from "lucide-react";
 import play from "@/app/assets/icons/play.svg";
 import app from "@/app/assets/icons/app.svg";
@@ -22,6 +22,10 @@ const itemVariants = {
     transition: { duration: 0.5 },
   },
 };
+const storeLinks = [
+  { img: app, label: "App Store" },
+  { img: play, label: "Google Play" },
+];
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -32,10 +36,13 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-primary-light pt-10">
+    <footer
+      className="bg-primary-light pt-10 w-full sticky"
+      id="footer-observer"
+    >
       <div>
         {/* Top */}
-        <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-x-40 w-full max-w-[1600px] mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-x-40 w-full max-w-[1600px] mx-auto">
           {/* Brand */}
           <div className="flex flex-col items-center text-center md:items-start md:text-left">
             <motion.div
@@ -53,22 +60,7 @@ const Footer = () => {
 
             {/* Store Buttons */}
             <div className="flex flex-col gap-2 w-48 pb-6">
-              {[
-                { img: app, label: "App Store" },
-                { img: play, label: "Google Play" },
-              ].map((store, i) => (
-                <motion.div
-                  key={i}
-                  whileHover={{ scale: 1.1 }}
-                  className="bg-black text-white px-3 py-1 rounded-lg flex items-center gap-2 h-14 cursor-pointer"
-                >
-                  <img src={store.img} alt="" />
-                  <div className="flex flex-col">
-                    <span>Available on the</span>
-                    <span className="ml-1 font-bold">{store.label}</span>
-                  </div>
-                </motion.div>
-              ))}
+              <StoreButtons stores={storeLinks} />
             </div>
           </div>
 
@@ -99,16 +91,14 @@ const Footer = () => {
                           transition={{ duration: 0.2 }}
                           className="overflow-hidden pl-2 py-2 space-y-2"
                         >
-                          {(footerLinks as any)[section].map(
-                            (link: any, index: number) => (
+                          {footerLinks[section as keyof typeof footerLinks].map(
+                            (link, index: number) => (
                               <li key={index}>
                                 <a
                                   href={link.url}
                                   className="text-grey transition-colors flex items-center text-sm"
                                 >
-                                  {link.icon && (
-                                    <span className="mr-2">{link.icon}</span>
-                                  )}
+                                  {link.icon && <link.icon className="mr-2" />}
                                   {link.name}
                                 </a>
                               </li>
@@ -133,17 +123,20 @@ const Footer = () => {
                     variants={containerVariants}
                     aria-label={section}
                   >
-                    <h3 className="body-bold-16 capitalize text-base-black mb-4">{section}</h3>
+                    <h3 className="body-bold-16 capitalize text-base-black mb-4">
+                      {section}
+                    </h3>
                     <ul className="space-y-4">
-                      {(footerLinks as any)[section].map(
-                        (link: any, index: number) => (
+                      {footerLinks[section as keyof typeof footerLinks].map(
+                        (link, index: number) => (
                           <motion.li key={index} variants={itemVariants}>
                             <a
+                              key={link.name}
                               href={link.url}
-                              className="hover:text-primary transition-colors flex items-center h4-regular-16"
+                              className="flex items-center text-sm text-muted-foreground hover:underline"
                             >
                               {link.icon && (
-                                <span className="mr-2">{link.icon}</span>
+                                <link.icon className="mr-2 w-4 h-4" />
                               )}
                               {link.name}
                             </a>
@@ -159,7 +152,7 @@ const Footer = () => {
         </div>
 
         {/* Bottom */}
-        <div className="bg-primary text-white flex flex-col md:flex-row justify-between items-center gap-4 px-4 md:px-36 py-6">
+        <div className="bg-primary text-white flex flex-col md:flex-row justify-between items-center gap-4 px-4 md:px-40 py-6">
           {/* Copyright */}
           <motion.p
             initial={{ opacity: 0 }}

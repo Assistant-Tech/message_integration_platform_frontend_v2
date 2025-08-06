@@ -1,6 +1,5 @@
-import { Slot } from "@radix-ui/react-slot";
-import { useState, ReactNode } from "react";
-import { MessageSquare } from "lucide-react";
+import { Slot } from "@radix-ui/themes";
+import { ReactNode } from "react";
 
 type BorderRadiusType = "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "full";
 type ElevationType = "none" | "sm" | "md" | "lg" | "xl";
@@ -16,6 +15,7 @@ interface CardProps {
   animated?: boolean;
   elevation?: ElevationType;
   asChild?: boolean;
+  className?: string;
 }
 
 const borderRadiusClasses: Record<BorderRadiusType, string> = {
@@ -46,6 +46,7 @@ const Card = ({
   animated = false,
   elevation = "md",
   asChild = false,
+  className = "",
 }: CardProps) => {
   const Comp = asChild ? Slot : "div";
 
@@ -55,7 +56,7 @@ const Card = ({
 
   return (
     <Comp
-      className={`w-full max-w-sm lg:max-w-md h-80 sm:h-72 px-12 py-12 sm:py-8 flex flex-col justify-between ${borderRadiusClasses[borderRadius]} ${shadowClasses[elevation]} ${animationClasses} cursor-pointer bg-primary`}
+      className={`w-full max-w-sm lg:max-w-md h-80 sm:h-72 px-12 py-12 sm:py-8 flex flex-col justify-between ${borderRadiusClasses[borderRadius]} ${shadowClasses[elevation]} ${animationClasses} cursor-pointer bg-primary ${className}`}
       style={{ color: textColor }}
     >
       <div className="flex flex-col h-auto">

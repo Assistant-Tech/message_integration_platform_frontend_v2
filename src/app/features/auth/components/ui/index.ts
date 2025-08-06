@@ -1,1 +1,1 @@
-export { default as DemoTextArea } from "./DemoTextArea";
+export { default as CheckItem } from "./CheckItem"

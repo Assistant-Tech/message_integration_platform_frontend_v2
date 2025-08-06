@@ -6,22 +6,27 @@
 import {
   MessageSquare,
   Users,
-  BookOpen,
   BarChart3,
-  FileText,
-  FileQuestion,
   LucideIcon,
   Clock,
   Shield,
   Zap,
-  Users2,
-  Video,
 } from "lucide-react";
+
+import crm from "@/app/assets/greenIcons/crm.svg";
+import bot from "@/app/assets/greenIcons/bot.svg";
+import unified from "@/app/assets/greenIcons/unified.svg";
+import bulk from "@/app/assets/greenIcons/bulk.svg";
+import blog from "@/app/assets/greenIcons/blogs.svg";
+import video from "@/app/assets/greenIcons/videos.svg";
+import faq from "@/app/assets/greenIcons/faq.svg";
+import support from "@/app/assets/greenIcons/support.svg";
+
 export interface DropdownItem {
-  name: string;
-  href: string;
+  name?: string;
+  href?: string;
   description?: string;
-  icon?: React.ComponentType<{ className?: string }>;
+  icon?: string;
 }
 export interface NavigationItem {
   id: number;
@@ -29,7 +34,7 @@ export interface NavigationItem {
   description?: string;
   href?: string;
   dropdown?: DropdownItem[];
-  icon?: LucideIcon;
+  icon?: string;
 }
 export const navigation: NavigationItem[] = [
   {
@@ -42,25 +47,25 @@ export const navigation: NavigationItem[] = [
         name: "CRM",
         href: "/products/crm",
         description: "Customer relationship management",
-        icon: Users,
+        icon: crm,
       },
       {
         name: "Chatbot",
         href: "/products/chatbot",
         description: "AI-powered customer support",
-        icon: MessageSquare,
+        icon: bot,
       },
       {
         name: "Unified Messaging",
         href: "/products/crm",
         description: "Vestibulum tempus imperdiet",
-        icon: Users2,
+        icon: unified,
       },
       {
         name: "Bulk Messaging",
         href: "/products/bulkmessage",
         description: "Vestibulum tempus imperdiet",
-        icon: BarChart3,
+        icon: bulk,
       },
     ],
   },
@@ -74,29 +79,29 @@ export const navigation: NavigationItem[] = [
         name: "Blogs",
         href: "/resources/blogs",
         description: "API docs and guides",
-        icon: BookOpen,
+        icon: blog,
       },
       {
         name: "Videos",
         href: "/resources/videos",
         description: "Get support and answers",
-        icon: Video,
+        icon: video,
       },
       {
         name: "FAQs",
         href: "/resources/faq",
         description: "Latest news and insights",
-        icon: FileText,
+        icon: faq,
       },
       {
         name: "Support",
         href: "/resources/support",
         description: "For more questionaires",
-        icon: FileQuestion,
+        icon: support,
       },
     ],
   },
-  { id: 3, name: "Contact Us", href: "/contact" },
+  { id: 3, name: "About Us", href: "/aboutus" },
   { id: 4, name: "Pricing", href: "/pricing" },
 ];
 
@@ -112,15 +117,6 @@ import TelegramIcon from "@/app/assets/icons/telegram.svg";
 import X from "@/app/assets/icons/x.svg";
 import Tiktok from "@/app/assets/icons/tiktok.svg";
 import viber from "@/app/assets/icons/viber.svg";
-
-export type SocialLink = {
-  [x: string]: any;
-  name: string;
-  src: string;
-  href: string;
-  color: string;
-  size: number;
-};
 
 export const SOCIAL_LINKS_CONFIG = [
   {
@@ -170,7 +166,7 @@ export const SOCIAL_LINKS_CONFIG = [
     color: "#000",
     size: 28,
     mobileSize: 20,
-    top: "9%",
+    top: "19%",
     left: "10%",
   },
   {
@@ -454,30 +450,78 @@ export const faqData: FAQ[] = [
       "Vestibulum tempus imperdiet sem ac porttitor. Fusce nec pellentesque erat. Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, suscipit porttitor velit elementum non. Fusce nec pellentesque erat, id lobortis nunc. Donec dui leo, ultrices quis turpis nec, sollicitudin sodales",
   },
 ];
-
 /*
 ─────────────────────────────────────────────────────────────────────────────
  📦 ▶ Footer data utils
- ─────────────────────────────────────────────────────────────────────────────
+─────────────────────────────────────────────────────────────────────────────
 */
+import { Mail, Phone, MapPin } from "lucide-react";
 import fbBNW from "@/app/assets/icons/fb1.svg";
 import instaBNW from "@/app/assets/icons/in.svg";
 import LinkBNW from "@/app/assets/icons/link.svg";
 import xBNW from "@/app/assets/icons/xx.svg";
 
-export type Footer = {
+export type FooterLink = {
+  name: string;
+  url: string;
+};
+
+export type FooterContact = {
+  name: string;
+  url: string;
+  icon: LucideIcon;
+};
+
+export type FooterLinks = {
+  products: FooterLink[];
+  resources: FooterLink[];
+  pricing: FooterLink[];
+  contact: FooterContact[];
+};
+
+export type SocialLink = {
   name: string;
   src: string;
   href: string;
   color: string;
   size: number;
 };
-interface product {
-  name: string;
-  url: string;
-}
-export type FooterLinks = {
-  products: product[];
+
+export const footerLinks: FooterLinks = {
+  products: [
+    { name: "Products One", url: "#" },
+    { name: "Products Two", url: "#" },
+    { name: "Products Three", url: "#" },
+    { name: "Products Four", url: "#" },
+  ],
+  resources: [
+    { name: "FAQs", url: "#" },
+    { name: "Support", url: "#" },
+    { name: "Blogs", url: "#" },
+    { name: "Videos", url: "#" },
+  ],
+  pricing: [
+    { name: "Starter Plan", url: "#" },
+    { name: "Growth Plan", url: "#" },
+    { name: "Pro Plan", url: "#" },
+  ],
+  contact: [
+    {
+      name: "assistant@gmail.com",
+      url: "mailto:assistant@gmail.com",
+      icon: Mail,
+    },
+    {
+      name: "+977-9810000000",
+      url: "tel:+9779810000000",
+      icon: Phone,
+    },
+    {
+      name: "123 Main Street, Anytown",
+      url: "#",
+      icon: MapPin,
+    },
+  ],
 };
 
 export const SocialFooter: SocialLink[] = [
@@ -510,32 +554,141 @@ export const SocialFooter: SocialLink[] = [
     size: 44,
   },
 ];
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ ABout US data utils
+─────────────────────────────────────────────────────────────────────────────
+*/
+export const features: string[] = [
+  "Online store owners who want to reply fast on social media",
+  "Small businesses that want to support customers better",
+  "Big enterprises looking for efficiency, control and long-term value.",
+];
+export const companies: string[] = [
+  "TechCorp Solutions",
+  "Digital Dynamics",
+  "Innovation Labs",
+  "Future Systems",
+  "Cloud Ventures",
+];
 
-export const footerLinks = {
-  products: [
-    { name: "Products One", url: "#" },
-    { name: "Products Two", url: "#" },
-    { name: "Products Three", url: "#" },
-    { name: "Products Four", url: "#" },
-  ],
-  resources: [
-    { name: "FAQs", url: "#" },
-    { name: "Support", url: "#" },
-    { name: "Blogs", url: "#" },
-    { name: "Videos", url: "#" },
-  ],
-  pricing: [
-    { name: "Starter Plan", url: "#" },
-    { name: "Growth Plan", url: "#" },
-    { name: "Pro Plan", url: "#" },
-  ],
-  contact: [
-    {
-      name: "assistant@gmail.com",
-      url: "mailto:assistant@gmail.com",
-      icon: "✉️",
-    },
-    { name: "+977-9810000000", url: "tel:+9779810000000", icon: "📞" },
-    { name: "123 Main Street, Anytown", url: "#", icon: "📍" },
-  ],
-};
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ ABout US TEAM data utils
+─────────────────────────────────────────────────────────────────────────────
+*/
+
+export interface cardLink {
+  platform: "linkedin" | "instagram" | "facebook";
+  url: string;
+}
+
+export interface TeamMember {
+  name: string;
+  title: string;
+  imageUrl: string;
+  socialLinks?: cardLink[];
+  className?: string;
+}
+
+export const teamMembers: TeamMember[] = [
+  {
+    name: "Rhonda Rhodes",
+    title: "CEO",
+    imageUrl:
+      "https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    socialLinks: [
+      { platform: "facebook", url: "https://facebook.com/sarahjohnson" },
+      { platform: "instagram", url: "https://instagram.com/sarahjohnson" },
+      { platform: "linkedin", url: "https://linkedin.com/in/sarahjohnson" },
+    ],
+  },
+  {
+    name: "John Smith",
+    title: "CTO",
+    imageUrl:
+      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    socialLinks: [
+      { platform: "facebook", url: "https://facebook.com/sarahjohnson" },
+      { platform: "instagram", url: "https://instagram.com/sarahjohnson" },
+      { platform: "linkedin", url: "https://linkedin.com/in/sarahjohnson" },
+    ],
+  },
+  {
+    name: "Sarah Johnson",
+    title: "MD",
+    imageUrl:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    socialLinks: [
+      { platform: "facebook", url: "https://facebook.com/sarahjohnson" },
+      { platform: "instagram", url: "https://instagram.com/sarahjohnson" },
+      { platform: "linkedin", url: "https://linkedin.com/in/sarahjohnson" },
+    ],
+  },
+  {
+    name: "Michael Lee",
+    title: "Product Manager",
+    imageUrl:
+      "https://images.unsplash.com/photo-1527980965255-d3b416303d12?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    socialLinks: [
+      { platform: "facebook", url: "https://facebook.com/sarahjohnson" },
+      { platform: "instagram", url: "https://instagram.com/sarahjohnson" },
+      { platform: "linkedin", url: "https://linkedin.com/in/sarahjohnson" },
+    ],
+  },
+  {
+    name: "Emily Davis",
+    title: "UX Designer",
+    imageUrl:
+      "https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    socialLinks: [
+      { platform: "facebook", url: "https://facebook.com/sarahjohnson" },
+      { platform: "instagram", url: "https://instagram.com/sarahjohnson" },
+      { platform: "linkedin", url: "https://linkedin.com/in/sarahjohnson" },
+    ],
+  },
+  {
+    name: "David Kim",
+    title: "Lead Developer",
+    imageUrl:
+      "https://images.unsplash.com/photo-1552058544-f2b08422138a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    socialLinks: [
+      { platform: "facebook", url: "https://facebook.com/sarahjohnson" },
+      { platform: "instagram", url: "https://instagram.com/sarahjohnson" },
+      { platform: "linkedin", url: "https://linkedin.com/in/sarahjohnson" },
+    ],
+  },
+  {
+    name: "Sophia Martinez",
+    title: "Content Strategist",
+    imageUrl:
+      "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    socialLinks: [
+      { platform: "facebook", url: "https://facebook.com/sarahjohnson" },
+      { platform: "instagram", url: "https://instagram.com/sarahjohnson" },
+      { platform: "linkedin", url: "https://linkedin.com/in/sarahjohnson" },
+    ],
+  },
+  {
+    name: "James Wilson",
+    title: "QA Engineer",
+    imageUrl:
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    socialLinks: [
+      { platform: "facebook", url: "https://facebook.com/sarahjohnson" },
+      { platform: "instagram", url: "https://instagram.com/sarahjohnson" },
+      { platform: "linkedin", url: "https://linkedin.com/in/sarahjohnson" },
+    ],
+  },
+  {
+    name: "Ava Thompson",
+    title: "Community Manager",
+    imageUrl:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    socialLinks: [
+      { platform: "facebook", url: "https://facebook.com/sarahjohnson" },
+      { platform: "instagram", url: "https://instagram.com/sarahjohnson" },
+      { platform: "linkedin", url: "https://linkedin.com/in/sarahjohnson" },
+    ],
+  },
+];
