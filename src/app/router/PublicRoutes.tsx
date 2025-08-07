@@ -23,16 +23,7 @@ import {
   LoginPage,
   RegisterPage,
   ResetPassword,
-  OnboardingForm,
 } from "@/app/features/auth";
-import {
-  OnboardingStep1,
-  OnboardingStep2,
-  OnboardingStep3,
-  OnboardingStep4,
-  OnboardingStep5,
-} from "@/app/features/auth/pages/onboarding/steps";
-import VerifyEmail from "../features/auth/pages/VerifyEmail";
 
 const PublicRoutes = () => {
   return (
@@ -51,33 +42,6 @@ const PublicRoutes = () => {
         path={APP_ROUTES.PUBLIC.RESET_PASSWORD}
         element={<ResetPassword />}
       />
-
-      {/* Onboarding Routes */}
-      <Route
-        path={APP_ROUTES.PUBLIC.ONBOARDING_FORM}
-        element={<OnboardingForm />}
-      >
-        <Route
-          path={APP_ROUTES.PUBLIC.ONBOARDING_FORM_STEP_1}
-          element={<OnboardingStep1 />}
-        />
-        <Route
-          path={APP_ROUTES.PUBLIC.ONBOARDING_FORM_STEP_2}
-          element={<OnboardingStep2 />}
-        />
-        <Route
-          path={APP_ROUTES.PUBLIC.ONBOARDING_FORM_STEP_3}
-          element={<OnboardingStep3 />}
-        />
-        <Route
-          path={APP_ROUTES.PUBLIC.ONBOARDING_FORM_STEP_4}
-          element={<OnboardingStep4 />}
-        />
-        <Route
-          path={APP_ROUTES.PUBLIC.ONBOARDING_FORM_STEP_5}
-          element={<OnboardingStep5 />}
-        />
-      </Route>
 
       {/* Product Routes */}
       <Route
@@ -121,9 +85,6 @@ const PublicRoutes = () => {
 
       {/* Pricing Routes */}
       <Route path={APP_ROUTES.PUBLIC.PRICING} element={<PricingPage />} />
-
-      {/* Verify Email */}
-      <Route path="/verify/:token" element={<VerifyEmail />} />
 
       {/* 401 - UnAuth Page  */}
       <Route path={APP_ROUTES.PUBLIC.UNAUTHORIZED} element={<Unauthorized />} />

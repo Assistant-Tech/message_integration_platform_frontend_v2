@@ -14,12 +14,14 @@ import circlefb from "@/app/assets/icons/circlefb.svg";
 import CheckItem from "@/app/features/auth/components/ui/CheckItem";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/app/hooks/useAuth";
 
 const LoginPage = () => {
   const [showPasswordChecks, setShowPasswordChecks] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const navigate = useNavigate();
+  const { login, isLoggingIn, loginError } = useAuth();
 
   const {
     register,
@@ -41,11 +43,18 @@ const LoginPage = () => {
     hasSpecialChar: /[@$!%*?&]/.test(password),
   };
 
-  const onSubmit = (data: LoginFormData) => {
-    toast.success("Form Submitted Successfully");
-    console.log("Submitted:", data);
-    navigate("/onboardingform/step-1")
-    reset();
+  const onSubmit = async (data: LoginFormData) => {
+    try {
+      await login({
+        email: data.email,
+        password: data.password,
+      });
+      toast.success("Login successful!");
+      reset();
+      // Navigation will be handled by the auth store or protected routes
+    } catch (error: any) {
+      toast.error(error?.message || "Login failed. Please try again.");
+    }
   };
 
   const onError = () => {
@@ -152,7 +161,12 @@ const LoginPage = () => {
       </div>
 
       {/* Submit Button */}
-      <Button label="Sign in" type="submit" className="w-full" />
+      <Button 
+        label={isLoggingIn ? "Signing in..." : "Sign in"} 
+        type="submit" 
+        className="w-full"
+        disabled={isLoggingIn}
+      />
 
       {/* OR separator */}
       <div className="flex items-center gap-2 text-gray-400">
@@ -179,7 +193,7 @@ const LoginPage = () => {
 
       {/* Sign up link */}
       <p className="text-center text-grey-medium h5-regular-16 mt-4">
-        Don’t have an account?{" "}
+        Don't have an account?{" "}
         <a href="/register" className="text-primary hover:underline">
           Register
         </a>

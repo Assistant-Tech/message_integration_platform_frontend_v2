@@ -12,11 +12,11 @@ import {
 import { Agreement, Button, Input } from "@/app/components/ui";
 import CheckItem from "@/app/features/auth/components/ui/CheckItem";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import api from "@/app/services/api/api";
-import { APP_ROUTES } from "@/app/constants/routes";
+import { useAuth } from "@/app/hooks/useAuth";
 
 const RegisterForm = () => {
   const navigate = useNavigate();
+  const { register: registerUser, isRegistering, registerError } = useAuth();
   const [showPasswordChecks, setShowPasswordChecks] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
@@ -43,7 +43,7 @@ const RegisterForm = () => {
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      await api.post("/auth/signup", {
+      await registerUser({
         name: data.fullName,
         email: data.email,
         password: data.password,
@@ -51,11 +51,10 @@ const RegisterForm = () => {
       });
       toast.success("Account created successfully!");
       reset();
-      navigate(APP_ROUTES.AUTH.CHECK_EMAIL, { state: { email: data.email } });
+      navigate("/check-email", { state: { email: data.email } });
     } catch (error: any) {
       toast.error(
-        error?.response?.data?.message ||
-          "Registration failed. Please try again.",
+        error?.message || "Registration failed. Please try again.",
       );
     }
   };
@@ -160,7 +159,12 @@ const RegisterForm = () => {
       </div>
 
       {/* Submit */}
-      <Button label="Create Account" type="submit" className="w-full" />
+      <Button 
+        label={isRegistering ? "Creating Account..." : "Create Account"} 
+        type="submit" 
+        className="w-full"
+        disabled={isRegistering}
+      />
     </form>
   );
 };

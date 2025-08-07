@@ -7,12 +7,14 @@ interface AuthStore {
   token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isOnboardingCompleted: boolean;
 
   // Actions
-  login: (user: User, token: string) => void;
+  login: (user: User, token: string, isOnboardingCompleted?: boolean) => void;
   logout: () => void;
   setLoading: (loading: boolean) => void;
   updateUser: (user: Partial<User>) => void;
+  setOnboardingCompleted: (completed: boolean) => void;
 }
 
 export const useAuthStore = create<AuthStore>()(
@@ -23,13 +25,15 @@ export const useAuthStore = create<AuthStore>()(
         token: null,
         isAuthenticated: false,
         isLoading: false,
+        isOnboardingCompleted: false,
 
-        login: (user, token) => {
+        login: (user, token, isOnboardingCompleted = false) => {
           set({
             user,
             token,
             isAuthenticated: true,
             isLoading: false,
+            isOnboardingCompleted,
           });
         },
 
@@ -39,6 +43,7 @@ export const useAuthStore = create<AuthStore>()(
             token: null,
             isAuthenticated: false,
             isLoading: false,
+            isOnboardingCompleted: false,
           });
         },
 
@@ -52,6 +57,10 @@ export const useAuthStore = create<AuthStore>()(
             set({ user: { ...user, ...updatedUser } });
           }
         },
+
+        setOnboardingCompleted: (completed) => {
+          set({ isOnboardingCompleted: completed });
+        },
       }),
       {
         name: "auth-storage",
@@ -59,6 +68,7 @@ export const useAuthStore = create<AuthStore>()(
           user: state.user,
           token: state.token,
           isAuthenticated: state.isAuthenticated,
+          isOnboardingCompleted: state.isOnboardingCompleted,
         }),
       },
     ),

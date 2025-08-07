@@ -8,12 +8,13 @@ import { APP_ROUTES } from "@/app/constants/routes";
 const VerifyEmail = () => {
   const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
-  const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
+  const [status, setStatus] = useState<"loading" | "success" | "error">(
+    "loading",
+  );
   const [message, setMessage] = useState("");
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    // Show loading for up to 5 seconds before showing error for missing/invalid token
     if (typeof token === "undefined") {
       setStatus("loading");
       setMessage("Please wait, verifying your email...");
@@ -22,7 +23,6 @@ const VerifyEmail = () => {
     if (!token) {
       setStatus("loading");
       setMessage("Please wait, verifying your email...");
-      // Wait 5 seconds before showing error
       timerRef.current = setTimeout(() => {
         setStatus("error");
         setMessage("Invalid or missing verification token.");
@@ -57,7 +57,6 @@ const VerifyEmail = () => {
     };
 
     verify();
-    // Cleanup timer on unmount
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { StepSidebar } from "@/app/features/auth/pages/onboarding/components";
 import { Button, Input, Logo } from "@/app/components/ui/";
 import { useOnboardingStore } from "@/app/features/auth/pages/onboarding/hooks/useOnboardingStore";
+import { useAuth } from "@/app/hooks/useAuth";
 import {
   ArrowDown,
   ArrowLeft,
@@ -31,6 +32,7 @@ interface AddMembersErrors {
 const OnboardingStep5: React.FC = () => {
   const navigate = useNavigate();
   const { data, setStepData, setCompletedSteps, reset } = useOnboardingStore();
+  const { completeOnboarding, isCompletingOnboarding } = useAuth();
   console.log("🚀 ~ data:", data);
 
   const currentStep = 5;
@@ -98,7 +100,9 @@ const OnboardingStep5: React.FC = () => {
         description: "Welcome sir/madam! Your setup is now complete.",
         icon: <PartyPopper className="text-primary" />,
       });
-      navigate("/admin/dashboard");
+      
+      // Use the completeOnboarding function instead of direct navigation
+      completeOnboarding();
 
       setTimeout(() => {
         reset();
@@ -109,7 +113,7 @@ const OnboardingStep5: React.FC = () => {
   const handleSkip = () => {
     setStepData("step5", { members: [] });
     setCompletedSteps(5);
-    navigate("/admin/dashboard");
+    completeOnboarding();
   };
 
   return (
@@ -232,12 +236,14 @@ const OnboardingStep5: React.FC = () => {
                     label="Skip this step"
                     onClick={handleSkip}
                     className="bg-white text-primary hover:bg-white underline body-regular-underline-16"
+                    disabled={isCompletingOnboarding}
                   />
                   <Button
-                    label="Save and Finish"
+                    label={isCompletingOnboarding ? "Completing..." : "Save and Finish"}
                     onClick={handleSubmit}
                     variant="primary"
                     IconRight={<ArrowRight size={24} />}
+                    disabled={isCompletingOnboarding}
                   />
                 </div>
               </div>

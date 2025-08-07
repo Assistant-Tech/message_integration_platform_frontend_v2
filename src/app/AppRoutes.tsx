@@ -3,20 +3,21 @@ import { Route, Routes } from "react-router-dom";
 import { PublicLayout } from "./components/layout";
 import { Loading } from "@/app/components/common";
 
-import { PublicRoutes, AdminRoutes, UserRoutes, AuthRoutes } from "@/app/router/";
+import {
+  CombinedRoutes,
+  AdminRoutes,
+  UserRoutes,
+} from "@/app/router/";
 import DashboardLayout from "./features/dashboard/admin/component/DashboardLayout";
 
 const AppRoutes = () => {
   return (
     <Suspense fallback={<Loading />}>
       <Routes>
-        {/* Public routes under public layout */}
+        {/* Public and Protected routes under public layout */}
         <Route path="/*" element={<PublicLayout />}>
-          <Route path="*" element={<PublicRoutes />} />
+          <Route path="*" element={<CombinedRoutes />} />
         </Route>
-
-        {/* Auth routes (separated from public) */}
-        <Route path="/auth/*" element={<AuthRoutes />} />
 
         {/* Admin routes under admin layout */}
         <Route path="/admin" element={<DashboardLayout />}>

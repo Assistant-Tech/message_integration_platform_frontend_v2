@@ -59,7 +59,7 @@ const CheckEmail = () => {
           )}
           <button
             className="bg-primary text-white px-6 py-2 rounded mt-4"
-            onClick={() => navigate(APP_ROUTES.PUBLIC.LOGIN)}
+            onClick={() => navigate("/login")}
           >
             Go to Login
           </button>
