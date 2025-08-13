@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { UseFormRegister, FieldErrors, UseFormSetValue } from "react-hook-form";
 import { Button, Input } from "@/app/components/ui";
-import { ProductFormData } from "@/app/types/product";
+import { ProductFormData } from "@/app/types/product.types";
 import { Plus } from "lucide-react";
 
 const categories = [

@@ -3,25 +3,28 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+
+import google from "@/app/assets/icons/google.svg";
+import fb from "@/app/assets/icons/fb.svg";
 
 import {
   LoginFormData,
   loginSchema,
 } from "@/app/features/auth/schemas/loginSchema";
 import { Agreement, Button, Input } from "@/app/components/ui";
-import google from "@/app/assets/icons/google.svg";
-import circlefb from "@/app/assets/icons/circlefb.svg";
 import CheckItem from "@/app/features/auth/components/ui/CheckItem";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/app/hooks/useAuth";
 
-const LoginPage = () => {
+// Import only the isAuthenticating state from the store for UI loading
+import { useAuthStore } from "@/app/store/auth.store";
+import { handleApiError } from "@/app/utils/handlerApiError";
+
+const LoginForm = () => {
   const [showPasswordChecks, setShowPasswordChecks] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
-
+  const { login } = useAuthStore();
   const navigate = useNavigate();
-  const { login, isLoggingIn, loginError } = useAuth();
 
   const {
     register,
@@ -45,15 +48,34 @@ const LoginPage = () => {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      await login({
-        email: data.email,
-        password: data.password,
-      });
-      toast.success("Login successful!");
+      const res = await login(data.email, data.password);
+      toast.success(res.message);
+
+      if (res.requiresOnboarding) {
+        navigate("/onboardingform");
+      } else {
+        navigate("/admin/dashboard");
+      }
+
       reset();
-      // Navigation will be handled by the auth store or protected routes
-    } catch (error: any) {
-      toast.error(error?.message || "Login failed. Please try again.");
+    } catch (error) {
+      const parsedError = handleApiError(error);
+      if (
+        "message" in parsedError &&
+        parsedError.message === "Email not verified. Please check your inbox."
+      ) {
+        toast.error(parsedError.message);
+        navigate("/check-email", { state: { email: data.email } });
+      } else if ("message" in parsedError) {
+        toast.error(parsedError.message);
+      } else if (
+        parsedError.type === "validation" &&
+        parsedError.formErrors.length > 0
+      ) {
+        toast.error(parsedError.formErrors.join(", "));
+      } else {
+        toast.error("An unknown error occurred.");
+      }
     }
   };
 
@@ -63,23 +85,16 @@ const LoginPage = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-5">
-      {/* Logo + Title */}
       <div className="text-start pt-4">
-        <h2 className="h5-medium-16 text-grey-medium">Welcome Back,</h2>
-        <p className="mt-1 h3-bold-32 text-base-black">
-          Log in to your account
-        </p>
+        <h2 className="text-grey-medium">Welcome Back,</h2>
+        <p className="mt-1 font-bold text-3xl">Log in to your account</p>
       </div>
-
-      {/* Email */}
       <Input
         label="Email / Phone Number"
         placeholder="Enter your email or phone number"
         {...register("email")}
         error={errors.email?.message}
       />
-
-      {/* Password */}
       <div className="relative">
         <Input
           label="Password"
@@ -93,7 +108,6 @@ const LoginPage = () => {
           }}
           className="pr-10"
         />
-
         <button
           type="button"
           onClick={() => setShowPassword(!showPassword)}
@@ -103,7 +117,6 @@ const LoginPage = () => {
         >
           {showPassword ? <EyeIcon /> : <EyeOffIcon />}
         </button>
-
         <AnimatePresence>
           {showPasswordChecks && (
             <motion.div
@@ -137,74 +150,54 @@ const LoginPage = () => {
           )}
         </AnimatePresence>
       </div>
-
-      {/* Remember Me + Forgot Password */}
-      <div className="flex items-center justify-between h5-medium-16">
+      <div className="flex items-center justify-between text-sm">
         <label className="flex items-center gap-2">
           <input
             type="checkbox"
-            {...register("rememberMe")}
             className="accent-primary"
+            {...register("rememberMe")}
           />
           Remember Me
         </label>
-        <a
-          href="/forgot-password"
-          className="text-grey hover:underline h5-medium-16"
-        >
+        <a href="/forgot-password" className="text-grey-medium hover:underline">
           Forgot Password?
         </a>
       </div>
-      {/* Agrement */}
-      <div className="mb-4">
-        <Agreement />
-      </div>
-
-      {/* Submit Button */}
-      <Button 
-        label={isLoggingIn ? "Signing in..." : "Sign in"} 
-        type="submit" 
-        className="w-full"
-        disabled={isLoggingIn}
-      />
-
-      {/* OR separator */}
-      <div className="flex items-center gap-2 text-gray-400">
-        <hr className="flex-grow border-gray-300" />
+      <Button label={"Sign in"} type="submit" className="w-full" />
+      <div className="flex items-center gap-2 text-grey-medium">
+        <hr className="flex-grow border-grey-light" />
         <span className="text-sm">OR</span>
-        <hr className="flex-grow border-gray-300" />
+        <hr className="flex-grow border-grey-light" />
       </div>
-
-      {/* Social Logins */}
       <div className="space-y-2">
         <Button
           label="Sign in with Google"
           variant="outlined"
-          IconLeft={<img src={google} alt="Facebook" className="w-5 h-5" />}
-          className="w-full border-grey-light text-grey-medium h5-bold-16"
+          IconLeft={<img src={google} alt="Google" className="w-5 h-5" />}
+          className="w-full"
         />
         <Button
           label="Sign in with Facebook"
           variant="outlined"
-          IconLeft={<img src={circlefb} alt="Facebook" className="w-5 h-5" />}
-          className="w-full border-grey-light text-grey-medium h5-bold-16"
+          IconLeft={<img src={fb} alt="Facebook" className="w-5 h-5" />}
+          className="w-full"
         />
       </div>
-
-      {/* Sign up link */}
-      <p className="text-center text-grey-medium h5-regular-16 mt-4">
+      <Agreement />
+      <p className="text-center text-grey-medium mt-4">
         Don't have an account?{" "}
-        <a href="/register" className="text-primary hover:underline">
+        <a
+          href="/register"
+          className="text-primary accent-primary hover:underline"
+        >
           Register
         </a>
       </p>
-
-      {/* Copyright */}
-      <p className="text-center text-xs text-gray-400 mt-4">
+      <p className="text-center text-xs text-grey-medium mt-4">
         © 2025 Chatblix. All Rights Reserved
       </p>
     </form>
   );
 };
 
-export default LoginPage;
+export default LoginForm;

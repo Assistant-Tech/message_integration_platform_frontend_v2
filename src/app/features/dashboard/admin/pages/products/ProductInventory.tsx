@@ -5,7 +5,7 @@ import { Plus, Settings2, SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { InventoryTable } from "@/app/features/dashboard/admin/component/";
-import { Inventory, Size } from "@/app/types/product";
+import { Inventory, Size } from "@/app/types/product.types";
 
 const ProductInventory = () => {
   const [search, setSearch] = useState("");

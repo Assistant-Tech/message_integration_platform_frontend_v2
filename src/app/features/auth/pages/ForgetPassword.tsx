@@ -4,22 +4,36 @@ import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
+import { ForgetPassword as forgetPasswordApi } from "@/app/services/auth.services";
 
 const ForgetPassword = () => {
   const [email, setEmail] = useState<string>("");
+  const [loading, setLoading] = useState(false);
 
-  const handleEmail = () => {
+  const handleEmail = async () => {
     if (!email) {
       toast.error("Please enter your email.");
       return;
     }
 
-    toast.info("A password reset link has been sent to your email.", {
-      duration: 2000,
-      position: "top-right",
-    });
-    setEmail("");
+    try {
+      setLoading(true);
+      const res = await forgetPasswordApi(email);
+      toast.success(
+        res.message || "A password reset link has been sent to your email.",
+      );
+      setEmail("");
+    } catch (error: any) {
+      const backendMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Failed to send reset link.";
+      toast.error(backendMessage);
+    } finally {
+      setLoading(false);
+    }
   };
+
   return (
     <div className="flex flex-col md:flex-row h-screen overflow-hidden">
       {/* Left Section */}
@@ -57,10 +71,11 @@ const ForgetPassword = () => {
                 onChange={(e) => setEmail(e.target.value)}
               />
               <Button
-                label="Submit"
+                label={loading ? "Sending..." : "Submit"}
                 variant="primary"
                 className="mt-6 w-full"
                 onClick={handleEmail}
+                disabled={loading}
               />
             </div>
           </div>

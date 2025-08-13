@@ -5,7 +5,7 @@ import { Plus, Settings2, SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ProductTable } from "@/app/features/dashboard/admin/component/";
-import { Product, Status } from "@/app/types/product";
+import { Product, Status } from "@/app/types/product.types";
 
 const AllProductsPage = () => {
   const [search, setSearch] = useState("");

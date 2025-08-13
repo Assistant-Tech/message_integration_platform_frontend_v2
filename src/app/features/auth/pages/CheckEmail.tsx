@@ -1,10 +1,9 @@
-import { Logo } from "@/app/components/ui";
-import verify from "@/app/assets/images/IllustrationVerify.png";
+import { Button, Logo } from "@/app/components/ui";
 import { useNavigate, useLocation } from "react-router-dom";
-import { APP_ROUTES } from "@/app/constants/routes";
 import { toast } from "sonner";
 import { useState } from "react";
-import api from "@/app/services/api/api";
+import api from "@/app/services/api/axios";
+import { handleApiError } from "@/app/utils/handlerApiError";
 
 const CheckEmail = () => {
   const navigate = useNavigate();
@@ -17,12 +16,29 @@ const CheckEmail = () => {
       toast.error("No email found. Please register again.");
       return;
     }
+
     setResendLoading(true);
     try {
-      await api.post("/auth/verify/resend", { email: resendEmail });
-      toast.success(`Verification email resent to ${resendEmail}! Please check your inbox.`);
+      const res = await api.post("/auth/verify/resend", {
+        email: resendEmail,
+      });
+      toast.success(
+        res.data?.message ||
+          `Verification email resent to ${resendEmail}! Please check your inbox.`,
+      );
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || "Failed to resend email.");
+      const parsedError = handleApiError(error);
+      let errorMessage = "Failed to resend email.";
+
+      if ("message" in parsedError) {
+        toast.error(parsedError.message);
+      } else if (parsedError.type === "validation") {
+        errorMessage =
+          parsedError.formErrors?.[0] ||
+          Object.values(parsedError.fieldErrors)?.[0]?.[0] ||
+          errorMessage;
+      }
+      toast.error(errorMessage);
     } finally {
       setResendLoading(false);
     }
@@ -32,37 +48,48 @@ const CheckEmail = () => {
     <div className="max-w-screen max-h-screen">
       <div className="w-full h-screen flex flex-col justify-center items-center">
         <Logo />
-        <img src={verify} alt="verify.png" className="mt-10" />
-        <article className="space-y-4 text-center py-8">
-          <h1 className="h3-bold-32 text-base-black">Check your Email</h1>
-          <p className="body-regular-16 text-grey-medium">
+        <img
+          src={`https://res.cloudinary.com/dtoqwn0gx/image/upload/v1755061535/verify_b097yg.png`}
+          alt="verify.png"
+          className="mt-10"
+        />
+        <article className="space-y-4 text-center py-8 px-6">
+          <h1 className="font-bold text-3xl text-gray-900">Check your Email</h1>
+          <p className="text-base text-grey-medium">
             We’ve sent a verification link to your email address. Please verify
             your email by clicking the link provided. Once verified, you can
             start using our app.
           </p>
           {resendEmail && (
-            <h5 className="h5-regular-16 text-grey-medium">
-              Didn’t get the email?{' '}
+            <h5 className="text-base text-grey-medium">
+              Didn’t get the email?{" "}
               <span
-                className="text-primary underline cursor-pointer"
+                className={`text-primary underline cursor-pointer ${
+                  resendLoading ? "opacity-50 pointer-events-none" : ""
+                }`}
                 onClick={handleResend}
-                style={{ pointerEvents: resendLoading ? 'none' : 'auto', opacity: resendLoading ? 0.6 : 1 }}
               >
                 {resendLoading ? "Sending..." : `Resend to ${resendEmail}`}
               </span>
             </h5>
           )}
           {!resendEmail && (
-            <h5 className="h5-regular-16 text-destructive">
-              No email found. Please <span className="underline cursor-pointer text-primary" onClick={() => navigate(APP_ROUTES.PUBLIC.REGISTER)}>register again</span>.
+            <h5 className="text-base text-danger">
+              No email found. Please{" "}
+              <span
+                className="underline cursor-pointer text-primary"
+                onClick={() => navigate("/register")}
+              >
+                register again
+              </span>
+              .
             </h5>
           )}
-          <button
-            className="bg-primary text-white px-6 py-2 rounded mt-4"
+          <Button
+            label="Go to Login"
+            className="w-full mt-4"
             onClick={() => navigate("/login")}
-          >
-            Go to Login
-          </button>
+          />
         </article>
       </div>
     </div>

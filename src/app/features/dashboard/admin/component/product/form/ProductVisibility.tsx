@@ -1,7 +1,7 @@
 import React from "react";
 import { UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { Circle, CircleDot } from "lucide-react";
-import { ProductFormData } from "@/app/types/product";
+import { ProductFormData } from "@/app/types/product.types";
 
 interface Props {
   register: UseFormRegister<ProductFormData>;

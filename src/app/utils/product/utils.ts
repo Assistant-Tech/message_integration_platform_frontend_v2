@@ -103,7 +103,7 @@ export const smartCardData = [
 
 import { Users, FileText, BarChart3, Globe } from "lucide-react";
 import crm from "@/app/assets/images/crm.webp";
-import type { ServiceItem } from "@/app/types/product";
+import type { ServiceItem } from "@/app/types/product.types";
 
 export const services: ServiceItem[] = [
   {

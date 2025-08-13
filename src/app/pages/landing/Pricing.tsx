@@ -5,7 +5,7 @@ import { usePlans } from "@/app/hooks/usePlans";
 import { usePricingStore } from "@/app/store/pricingStore";
 import { PricingCard } from "@/app/components/common";
 import { Badge, DynamicToggle } from "@/app/components/ui";
-import { Plan, Duration, APIDuration } from "@/app/types/plan";
+import { Plan, Duration, APIDuration } from "@/app/types/plan.types";
 import { extractFeatures } from "@/app/utils/helper";
 
 const Pricing = () => {

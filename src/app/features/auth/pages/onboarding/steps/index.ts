@@ -1,3 +1,4 @@
+export { default as OnboardingForm } from "./OnboardingForm";
 // 5 steps of onboarding forms.
 export { default as OnboardingStep1 } from "./OnboardingStep1";
 export { default as OnboardingStep2 } from "./OnboardingStep2";

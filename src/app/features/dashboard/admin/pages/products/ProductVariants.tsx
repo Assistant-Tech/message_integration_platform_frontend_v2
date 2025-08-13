@@ -6,7 +6,7 @@ import {
   AddVariant,
   VariantTable,
 } from "@/app/features/dashboard/admin/component/";
-import { Variant } from "@/app/types/product";
+import { Variant } from "@/app/types/product.types";
 
 const ProductVariants = () => {
   const [search, setSearch] = useState("");
