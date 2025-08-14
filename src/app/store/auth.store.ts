@@ -66,7 +66,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   verifyEmail: async (token) => {
     set({ isloading: true });
     try {
-      const res = await api.get(`/auth/verify/${token}`);
+      const res = await api.get(`/auth/verify/${token}`, {
+        withCredentials: true,
+      });
       set({
         isVerified: true,
         requiresOnboarding: true,

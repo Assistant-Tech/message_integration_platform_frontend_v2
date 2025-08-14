@@ -108,10 +108,9 @@ const AppRoutes = () => {
           <Route path={APP_ROUTES.PUBLIC.ABOUT} element={<AboutUs />} />
           <Route path={APP_ROUTES.PUBLIC.PRICING} element={<PricingPage />} />
 
-          {/* Semi-protected routes that are part of the auth flow */}
+          {/* Semi-protected routes that are part of the auth flow, but don't need a ProtectedRoute guard */}
           <Route path="/check-email" element={<CheckEmail />} />
           <Route path="/verify/:token" element={<VerifyEmail />} />
-          <Route path="/onboardingform" element={<OnboardingForm />} />
 
           {/* Error pages are public */}
           <Route
@@ -123,6 +122,9 @@ const AppRoutes = () => {
 
         {/* Protected Routes: All routes nested here require authentication */}
         <Route element={<ProtectedRoute />}>
+          {/* Onboarding page is a special-case protected route */}
+          <Route path="/onboardingform" element={<OnboardingForm />} />
+
           {/* Admin Dashboard Routes */}
           <Route path="/admin" element={<DashboardLayout />}>
             <Route index element={<AdminDashboardPage />} />

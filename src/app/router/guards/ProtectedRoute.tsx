@@ -1,15 +1,19 @@
 import { Loading } from "@/app/components/common";
 import { useAuthStore } from "@/app/store/auth.store";
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedRoute = () => {
-  // const user = useAuthStore((s) => s.user);
   const isRefreshing = useAuthStore((s) => s.isRefreshing);
+  const requiresOnboarding = useAuthStore((s) => s.requiresOnboarding);
 
   if (isRefreshing) {
     return <Loading />;
   }
-  // The user is authenticated and verified.
+
+  if (requiresOnboarding) {
+    return <Navigate to={"/onboardingform"} replace />;
+  }
+
   return <Outlet />;
 };
 

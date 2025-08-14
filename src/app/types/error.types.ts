@@ -3,7 +3,7 @@ export type NormalizedError =
       type: "validation";
       fieldErrors: Record<string, string[]>;
       formErrors: string[];
-      message?: string;
+      message: string;
     }
   | {
       type: "api";
@@ -24,6 +24,7 @@ export interface ValidationErrorResponse {
   fieldErrors: {
     [field: string]: string[];
   };
+  message: string
 }
 
 export interface ErrorResponse {

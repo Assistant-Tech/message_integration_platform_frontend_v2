@@ -19,6 +19,7 @@ export function handleApiError(error: unknown): NormalizedError {
       if ("fieldErrors" in data) {
         return {
           type: "validation",
+          message: data.message || "Validation error occurred.",
           fieldErrors: data.fieldErrors || {},
           formErrors: data.formErrors || [],
         };

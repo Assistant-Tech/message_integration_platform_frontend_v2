@@ -9,7 +9,6 @@ const VerifyEmail = () => {
   const navigate = useNavigate();
 
   const verifyEmail = useAuthStore((state) => state.verifyEmail);
-  const requiresOnboarding = useAuthStore((state) => state.requiresOnboarding);
 
   const [loading, setLoading] = useState(true);
   const hasVerifiedRef = useRef(false);
@@ -29,22 +28,17 @@ const VerifyEmail = () => {
         const res = await verifyEmail(token);
         toast.success(res?.message || "Email verified successfully!");
 
-        // Check the requiresOnboarding state from the store after verification
-        const currentState = useAuthStore.getState();
-        if (currentState.requiresOnboarding) {
-          navigate("/onboardingform");
-        } else {
-          navigate("/login");
-        }
+        navigate("/login");
       } catch (error) {
-        // ... (existing error handling)
+        toast.error("Email verification failed.");
+        navigate("/register");
       } finally {
         setLoading(false);
       }
     };
 
     performVerification();
-  }, [token, navigate, verifyEmail, requiresOnboarding]);
+  }, [token, navigate, verifyEmail]);
 
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center bg-gray-50">

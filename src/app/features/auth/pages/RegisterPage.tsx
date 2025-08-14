@@ -1,5 +1,4 @@
 import RegisterForm from "@/app/features/auth/components/form/RegisterForm";
-import registerImage from "@/app/assets/images/register.png";
 import { Button, Logo } from "@/app/components/ui";
 
 import google from "@/app/assets/icons/google.svg";
@@ -8,20 +7,23 @@ import circlefb from "@/app/assets/icons/circlefb.svg";
 const RegisterPage = () => {
   return (
     <div className="flex flex-col md:flex-row h-screen overflow-hidden">
-      {/* Left Section with overlay text */}
+      {/* Left Section with gradient overlay */}
       <div className="hidden md:block w-1/2 h-full relative">
         <img
-          src={registerImage}
+          src="https://res.cloudinary.com/dtoqwn0gx/image/upload/v1755078235/register_tmr4r8.png"
           alt="register"
           className="w-full h-full object-cover"
         />
 
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-black/90" />
+
         {/* Text Overlay */}
-        <div className="absolute bottom-0 left-0 p-6 bg-black/70 text-white w-full px-32 py-12">
+        <div className="absolute bottom-0 left-0 p-6 w-full px-32 py-12 text-white">
           <h2 className="h3-bold-32 text-white pb-4 max-w-md">
             Seamless Experience, Anytime, Anywhere
           </h2>
-          <p className="body-bold-16 text-white mt-1 max-w-2xl">
+          <p className="body-bold-16 mt-1 max-w-2xl">
             Stay synced across all devices, both mobile and desktop, and access
             your account anytime, anywhere. So no matter where you are, you’ll
             always have a smooth and seamless experience.
