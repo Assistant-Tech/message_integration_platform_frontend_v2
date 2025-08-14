@@ -1,13 +1,11 @@
-import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 import google from "@/app/assets/icons/google.svg";
 import fb from "@/app/assets/icons/fb.svg";
-
 import {
   LoginFormData,
   loginSchema,
@@ -15,23 +13,29 @@ import {
 import { Agreement, Button, Input } from "@/app/components/ui";
 import CheckItem from "@/app/features/auth/components/ui/CheckItem";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-
-// Import only the isAuthenticating state from the store for UI loading
 import { useAuthStore } from "@/app/store/auth.store";
 import { handleApiError } from "@/app/utils/handlerApiError";
 
+import { useState } from "react";
+import { LockoutTimer } from "@/app/features/auth/components/ui";
+import { useLockoutTimer } from "@/app/hooks/useLockoutTimer";
+
 const LoginForm = () => {
-  const [showPasswordChecks, setShowPasswordChecks] = useState<boolean>(false);
-  const [showPassword, setShowPassword] = useState<boolean>(false);
   const { login } = useAuthStore();
   const navigate = useNavigate();
+
+  const { isLockedOut, lockoutTimeLeft, initiateLockout, formatTime } =
+    useLockoutTimer();
+
+  const [showPasswordChecks, setShowPasswordChecks] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
     watch,
+    formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     mode: "onSubmit",
@@ -47,54 +51,66 @@ const LoginForm = () => {
   };
 
   const onSubmit = async (data: LoginFormData) => {
+    if (isLockedOut) return;
+
     try {
       const res = await login(data.email, data.password);
       toast.success(res.message);
 
-      if (res.requiresOnboarding) {
-        navigate("/onboardingform");
-      } else {
-        navigate("/admin/dashboard");
-      }
-
+      navigate(res.requiresOnboarding ? "/onboardingform" : "/admin/dashboard");
       reset();
     } catch (error) {
       const parsedError = handleApiError(error);
-      if (
-        "message" in parsedError &&
-        parsedError.message === "Email not verified. Please check your inbox."
-      ) {
-        toast.error(parsedError.message);
-        navigate("/check-email", { state: { email: data.email } });
-      } else if ("message" in parsedError) {
-        toast.error(parsedError.message);
-      } else if (
-        parsedError.type === "validation" &&
-        parsedError.formErrors.length > 0
-      ) {
-        toast.error(parsedError.formErrors.join(", "));
-      } else {
-        toast.error("An unknown error occurred.");
+      if ("message" in parsedError) {
+        const errorMessage = parsedError.message;
+
+        const lockoutMessageMatch = errorMessage.match(
+          /Your account has been temporarily locked.*,(\d+)\s*minutes remaining/,
+        );
+
+        if (lockoutMessageMatch && lockoutMessageMatch[1] !== undefined) {
+          const minutes = parseInt(lockoutMessageMatch[1], 10);
+          const seconds = minutes * 60;
+          toast.error(errorMessage);
+          initiateLockout(seconds); // Pass the extracted time to the hook
+        } else if (
+          errorMessage === "Email not verified. Please check your inbox."
+        ) {
+          toast.error(errorMessage);
+          navigate("/check-email", { state: { email: data.email } });
+        } else {
+          // Handle other generic login errors
+          toast.error(errorMessage);
+        }
       }
     }
   };
 
-  const onError = () => {
-    toast.error("Please fill out all required fields.");
-  };
-
   return (
-    <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-5">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       <div className="text-start pt-4">
         <h2 className="text-grey-medium">Welcome Back,</h2>
         <p className="mt-1 font-bold text-3xl">Log in to your account</p>
       </div>
+
+      <AnimatePresence>
+        {isLockedOut && (
+          <LockoutTimer
+            lockoutTimeLeft={lockoutTimeLeft}
+            formatTime={formatTime}
+          />
+        )}
+      </AnimatePresence>
+
       <Input
         label="Email / Phone Number"
         placeholder="Enter your email or phone number"
         {...register("email")}
         error={errors.email?.message}
+        disabled={isLockedOut}
       />
+
+      {/* Password input */}
       <div className="relative">
         <Input
           label="Password"
@@ -102,23 +118,23 @@ const LoginForm = () => {
           {...register("password")}
           error={errors.password?.message}
           type={showPassword ? "text" : "password"}
-          onFocus={() => setShowPasswordChecks(true)}
+          onFocus={() => !isLockedOut && setShowPasswordChecks(true)}
           onBlur={() => {
             if (!password) setShowPasswordChecks(false);
           }}
-          className="pr-10"
+          disabled={isLockedOut}
         />
         <button
           type="button"
           onClick={() => setShowPassword(!showPassword)}
-          className="absolute top-[38px] right-3 flex items-center justify-center w-6 h-6 cursor-pointer"
-          tabIndex={-1}
-          aria-label={showPassword ? "Hide password" : "Show password"}
+          className="absolute top-[38px] right-3"
+          disabled={isLockedOut}
         >
           {showPassword ? <EyeIcon /> : <EyeOffIcon />}
         </button>
+
         <AnimatePresence>
-          {showPasswordChecks && (
+          {showPasswordChecks && !isLockedOut && (
             <motion.div
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
@@ -150,49 +166,73 @@ const LoginForm = () => {
           )}
         </AnimatePresence>
       </div>
-      <div className="flex items-center justify-between text-sm">
+
+      {/* Remember me + Forgot password */}
+      <div
+        className={`flex items-center justify-between text-sm ${isLockedOut ? "opacity-50" : ""}`}
+      >
         <label className="flex items-center gap-2">
           <input
             type="checkbox"
             className="accent-primary"
             {...register("rememberMe")}
+            disabled={isLockedOut}
           />
           Remember Me
         </label>
-        <a href="/forgot-password" className="text-grey-medium hover:underline">
+        <a
+          href="/forgot-password"
+          className={`text-grey-medium hover:underline ${isLockedOut ? "pointer-events-none" : ""}`}
+        >
           Forgot Password?
         </a>
       </div>
-      <Button label={"Sign in"} type="submit" className="w-full" />
-      <div className="flex items-center gap-2 text-grey-medium">
+
+      <Button
+        label={`Sign In`}
+        type="submit"
+        className="w-full"
+        disabled={isLockedOut}
+      />
+
+      {/* Divider */}
+      <div
+        className={`flex items-center gap-2 text-grey-medium ${isLockedOut ? "opacity-50" : ""}`}
+      >
         <hr className="flex-grow border-grey-light" />
         <span className="text-sm">OR</span>
         <hr className="flex-grow border-grey-light" />
       </div>
+
+      {/* Google / Facebook sign-in */}
       <div className="space-y-2">
         <Button
           label="Sign in with Google"
           variant="outlined"
           IconLeft={<img src={google} alt="Google" className="w-5 h-5" />}
           className="w-full"
+          disabled={isLockedOut}
         />
         <Button
           label="Sign in with Facebook"
           variant="outlined"
           IconLeft={<img src={fb} alt="Facebook" className="w-5 h-5" />}
           className="w-full"
+          disabled={isLockedOut}
         />
       </div>
+
       <Agreement />
-      <p className="text-center text-grey-medium mt-4">
+
+      <p
+        className={`text-center text-grey-medium mt-4 ${isLockedOut ? "opacity-50" : ""}`}
+      >
         Don't have an account?{" "}
-        <a
-          href="/register"
-          className="text-primary accent-primary hover:underline"
-        >
+        <a href="/register" className="text-primary hover:underline">
           Register
         </a>
       </p>
+
       <p className="text-center text-xs text-grey-medium mt-4">
         © 2025 Chatblix. All Rights Reserved
       </p>
