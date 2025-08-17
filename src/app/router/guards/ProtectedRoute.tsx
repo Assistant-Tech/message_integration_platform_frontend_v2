@@ -4,14 +4,14 @@ import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedRoute = () => {
   const isRefreshing = useAuthStore((s) => s.isRefreshing);
-  const requiresOnboarding = useAuthStore((s) => s.requiresOnboarding);
+  const accessToken = useAuthStore((s) => s.accessToken);
 
   if (isRefreshing) {
     return <Loading />;
   }
 
-  if (requiresOnboarding) {
-    return <Navigate to={"/onboardingform"} replace />;
+  if (!accessToken) {
+    return <Navigate to={"/login"} replace />;
   }
 
   return <Outlet />;

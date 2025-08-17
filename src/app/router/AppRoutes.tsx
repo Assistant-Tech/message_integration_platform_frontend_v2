@@ -54,8 +54,9 @@ import {
   ProductInventory,
   CreateProductPage,
 } from "@/app/features/dashboard/admin/pages";
-import { OnboardingForm } from "../features/auth/pages/onboarding/steps";
+import { OnboardingForm } from "@/app/features/auth/pages/onboarding/steps";
 import ProtectedRoute from "@/app/router/guards/ProtectedRoute";
+import OnboardingGuard from "@/app/router/guards/OnboardingGurad";
 
 const AppRoutes = () => {
   return (
@@ -122,54 +123,68 @@ const AppRoutes = () => {
 
         {/* Protected Routes: All routes nested here require authentication */}
         <Route element={<ProtectedRoute />}>
-          {/* Onboarding page is a special-case protected route */}
-          <Route path="/onboardingform" element={<OnboardingForm />} />
+          {/* Onboarding page only parent component implementation*/}
+          <Route
+            path={APP_ROUTES.PUBLIC.ONBOARDING_FORM}
+            element={<OnboardingForm />}
+          />
 
-          {/* Admin Dashboard Routes */}
-          <Route path="/admin" element={<DashboardLayout />}>
-            <Route index element={<AdminDashboardPage />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route
-              path={APP_ROUTES.ADMIN.CONVERSATION}
-              element={<ConversationPage />}
-            />
-            <Route path={APP_ROUTES.ADMIN.CHATBOT} element={<ChatbotPage />} />
-            <Route path={APP_ROUTES.ADMIN.CHANNEL} element={<ChannelPage />} />
-            <Route path={APP_ROUTES.ADMIN.ORDERS} element={<OrderPage />} />
-            <Route
-              path={APP_ROUTES.ADMIN.ORDERS_CREATE}
-              element={<CreateOrderPage />}
-            />
-            <Route path={APP_ROUTES.ADMIN.TAGS} element={<TagsPage />} />
-            <Route
-              path={APP_ROUTES.ADMIN.ANALYTICS}
-              element={<AnalyticsPage />}
-            />
-            <Route
-              path={APP_ROUTES.ADMIN.SETTINGS}
-              element={<SettingsPage />}
-            />
-            <Route path={APP_ROUTES.ADMIN.PRODUCTS} element={<ProductPage />} />
-            <Route
-              path={APP_ROUTES.ADMIN.PRODUCTS_ALL}
-              element={<AllProductsPage />}
-            />
-            <Route
-              path={APP_ROUTES.ADMIN.PRODUCTS_CATEGORY}
-              element={<ProductCategory />}
-            />
-            <Route
-              path={APP_ROUTES.ADMIN.PRODUCTS_VARIANTS}
-              element={<ProductVariants />}
-            />
-            <Route
-              path={APP_ROUTES.ADMIN.PRODUCTS_INVENTORY}
-              element={<ProductInventory />}
-            />
-            <Route
-              path={APP_ROUTES.ADMIN.PRODUCTS_CREATE}
-              element={<CreateProductPage />}
-            />
+          <Route element={<OnboardingGuard />}>
+            {/* Admin Dashboard Routes */}
+            <Route path="/admin" element={<DashboardLayout />}>
+              <Route index element={<AdminDashboardPage />} />
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route
+                path={APP_ROUTES.ADMIN.CONVERSATION}
+                element={<ConversationPage />}
+              />
+              <Route
+                path={APP_ROUTES.ADMIN.CHATBOT}
+                element={<ChatbotPage />}
+              />
+              <Route
+                path={APP_ROUTES.ADMIN.CHANNEL}
+                element={<ChannelPage />}
+              />
+              <Route path={APP_ROUTES.ADMIN.ORDERS} element={<OrderPage />} />
+              <Route
+                path={APP_ROUTES.ADMIN.ORDERS_CREATE}
+                element={<CreateOrderPage />}
+              />
+              <Route path={APP_ROUTES.ADMIN.TAGS} element={<TagsPage />} />
+              <Route
+                path={APP_ROUTES.ADMIN.ANALYTICS}
+                element={<AnalyticsPage />}
+              />
+              <Route
+                path={APP_ROUTES.ADMIN.SETTINGS}
+                element={<SettingsPage />}
+              />
+              <Route
+                path={APP_ROUTES.ADMIN.PRODUCTS}
+                element={<ProductPage />}
+              />
+              <Route
+                path={APP_ROUTES.ADMIN.PRODUCTS_ALL}
+                element={<AllProductsPage />}
+              />
+              <Route
+                path={APP_ROUTES.ADMIN.PRODUCTS_CATEGORY}
+                element={<ProductCategory />}
+              />
+              <Route
+                path={APP_ROUTES.ADMIN.PRODUCTS_VARIANTS}
+                element={<ProductVariants />}
+              />
+              <Route
+                path={APP_ROUTES.ADMIN.PRODUCTS_INVENTORY}
+                element={<ProductInventory />}
+              />
+              <Route
+                path={APP_ROUTES.ADMIN.PRODUCTS_CREATE}
+                element={<CreateProductPage />}
+              />
+            </Route>
           </Route>
 
           {/* User Dashboard Routes (if any) */}

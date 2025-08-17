@@ -10,23 +10,24 @@ interface FileUploadProgress {
 
 type OnboardingData = {
   step1: {
-    companyName: string;
-    companyEmail: string;
-    companyPhone: string;
-    companyWebsite: string;
+    organizationName: string;
+    email: string;
+    contactNumber: string;
+    website: string;
   };
   step2: {
     country: string;
     state: string;
     city: string;
+    address: string;
   };
   step3: {
-    selectedIndustry: string;
-    customIndustry?: string;
+    industry: string;
+    isOther?: boolean;
   };
   step4: {
     panNumber: string;
-    panFile: File | null;
+    panCardImage: File | null;
     uploadProgress: FileUploadProgress[];
   };
   step5: {

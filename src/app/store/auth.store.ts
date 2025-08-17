@@ -1,4 +1,3 @@
-// auth.store.ts
 import { create } from "zustand";
 import api from "@/app/services/api/axios";
 import { User } from "@/app/types/auth.types";
@@ -89,6 +88,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         user: res.data.user,
         requiresOnboarding: false,
       });
+      return res.data;
     } finally {
       set({ isloading: false });
     }

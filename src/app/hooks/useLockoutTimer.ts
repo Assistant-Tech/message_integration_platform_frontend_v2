@@ -6,7 +6,6 @@ export const useLockoutTimer = () => {
   const [isLockedOut, setIsLockedOut] = useState(false);
   const [lockoutTimeLeft, setLockoutTimeLeft] = useState(0);
 
-  // Load lockout from localStorage on mount
   useEffect(() => {
     const lockoutUntil = localStorage.getItem(LOCKOUT_STORAGE_KEY);
     if (lockoutUntil) {

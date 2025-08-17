@@ -72,14 +72,13 @@ const LoginForm = () => {
           const minutes = parseInt(lockoutMessageMatch[1], 10);
           const seconds = minutes * 60;
           toast.error(errorMessage);
-          initiateLockout(seconds); // Pass the extracted time to the hook
+          initiateLockout(seconds);
         } else if (
           errorMessage === "Email not verified. Please check your inbox."
         ) {
           toast.error(errorMessage);
           navigate("/check-email", { state: { email: data.email } });
         } else {
-          // Handle other generic login errors
           toast.error(errorMessage);
         }
       }
