@@ -17,16 +17,20 @@ export const fetchCurrentUser = async () => {
  * RESET PASSWORD.
  */
 export const resetPassword = async (
+  userId: string,
   token: string,
   password: string,
-  confirmPassword: string,
+  confirmPassword: string
 ) => {
   try {
-    const res =  await api.post(`/auth/reset-password/${token}`, {
-      token,
-      password,
-      confirmPassword,
-    });
+    const res = await api.post(
+      `/auth/reset-password?userId=${userId}&token=${token}`,
+      {
+        token,
+        password,
+        confirmPassword,
+      }
+    );
 
     return res.data;
   } catch (error) {

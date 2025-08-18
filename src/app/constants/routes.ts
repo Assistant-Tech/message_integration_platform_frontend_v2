@@ -12,7 +12,7 @@ export const APP_ROUTES = {
     SLUG: (slug: string) => `/${slug}`,
     DEMO: "/demo",
     FORGOT_PASSWORD: "/forgot-password",
-    RESET_PASSWORD: "/reset/:userId/:token",
+    RESET_PASSWORD: "/reset-password",
 
     // Onboarding [[/onboarding]]
     ONBOARDING_FORM: "/onboardingform",
