@@ -13,8 +13,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/app/components/common/Tooltip";
-import logo from "@/app/assets/icons/logo-white.svg";
 import { sidebarItems } from "@/app/utils/admin/Sidebar";
+import { Logo } from "@/app/components/ui";
 
 const CollapsibleSidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -37,10 +37,7 @@ const CollapsibleSidebar = () => {
           {/* Sidebar Header */}
           <div className="p-4 border-primary-dark relative">
             <div className="flex items-center justify-center px-2 space-x-3">
-              <img src={logo} alt="Logo" className="w-10 h-10" />
-              {!isCollapsed && (
-                <span className="h5-bold-16 text-white">Assistant Tech</span>
-              )}
+              <Logo variant="white" />
             </div>
 
             {/* Collapse Toggle */}
