@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -66,10 +67,342 @@ const ResetPassword = () => {
     }
   };
 
+  // Styles
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+      },
+    },
+  };
+
+  const floatVariants = {
+    hidden: { y: 0, rotate: 0 },
+    visible: {
+      y: [-20, 0, -20],
+      rotate: [5, 0, 5],
+      transition: {
+        y: {
+          repeat: Infinity,
+          repeatType: "reverse",
+          duration: 4,
+          ease: "easeInOut",
+        },
+        rotate: {
+          repeat: Infinity,
+          repeatType: "reverse",
+          duration: 4,
+          ease: "easeInOut",
+        },
+      },
+    },
+  };
+
+  const shimmerVariants = {
+    hidden: { x: "-100%" },
+    visible: {
+      x: "100%",
+      transition: {
+        repeat: Infinity,
+        duration: 3,
+        ease: "linear",
+      },
+    },
+  };
+
+  const gradientVariants = {
+    hidden: { backgroundPosition: "0% 50%" },
+    visible: {
+      backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+      transition: {
+        repeat: Infinity,
+        duration: 8,
+        ease: "linear",
+      },
+    },
+  };
+
+  const pingVariants = {
+    hidden: { scale: 0, opacity: 0 },
+    visible: {
+      scale: [1, 1.5, 1],
+      opacity: [0.3, 0.6, 0.3],
+      transition: {
+        repeat: Infinity,
+        duration: 2,
+        ease: "linear",
+      },
+    },
+  };
+
+  const FadeInAndUp = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut",
+      },
+    },
+  };
+
   return (
     <div className="flex flex-col md:flex-row h-screen overflow-hidden">
       {/* Left Section */}
-      <div className="hidden md:block w-1/2 h-full bg-base-white" />
+      <div className="hidden md:block w-1/2 h-full relative overflow-hidden">
+        {/* Gradient Background */}
+        <motion.div
+          className="absolute inset-0"
+          variants={gradientVariants}
+          initial="hidden"
+          animate="visible"
+          style={{
+            background:
+              "linear-gradient(-45deg, #006b38, #009951, #1cb496, #dbf7ea)",
+            backgroundSize: "400% 400%",
+          }}
+        ></motion.div>
+
+        {/* Animated Background Elements */}
+        <motion.div
+          className="absolute inset-0"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.div
+            className="absolute opacity-10 text-white"
+            style={{ top: "10%", left: "15%" }}
+            variants={floatVariants}
+          >
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1Z" />
+            </svg>
+          </motion.div>
+          <motion.div
+            className="absolute opacity-10 text-white"
+            style={{ top: "25%", right: "20%" }}
+            variants={floatVariants}
+            transition={{ ...floatVariants.visible.transition, delay: 1 }}
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <circle cx="12" cy="16" r="1" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+          </motion.div>
+          <motion.div
+            className="absolute opacity-10 text-white"
+            style={{ top: "45%", left: "10%" }}
+            variants={floatVariants}
+            transition={{ ...floatVariants.visible.transition, delay: 2 }}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M21 2L19 4L7.5 15.5L4.5 12.5L2 15L7.5 20.5L21 2Z" />
+            </svg>
+          </motion.div>
+          <motion.div
+            className="absolute opacity-10 text-white"
+            style={{ top: "60%", right: "15%" }}
+            variants={floatVariants}
+            transition={{ ...floatVariants.visible.transition, delay: 1.5 }}
+          >
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M22 11.08V12A10 10 0 1 1 5.93 7.25" />
+              <polyline points="22,4 12,14.01 9,11.01" />
+            </svg>
+          </motion.div>
+          <motion.div
+            className="absolute opacity-10 text-white"
+            style={{ top: "80%", left: "25%" }}
+            variants={floatVariants}
+            transition={{ ...floatVariants.visible.transition, delay: 0.5 }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1Z" />
+            </svg>
+          </motion.div>
+          <motion.div
+            className="absolute opacity-10 text-white"
+            style={{ top: "35%", left: "75%" }}
+            variants={floatVariants}
+            transition={{ ...floatVariants.visible.transition, delay: 2.5 }}
+          >
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <circle cx="12" cy="16" r="1" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+          </motion.div>
+        </motion.div>
+
+        {/* Main Content */}
+        <motion.div
+          className="relative z-10 h-full flex flex-col justify-center items-center p-12 text-white"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {/* Central Shield Icon */}
+          <motion.div className="relative mb-8" variants={FadeInAndUp}>
+            <motion.div
+              className="w-32 h-32 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center relative overflow-hidden"
+              variants={floatVariants}
+              initial="hidden"
+              animate="visible"
+              transition={{ ...floatVariants.visible.transition, duration: 3 }}
+            >
+              <motion.div
+                className="absolute top-0 left-0 right-0 bottom-0"
+                style={{
+                  background:
+                    "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent)",
+                }}
+                variants={shimmerVariants}
+                initial="hidden"
+                animate="visible"
+              ></motion.div>
+              <svg
+                width="64"
+                height="64"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="text-white"
+              >
+                <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1Z" />
+              </svg>
+            </motion.div>
+            <motion.div
+              className="absolute -inset-4 rounded-full bg-white/10"
+              variants={pingVariants}
+              initial="hidden"
+              animate="visible"
+            ></motion.div>
+          </motion.div>
+
+          {/* Main Heading */}
+          <div className="text-center space-y-6 max-w-md">
+            <motion.h1
+              className="text-4xl font-bold leading-tight"
+              variants={FadeInAndUp}
+            >
+              Secure Password Reset
+            </motion.h1>
+            <motion.p
+              className="text-xl text-white/90 leading-relaxed"
+              variants={FadeInAndUp}
+            >
+              Your security is our priority. Create a strong new password to
+              protect your account.
+            </motion.p>
+          </div>
+
+          {/* Security Features */}
+          <motion.div
+            className="mt-12 space-y-4 w-full max-w-sm"
+            variants={containerVariants}
+          >
+            <motion.div
+              className="flex items-center space-x-4 p-4 rounded-lg bg-white/10 backdrop-blur-sm"
+              variants={floatVariants}
+              initial="hidden"
+              animate="visible"
+              transition={{ ...floatVariants.visible.transition, duration: 3 }}
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="text-white flex-shrink-0"
+              >
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <circle cx="12" cy="16" r="1" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+              <span className="text-white/90 font-medium">
+                256-bit Encryption
+              </span>
+            </motion.div>
+            <motion.div
+              className="flex items-center space-x-4 p-4 rounded-lg bg-white/10 backdrop-blur-sm"
+              variants={floatVariants}
+              initial="hidden"
+              animate="visible"
+              transition={{
+                ...floatVariants.visible.transition,
+                duration: 3,
+                delay: 0.5,
+              }}
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="text-white flex-shrink-0"
+              >
+                <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1Z" />
+              </svg>
+              <span className="text-white/90 font-medium">
+                Advanced Security
+              </span>
+            </motion.div>
+            <motion.div
+              className="flex items-center space-x-4 p-4 rounded-lg bg-white/10 backdrop-blur-sm"
+              variants={floatVariants}
+              initial="hidden"
+              animate="visible"
+              transition={{
+                ...floatVariants.visible.transition,
+                duration: 3,
+                delay: 1,
+              }}
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="text-white flex-shrink-0"
+              >
+                <path d="M22 11.08V12A10 10 0 1 1 5.93 7.25" />
+                <polyline points="22,4 12,14.01 9,11.01" />
+              </svg>
+              <span className="text-white/90 font-medium">
+                Verified Process
+              </span>
+            </motion.div>
+          </motion.div>
+        </motion.div>
+
+        {/* Decorative Elements */}
+        <div className="absolute top-0 left-0 w-full h-full">
+          <motion.div
+            className="absolute top-20 left-20 w-2 h-2 bg-white/30 rounded-full"
+            variants={pingVariants}
+            initial="hidden"
+            animate="visible"
+          ></motion.div>
+          <motion.div
+            className="absolute top-1/3 right-32 w-1 h-1 bg-white/40 rounded-full"
+            variants={pingVariants}
+            initial="hidden"
+            animate="visible"
+            transition={{ ...pingVariants.visible.transition, delay: 1 }}
+          ></motion.div>
+          <motion.div
+            className="absolute bottom-40 left-16 w-3 h-3 bg-white/20 rounded-full"
+            variants={pingVariants}
+            initial="hidden"
+            animate="visible"
+            transition={{ ...pingVariants.visible.transition, delay: 2 }}
+          ></motion.div>
+        </div>
+      </div>
 
       {/* Right Section */}
       <div className="w-full md:w-1/2 h-full flex flex-col px-4">
