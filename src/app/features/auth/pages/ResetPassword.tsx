@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { APP_ROUTES } from "@/app/constants/routes";
 import { Button, Input, Logo } from "@/app/components/ui";
 import { resetPassword as resetPasswordApi } from "@/app/services/auth.services";
 
 const ResetPassword = () => {
-  const { token } = useParams<{ userId: string; token: string }>();
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get("resetToken");
+  const userId = searchParams.get("userId");
   const navigate = useNavigate();
 
   const [password, setPassword] = useState("");
@@ -43,11 +45,22 @@ const ResetPassword = () => {
 
     try {
       setLoading(true);
-      await resetPasswordApi(token || "", password, confirmPassword);
+
+      console.log("userId:", userId);
+      console.log("token:", token);
+      console.log("searchParams:", searchParams);
+      if (!userId || !token) {
+        throw new Error("Missing userId or token");
+      }
+      await resetPasswordApi(userId, token, password, confirmPassword);
       toast.success("Your password has been reset successfully!");
       navigate(APP_ROUTES.PUBLIC.LOGIN);
-    } catch (error: any) {
-      toast.error(error?.message || "Failed to reset password.");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message || "Failed to reset password.");
+      } else {
+        toast.error("Failed to reset password.");
+      }
     } finally {
       setLoading(false);
     }
