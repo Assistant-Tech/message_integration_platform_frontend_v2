@@ -61,7 +61,11 @@ const LoginForm = () => {
         toast.info("Please complete your onboarding.");
       }
 
-      navigate(res.requiresOnboarding ? "/onboardingform" : "/admin/dashboard");
+      navigate(
+        res.requiresOnboarding
+          ? "/onboardingform"
+          : `/${res.tenantSlug}/admin/dashboard`
+      );
       reset();
     } catch (error) {
       const parsedError = handleApiError(error);
@@ -83,6 +87,7 @@ const LoginForm = () => {
           toast.error(errorMessage);
           navigate("/check-email", { state: { email: data.email } });
         } else {
+          console.log("Login error:", errorMessage);
           toast.error(errorMessage);
         }
       }

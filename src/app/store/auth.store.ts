@@ -23,11 +23,15 @@ interface AuthState {
     password: string
   ) => Promise<{ message: string; email: string }>;
   verifyEmail: (token: string) => Promise<{ message: string }>;
-  onboarding: (data: FormData) => Promise<void>;
+  onboarding: (data: FormData) => Promise<{ slug: string }>;
   login: (
     email: string,
     password: string
-  ) => Promise<{ message: string; requiresOnboarding: boolean }>;
+  ) => Promise<{
+    message: string;
+    requiresOnboarding: boolean;
+    tenantSlug: string;
+  }>;
   refreshAccessToken: () => Promise<string | null>;
   fetchCurrentUserProfile: () => Promise<void>;
   logout: () => void;
@@ -100,7 +104,10 @@ export const useAuthStore = create<AuthState>()(
             user: res.data.user,
             requiresOnboarding: false,
           });
-          return res.data;
+          get().fetchCurrentUserProfile();
+          return {
+            slug: res.data.slug,
+          };
         } finally {
           set({ isloading: false });
         }
@@ -109,9 +116,8 @@ export const useAuthStore = create<AuthState>()(
         set({ isloading: true });
         try {
           const res = await api.post("/auth/login", { email, password });
-          const { user, accessToken, requiresOnboarding, csrfToken } = res.data;
+          const { accessToken, requiresOnboarding, csrfToken } = res.data;
           set({
-            user,
             accessToken,
             requiresOnboarding,
             csrfToken,
@@ -122,6 +128,7 @@ export const useAuthStore = create<AuthState>()(
           return {
             message: res.data.message || "Login successful!",
             requiresOnboarding,
+            tenantSlug: res.data.tenantSlug,
           };
         } finally {
           set({ isloading: false });
