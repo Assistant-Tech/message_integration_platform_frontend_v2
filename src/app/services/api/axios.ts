@@ -1,5 +1,16 @@
-import axios from "axios";
-import { useAuthStore } from "@/app/store/auth.store";
+import axios, {
+  AxiosError,
+  InternalAxiosRequestConfig,
+  AxiosResponse,
+} from "axios";
+
+// NOTE: We intentionally avoid importing the auth store at the top-level to prevent
+// a circular dependency (store -> api -> store). Instead we'll lazy-load it inside
+// the interceptors when needed.
+
+interface RetriableAxiosRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
 
 const api = axios.create({
   baseURL:
@@ -11,16 +22,63 @@ const api = axios.create({
   },
 });
 
-// Request Interceptor → attach Authorization header if token exists
-api.interceptors.request.use((config) => {
-  const token = useAuthStore.getState().accessToken;
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+// ---------------------------------------------------------------------------
+// REQUEST INTERCEPTOR
+// Adds Authorization header when access token exists.
+// ---------------------------------------------------------------------------
+api.interceptors.request.use(async (config) => {
+  try {
+    const mod = await import("@/app/store/auth.store");
+    const { accessToken } = mod.useAuthStore.getState();
+    if (accessToken) {
+      config.headers = config.headers || {};
+      if (!config.headers.Authorization) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
+      }
+    }
+  } catch {
+    // ignore
   }
   return config;
 });
 
-// Response Interceptor → refresh token on 401
+// ---------------------------------------------------------------------------
+// RESPONSE INTERCEPTOR (401 handling & refresh token flow with queue)
+// ---------------------------------------------------------------------------
+let isRefreshing = false;
+let refreshPromise: Promise<string | null> | null = null;
+type PendingRequest = {
+  // We resolve with an AxiosResponse for the retried request
+  resolve: (value: AxiosResponse) => void;
+  // Reject can be unknown
+  reject: (reason?: unknown) => void;
+  config: RetriableAxiosRequestConfig;
+};
+const failedQueue: PendingRequest[] = [];
+
+const processQueue = (error: unknown, token: string | null) => {
+  while (failedQueue.length) {
+    const pending = failedQueue.shift();
+    if (!pending) continue;
+    if (error) {
+      pending.reject(error);
+    } else {
+      (async () => {
+        if (token) {
+          pending.config.headers = pending.config.headers || {};
+          pending.config.headers.Authorization = `Bearer ${token}`;
+        }
+        try {
+          const response = await api(pending.config);
+          pending.resolve(response);
+        } catch (err) {
+          pending.reject(err);
+        }
+      })();
+    }
+  }
+};
+
 api.interceptors.response.use(
   (res) => res,
   async (err) => {

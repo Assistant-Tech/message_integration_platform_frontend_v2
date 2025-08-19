@@ -57,6 +57,10 @@ const LoginForm = () => {
       const res = await login(data.email, data.password);
       toast.success(res.message);
 
+      if (res.requiresOnboarding) {
+        toast.info("Please complete your onboarding.");
+      }
+
       navigate(res.requiresOnboarding ? "/onboardingform" : "/admin/dashboard");
       reset();
     } catch (error) {
@@ -65,7 +69,7 @@ const LoginForm = () => {
         const errorMessage = parsedError.message;
 
         const lockoutMessageMatch = errorMessage.match(
-          /Your account has been temporarily locked.*,(\d+)\s*minutes remaining/,
+          /Your account has been temporarily locked.*,(\d+)\s*minutes remaining/
         );
 
         if (lockoutMessageMatch && lockoutMessageMatch[1] !== undefined) {

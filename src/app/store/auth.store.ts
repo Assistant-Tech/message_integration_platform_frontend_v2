@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { persist } from "zustand/middleware";
 import api from "@/app/services/api/axios";
 import { User } from "@/app/types/auth.types";
 import { fetchCurrentUser } from "@/app/services/auth.services";
@@ -10,6 +11,7 @@ interface AuthState {
   csrfToken: string | null;
   onboardingToken: string | null;
   requiresOnboarding: boolean;
+  isAuthenticated: boolean;
   isVerified: boolean;
   isloading: boolean;
   isRefreshing: boolean;
@@ -27,9 +29,10 @@ interface AuthState {
     email: string,
     password: string
   ) => Promise<{ message: string; requiresOnboarding: boolean }>;
-  refreshAccessToken: () => Promise<string | null>;
+  refreshAccessAccessToken: () => Promise<string | null>;
   fetchCurrentUserProfile: () => Promise<void>;
   logout: () => void;
+  resetAuth: () => void;
 }
 
 export const useAuthStore = create<AuthState>()(
