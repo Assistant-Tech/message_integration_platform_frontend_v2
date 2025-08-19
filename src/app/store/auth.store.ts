@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { persist } from "zustand/middleware";
 import api from "@/app/services/api/axios";
 import { User } from "@/app/types/auth.types";
 import { fetchCurrentUser } from "@/app/services/auth.services";
@@ -29,7 +28,7 @@ interface AuthState {
     email: string,
     password: string
   ) => Promise<{ message: string; requiresOnboarding: boolean }>;
-  refreshAccessAccessToken: () => Promise<string | null>;
+  refreshAccessToken: () => Promise<string | null>;
   fetchCurrentUserProfile: () => Promise<void>;
   logout: () => void;
   resetAuth: () => void;
@@ -45,10 +44,22 @@ export const useAuthStore = create<AuthState>()(
       requiresOnboarding: false,
       isVerified: false,
       isloading: false,
-      isRefreshing: true,
+      isRefreshing: false,
+      isAuthenticated: false,
       setRefreshing: (refreshing) => set({ isRefreshing: refreshing }),
       setAccessToken: (accessToken) => set({ accessToken }),
       setUser: (user) => set({ user }),
+      resetAuth: () => {
+        set({
+          user: null,
+          accessToken: null,
+          csrfToken: null,
+          onboardingToken: null,
+          requiresOnboarding: false,
+          isVerified: false,
+          isAuthenticated: false,
+        });
+      },
       signup: async (name, email, password) => {
         set({ isloading: true });
         try {
@@ -84,6 +95,7 @@ export const useAuthStore = create<AuthState>()(
           const res = await api.post("/auth/onboarding", data, {
             headers: { "Content-Type": "multipart/form-data" },
           });
+
           set({
             user: res.data.user,
             requiresOnboarding: false,
@@ -98,7 +110,15 @@ export const useAuthStore = create<AuthState>()(
         try {
           const res = await api.post("/auth/login", { email, password });
           const { user, accessToken, requiresOnboarding, csrfToken } = res.data;
-          set({ user, accessToken, requiresOnboarding, csrfToken });
+          set({
+            user,
+            accessToken,
+            requiresOnboarding,
+            csrfToken,
+            isAuthenticated: true,
+          });
+
+          get().fetchCurrentUserProfile();
           return {
             message: res.data.message || "Login successful!",
             requiresOnboarding,
@@ -109,6 +129,7 @@ export const useAuthStore = create<AuthState>()(
       },
       refreshAccessToken: async () => {
         try {
+          set({ isRefreshing: true });
           const res = await api.get("/auth/refresh", {
             headers: {
               "X-CSRF-Token": get().csrfToken,
@@ -150,7 +171,10 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: "auth-csrf",
-      partialize: (state) => ({ csrfToken: state.csrfToken }),
+      partialize: (state) => ({
+        csrfToken: state.csrfToken,
+        isAuthenticated: state.isAuthenticated,
+      }),
     }
   )
 );

@@ -22,10 +22,12 @@ const App = () => {
         isAuthenticated,
       } = useAuthStore.getState();
 
-      if (isRefreshing || !isAuthenticated) return; // Already in progress elsewhere
+      console.log(isAuthenticated);
+      if (!isAuthenticated || isRefreshing) return; // Already in progress elsewhere
       try {
         setRefreshing(true);
         const newToken = await refreshAccessToken();
+        console.log(newToken);
         if (newToken) {
           await fetchCurrentUserProfile();
         } else {
