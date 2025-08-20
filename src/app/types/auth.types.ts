@@ -1,4 +1,12 @@
 // --- Type Definitions ---
+export interface Tenant {
+  id: string;
+  slug: string;
+  isOnboarded: boolean;
+  industry?: string;
+  createdAt?: string;
+}
+
 export interface User {
   id: string;
   email: string;
@@ -10,6 +18,7 @@ export interface User {
     theme: string;
     notifications: boolean;
   };
+  tenant?: Tenant;
 }
 
 export interface SignupSuccessResponse {
@@ -24,11 +33,13 @@ export interface SignupSuccessResponse {
 
 export interface LoginSuccessResponse {
   accessToken: string;
+  accessTokenExpiresIn: number;
+  csrfToken: string;
+  requiresOnboarding: boolean;
   success: boolean;
   message: string;
-  requiresOnboarding: boolean;
+  timestamp: string;
 }
-
 export interface VerifyEmailResponse {
   success: boolean;
   message: string;

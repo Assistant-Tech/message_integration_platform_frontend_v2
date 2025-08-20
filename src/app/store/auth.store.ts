@@ -20,13 +20,13 @@ interface AuthState {
   signup: (
     name: string,
     email: string,
-    password: string
+    password: string,
   ) => Promise<{ message: string; email: string }>;
   verifyEmail: (token: string) => Promise<{ message: string }>;
   onboarding: (data: FormData) => Promise<{ slug: string }>;
   login: (
     email: string,
-    password: string
+    password: string,
   ) => Promise<{
     message: string;
     requiresOnboarding: boolean;
@@ -100,23 +100,26 @@ export const useAuthStore = create<AuthState>()(
             headers: { "Content-Type": "multipart/form-data" },
           });
 
-          set({
-            user: res.data.user,
-            requiresOnboarding: false,
-          });
-          get().fetchCurrentUserProfile();
-          return {
-            slug: res.data.slug,
-          };
+          const onboardingData = res.data?.data || {};
+          set({ requiresOnboarding: false });
+
+          // Refresh user so tenant appears on the profile
+          await get().fetchCurrentUserProfile();
+
+          // Prefer store user’s tenant slug; fall back to API's onboarding slug
+          const slug = get().user?.tenant?.slug ?? onboardingData.slug ?? "";
+          return { slug };
         } finally {
           set({ isloading: false });
         }
       },
+
       login: async (email, password) => {
         set({ isloading: true });
         try {
           const res = await api.post("/auth/login", { email, password });
           const { accessToken, requiresOnboarding, csrfToken } = res.data;
+
           set({
             accessToken,
             requiresOnboarding,
@@ -124,16 +127,23 @@ export const useAuthStore = create<AuthState>()(
             isAuthenticated: true,
           });
 
-          get().fetchCurrentUserProfile();
+          await get().fetchCurrentUserProfile();
+
+          const tenantSlug = res.data.tenantSlug;
+          if (!tenantSlug) {
+            console.warn("⚠️ No tenantSlug found after login");
+          }
+
           return {
             message: res.data.message || "Login successful!",
             requiresOnboarding,
-            tenantSlug: res.data.tenantSlug,
+            tenantSlug: tenantSlug,
           };
         } finally {
           set({ isloading: false });
         }
       },
+
       refreshAccessToken: async () => {
         try {
           set({ isRefreshing: true });
@@ -182,6 +192,6 @@ export const useAuthStore = create<AuthState>()(
         csrfToken: state.csrfToken,
         isAuthenticated: state.isAuthenticated,
       }),
-    }
-  )
+    },
+  ),
 );
