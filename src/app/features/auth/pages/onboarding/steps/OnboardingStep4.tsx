@@ -392,9 +392,10 @@ const OnboardingStep4: React.FC<OnboardingStep4Props> = ({
         <div className="flex gap-3">
           {isOptional && onSkip && (
             <Button
-              label="Skip"
+              label="Skip this step"
               onClick={handleSkipStep}
-              variant="outlined"
+              variant="none"
+              className="underline pe-4"
               disabled={
                 isSubmitting ||
                 formData.uploadProgress.some((u) => u.status === "uploading")
@@ -407,6 +408,7 @@ const OnboardingStep4: React.FC<OnboardingStep4Props> = ({
             variant="primary"
             IconRight={<ArrowRight size={20} />}
             disabled={isSubmitting}
+            className="px-4"
           />
         </div>
       </div>

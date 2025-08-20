@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from "react";
-import { CustomDropdown } from "@/app/features/auth/pages/onboarding/components";
 import { Button } from "@/app/components/ui/";
 import { useOnboardingStore } from "@/app/features/auth/pages/onboarding/hooks/useOnboardingStore";
 import {
@@ -8,6 +7,9 @@ import {
 } from "@/app/features/auth/pages/onboarding/schemas/Onboarding.schema";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Country, State, City } from "country-state-city";
+import Select from "react-select/creatable"; // import creatable select for adding options
+import { motion } from "framer-motion";
+
 interface OnboardingStep2Props {
   onNext: (stepData: OnboardingStep2FormData) => void;
   onPrevious: () => void;
@@ -29,48 +31,80 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
     Partial<Record<keyof OnboardingStep2FormData, string>>
   >({});
 
+  // Store manually added states and cities
+  const [customOptions, setCustomOptions] = useState<{
+    states: string[];
+    cities: string[];
+  }>({ states: [], cities: [] });
+
   // Country list
   const countries = useMemo(
     () =>
       Country.getAllCountries().map(({ name, isoCode }) => ({
-        name,
-        isoCode,
+        label: name,
+        value: isoCode,
       })),
     [],
   );
 
+  // States
   const selectedCountry = useMemo(
-    () => countries.find((c) => c.name === formData.country),
+    () => countries.find((c) => c.label === formData.country),
     [formData.country, countries],
   );
 
-  // States
   const states = useMemo(() => {
     if (!selectedCountry) return [];
-    return State.getStatesOfCountry(selectedCountry.isoCode).map(
-      ({ name, isoCode }) => ({ name, isoCode }),
-    );
-  }, [selectedCountry]);
 
+    // Get states from the library
+    const libraryStates = State.getStatesOfCountry(selectedCountry.value).map(
+      ({ name, isoCode }) => ({
+        label: name,
+        value: isoCode,
+      }),
+    );
+
+    // Add custom states for this country
+    const customStates = customOptions.states.map((state) => ({
+      label: state,
+      value: state,
+    }));
+
+    return [...libraryStates, ...customStates];
+  }, [selectedCountry, customOptions.states]);
+
+  // Cities
   const selectedState = useMemo(
-    () => states.find((s) => s.name === formData.state),
+    () => states.find((s) => s.label === formData.state),
     [formData.state, states],
   );
 
-  // Cities
   const cities = useMemo(() => {
     if (!selectedCountry || !selectedState) return [];
-    return City.getCitiesOfState(
-      selectedCountry.isoCode,
-      selectedState.isoCode,
-    ).map(({ name }) => ({ name }));
-  }, [selectedCountry, selectedState]);
 
-  // Handles field changes and rebuilds the address
-  const handleChange = (field: "country" | "state" | "city", value: string) => {
+    // Get cities from the library
+    const libraryCities = City.getCitiesOfState(
+      selectedCountry.value,
+      selectedState.value,
+    ).map(({ name }) => ({
+      label: name,
+      value: name,
+    }));
+
+    // Add custom cities
+    const customCities = customOptions.cities.map((city) => ({
+      label: city,
+      value: city,
+    }));
+
+    return [...libraryCities, ...customCities];
+  }, [selectedCountry, selectedState, customOptions.cities]);
+
+  // Handles field changes
+  const handleChange = (field: "country" | "state" | "city", value: any) => {
     const updated = {
       ...formData,
-      [field]: value,
+      [field]: value ? value.label : "",
       ...(field === "country" ? { state: "", city: "" } : {}),
       ...(field === "state" ? { city: "" } : {}),
     };
@@ -78,7 +112,6 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
     updated.address = [updated.city, updated.state, updated.country]
       .filter(Boolean)
       .join(", ");
-
     setFormData(updated);
 
     if (errors[field]) {
@@ -86,9 +119,32 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
     }
   };
 
-  // Unified validation with Zod
   const validateForm = (): boolean => {
-    const result = onboardingStep2Schema.safeParse(formData);
+    const currentSchema = onboardingStep2Schema.superRefine((data, ctx) => {
+      if (!data.country) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Country is required",
+          path: ["country"],
+        });
+      }
+      if (!data.state) {
+        ctx.addIssue({
+          code: "custom",
+          message: "State/Province is required",
+          path: ["state"],
+        });
+      }
+      if (!data.city) {
+        ctx.addIssue({
+          code: "custom",
+          message: "City is required",
+          path: ["city"],
+        });
+      }
+    });
+
+    const result = currentSchema.safeParse(formData);
 
     if (!result.success) {
       const fieldErrors: typeof errors = {};
@@ -111,71 +167,120 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
     }
   };
 
+  // Handle adding a new state or city
+  const handleAddNew = (field: "state" | "city", value: string) => {
+    // Add the new option to custom options
+    setCustomOptions((prev) => ({
+      ...prev,
+      [field === "state" ? "states" : "cities"]: [
+        ...prev[field === "state" ? "states" : "cities"],
+        value,
+      ],
+    }));
+
+    // Update the form data to reflect the newly added state or city
+    const updated = {
+      ...formData,
+      [field]: value,
+      ...(field === "state" ? { city: "" } : {}), // Clear city if state is changed
+    };
+
+    updated.address = [updated.city, updated.state, updated.country]
+      .filter(Boolean)
+      .join(", ");
+
+    setFormData(updated);
+  };
+
   return (
     <div className="space-y-6">
       {/* Country Dropdown */}
       <div className="flex flex-col">
-        <label htmlFor="country" className="mb-1 body-bold-16 text-grey">
+        <label htmlFor="country" className="mb-1 body-bold-16 text-grey-medium">
           Country <span className="text-danger">*</span>
         </label>
-        <CustomDropdown
+        <Select
           id="country"
-          options={countries.map((c) => c.name)}
-          value={formData.country}
-          onChange={(value) => handleChange("country", value)}
+          options={countries}
+          value={countries.find((c) => c.label === formData.country) || null}
+          onChange={(option) => handleChange("country", option)}
           placeholder="Select a country"
-          error={!!errors.country}
+          isSearchable
+          className="text-grey-medium"
         />
         {errors.country && (
-          <span className="text-danger text-sm mt-1">{errors.country}</span>
+          <motion.span
+            className="text-danger text-sm mt-1"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            {errors.country}
+          </motion.span>
         )}
       </div>
 
       {/* State Dropdown */}
       <div className="flex flex-col">
-        <label htmlFor="state" className="mb-1 body-bold-16 text-grey">
-          State/Province
+        <label htmlFor="state" className="mb-1 body-bold-16 text-grey-medium">
+          State/Province <span className="text-danger">*</span>
         </label>
-        <CustomDropdown
+        <Select
           id="state"
-          options={states.map((s) => s.name)}
-          value={formData.state}
-          onChange={(value) => handleChange("state", value)}
-          placeholder={
-            !formData.country ? "Select a country first" : "Select a state"
-          }
-          disabled={!formData.country}
-          error={!!errors.state}
+          options={states}
+          value={states.find((s) => s.label === formData.state) || null}
+          onChange={(option) => handleChange("state", option)}
+          placeholder="Select a state"
+          isSearchable
+          isDisabled={!formData.country}
+          isClearable
+          onCreateOption={(inputValue) => handleAddNew("state", inputValue)}
+          className="text-grey-medium"
         />
         {errors.state && (
-          <span className="text-danger text-sm mt-1">{errors.state}</span>
+          <motion.span
+            className="text-danger text-sm mt-1"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            {errors.state}
+          </motion.span>
         )}
       </div>
 
       {/* City Dropdown */}
       <div className="flex flex-col">
-        <label htmlFor="city" className="mb-1 body-bold-16 text-grey">
+        <label htmlFor="city" className="mb-1 body-bold-16 text-grey-medium">
           City <span className="text-danger">*</span>
         </label>
-        <CustomDropdown
+        <Select
           id="city"
-          options={cities.map((c) => c.name)}
-          value={formData.city}
-          onChange={(value) => handleChange("city", value)}
-          placeholder={
-            !formData.state ? "Select a state first" : "Select a city"
-          }
-          disabled={!formData.state}
-          error={!!errors.city}
+          options={cities}
+          value={cities.find((c) => c.label === formData.city) || null}
+          onChange={(option) => handleChange("city", option)}
+          placeholder="Select a city"
+          isSearchable
+          isDisabled={!formData.state}
+          isClearable
+          onCreateOption={(inputValue) => handleAddNew("city", inputValue)}
+          className="text-grey-medium"
         />
         {errors.city && (
-          <span className="text-danger text-sm mt-1">{errors.city}</span>
+          <motion.span
+            className="text-danger text-sm mt-1"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            {errors.city}
+          </motion.span>
         )}
       </div>
 
       {/* Address Preview */}
       {formData.address && (
-        <div className="p-2 bg-gray-50 border rounded text-sm text-gray-600">
+        <div className="p-2 bg-base-white border rounded text-sm text-grey-medium">
           Selected address: <strong>{formData.address}</strong>
         </div>
       )}

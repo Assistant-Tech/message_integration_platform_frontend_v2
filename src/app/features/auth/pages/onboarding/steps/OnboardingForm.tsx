@@ -175,7 +175,7 @@ const OnboardingForm: React.FC = () => {
       case 4:
         return "Document Upload (Optional)";
       case 5:
-        return "Team Members (Optional)";
+        return "Add Your Memebers (Optional)";
       default:
         return "";
     }
