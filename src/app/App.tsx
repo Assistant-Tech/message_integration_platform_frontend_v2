@@ -23,7 +23,7 @@ const App = () => {
       } = useAuthStore.getState();
 
       console.log(isAuthenticated);
-      if (!isAuthenticated || isRefreshing) return; // Already in progress elsewhere
+      if (!isAuthenticated || isRefreshing) return; 
       try {
         setRefreshing(true);
         const newToken = await refreshAccessToken();

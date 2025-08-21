@@ -14,6 +14,8 @@ export interface User {
   lastName: string;
   avatar: string;
   isVerified: boolean;
+  userStatus?: boolean;
+  roleType?: boolean;
   preferences: {
     theme: string;
     notifications: boolean;

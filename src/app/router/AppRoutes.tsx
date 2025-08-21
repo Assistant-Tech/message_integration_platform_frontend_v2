@@ -57,6 +57,16 @@ import {
 import { OnboardingForm } from "@/app/features/auth/pages/onboarding/steps";
 import ProtectedRoute from "@/app/router/guards/ProtectedRoute";
 import OnboardingGuard from "@/app/router/guards/OnboardingGurad";
+import {
+  ChatSettings,
+  CompanySettings,
+  NotificationSettings,
+  ProfileSettings,
+  RoleManagement,
+  SecuritySettings,
+  ShippingSettings,
+  SubscriptionSettings,
+} from "@/app/features/dashboard/admin/pages/settings";
 
 const AppRoutes = () => {
   return (
@@ -159,10 +169,45 @@ const AppRoutes = () => {
                 path={APP_ROUTES.ADMIN.ANALYTICS}
                 element={<AnalyticsPage />}
               />
+              {/* Settings Routes */}
               <Route
                 path={APP_ROUTES.ADMIN.SETTINGS}
                 element={<SettingsPage />}
               />
+              <Route
+                path={APP_ROUTES.ADMIN.SETTINGS_PROFILE}
+                element={<ProfileSettings />}
+              />
+              <Route
+                path={APP_ROUTES.ADMIN.SETTINGS_COMPANY}
+                element={<CompanySettings />}
+              />
+              <Route
+                path={APP_ROUTES.ADMIN.SETTINGS_SECURITY}
+                element={<SecuritySettings />}
+              />
+              <Route
+                path={APP_ROUTES.ADMIN.SETTINGS_NOTIFICATIONS}
+                element={<NotificationSettings />}
+              />
+              <Route
+                path={APP_ROUTES.ADMIN.SETTINGS_ROLE_MANAGEMENT}
+                element={<RoleManagement />}
+              />
+              <Route
+                path={APP_ROUTES.ADMIN.SETTINGS_CHAT_SETTINGS}
+                element={<ChatSettings />}
+              />
+              <Route
+                path={APP_ROUTES.ADMIN.SETTINGS_SHIPPING}
+                element={<ShippingSettings />}
+              />
+              <Route
+                path={APP_ROUTES.ADMIN.SETTINGS_SUBSCRIPTION}
+                element={<SubscriptionSettings />}
+              />
+
+              {/* Product Routes */}
               <Route
                 path={APP_ROUTES.ADMIN.PRODUCTS}
                 element={<ProductPage />}
