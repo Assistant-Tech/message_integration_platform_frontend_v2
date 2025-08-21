@@ -1,6 +1,6 @@
 import React from "react";
 import { UseFormRegister } from "react-hook-form";
-import { ProductFormData } from "@/app/types/product";
+import { ProductFormData } from "@/app/types/product.types";
 
 interface Props {
   register: UseFormRegister<ProductFormData>;

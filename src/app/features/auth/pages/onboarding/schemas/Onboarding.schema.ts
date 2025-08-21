@@ -3,14 +3,14 @@ import { z } from "zod";
 // Onboarding Step - 1
 // -------------------
 export const onboardingStep1Schema = z.object({
-  companyName: z.string().trim().min(1, "Company name is required"),
-  companyEmail: z
+  organizationName: z.string().trim().min(1, "Company name is required"),
+  email: z
     .string()
     .trim()
     .min(1, "Company email is required")
     .email("Enter a valid email"),
-  companyPhone: z.string().trim().min(1, "Company phone is required"),
-  companyWebsite: z
+  contactNumber: z.string().trim().min(1, "Company phone is required"),
+  website: z
     .string()
     .url("Enter a valid URL")
     .optional()
@@ -24,28 +24,21 @@ export const onboardingStep2Schema = z.object({
   country: z.string().trim().min(1, "Country is required"),
   state: z.string().trim().optional(),
   city: z.string().trim().min(1, "City is required"),
+  address: z.string().trim().min(1, "Address is required"),
 });
 
 // Onboarding Step - 3
 // -------------------
 export const onboardingStep3Schema = z
   .object({
-    selectedIndustry: z.string().min(1, "Please select an industry"),
-    customIndustry: z
-      .string()
-      .trim()
-      .optional()
-      .refine((val) => val && val.length > 0, {
-        message: "Please specify your industry",
-        path: ["customIndustry"],
-      })
-      .or(z.literal("").optional()),
+    industry: z.string().min(1, "Please select an industry"),
+    isOther: z.boolean().optional(), // to handle UI logic
   })
   .superRefine((data, ctx) => {
-    if (data.selectedIndustry === "Others" && !data.customIndustry?.trim()) {
+    if (data.isOther && !data.industry.trim()) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        path: ["customIndustry"],
+        path: ["industry"],
         message: "Please specify your industry",
       });
     }
@@ -65,7 +58,7 @@ export const onboardingStep4Schema = z.object({
         message: "Please enter a valid PAN number (e.g., ABCDE1234F).",
       },
     ),
-  panFile: z.instanceof(File).nullable().optional(),
+  panCardImage: z.instanceof(File).nullable().optional(),
   uploadProgress: z
     .array(
       z.object({

@@ -1,20 +1,56 @@
+import { useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
 import { Toaster } from "sonner";
-
 import "@/app/styles/globals.css";
-import AppRoutes from "@/app/AppRoutes";
-import ErrorBoundary from "@/app/ErrorBoundary";
+import AppRoutes from "@/app/router/AppRoutes";
 import { ScrollToTop } from "@/app/hooks/ui/ScrollToTop";
+import { useAuthStore } from "@/app/store/auth.store";
+import ErrorBoundary from "@/app/ErrorBoundary";
 
 const App = () => {
+  const isRefreshing = useAuthStore((s) => s.isRefreshing);
+
+  // Initial auth bootstrap: attempt token refresh then load user profile.
+  useEffect(() => {
+    let cancelled = false;
+    const bootstrap = async () => {
+      const {
+        refreshAccessToken,
+        fetchCurrentUserProfile,
+        setRefreshing,
+        resetAuth,
+        isAuthenticated,
+      } = useAuthStore.getState();
+
+      console.log(isAuthenticated);
+      if (!isAuthenticated || isRefreshing) return; // Already in progress elsewhere
+      try {
+        setRefreshing(true);
+        const newToken = await refreshAccessToken();
+        console.log(newToken);
+        if (newToken) {
+          await fetchCurrentUserProfile();
+        } else {
+          resetAuth();
+        }
+      } catch {
+        if (!cancelled) resetAuth();
+      } finally {
+        if (!cancelled) setRefreshing(false);
+      }
+    };
+    bootstrap();
+    return () => {
+      cancelled = true;
+    };
+  }, [isRefreshing]);
+
   return (
     <ErrorBoundary>
       <BrowserRouter>
         <ScrollToTop />
-        <div>
-          <AppRoutes />
-          <Toaster position="top-right" richColors />
-        </div>
+        <AppRoutes />
+        <Toaster position="top-right" richColors />
       </BrowserRouter>
     </ErrorBoundary>
   );

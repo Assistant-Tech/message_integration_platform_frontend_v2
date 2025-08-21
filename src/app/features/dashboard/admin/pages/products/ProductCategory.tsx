@@ -6,7 +6,7 @@ import {
   AddCategory,
   CategoryTable,
 } from "@/app/features/dashboard/admin/component/";
-import { Category } from "@/app/types/product";
+import { Category } from "@/app/types/product.types";
 
 const ProductCategory = () => {
   const [search, setSearch] = useState("");

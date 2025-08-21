@@ -18,43 +18,90 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({
   isActive,
   isCompleted = false,
   isLast = false,
-  direction,
+  direction = "forward",
 }) => {
+  // Determine step state based on props
+  const getStepState = () => {
+    if (isCompleted && !isActive) {
+      return "completed"; // Green tick - step is passed/completed
+    } else if (isActive) {
+      return "active"; // Green circle with number - current step
+    } else {
+      return "inactive"; // Grey circle with number - not reached/reversed
+    }
+  };
+
+  const stepState = getStepState();
+
+  // Determine if the connecting line should be filled
+  const isLineFilled = isCompleted && !isActive;
+
   return (
-    <div className="relative flex items-start space-x-4 space-y-8">
+    <div className="relative flex items-start space-x-4">
       {/* Line and Circle */}
       <div className="relative flex flex-col items-center">
         {/* Step circle */}
         <motion.div
-          layout
-          className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold z-10 transition-colors duration-300 ${
-            isCompleted
-              ? "bg-primary  text-white"
-              : isActive
-                ? "bg-primary text-white"
-                : "bg-base-white border border-primary text-primary"
+          className={`w-8 h-8 rounded-full flex items-center pt-px justify-center text-sm font-semibold z-10 transition-all duration-300 ${
+            stepState === "completed"
+              ? "bg-primary text-white"
+              : stepState === "active"
+                ? "bg-white border-primary border text-primary" // White background with green border and text
+                : "bg-white border-2 border-grey-light text-grey-light" // Grey border with grey number
           }`}
+          initial={false}
+          animate={{
+            scale: stepState === "active" ? 1.1 : 1,
+          }}
+          transition={{
+            duration: 0.2,
+            ease: "easeInOut",
+          }}
         >
-          {isCompleted ? <Check size={20} /> : stepNumber}
+          {stepState === "completed" ? (
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.2, delay: 0.1 }}
+            >
+              <Check size={16} />
+            </motion.div>
+          ) : (
+            <motion.span
+              key={`step-${stepNumber}`}
+              initial={false}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.2 }}
+            >
+              {stepNumber}
+            </motion.span>
+          )}
         </motion.div>
 
         {/* Vertical animated line */}
         {!isLast && (
-          <div className="absolute top-8 left-1/2 -translate-x-1/2 w-[2px] h-[calc(100%+1rem)] bg-muted z-0 overflow-hidden">
+          <div className="relative w-[2px] h-16">
+            {/* Background line */}
+            <div className="absolute inset-0 bg-grey-light" />
+
+            {/* Animated progress line */}
             <motion.div
-              layout
-              className="w-full bg-primary origin-top"
+              className="absolute inset-0 bg-primary"
               initial={false}
               animate={{
-                scaleY: isCompleted ? 1 : 0,
+                scaleY:
+                  isLineFilled && direction === "forward"
+                    ? 1 // forward → animate fill
+                    : isLineFilled && direction === "backward"
+                      ? 0 // backward → reset instantly
+                      : 0,
               }}
               transition={{
-                duration: 0.5,
+                duration: direction === "forward" ? 0.4 : 0, // 👈 no animation on backward
                 ease: "easeInOut",
               }}
               style={{
-                transformOrigin: direction === "backward" ? "bottom" : "top",
-                height: "100%",
+                transformOrigin: direction === "forward" ? "bottom" : "top",
               }}
             />
           </div>
@@ -62,29 +109,40 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({
       </div>
 
       {/* Step text content */}
-      <div className="flex-1">
-        <h3
-          className={`font-medium transition-colors text-grey-medium duration-300 ${
-            isActive
-              ? "text-grey"
-              : isCompleted
-                ? "text-grey-dark"
-                : "text-grey-light"
+      <div className="flex-1 pt-1">
+        <motion.h3
+          className={`font-medium transition-colors duration-300 ${
+            stepState === "active"
+              ? "text-grey-dark" // Dark text for active step
+              : stepState === "completed"
+                ? "text-grey-dark" // Dark text for completed step
+                : "text-grey-light" // Light text for inactive step
           }`}
+          initial={false}
+          animate={{
+            opacity: stepState === "inactive" ? 0.6 : 1,
+          }}
+          transition={{ duration: 0.3 }}
         >
           {title}
-        </h3>
-        <p
-          className={`text-sm transition-colors text-grey-medium duration-300 ${
-            isActive
-              ? "text-grey"
-              : isCompleted
-                ? "text-grey-dark"
-                : "text-grey-light"
+        </motion.h3>
+
+        <motion.p
+          className={`text-sm transition-colors duration-300 mt-1 ${
+            stepState === "active"
+              ? "text-grey-medium" // Medium grey for active step description
+              : stepState === "completed"
+                ? "text-grey-medium" // Medium grey for completed step description
+                : "text-grey-light" // Light grey for inactive step description
           }`}
+          initial={false}
+          animate={{
+            opacity: stepState === "inactive" ? 0.5 : 1,
+          }}
+          transition={{ duration: 0.3 }}
         >
           {description}
-        </p>
+        </motion.p>
       </div>
     </div>
   );

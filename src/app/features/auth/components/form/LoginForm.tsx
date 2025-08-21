@@ -1,32 +1,41 @@
-import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
+import google from "@/app/assets/icons/google.svg";
+import fb from "@/app/assets/icons/fb.svg";
 import {
   LoginFormData,
   loginSchema,
 } from "@/app/features/auth/schemas/loginSchema";
 import { Agreement, Button, Input } from "@/app/components/ui";
-import google from "@/app/assets/icons/google.svg";
-import circlefb from "@/app/assets/icons/circlefb.svg";
 import CheckItem from "@/app/features/auth/components/ui/CheckItem";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/app/store/auth.store";
+import { handleApiError } from "@/app/utils/handlerApiError";
 
-const LoginPage = () => {
-  const [showPasswordChecks, setShowPasswordChecks] = useState<boolean>(false);
-  const [showPassword, setShowPassword] = useState<boolean>(false);
+import { useState } from "react";
+import { LockoutTimer } from "@/app/features/auth/components/ui";
+import { useLockoutTimer } from "@/app/hooks/useLockoutTimer";
 
+const LoginForm = () => {
+  const { login } = useAuthStore();
   const navigate = useNavigate();
+
+  const { isLockedOut, lockoutTimeLeft, initiateLockout, formatTime } =
+    useLockoutTimer();
+
+  const [showPasswordChecks, setShowPasswordChecks] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
     watch,
+    formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     mode: "onSubmit",
@@ -41,36 +50,75 @@ const LoginPage = () => {
     hasSpecialChar: /[@$!%*?&]/.test(password),
   };
 
-  const onSubmit = (data: LoginFormData) => {
-    toast.success("Form Submitted Successfully");
-    console.log("Submitted:", data);
-    navigate("/onboardingform/step-1")
-    reset();
-  };
+  const onSubmit = async (data: LoginFormData) => {
+    if (isLockedOut) return;
 
-  const onError = () => {
-    toast.error("Please fill out all required fields.");
+    try {
+      const res = await login(data.email, data.password);
+      toast.success(res.message);
+
+      if (res.requiresOnboarding) {
+        toast.info("Please complete your onboarding.");
+      }
+
+      navigate(
+        res.requiresOnboarding
+          ? "/onboardingform"
+          : `/${res.tenantSlug}/admin/dashboard`
+      );
+      reset();
+    } catch (error) {
+      const parsedError = handleApiError(error);
+      if ("message" in parsedError) {
+        const errorMessage = parsedError.message;
+
+        const lockoutMessageMatch = errorMessage.match(
+          /Your account has been temporarily locked.*,(\d+)\s*minutes remaining/
+        );
+
+        if (lockoutMessageMatch && lockoutMessageMatch[1] !== undefined) {
+          const minutes = parseInt(lockoutMessageMatch[1], 10);
+          const seconds = minutes * 60;
+          toast.error(errorMessage);
+          initiateLockout(seconds);
+        } else if (
+          errorMessage === "Email not verified. Please check your inbox."
+        ) {
+          toast.error(errorMessage);
+          navigate("/check-email", { state: { email: data.email } });
+        } else {
+          console.log("Login error:", errorMessage);
+          toast.error(errorMessage);
+        }
+      }
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-5">
-      {/* Logo + Title */}
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       <div className="text-start pt-4">
-        <h2 className="h5-medium-16 text-grey-medium">Welcome Back,</h2>
-        <p className="mt-1 h3-bold-32 text-base-black">
-          Log in to your account
-        </p>
+        <h2 className="text-grey-medium">Welcome Back,</h2>
+        <p className="mt-1 font-bold text-3xl">Log in to your account</p>
       </div>
 
-      {/* Email */}
+      <AnimatePresence>
+        {isLockedOut && (
+          <LockoutTimer
+            lockoutTimeLeft={lockoutTimeLeft}
+            formatTime={formatTime}
+          />
+        )}
+      </AnimatePresence>
+
       <Input
         label="Email / Phone Number"
         placeholder="Enter your email or phone number"
         {...register("email")}
         error={errors.email?.message}
+        disabled={isLockedOut}
       />
 
-      {/* Password */}
+      {/* Password input */}
       <div className="relative">
         <Input
           label="Password"
@@ -78,25 +126,23 @@ const LoginPage = () => {
           {...register("password")}
           error={errors.password?.message}
           type={showPassword ? "text" : "password"}
-          onFocus={() => setShowPasswordChecks(true)}
+          onFocus={() => !isLockedOut && setShowPasswordChecks(true)}
           onBlur={() => {
             if (!password) setShowPasswordChecks(false);
           }}
-          className="pr-10"
+          disabled={isLockedOut}
         />
-
         <button
           type="button"
           onClick={() => setShowPassword(!showPassword)}
-          className="absolute top-[38px] right-3 flex items-center justify-center w-6 h-6 cursor-pointer"
-          tabIndex={-1}
-          aria-label={showPassword ? "Hide password" : "Show password"}
+          className="absolute top-[38px] right-3"
+          disabled={isLockedOut}
         >
           {showPassword ? <EyeIcon /> : <EyeOffIcon />}
         </button>
 
         <AnimatePresence>
-          {showPasswordChecks && (
+          {showPasswordChecks && !isLockedOut && (
             <motion.div
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
@@ -129,68 +175,77 @@ const LoginPage = () => {
         </AnimatePresence>
       </div>
 
-      {/* Remember Me + Forgot Password */}
-      <div className="flex items-center justify-between h5-medium-16">
+      {/* Remember me + Forgot password */}
+      <div
+        className={`flex items-center justify-between text-sm ${isLockedOut ? "opacity-50" : ""}`}
+      >
         <label className="flex items-center gap-2">
           <input
             type="checkbox"
-            {...register("rememberMe")}
             className="accent-primary"
+            {...register("rememberMe")}
+            disabled={isLockedOut}
           />
           Remember Me
         </label>
         <a
           href="/forgot-password"
-          className="text-grey hover:underline h5-medium-16"
+          className={`text-grey-medium hover:underline ${isLockedOut ? "pointer-events-none" : ""}`}
         >
           Forgot Password?
         </a>
       </div>
-      {/* Agrement */}
-      <div className="mb-4">
-        <Agreement />
-      </div>
 
-      {/* Submit Button */}
-      <Button label="Sign in" type="submit" className="w-full" />
+      <Button
+        label={`Sign In`}
+        type="submit"
+        className="w-full"
+        disabled={isLockedOut}
+      />
 
-      {/* OR separator */}
-      <div className="flex items-center gap-2 text-gray-400">
-        <hr className="flex-grow border-gray-300" />
+      {/* Divider */}
+      <div
+        className={`flex items-center gap-2 text-grey-medium ${isLockedOut ? "opacity-50" : ""}`}
+      >
+        <hr className="flex-grow border-grey-light" />
         <span className="text-sm">OR</span>
-        <hr className="flex-grow border-gray-300" />
+        <hr className="flex-grow border-grey-light" />
       </div>
 
-      {/* Social Logins */}
+      {/* Google / Facebook sign-in */}
       <div className="space-y-2">
         <Button
           label="Sign in with Google"
           variant="outlined"
-          IconLeft={<img src={google} alt="Facebook" className="w-5 h-5" />}
-          className="w-full border-grey-light text-grey-medium h5-bold-16"
+          IconLeft={<img src={google} alt="Google" className="w-5 h-5" />}
+          className="w-full"
+          disabled={isLockedOut}
         />
         <Button
           label="Sign in with Facebook"
           variant="outlined"
-          IconLeft={<img src={circlefb} alt="Facebook" className="w-5 h-5" />}
-          className="w-full border-grey-light text-grey-medium h5-bold-16"
+          IconLeft={<img src={fb} alt="Facebook" className="w-5 h-5" />}
+          className="w-full"
+          disabled={isLockedOut}
         />
       </div>
 
-      {/* Sign up link */}
-      <p className="text-center text-grey-medium h5-regular-16 mt-4">
-        Don’t have an account?{" "}
+      <Agreement />
+
+      <p
+        className={`text-center text-grey-medium mt-4 ${isLockedOut ? "opacity-50" : ""}`}
+      >
+        Don't have an account?{" "}
         <a href="/register" className="text-primary hover:underline">
           Register
         </a>
       </p>
 
-      {/* Copyright */}
-      <p className="text-center text-xs text-gray-400 mt-4">
-        © 2025 Assistant Tech. All Rights Reserved
+      <p className="text-center text-xs text-grey-medium mt-4">
+        © 2025 Chatblix. All Rights Reserved
       </p>
     </form>
   );
 };
 
-export default LoginPage;
+export default LoginForm;

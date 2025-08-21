@@ -1,85 +1,118 @@
 import React, { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
-
-import {
-  CustomDropdown,
-  StepSidebar,
-} from "@/app/features/auth/pages/onboarding/components";
-import { Button, Logo } from "@/app/components/ui/";
+import { Button } from "@/app/components/ui/";
 import { useOnboardingStore } from "@/app/features/auth/pages/onboarding/hooks/useOnboardingStore";
 import {
   OnboardingStep2FormData,
   onboardingStep2Schema,
 } from "@/app/features/auth/pages/onboarding/schemas/Onboarding.schema";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-
 import { Country, State, City } from "country-state-city";
+import Select from "react-select/creatable"; // import creatable select for adding options
+import { motion } from "framer-motion";
 
-interface LocationErrors {
-  country?: string;
-  state?: string;
-  city?: string;
+interface OnboardingStep2Props {
+  onNext: (stepData: OnboardingStep2FormData) => void;
+  onPrevious: () => void;
+  isSubmitting: boolean;
 }
 
-const OnboardingStep2: React.FC = () => {
-  const navigate = useNavigate();
-  const { data, setStepData, setCompletedSteps } = useOnboardingStore();
-  const currentStep = 2;
+const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
+  onNext,
+  onPrevious,
+  isSubmitting,
+}) => {
+  const { data } = useOnboardingStore();
 
   const [formData, setFormData] = useState<OnboardingStep2FormData>(
-    data.step2 || {
-      country: "",
-      state: "",
-      city: "",
-    },
+    data.step2 || { country: "", state: "", city: "", address: "" },
   );
 
-  const [errors, setErrors] = useState<LocationErrors>({});
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof OnboardingStep2FormData, string>>
+  >({});
 
+  // Store manually added states and cities
+  const [customOptions, setCustomOptions] = useState<{
+    states: string[];
+    cities: string[];
+  }>({ states: [], cities: [] });
+
+  // Country list
   const countries = useMemo(
     () =>
-      Country.getAllCountries().map(({ name, isoCode }) => ({ name, isoCode })),
+      Country.getAllCountries().map(({ name, isoCode }) => ({
+        label: name,
+        value: isoCode,
+      })),
     [],
   );
 
+  // States
   const selectedCountry = useMemo(
-    () => countries.find((c) => c.name === formData.country),
+    () => countries.find((c) => c.label === formData.country),
     [formData.country, countries],
   );
 
   const states = useMemo(() => {
     if (!selectedCountry) return [];
-    return State.getStatesOfCountry(selectedCountry.isoCode).map(
+
+    // Get states from the library
+    const libraryStates = State.getStatesOfCountry(selectedCountry.value).map(
       ({ name, isoCode }) => ({
-        name,
-        isoCode,
+        label: name,
+        value: isoCode,
       }),
     );
-  }, [selectedCountry]);
 
+    // Add custom states for this country
+    const customStates = customOptions.states.map((state) => ({
+      label: state,
+      value: state,
+    }));
+
+    return [...libraryStates, ...customStates];
+  }, [selectedCountry, customOptions.states]);
+
+  // Cities
   const selectedState = useMemo(
-    () => states.find((s) => s.name === formData.state),
+    () => states.find((s) => s.label === formData.state),
     [formData.state, states],
   );
 
   const cities = useMemo(() => {
     if (!selectedCountry || !selectedState) return [];
-    return City.getCitiesOfState(
-      selectedCountry.isoCode,
-      selectedState.isoCode,
-    ).map(({ name }) => ({ name }));
-  }, [selectedCountry, selectedState]);
 
-  const handleChange = (
-    field: keyof OnboardingStep2FormData,
-    value: string,
-  ) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
+    // Get cities from the library
+    const libraryCities = City.getCitiesOfState(
+      selectedCountry.value,
+      selectedState.value,
+    ).map(({ name }) => ({
+      label: name,
+      value: name,
+    }));
+
+    // Add custom cities
+    const customCities = customOptions.cities.map((city) => ({
+      label: city,
+      value: city,
+    }));
+
+    return [...libraryCities, ...customCities];
+  }, [selectedCountry, selectedState, customOptions.cities]);
+
+  // Handles field changes
+  const handleChange = (field: "country" | "state" | "city", value: any) => {
+    const updated = {
+      ...formData,
+      [field]: value ? value.label : "",
       ...(field === "country" ? { state: "", city: "" } : {}),
       ...(field === "state" ? { city: "" } : {}),
-    }));
+    };
+
+    updated.address = [updated.city, updated.state, updated.country]
+      .filter(Boolean)
+      .join(", ");
+    setFormData(updated);
 
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: "" }));
@@ -87,15 +120,39 @@ const OnboardingStep2: React.FC = () => {
   };
 
   const validateForm = (): boolean => {
-    const result = onboardingStep2Schema.safeParse(formData);
+    const currentSchema = onboardingStep2Schema.superRefine((data, ctx) => {
+      if (!data.country) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Country is required",
+          path: ["country"],
+        });
+      }
+      if (!data.state) {
+        ctx.addIssue({
+          code: "custom",
+          message: "State/Province is required",
+          path: ["state"],
+        });
+      }
+      if (!data.city) {
+        ctx.addIssue({
+          code: "custom",
+          message: "City is required",
+          path: ["city"],
+        });
+      }
+    });
+
+    const result = currentSchema.safeParse(formData);
 
     if (!result.success) {
-      const newErrors: LocationErrors = {};
+      const fieldErrors: typeof errors = {};
       result.error.errors.forEach((err) => {
-        const field = err.path[0] as keyof LocationErrors;
-        newErrors[field] = err.message;
+        const fieldName = err.path[0] as keyof OnboardingStep2FormData;
+        fieldErrors[fieldName] = err.message;
       });
-      setErrors(newErrors);
+      setErrors(fieldErrors);
       return false;
     }
 
@@ -106,127 +163,144 @@ const OnboardingStep2: React.FC = () => {
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (validateForm()) {
-      setStepData("step2", formData);
-      setCompletedSteps(2);
-      navigate("/onboardingform/step-3");
+      onNext(formData);
     }
   };
 
+  // Handle adding a new state or city
+  const handleAddNew = (field: "state" | "city", value: string) => {
+    // Add the new option to custom options
+    setCustomOptions((prev) => ({
+      ...prev,
+      [field === "state" ? "states" : "cities"]: [
+        ...prev[field === "state" ? "states" : "cities"],
+        value,
+      ],
+    }));
+
+    // Update the form data to reflect the newly added state or city
+    const updated = {
+      ...formData,
+      [field]: value,
+      ...(field === "state" ? { city: "" } : {}), // Clear city if state is changed
+    };
+
+    updated.address = [updated.city, updated.state, updated.country]
+      .filter(Boolean)
+      .join(", ");
+
+    setFormData(updated);
+  };
+
   return (
-    <div className="min-h-screen h-full bg-base-white py-12 px-4">
-      <div className="max-w-7xl mx-auto flex flex-col justify-center overflow-visible">
-        <article className="pb-12">
-          <Logo />
-        </article>
+    <div className="space-y-6">
+      {/* Country Dropdown */}
+      <div className="flex flex-col">
+        <label htmlFor="country" className="mb-1 body-bold-16 text-grey-medium">
+          Country <span className="text-danger">*</span>
+        </label>
+        <Select
+          id="country"
+          options={countries}
+          value={countries.find((c) => c.label === formData.country) || null}
+          onChange={(option) => handleChange("country", option)}
+          placeholder="Select a country"
+          isSearchable
+          className="text-grey-medium"
+        />
+        {errors.country && (
+          <motion.span
+            className="text-danger text-sm mt-1"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            {errors.country}
+          </motion.span>
+        )}
+      </div>
 
-        <div className="mb-10">
-          <h1 className="h2-bold-40 text-base-black mb-2">
-            Welcome to Chatblix, Jane!
-          </h1>
-          <p className="text-grey-medium body-regular-16 max-w-2xl">
-            Complete your onboarding process by setting up your workplace.
-          </p>
+      {/* State Dropdown */}
+      <div className="flex flex-col">
+        <label htmlFor="state" className="mb-1 body-bold-16 text-grey-medium">
+          State/Province <span className="text-danger">*</span>
+        </label>
+        <Select
+          id="state"
+          options={states}
+          value={states.find((s) => s.label === formData.state) || null}
+          onChange={(option) => handleChange("state", option)}
+          placeholder="Select a state"
+          isSearchable
+          isDisabled={!formData.country}
+          isClearable
+          onCreateOption={(inputValue) => handleAddNew("state", inputValue)}
+          className="text-grey-medium"
+        />
+        {errors.state && (
+          <motion.span
+            className="text-danger text-sm mt-1"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            {errors.state}
+          </motion.span>
+        )}
+      </div>
+
+      {/* City Dropdown */}
+      <div className="flex flex-col">
+        <label htmlFor="city" className="mb-1 body-bold-16 text-grey-medium">
+          City <span className="text-danger">*</span>
+        </label>
+        <Select
+          id="city"
+          options={cities}
+          value={cities.find((c) => c.label === formData.city) || null}
+          onChange={(option) => handleChange("city", option)}
+          placeholder="Select a city"
+          isSearchable
+          isDisabled={!formData.state}
+          isClearable
+          onCreateOption={(inputValue) => handleAddNew("city", inputValue)}
+          className="text-grey-medium"
+        />
+        {errors.city && (
+          <motion.span
+            className="text-danger text-sm mt-1"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            {errors.city}
+          </motion.span>
+        )}
+      </div>
+
+      {/* Address Preview */}
+      {formData.address && (
+        <div className="p-2 bg-base-white border rounded text-sm text-grey-medium">
+          Selected address: <strong>{formData.address}</strong>
         </div>
+      )}
 
-        <div className="flex flex-col lg:flex-row items-start max-w-full gap-16 overflow-visible">
-          <StepSidebar
-            currentStep={currentStep}
-            previousStep={currentStep - 1}
-          />
-
-          <div className="w-full lg:flex-1">
-            <h2 className="h4-bold-24 text-grey mb-6">Company's Location</h2>
-
-            <div className="space-y-6">
-              {/* Country Dropdown */}
-              <div className="flex flex-col">
-                <label
-                  htmlFor="country"
-                  className="mb-1 body-bold-16 text-grey"
-                >
-                  Country <span className="text-danger">*</span>
-                </label>
-                <CustomDropdown
-                  id="country"
-                  options={countries.map((c) => c.name)}
-                  value={formData.country}
-                  onChange={(value) => handleChange("country", value)}
-                  placeholder="Select a country"
-                  error={!!errors.country}
-                />
-                {errors.country && (
-                  <span className="text-danger text-sm mt-1">
-                    {errors.country}
-                  </span>
-                )}
-              </div>
-
-              {/* State Dropdown */}
-              <div className="flex flex-col">
-                <label htmlFor="state" className="mb-1 body-bold-16 text-grey">
-                  State/Province
-                </label>
-                <CustomDropdown
-                  id="state"
-                  options={states.map((s) => s.name)}
-                  value={formData.state}
-                  onChange={(value) => handleChange("state", value)}
-                  placeholder={
-                    !formData.country
-                      ? "Select a country first"
-                      : "Select a state"
-                  }
-                  disabled={!formData.country}
-                  error={!!errors.state}
-                />
-                {errors.state && (
-                  <span className="text-danger text-sm mt-1">
-                    {errors.state}
-                  </span>
-                )}
-              </div>
-
-              {/* City Dropdown */}
-              <div className="flex flex-col">
-                <label htmlFor="city" className="mb-1 body-bold-16 text-grey">
-                  City <span className="text-danger">*</span>
-                </label>
-                <CustomDropdown
-                  id="city"
-                  options={cities.map((c) => c.name)}
-                  value={formData.city}
-                  onChange={(value) => handleChange("city", value)}
-                  placeholder={
-                    !formData.state ? "Select a state first" : "Select a city"
-                  }
-                  disabled={!formData.state}
-                  error={!!errors.city}
-                />
-                {errors.city && (
-                  <span className="text-danger text-sm mt-1">
-                    {errors.city}
-                  </span>
-                )}
-              </div>
-
-              {/* Navigation Buttons */}
-              <div className="flex justify-between pt-4">
-                <Button
-                  label="Go Back"
-                  onClick={() => navigate("/onboardingform/step-1")}
-                  variant="outlined"
-                  IconLeft={<ArrowLeft size={20} />}
-                />
-                <Button
-                  label="Next"
-                  onClick={handleSubmit}
-                  variant="primary"
-                  IconRight={<ArrowRight size={20} />}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
+      {/* Navigation Buttons */}
+      <div className="flex justify-between pt-4">
+        <Button
+          label="Go Back"
+          onClick={onPrevious}
+          variant="outlined"
+          IconLeft={<ArrowLeft size={20} />}
+          disabled={isSubmitting}
+        />
+        <Button
+          label="Next"
+          onClick={handleSubmit}
+          variant="primary"
+          IconRight={<ArrowRight size={20} />}
+          disabled={isSubmitting}
+        />
       </div>
     </div>
   );

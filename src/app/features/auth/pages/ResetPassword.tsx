@@ -1,23 +1,27 @@
 import { useState } from "react";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
-
 import { APP_ROUTES } from "@/app/constants/routes";
 import { Button, Input, Logo } from "@/app/components/ui";
+import { resetPassword as resetPasswordApi } from "@/app/services/auth.services";
 
 const ResetPassword = () => {
-  const [password, setPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
-  const [passwordError, setPasswordError] = useState<string>("");
-  const [confirmPasswordError, setConfirmPasswordError] = useState<string>("");
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get("resetToken");
+  const userId = searchParams.get("userId");
+  const navigate = useNavigate();
 
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleResetPassword = () => {
+  const handleResetPassword = async () => {
     let isValid = true;
-
     setPasswordError("");
     setConfirmPasswordError("");
 
@@ -39,13 +43,27 @@ const ResetPassword = () => {
 
     if (!isValid) return;
 
-    toast.info("Your password has been reset successfully!", {
-      duration: 2000,
-      position: "top-right",
-    });
+    try {
+      setLoading(true);
 
-    setPassword("");
-    setConfirmPassword("");
+      console.log("userId:", userId);
+      console.log("token:", token);
+      console.log("searchParams:", searchParams);
+      if (!userId || !token) {
+        throw new Error("Missing userId or token");
+      }
+      await resetPasswordApi(userId, token, password, confirmPassword);
+      toast.success("Your password has been reset successfully!");
+      navigate(APP_ROUTES.PUBLIC.LOGIN);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message || "Failed to reset password.");
+      } else {
+        toast.error("Failed to reset password.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -118,10 +136,11 @@ const ResetPassword = () => {
               </div>
 
               <Button
-                label="Submit"
+                label={loading ? "Submitting..." : "Submit"}
                 variant="primary"
                 className="mt-8 w-full"
                 onClick={handleResetPassword}
+                disabled={loading}
               />
             </div>
           </div>

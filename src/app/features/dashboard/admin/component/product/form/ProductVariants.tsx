@@ -4,7 +4,7 @@ import {
   UseFieldArrayRemove,
   UseFieldArrayAppend,
 } from "react-hook-form";
-import { ProductFormData, ProductVariant } from "@/app/types/product";
+import { ProductFormData, ProductVariant } from "@/app/types/product.types";
 import { Trash2, Plus } from "lucide-react";
 import { Input } from "@/app/components/ui";
 

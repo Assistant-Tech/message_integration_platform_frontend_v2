@@ -8,7 +8,7 @@ import {
   ActionButtons,
   ProductVariants,
 } from "@/app/features/dashboard/admin/component/product/form";
-import { ProductFormData } from "@/app/types/product";
+import { ProductFormData } from "@/app/types/product.types";
 import { Breadcrumb } from "@/app/components/ui";
 import { Heading } from "@/app/features/dashboard/admin/component/ui/";
 import { APP_ROUTES } from "@/app/constants/routes";

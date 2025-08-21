@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 import {
   registerSchema,
@@ -12,9 +13,16 @@ import { Agreement, Button, Input } from "@/app/components/ui";
 import CheckItem from "@/app/features/auth/components/ui/CheckItem";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 
+import { useAuthStore } from "@/app/store/auth.store";
+import { handleApiError } from "@/app/utils/handlerApiError";
+
 const RegisterForm = () => {
-  const [showPasswordChecks, setShowPasswordChecks] = useState<boolean>(false);
-  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const [showPasswordChecks, setShowPasswordChecks] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const isAuthenticating = useAuthStore((s) => s.loading);
+  const signUp = useAuthStore((s) => s.signup);
 
   const {
     register,
@@ -28,7 +36,6 @@ const RegisterForm = () => {
   });
 
   const password = watch("password") || "";
-
   const passwordChecks = {
     minLength: password.length >= 6,
     maxLength: password.length <= 64,
@@ -37,43 +44,34 @@ const RegisterForm = () => {
     hasSpecialChar: /[@$!%*?&]/.test(password),
   };
 
-  const onSubmit = (data: RegisterFormData) => {
-    toast.success("Account created successfully!");
-    console.log("Register Submitted:", data);
-    reset();
-  };
-
-  const onError = () => {
-    toast.error("Please fix the errors before submitting.");
+  const onSubmit = async (data: RegisterFormData) => {
+    try {
+      const res = await signUp(data.name, data.email, data.password);
+      toast.success(res?.message || "Registration Successful!");
+      reset();
+      navigate("/check-email", { state: { email: data.email } });
+    } catch (error) {
+      const parsedError = handleApiError(error);
+      toast.error(
+        parsedError.message || "Registration failed. Please try again.",
+      );
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-5">
-      {/* Full Name */}
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       <Input
         label="Full Name"
         placeholder="Enter your full name"
-        {...register("fullName")}
-        error={errors.fullName?.message}
+        {...register("name")}
+        error={errors.name?.message}
       />
-
-      {/* Email */}
       <Input
         label="Email"
         placeholder="Enter your email address"
         {...register("email")}
         error={errors.email?.message}
       />
-
-      {/* Phone Number */}
-      <Input
-        label="Phone Number"
-        placeholder="Enter your phone number"
-        {...register("phoneNumber")}
-        error={errors.phoneNumber?.message}
-      />
-
-      {/* Password */}
       <div className="relative">
         <Input
           label="Password"
@@ -87,10 +85,9 @@ const RegisterForm = () => {
           }}
           className="pr-10"
         />
-
         <button
           type="button"
-          onClick={() => setShowPassword(!showPassword)}
+          onClick={() => setShowPassword((prev) => !prev)}
           className="absolute top-[38px] right-3 flex items-center justify-center w-6 h-6 cursor-pointer"
           tabIndex={-1}
           aria-label={showPassword ? "Hide password" : "Show password"}
@@ -136,7 +133,6 @@ const RegisterForm = () => {
         </AnimatePresence>
       </div>
 
-      {/* Confirm Password */}
       <Input
         label="Confirm Password"
         placeholder="Re-enter your password"
@@ -145,13 +141,16 @@ const RegisterForm = () => {
         error={errors.confirmPassword?.message}
       />
 
-      {/* Agrement */}
       <div className="mb-4">
         <Agreement />
       </div>
 
-      {/* Submit */}
-      <Button label="Create Account" type="submit" className="w-full" />
+      <Button
+        label={isAuthenticating ? "Creating Account..." : "Create Account"}
+        type="submit"
+        className="w-full"
+        disabled={isAuthenticating}
+      />
     </form>
   );
 };

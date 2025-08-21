@@ -13,8 +13,6 @@ export const APP_ROUTES = {
     DEMO: "/demo",
     FORGOT_PASSWORD: "/forgot-password",
     RESET_PASSWORD: "/reset-password",
-    VERIFY_EMAIL: "/verify-email",
-    LOGIN_OTP: "/login-otp",
 
     // Onboarding [[/onboarding]]
     ONBOARDING_FORM: "/onboardingform",
@@ -49,32 +47,39 @@ export const APP_ROUTES = {
     UPDATES: "/resources/support/updates",
   },
 
+  // Auth routes (migrated from PUBLIC)
+  AUTH: {
+    VERIFY_EMAIL: "/verify/:token",
+    CHECK_EMAIL: "/auth/check-email",
+    LOGIN_OTP: "/auth/login-otp",
+  },
+
   // Admin routes
   ADMIN: {
-    DASHBOARD: "/admin/dashboard",
-    CONVERSATION: "/admin/conversation",
-    CHATBOT: "/admin/chatbot",
-    CHANNEL: "/admin/channel",
-    TAGS: "/admin/tags",
-    ANALYTICS: "/admin/analytics",
-    ORDERS: "/admin/orders",
-    ORDERS_CREATE: "/admin/orders/createOrder",
+    DASHBOARD: "dashboard",
+    CONVERSATION: "conversation",
+    CHATBOT: "chatbot",
+    CHANNEL: "channel",
+    TAGS: "tags",
+    ANALYTICS: "analytics",
+    ORDERS: "orders",
+    ORDERS_CREATE: "orders/createOrder",
 
     // Sub Settings
-    SETTINGS: "/admin/settings",
+    SETTINGS: "settings",
 
     // Sub Products
-    PRODUCTS: "/admin/product",
-    PRODUCTS_ALL: "/admin/product_all",
-    PRODUCTS_CATEGORY: "/admin/category",
-    PRODUCTS_VARIANTS: "/admin/variants",
-    PRODUCTS_INVENTORY: "/admin/inventory",
-    PRODUCTS_CREATE: "/admin/product_all/createProducts",
+    PRODUCTS: "product",
+    PRODUCTS_ALL: "product_all",
+    PRODUCTS_CATEGORY: "category",
+    PRODUCTS_VARIANTS: "variants",
+    PRODUCTS_INVENTORY: "inventory",
+    PRODUCTS_CREATE: "product_all/createProducts",
   },
 
   // User routes
   USER: {
-    DASHBOARD: "/dashboard",
+    DASHBOARD: "dashboard",
   },
 } as const;
 

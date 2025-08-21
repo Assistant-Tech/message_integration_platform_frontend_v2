@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { UseFormSetValue } from "react-hook-form";
-import { ProductFormData } from "@/app/types/product";
+import { ProductFormData } from "@/app/types/product.types";
 import { useDropzone } from "react-dropzone";
 import { Plus, X } from "lucide-react";
 import { Button } from "@/app/components/ui";

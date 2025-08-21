@@ -58,7 +58,7 @@ const TagTable: React.FC<TagTableProps> = ({ data }) => {
         ),
       },
     ],
-    [],
+    []
   );
 
   return <GenericTable columns={columns} data={data} />;

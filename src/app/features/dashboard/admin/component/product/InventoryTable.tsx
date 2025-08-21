@@ -1,4 +1,8 @@
-import { Inventory, InventoryTableProps, Name } from "@/app/types/product";
+import {
+  Inventory,
+  InventoryTableProps,
+  Name,
+} from "@/app/types/product.types";
 import { ColumnDef } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
 import GenericTable from "../table/GenericTable";

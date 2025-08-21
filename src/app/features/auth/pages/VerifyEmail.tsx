@@ -1,30 +1,67 @@
-import { Logo } from "@/app/components/ui";
-import verify from "@/app/assets/images/IllustrationVerify.png";
+import { useAuthStore } from "@/app/store/auth.store";
+import { Loader2, CheckCircle2 } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const VerifyEmail = () => {
-  return (
-    <div className="max-w-screen max-h-screen">
-      <div className="w-full h-screen flex flex-col justify-center items-center">
-        <Logo />
-        <img src={verify} alt="verify.png" className="mt-10" />
+  const { token } = useParams<{ token: string }>();
+  const navigate = useNavigate();
 
-        <article className="space-y-4 text-center py-8">
-          <h1 className="h3-bold-32 text-base-black">
-            Verify you Email Address
-          </h1>
-          <p className="body-regular-16 text-grey-medium">
-            We’ve sent a verification link to abc@gmail.com. Please verify your
-            email address by clicking on the link provided there. Once verified,
-            you can then start using our app.
+  const verifyEmail = useAuthStore((state) => state.verifyEmail);
+
+  const [loading, setLoading] = useState(true);
+  const [verified, setVerified] = useState(false);
+  const hasVerifiedRef = useRef(false);
+
+  useEffect(() => {
+    if (hasVerifiedRef.current) return;
+    hasVerifiedRef.current = true;
+
+    const performVerification = async () => {
+      if (!token) {
+        toast.error("Invalid verification link.");
+        navigate("/register");
+        return;
+      }
+
+      try {
+        const res = await verifyEmail(token);
+        toast.success(res?.message || "Email verified successfully!");
+        setVerified(true);
+        setTimeout(() => {
+          navigate("/login");
+        }, 3000);
+      } catch (error) {
+        toast.error("Email verification failed.");
+        navigate("/register");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    performVerification();
+  }, [token, navigate, verifyEmail]);
+
+  return (
+    <div className="w-full h-screen flex flex-col justify-center items-center bg-gray-50">
+      {loading ? (
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="animate-spin text-information" size={48} />
+          <p className="text-lg font-semibold text-grey-medium">
+            Verifying your email...
           </p>
-          <h5 className="h5-regular-16 text-grey-medium">
-            Didn’t get the email?{" "}
-            <span className="text-primary underline cursor-pointer">
-              Resend?
-            </span>
-          </h5>
-        </article>
-      </div>
+        </div>
+      ) : verified ? (
+        <div className="flex flex-col items-center gap-4">
+          <CheckCircle2 className="text-primary" size={56} />
+          <p className="text-lg font-semibold text-gray-700">
+            Email verified successfully! Redirecting to login...
+          </p>
+        </div>
+      ) : (
+        <p className="text-lg font-semibold text-grey-medium">Redirecting...</p>
+      )}
     </div>
   );
 };
