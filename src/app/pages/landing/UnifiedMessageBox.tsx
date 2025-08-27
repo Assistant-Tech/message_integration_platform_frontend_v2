@@ -51,7 +51,10 @@ const UnifiedMessagingInbox = () => {
               transition={{ duration: 0.6 }}
               className="flex justify-center mb-8"
             >
-              <Badge title="Unified Messaging Inbox" />
+              <Badge
+                title="Unified Messaging Inbox"
+                textStyle="body-italic-bold-16"
+              />
             </motion.div>
 
             {/* Main Title */}

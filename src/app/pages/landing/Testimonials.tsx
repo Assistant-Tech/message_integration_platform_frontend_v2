@@ -66,6 +66,7 @@ const Testimonials: React.FC<TestimonialsProps> = ({
               title="CLIENT TESTIMONIALS"
               bgColor="bg-primary"
               textColor="text-white"
+              textStyle="body-italic-bold-16"
             />
             <Flex
               direction={{ initial: "column", md: "column", lg: "column" }}
