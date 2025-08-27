@@ -1,13 +1,12 @@
-import React, { ReactNode } from "react";
+import React from "react";
+import { Outlet } from "react-router-dom";
 
-interface PublicLayoutProps {
-  children: ReactNode;
-}
-
-const PublicLayout: React.FC<PublicLayoutProps> = ({ children }) => {
+const PublicLayout: React.FC = () => {
   return (
     <div className="flex flex-col overflow-x-hidden">
-      <main>{children}</main>
+      <main>
+        <Outlet />
+      </main>
     </div>
   );
 };

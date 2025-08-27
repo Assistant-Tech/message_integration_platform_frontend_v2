@@ -8,9 +8,9 @@ import {
   AuthButtons,
   MobileMenu,
   MenuMobileToggle,
-  DemoDialog,
 } from "@/app/components/common";
 import { useScrollEffect } from "@/app/hooks/ui/useScrollEffect";
+import  DemoDialog  from "@/app/components/common/BookADemo/DemoDialog";
 
 const Navbar = ({ offsetTop = 0 }: { offsetTop?: number }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

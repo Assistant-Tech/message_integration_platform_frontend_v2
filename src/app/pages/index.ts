@@ -14,6 +14,7 @@ export { default as AboutUs } from "./aboutus/AboutUs";
 export { default as PricingPage } from "./pricing/PricingPage";
 
 // Product exports
+export { default as Product } from "./products/Product";
 export { default as CRM } from "./products/crm/CRM";
 
 // Support exports
