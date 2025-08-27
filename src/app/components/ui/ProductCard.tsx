@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Button } from "@/app/components/ui";
-import { ServiceItem } from "@/app/types/product";
+import { ServiceItem } from "@/app/types/product.types";
 
 interface Props {
   service: ServiceItem;

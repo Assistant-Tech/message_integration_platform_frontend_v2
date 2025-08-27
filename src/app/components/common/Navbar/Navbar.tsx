@@ -8,9 +8,9 @@ import {
   AuthButtons,
   MobileMenu,
   MenuMobileToggle,
-  DemoDialog,
 } from "@/app/components/common";
 import { useScrollEffect } from "@/app/hooks/ui/useScrollEffect";
+import { DemoDialog } from "@/app/components/common/BookADemo";
 
 export interface NavbarRef {
   getHeight: () => number;

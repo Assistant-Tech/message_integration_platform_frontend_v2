@@ -21,5 +21,3 @@ export { default as DashboardPreview } from "./Hero/DashboardPreview";
 
 // pricing compoenents
 export { default as PricingCard } from "./CardComponents/PricingCard";
-
-export { default as DemoDialog } from "./BookADemo/DemoDialog";
