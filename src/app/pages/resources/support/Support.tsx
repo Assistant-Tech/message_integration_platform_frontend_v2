@@ -2,13 +2,13 @@ import { motion } from "framer-motion";
 import { Flex } from "@radix-ui/themes";
 import { Headset, Mail, MapPin, MapPinHouse, PhoneCall } from "lucide-react";
 
-import { RegisterForm } from "@/app/pages/resources/components";
 import { Breadcrumb, SmartCard } from "@/app/components/ui";
 import { APP_ROUTES } from "@/app/constants/routes";
 import { smartCards } from "@/app/utils/resource/utils";
 import { GetStarted } from "@/app/pages/landing/";
 import support from "@/app/assets/images/support.webp";
 import { FrequentlyAskedQuestion, NewsLetter } from "@/app/components/common";
+import RegisterForm from "@/app/features/auth/components/form/RegisterForm";
 
 const Support = () => {
   const SupportCrumb = [

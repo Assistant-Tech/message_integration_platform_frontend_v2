@@ -1,26 +1,31 @@
 import { Link } from "react-router-dom";
 import { APP_ROUTES } from "@/app/constants/routes";
-import logo from "@/app/assets/logo.svg";
 
 interface LogoProps {
   className?: string;
+  variant?: "default" | "white"; // default = colored logo, white = white logo
 }
 
-const Logo: React.FC<LogoProps> = ({ className = "" }) => (
-  <Link
-    to={APP_ROUTES.PUBLIC.HOME}
-    className={`flex items-center space-x-2 ${className}`}
-  >
-    <figure className="flex justify-center items-center gap-2">
-      <img
-        src={logo}
-        className="h-12 w-12 text-primary"
-        alt="Assistant Tech Logo"
-      />
-      <h1 className="text-base sm:text-lg xl:text-2xl font-bold font-nunito">
-        ASSISTANT <span className="text-secondary">TECH</span>
-      </h1>
-    </figure>
-  </Link>
-);
+const Logo: React.FC<LogoProps> = ({ className = "", variant = "default" }) => {
+  const logoSrc =
+    variant === "white"
+      ? "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1755418244/white-logo_oxdple.png"
+      : "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1751347733/Chatblix_Logo_xtkjmp.png";
+
+  return (
+    <Link
+      to={APP_ROUTES.PUBLIC.HOME}
+      className={`flex items-center space-x-2 ${className}`}
+    >
+      <figure className="flex justify-center items-center gap-2">
+        <img
+          src={logoSrc}
+          className="w-36 md:w-48 lg:w-52"
+          alt="ChatBlix Logo"
+        />
+      </figure>
+    </Link>
+  );
+};
+
 export default Logo;

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Currency, APIDuration } from "@/app/types/plan";
+import { Currency, APIDuration } from "@/app/types/plan.types";
 
 interface PricingState {
   currency: Currency;

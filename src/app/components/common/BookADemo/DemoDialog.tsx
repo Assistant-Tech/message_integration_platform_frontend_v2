@@ -1,6 +1,6 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { motion, AnimatePresence } from "framer-motion";
-import { useDemoDialogStore } from "@/app/store/useDemoDialogStore";
+import { useDemoDialogStore } from "@/app/store/DemoDialogStore";
 import DemoFormContent from "./DemoFormContent";
 
 const DemoDialog = () => {
