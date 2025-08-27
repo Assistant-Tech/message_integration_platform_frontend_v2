@@ -95,6 +95,8 @@ const SubscriptionSettings = () => {
         )}
       </AnimatePresence>
       <div className="py-4">
+        {/* available plans */}
+        <h1 className="h4-bold-24 text-grey py-6">Available Plans</h1>
         <Pricing />
       </div>
     </motion.div>
