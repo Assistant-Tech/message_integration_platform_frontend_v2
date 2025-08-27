@@ -54,7 +54,7 @@ const PopupModal = () => {
                 </Dialog.Title>
               </div>
               <div className="text-grey body-medium-16 mb-2 text-center">
-                Subscribe to Assistant Tech’s monthly newsletter to stay updated
+                Subscribe to Chatblix’s monthly newsletter to stay updated
                 on new features and services and get a chance to unlock
                 exclusive offers as a gift
               </div>

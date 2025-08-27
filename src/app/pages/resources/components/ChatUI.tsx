@@ -94,8 +94,8 @@ const ChatUI = () => {
                 className="text-lg sm:text-xl text-gray-600 max-w-xl leading-relaxed"
                 variants={itemVariants}
               >
-                All Assistant Tech's users can now create and customize their
-                own AI-powered chatbots.
+                All Chatblix's users can now create and customize their own
+                AI-powered chatbots.
               </motion.p>
 
               <motion.p

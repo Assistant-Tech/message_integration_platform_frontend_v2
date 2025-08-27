@@ -107,7 +107,7 @@ const DemoFormContent = ({
             />
 
             <Input
-              label="How many people will be using Assistant Tech?"
+              label="How many people will be using Chatblix?"
               placeholder="Enter the range of individuals"
               {...register("usage")}
               error={errors.usage?.message}

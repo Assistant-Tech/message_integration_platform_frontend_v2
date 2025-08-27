@@ -111,7 +111,7 @@ export const services: ServiceItem[] = [
     icon: FileText,
     title: "Literature",
     description:
-      "Assistant Tech’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
+      "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
     img: crm,
   },
   {
@@ -119,7 +119,7 @@ export const services: ServiceItem[] = [
     icon: Users,
     title: "CRM",
     description:
-      "Assistant Tech’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
+      "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
     img: crm,
   },
   {
@@ -127,7 +127,7 @@ export const services: ServiceItem[] = [
     icon: BarChart3,
     title: "Self Sourcing",
     description:
-      "Assistant Tech’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
+      "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
     img: crm,
   },
   {
@@ -135,7 +135,7 @@ export const services: ServiceItem[] = [
     icon: Globe,
     title: "Business",
     description:
-      "Assistant Tech’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
+      "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
     img: crm,
   },
   {
@@ -143,7 +143,7 @@ export const services: ServiceItem[] = [
     icon: Globe,
     title: "Business",
     description:
-      "Assistant Tech’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
+      "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
     img: crm,
   },
   {
@@ -151,7 +151,7 @@ export const services: ServiceItem[] = [
     icon: Globe,
     title: "Business",
     description:
-      "Assistant Tech’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
+      "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
     img: crm,
   },
   {
@@ -159,7 +159,7 @@ export const services: ServiceItem[] = [
     icon: Globe,
     title: "Business",
     description:
-      "Assistant Tech’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
+      "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
     img: crm,
   },
   {
@@ -167,7 +167,7 @@ export const services: ServiceItem[] = [
     icon: Globe,
     title: "Business",
     description:
-      "Assistant Tech’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
+      "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
     img: crm,
   },
   {
@@ -175,7 +175,7 @@ export const services: ServiceItem[] = [
     icon: Globe,
     title: "Business",
     description:
-      "Assistant Tech’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
+      "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
     img: crm,
   },
 ];

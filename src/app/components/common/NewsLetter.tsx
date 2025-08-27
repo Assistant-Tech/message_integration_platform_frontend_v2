@@ -10,7 +10,7 @@ const NewsLetter = () => {
     >
       <div className="text-start lg:max-w-1/2 w-full">
         <h3 className="h3-bold-32 text-base-black">
-          Subscribe to Assistant Tech’s monthly newsletter to stay updated
+          Subscribe to Chatblix’s monthly newsletter to stay updated
         </h3>
       </div>
       <div className="flex flex-col justify-center items-center gap-4 w-full max-w-md">

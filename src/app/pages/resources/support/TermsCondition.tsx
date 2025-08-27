@@ -60,7 +60,7 @@ const TermsCondition: React.FC = () => {
         className="mb-8 lg:mb-12"
       >
         <h1 className="h2-bold-40 text-base-black">
-          Assistant Tech's Terms of Service
+          Chatblix's Terms of Service
         </h1>
         <p className="body-regular-16 text-grey-medium max-w-3xl pt-2">
           Please read these terms and conditions carefully before using our

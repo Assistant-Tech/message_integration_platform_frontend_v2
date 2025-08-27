@@ -9,7 +9,7 @@ const OurTeam = () => {
       <div className="w-full pt-20">
         <article className="flex flex-col justify-center items-center text-center space-y-4">
           <Badge title="OUR TEAM" />
-          <h1 className="h3-bold-32 text-grey">Team Behind Assistant Tech</h1>
+          <h1 className="h3-bold-32 text-grey">Team Behind Chatblix</h1>
         </article>
 
         {/* Card Section */}

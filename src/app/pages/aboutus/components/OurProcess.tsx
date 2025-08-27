@@ -135,7 +135,7 @@ const OurProcess: React.FC = () => {
             transition={{ delay: 0.4, duration: 0.8 }}
             className="h3-bold-32 text-base-black"
           >
-            How Assistant Tech Works
+            How Chatblix Works
           </motion.h1>
 
           <motion.p

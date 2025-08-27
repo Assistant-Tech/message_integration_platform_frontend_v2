@@ -160,7 +160,7 @@ const Footer = () => {
             transition={{ delay: 0.5 }}
             className="h5-bold-16"
           >
-            &copy; {currentYear} Assistant Tech. All Rights Reserved.
+            &copy; {currentYear} Chatblix. All Rights Reserved.
           </motion.p>
 
           {/* Social */}

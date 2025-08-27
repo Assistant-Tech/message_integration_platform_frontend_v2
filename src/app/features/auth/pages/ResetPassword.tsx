@@ -400,7 +400,7 @@ const ResetPassword = () => {
         {/* Footer */}
         <div className="pb-6 text-center">
           <p className="h5-bold-16 text-grey-medium">
-            © 2025 Assistant Tech. All Rights Reserved
+            © 2025 Chatblix. All Rights Reserved
           </p>
         </div>
       </div>
