@@ -100,7 +100,7 @@ const ProfileSettings = () => {
 
   return (
     <motion.section
-      className="flex flex-col h-full px-6 py-4 mb-2"
+      className=" flex flex-col w-5xl justify-center h-full px-6 py-4 mb-2"
       variants={containerVariants}
       initial="hidden"
       animate="visible"

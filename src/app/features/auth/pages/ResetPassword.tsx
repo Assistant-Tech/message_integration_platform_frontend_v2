@@ -46,9 +46,9 @@ const ResetPassword = () => {
     try {
       setLoading(true);
 
-      console.log("userId:", userId);
-      console.log("token:", token);
-      console.log("searchParams:", searchParams);
+      // console.log("userId:", userId);
+      // console.log("token:", token);
+      // console.log("searchParams:", searchParams);
       if (!userId || !token) {
         throw new Error("Missing userId or token");
       }

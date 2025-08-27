@@ -75,10 +75,6 @@ export const sidebarItems = [
         href: APP_ROUTES.ADMIN.SETTINGS_SECURITY,
       },
       {
-        label: "Notification Settings",
-        href: APP_ROUTES.ADMIN.SETTINGS_NOTIFICATIONS,
-      },
-      {
         label: "Chat Settings",
         href: APP_ROUTES.ADMIN.SETTINGS_CHAT_SETTINGS,
       },

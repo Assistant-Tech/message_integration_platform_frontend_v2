@@ -71,7 +71,7 @@ const CompanySettings: React.FC = () => {
 
   return (
     <motion.section
-      className="flex flex-col h-full px-6 py-4 bg-gray-50 min-h-screen"
+      className="w-5xl flex flex-col h-full px-6 py-4 min-h-screen"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -81,13 +81,13 @@ const CompanySettings: React.FC = () => {
         className="flex flex-col text-start mb-6"
         variants={itemVariants}
       >
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Settings</h1>
-        <h2 className="text-lg font-semibold text-primary">Company Settings</h2>
+        <h1 className="h4-bold-24 text-grey mb-2">Settings</h1>
+        <h2 className="body-semi-bold-16 text-primary">Company Settings</h2>
       </motion.article>
 
       {/* Company Profile Card */}
       <motion.div
-        className="flex items-center border border-gray-200 rounded-xl p-4 bg-white mb-6 shadow-sm"
+        className="flex items-center border border-grey-light rounded-xl p-4 bg-white mb-6"
         variants={itemVariants}
         whileHover={{ scale: 1.01 }}
         transition={{ type: "spring", stiffness: 300 }}
@@ -98,18 +98,18 @@ const CompanySettings: React.FC = () => {
           </div>
         </div>
         <div className="ml-4 flex-1">
-          <h3 className="text-lg font-bold text-gray-700">Seamans Furniture</h3>
-          <p className="text-sm text-gray-500">Furniture</p>
+          <h3 className="text-lg font-bold text-grey">Seamans Furniture</h3>
+          <p className="text-sm text-grey-medium">Furniture</p>
         </div>
       </motion.div>
 
       {/* General Information Section */}
       <motion.div
-        className="bg-white rounded-lg border border-gray-200 mb-6 shadow-sm"
+        className="bg-white rounded-lg border border-grey-light mb-6"
         variants={itemVariants}
       >
-        <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-700">
+        <div className="flex justify-between items-center px-6 py-4 border-b border-grey-light rounded-t-lg bg-base-white">
+          <h2 className="text-lg font-semibold text-grey">
             General Information
           </h2>
           <Button
@@ -121,7 +121,7 @@ const CompanySettings: React.FC = () => {
           />
         </div>
 
-        <div className="p-6 space-y-4">
+        <div className="p-6 space-y-4 body-bold-16">
           {isEditing === "general" ? (
             <motion.div
               className="space-y-4"
@@ -191,10 +191,10 @@ const CompanySettings: React.FC = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <span className="text-sm font-medium text-gray-600">
+                  <span className="body-regular-16 text-grey-medium">
                     {item.label}
                   </span>
-                  <span className="text-sm text-gray-800">{item.value}</span>
+                  <span className="text-sm text-grey">{item.value}</span>
                 </motion.div>
               ))}
             </div>
@@ -204,13 +204,11 @@ const CompanySettings: React.FC = () => {
 
       {/* Company Location Section */}
       <motion.div
-        className="bg-white rounded-lg border border-gray-200 mb-6 shadow-sm"
+        className="bg-white rounded-lg border border-grey-light mb-6"
         variants={itemVariants}
       >
-        <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-700">
-            Company Location
-          </h2>
+        <div className="flex justify-between items-center px-6 py-4 border-b border-grey-light rounded-t-lg bg-base-white">
+          <h2 className="text-lg font-semibold text-grey">Company Location</h2>
           <Button
             label="Edit"
             variant="none"
@@ -260,7 +258,7 @@ const CompanySettings: React.FC = () => {
               </div>
             </motion.div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-4 body-bold-16">
               {[
                 { label: "Country", value: companyData.country },
                 { label: "State/Province", value: companyData.state },
@@ -273,10 +271,10 @@ const CompanySettings: React.FC = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <span className="text-sm font-medium text-gray-600">
+                  <span className="body-regular-16 text-grey-medium">
                     {item.label}
                   </span>
-                  <span className="text-sm text-gray-800">{item.value}</span>
+                  <span className="text-sm text-grey">{item.value}</span>
                 </motion.div>
               ))}
             </div>
@@ -286,13 +284,11 @@ const CompanySettings: React.FC = () => {
 
       {/* Legal Documentation Section */}
       <motion.div
-        className="bg-white rounded-lg border border-gray-200 shadow-sm"
+        className="bg-white rounded-lg border border-grey-light"
         variants={itemVariants}
       >
-        <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-700">
-            Legal Documentation
-          </h2>
+        <div className="flex justify-between items-center px-6 py-4  border-b border-grey-light rounded-t-lg bg-base-white">
+          <h2 className="h5-bold-16 text-grey">Legal Documentation</h2>
           <Button
             label="Edit"
             variant="none"
@@ -318,7 +314,7 @@ const CompanySettings: React.FC = () => {
               />
 
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block body-regular-16 text-grey">
                   PAN Card Photo
                 </label>
                 <div className="flex items-center space-x-4">
@@ -350,7 +346,7 @@ const CompanySettings: React.FC = () => {
                     <img
                       src={companyData.panCardPhoto}
                       alt="PAN Card"
-                      className="w-64 h-40 object-cover rounded-lg border border-gray-200"
+                      className="w-64 h-40 object-cover rounded-lg border border-grey-light"
                     />
                   </motion.div>
                 )}
@@ -376,16 +372,18 @@ const CompanySettings: React.FC = () => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
               >
-                <span className="text-sm font-medium text-gray-600">PAN</span>
-                <span className="text-sm text-gray-800">{companyData.pan}</span>
+                <span className="body-regular-16 text-grey-medium">PAN</span>
+                <span className="body-bold-16 text-grey">
+                  {companyData.pan}
+                </span>
               </motion.div>
 
               <div className="space-y-2">
-                <span className="text-sm font-medium text-gray-600">
+                <span className="body-regular-16 text-grey-medium">
                   PAN Card Photo
                 </span>
                 <motion.div
-                  className="w-64 h-40 bg-gray-200 rounded-lg flex items-center justify-center border border-gray-300"
+                  className="w-64 h-40 bg-grey-light rounded-lg flex items-center justify-center border border-grey-light"
                   whileHover={{ scale: 1.02 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
@@ -396,7 +394,7 @@ const CompanySettings: React.FC = () => {
                       className="w-full h-full object-cover rounded-lg"
                     />
                   ) : (
-                    <span className="text-gray-500 text-sm">
+                    <span className="text-grey-medium body-regular-16">
                       No image uploaded
                     </span>
                   )}

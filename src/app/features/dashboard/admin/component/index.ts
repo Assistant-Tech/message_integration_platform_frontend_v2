@@ -6,6 +6,9 @@ export { default as GenericTable } from "./table/GenericTable";
 //OTHERS
 export { default as ChatPannel } from "./ChatPannel";
 export { default as DetailsPanel } from "./DetailsPannel";
+export { default as ChatPreview } from "./ChatPreview";
+export { default as ChatWidget } from "./ChatWidget";
+export { default as MessageTemplateSettings } from "./MessageTemplateSettings";
 
 //ORDER
 export { default as OrderPannel } from "./OrderPannel";
@@ -32,3 +35,7 @@ export { default as VariantTable } from "./product/VariantTable";
 
 //ASSIGN
 export { default as AssignDialog } from "./AssignDialogBox";
+
+// SETTINGS
+export { default as YourSubscription } from "./YourSubscription";
+export { default as PurchaseHistory } from "./PurchaseHistory";
