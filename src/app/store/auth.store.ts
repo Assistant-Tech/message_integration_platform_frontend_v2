@@ -10,6 +10,7 @@ interface AuthState {
   csrfToken: string | null;
   onboardingToken: string | null;
   requiresOnboarding: boolean;
+  isAuthenticated: boolean;
   isVerified: boolean;
   isloading: boolean;
   isRefreshing: boolean;
@@ -19,17 +20,22 @@ interface AuthState {
   signup: (
     name: string,
     email: string,
-    password: string
+    password: string,
   ) => Promise<{ message: string; email: string }>;
   verifyEmail: (token: string) => Promise<{ message: string }>;
-  onboarding: (data: FormData) => Promise<void>;
+  onboarding: (data: FormData) => Promise<{ slug: string }>;
   login: (
     email: string,
-    password: string
-  ) => Promise<{ message: string; requiresOnboarding: boolean }>;
+    password: string,
+  ) => Promise<{
+    message: string;
+    requiresOnboarding: boolean;
+    tenantSlug: string;
+  }>;
   refreshAccessToken: () => Promise<string | null>;
   fetchCurrentUserProfile: () => Promise<void>;
   logout: () => void;
+  resetAuth: () => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -42,10 +48,22 @@ export const useAuthStore = create<AuthState>()(
       requiresOnboarding: false,
       isVerified: false,
       isloading: false,
-      isRefreshing: true,
+      isRefreshing: false,
+      isAuthenticated: false,
       setRefreshing: (refreshing) => set({ isRefreshing: refreshing }),
       setAccessToken: (accessToken) => set({ accessToken }),
       setUser: (user) => set({ user }),
+      resetAuth: () => {
+        set({
+          user: null,
+          accessToken: null,
+          csrfToken: null,
+          onboardingToken: null,
+          requiresOnboarding: false,
+          isVerified: false,
+          isAuthenticated: false,
+        });
+      },
       signup: async (name, email, password) => {
         set({ isloading: true });
         try {
@@ -81,31 +99,54 @@ export const useAuthStore = create<AuthState>()(
           const res = await api.post("/auth/onboarding", data, {
             headers: { "Content-Type": "multipart/form-data" },
           });
-          set({
-            user: res.data.user,
-            requiresOnboarding: false,
-          });
-          return res.data;
+
+          const onboardingData = res.data?.data || {};
+          set({ requiresOnboarding: false });
+
+          // Refresh user so tenant appears on the profile
+          await get().fetchCurrentUserProfile();
+
+          // Prefer store user’s tenant slug; fall back to API's onboarding slug
+          const slug = get().user?.tenant?.slug ?? onboardingData.slug ?? "";
+          return { slug };
         } finally {
           set({ isloading: false });
         }
       },
+
       login: async (email, password) => {
         set({ isloading: true });
         try {
           const res = await api.post("/auth/login", { email, password });
-          const { user, accessToken, requiresOnboarding, csrfToken } = res.data;
-          set({ user, accessToken, requiresOnboarding, csrfToken });
+          const { accessToken, requiresOnboarding, csrfToken } = res.data;
+
+          set({
+            accessToken,
+            requiresOnboarding,
+            csrfToken,
+            isAuthenticated: true,
+          });
+
+          await get().fetchCurrentUserProfile();
+
+          const tenantSlug = res.data.tenantSlug;
+          if (!tenantSlug) {
+            console.warn("⚠️ No tenantSlug found after login");
+          }
+
           return {
             message: res.data.message || "Login successful!",
             requiresOnboarding,
+            tenantSlug: tenantSlug,
           };
         } finally {
           set({ isloading: false });
         }
       },
+
       refreshAccessToken: async () => {
         try {
+          set({ isRefreshing: true });
           const res = await api.get("/auth/refresh", {
             headers: {
               "X-CSRF-Token": get().csrfToken,
@@ -147,7 +188,10 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: "auth-csrf",
-      partialize: (state) => ({ csrfToken: state.csrfToken }),
-    }
-  )
+      partialize: (state) => ({
+        csrfToken: state.csrfToken,
+        isAuthenticated: state.isAuthenticated,
+      }),
+    },
+  ),
 );

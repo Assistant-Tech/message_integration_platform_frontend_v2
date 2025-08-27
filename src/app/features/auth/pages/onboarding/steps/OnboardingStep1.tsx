@@ -59,6 +59,10 @@ const OnboardingStep1: React.FC<OnboardingStep1Props> = ({
         ...formData,
         contactNumber: `${countryCode}-${formData.contactNumber}`,
       };
+      // Remove website if empty
+      if (!formData.website) {
+        delete dataWithCountry.website;
+      }
       onNext(dataWithCountry);
     } catch (err) {
       if (err instanceof ZodError) {

@@ -2,10 +2,11 @@ import React from "react";
 
 const Loading: React.FC = () => {
   return (
-    <div className="flex justify-center items-center size-24 gap-1.5">
-      <span className="size-5 bg-primary rounded-full opacity-0 animate-fade"></span>
-      <span className="size-5 bg-primary rounded-full opacity-0 animate-fade animation-delay-300"></span>
-      <span className="size-5 bg-primary rounded-full opacity-0 animate-fade animation-delay-600"></span>
+    <div className="flex justify-center items-center gap-2 w-screen h-screen">
+      <span className="w-4 h-4 bg-primary rounded-full animate-bounce [animation-delay:0s]"></span>
+      <span className="w-4 h-4 bg-primary rounded-full animate-bounce [animation-delay:0.2s]"></span>
+      <span className="w-4 h-4 bg-primary rounded-full animate-bounce [animation-delay:0.4s]"></span>
+      <span className="w-4 h-4 bg-primary rounded-full animate-bounce [animation-delay:0.6s]"></span>
     </div>
   );
 };

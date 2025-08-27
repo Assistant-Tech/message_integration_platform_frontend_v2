@@ -1,8 +1,20 @@
 import { Input } from "@/app/components/ui";
 import { Bell, ChevronDown, HelpCircle, Search } from "lucide-react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { useAuthStore } from "@/app/store/auth.store";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const TopNavbar = () => {
+  const { logout } = useAuthStore();
+
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    toast.success("Logged out successfully!");
+    navigate("/login");
+  };
   return (
     <header className="w-full bg-base-white border-b border-grey-light h-auto flex items-center px-6 py-4 justify-between">
       {/* Search Bar */}
@@ -49,7 +61,10 @@ const TopNavbar = () => {
             <DropdownMenu.Item className="px-4 py-2 text-sm cursor-pointer border-none">
               Profile
             </DropdownMenu.Item>
-            <DropdownMenu.Item className="px-4 py-2 text-sm cursor-pointer border-none">
+            <DropdownMenu.Item
+              className="px-4 py-2 text-sm cursor-pointer border-none"
+              onClick={handleLogout}
+            >
               Logout
             </DropdownMenu.Item>
           </DropdownMenu.Content>

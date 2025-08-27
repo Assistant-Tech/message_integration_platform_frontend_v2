@@ -4,16 +4,16 @@ import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedRoute = () => {
   const isRefreshing = useAuthStore((s) => s.isRefreshing);
-  const accessToken = useAuthStore((s) => s.accessToken);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const user = useAuthStore((s) => s.user);
 
-  if (isRefreshing) {
+  if (isRefreshing && !user) {
     return <Loading />;
   }
 
-  if (!accessToken) {
-    return <Navigate to={"/login"} replace />;
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
   }
-
   return <Outlet />;
 };
 

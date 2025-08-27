@@ -106,10 +106,10 @@ const OnboardingForm: React.FC = () => {
         }
       });
 
-      await onboarding(formData);
+      const response = await onboarding(formData);
 
       reset();
-      navigate("/admin/dashboard", {
+      navigate(`/${response.slug}/admin/dashboard`, {
         state: { message: "Onboarding completed successfully!" },
       });
       toast.success("Onboarding completed successfully!");
@@ -175,7 +175,7 @@ const OnboardingForm: React.FC = () => {
       case 4:
         return "Document Upload (Optional)";
       case 5:
-        return "Team Members (Optional)";
+        return "Add Your Memebers (Optional)";
       default:
         return "";
     }

@@ -131,9 +131,12 @@ const AppRoutes = () => {
 
           <Route element={<OnboardingGuard />}>
             {/* Admin Dashboard Routes */}
-            <Route path="/admin" element={<DashboardLayout />}>
+            <Route path="/:slug/admin" element={<DashboardLayout />}>
               <Route index element={<AdminDashboardPage />} />
-              <Route path="dashboard" element={<Dashboard />} />
+              <Route
+                path={APP_ROUTES.ADMIN.DASHBOARD}
+                element={<Dashboard />}
+              />
               <Route
                 path={APP_ROUTES.ADMIN.CONVERSATION}
                 element={<ConversationPage />}

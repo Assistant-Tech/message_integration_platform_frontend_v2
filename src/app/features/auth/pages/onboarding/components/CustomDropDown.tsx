@@ -10,6 +10,7 @@ interface CustomDropdownProps {
   loading?: boolean;
   error?: boolean;
   id?: string;
+  className?: string;
 }
 
 const CustomDropdown: React.FC<CustomDropdownProps> = ({
@@ -20,6 +21,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   disabled = false,
   loading = false,
   error = false,
+  className,
   id,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -51,7 +53,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   };
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className={`relative ${className || ""}`} ref={dropdownRef}>
       <button
         id={id}
         type="button"

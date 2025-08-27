@@ -19,7 +19,7 @@ const ForgetPassword = () => {
     try {
       setLoading(true);
       const res = await forgetPasswordApi(email);
-      toast.info(
+      toast.success(
         res.message || "A password reset link has been sent to your email.",
       );
       setEmail("");

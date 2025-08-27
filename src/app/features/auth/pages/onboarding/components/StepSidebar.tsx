@@ -1,6 +1,4 @@
-import React from "react";
-import { motion } from "framer-motion";
-
+import React, { useEffect, useState } from "react";
 import { StepsIndicator } from "@/app/features/auth/pages/onboarding/components";
 import onboardingSteps from "@/app/utils/onboarding/onboarding";
 
@@ -13,17 +11,25 @@ interface StepSidebarProps {
 const StepSidebar: React.FC<StepSidebarProps> = ({
   currentStep,
   completedSteps,
-  totalSteps = 5,
 }) => {
-  const [previousStep, setPreviousStep] = React.useState(currentStep);
+  const [direction, setDirection] = useState<"forward" | "backward">("forward");
 
-  React.useEffect(() => {
-    setPreviousStep(currentStep);
+  useEffect(() => {
+    // Compare with previous value directly
+    setDirection((prev) => {
+      if (currentStep > prevStepRef.current) return "forward";
+      if (currentStep < prevStepRef.current) return "backward";
+      return prev;
+    });
+    prevStepRef.current = currentStep;
   }, [currentStep]);
+
+  // Keep a ref of the previous step without triggering re-renders
+  const prevStepRef = React.useRef(currentStep);
 
   return (
     <div className="w-full lg:max-w-md">
-      <div className="bg-white rounded-lg p-6 shadow-sm border border-grey-light">
+      <div className="rounded-lg">
         <h3 className="text-lg font-semibold text-grey mb-6">Setup Progress</h3>
 
         <div className="space-y-0">
@@ -31,8 +37,6 @@ const StepSidebar: React.FC<StepSidebarProps> = ({
             const isActive = step.stepNumber === currentStep;
             const isCompleted = step.stepNumber <= completedSteps;
             const isLast = idx === onboardingSteps.length - 1;
-            const direction =
-              step.stepNumber < previousStep ? "backward" : "forward";
 
             return (
               <StepsIndicator
@@ -47,40 +51,6 @@ const StepSidebar: React.FC<StepSidebarProps> = ({
               />
             );
           })}
-        </div>
-
-        {/* Progress summary */}
-        <div className="mt-6 pt-4 border-t border-grey-light">
-          <div className="flex justify-between items-center text-sm">
-            <span className="text-grey-medium">
-              Progress: {Math.min(completedSteps, totalSteps)}/{totalSteps}{" "}
-              steps
-            </span>
-            <span className="text-primary font-medium">
-              {Math.round(
-                (Math.min(completedSteps, totalSteps) / totalSteps) * 100,
-              )}
-              %
-            </span>
-          </div>
-
-          {/* Progress bar */}
-          <div className="w-full bg-grey-light rounded-full h-2 mt-2">
-            <motion.div
-              className="bg-primary h-2 rounded-full"
-              initial={{ width: 0 }}
-              animate={{
-                width: `${(Math.min(completedSteps, totalSteps) / totalSteps) * 100}%`,
-              }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
-            />
-          </div>
-
-          {completedSteps >= 3 && (
-            <p className="text-xs text-grey-medium mt-2">
-              Steps 4-5 are optional and can be completed later.
-            </p>
-          )}
         </div>
       </div>
     </div>

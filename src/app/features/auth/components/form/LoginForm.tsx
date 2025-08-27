@@ -56,7 +56,15 @@ const LoginForm = () => {
       const res = await login(data.email, data.password);
       toast.success(res.message);
 
-      navigate(res.requiresOnboarding ? "/onboardingform" : "/admin/dashboard");
+      if (res.requiresOnboarding) {
+        toast.info("Please complete your onboarding.");
+      }
+
+      navigate(
+        res.requiresOnboarding
+          ? "/onboardingform"
+          : `/${res.tenantSlug}/admin/dashboard`
+      );
       reset();
     } catch (error) {
       const parsedError = handleApiError(error);
@@ -95,7 +103,6 @@ const LoginForm = () => {
           {...register("password")}
           error={errors.password?.message}
           type={showPassword ? "text" : "password"}
-          onFocus={() => setShowPasswordChecks(true)}
           onBlur={() => {
             if (!password) setShowPasswordChecks(false);
           }}
