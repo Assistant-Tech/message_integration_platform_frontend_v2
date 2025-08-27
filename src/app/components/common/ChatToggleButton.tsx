@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { X } from "lucide-react";
-import { ChatbotPanel } from "@/app/components/common/";
 import chatbotlogo from "@/app/assets/icons/chatbotlogo.svg";
 import { AnimatePresence, motion } from "framer-motion";
+import ChatBotPanel from "@/app/components/common/ChatbotPanel";
 
 const ChatToggleButton = () => {
   const [open, setOpen] = useState(false);
@@ -32,7 +32,7 @@ const ChatToggleButton = () => {
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="fixed bottom-36 right-6 z-40 w-[350px] h-[500px] bg-base-white shadow-2xl rounded-xl overflow-hidden"
           >
-            <ChatbotPanel />
+            <ChatBotPanel />
           </motion.div>
         )}
       </AnimatePresence>

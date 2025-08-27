@@ -2,7 +2,7 @@ import { Check } from "lucide-react";
 
 import { cn } from "@/app/utils/cn";
 import { Button } from "@/app/components/ui";
-import { Plan } from "@/app/types/plan";
+import { Plan } from "@/app/types/plan.types";
 import Ribbon from "@/app/pages/aboutus/components/Ribbon";
 
 interface PricingCardProps {

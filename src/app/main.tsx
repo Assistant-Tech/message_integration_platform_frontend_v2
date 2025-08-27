@@ -1,8 +1,8 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@/app/styles/globals.css";
 import App from "@/app/App";
+import React from "react";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -21,7 +21,7 @@ const DevTools = React.lazy(() =>
 );
 
 const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement,
+  document.getElementById("root") as HTMLElement
 );
 
 root.render(
@@ -34,5 +34,5 @@ root.render(
         </React.Suspense>
       )}
     </QueryClientProvider>
-  </React.StrictMode>,
+  </React.StrictMode>
 );

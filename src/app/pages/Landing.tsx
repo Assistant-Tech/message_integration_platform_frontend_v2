@@ -20,7 +20,7 @@ import {
 import Section from "@/app/components/layout/Section";
 import { useBanner } from "@/app/context/BannerContext";
 import { useWindowSize } from "react-use";
-import ChatToggleButton from "../components/common/ChatToggleButton";
+import ChatToggleButton from "@/app/components/common/ChatToggleButton";
 
 // Lazy load heavy components
 const ChatBot = lazy(() => import("@/app/pages/landing/ChatBot"));
