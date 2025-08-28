@@ -1,6 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-import testImage from "@/app/assets/images/navbar-image-test.webp";
 import { Button } from "@/app/components/ui";
 import { ArrowUpRight } from "lucide-react";
 import { APP_ROUTES } from "@/app/constants/routes";
@@ -94,7 +93,9 @@ const DropdownMenu = ({ items, isVisible }: DropdownMenuProps) => {
                   <div className="bg-base-white w-full md:w-[480px] rounded-lg flex-shrink-0">
                     <figure className="py-6 px-6 sm:py-8 sm:px-10">
                       <img
-                        src={testImage}
+                        src={
+                          "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753878938/navbar-image-test_pynn86.webp"
+                        }
                         alt="dropdown illustration"
                         className="rounded-lg w-full h-auto object-cover"
                       />

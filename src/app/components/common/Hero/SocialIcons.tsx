@@ -62,15 +62,11 @@ const SocialIcons: React.FC = () => {
                 alt={social.name}
                 width={social.size}
                 height={social.size}
-                className="hidden md:block"
-              />
-              {/* Mobile size */}
-              <img
-                src={social.src}
-                alt={social.name}
-                width={social.mobileSize}
-                height={social.mobileSize}
-                className="block md:hidden"
+                className="w-full h-full object-contain"
+                style={{
+                  width: `clamp(${social.mobileSize}px, 4vw, ${social.size}px)`,
+                  height: `clamp(${social.mobileSize}px, 4vw, ${social.size}px)`,
+                }}
               />
 
               {/* Glow */}

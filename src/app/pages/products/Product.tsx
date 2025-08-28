@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { Agreement, Button } from "@/app/components/ui";
-import crm from "@/app/assets/images/crm.webp";
 import { GetStarted, Pricing } from "@/app/pages/landing/";
 import { FAQ } from "@/app/components/common";
 import { ProductGrid } from "@/app/pages/products/components";
@@ -97,14 +96,18 @@ const Product = () => {
           >
             {/* Desktop Image */}
             <img
-              src={crm}
+              src={
+                "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920901/crm_awlskb.webp"
+              }
               alt="Desktop UI"
               className="w-full h-auto rounded-xl"
             />
 
             {/* Mobile overlapping image */}
             <img
-              src={crm}
+              src={
+                "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920901/crm_awlskb.webp"
+              }
               alt="Mobile UI"
               className="absolute w-1/2 sm:w-1/3 h-96 top-6 sm:top-10 left-4 sm:-left-20 rounded-xl shadow-lg"
               style={{ transform: "translateY(20%)" }}

@@ -28,6 +28,7 @@ import {
   BlogPage,
   BlogDetailPage,
   VideosPage,
+  CheckoutPage,
 } from "@/app/pages";
 import {
   Dashboard,
@@ -92,7 +93,6 @@ const AppRoutes = () => {
             >
               <Route index element={<Product />} />
               <Route path={APP_ROUTES.PUBLIC.CRM} element={<CRM />} />
-              <Route path={APP_ROUTES.PUBLIC.CHATBOT} element={<ChatbotPage />} />
             </Route>
 
             {/* Resource Pages */}
@@ -123,6 +123,12 @@ const AppRoutes = () => {
             {/* About & Pricing */}
             <Route path={APP_ROUTES.PUBLIC.ABOUT} element={<AboutUs />} />
             <Route path={APP_ROUTES.PUBLIC.PRICING} element={<PricingPage />} />
+
+            {/* Checkout Routes */}
+            <Route
+              path={APP_ROUTES.PUBLIC.CHECKOUT}
+              element={<CheckoutPage />}
+            />
 
             {/* Semi-protected routes that are part of the auth flow, but don't need a ProtectedRoute guard */}
             <Route path="/check-email" element={<CheckEmail />} />

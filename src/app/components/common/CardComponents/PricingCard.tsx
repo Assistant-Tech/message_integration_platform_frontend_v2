@@ -1,4 +1,5 @@
 import { Check } from "lucide-react";
+
 import { cn } from "@/app/utils/cn";
 import { Button } from "@/app/components/ui";
 import { Plan } from "@/app/types/plan.types";
@@ -53,6 +54,23 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
       }
     });
     return featuresList;
+  };
+
+  // Convert duration to API format
+  const getInterval = () => {
+    return duration === "yearly" ? "YEARLY" : "MONTHLY";
+  };
+
+  // Get currency from plan or default to USD
+  const getCurrency = () => {
+    return plan.currency || "USD";
+  };
+
+  // Build checkout URL with proper parameters
+  const getCheckoutUrl = () => {
+    const interval = getInterval();
+    const currency = getCurrency();
+    return `/checkout/${plan.id}?interval=${interval}&currency=${currency}`;
   };
 
   const displayFeatures = plan.features ? getFeaturesList(plan.features) : [];
@@ -124,6 +142,7 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
             {displayPrice}
             {plan.amount !== 0 && <span className="ps-2">/{duration}</span>}
           </div>
+
           <Button
             className={cn(
               "w-full py-4 mt-4 font-semibold transition-all duration-200",
@@ -133,6 +152,7 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
             )}
             label={buttonText}
             variant="primary"
+            redirectTo={getCheckoutUrl()}
           />
         </div>
       </div>

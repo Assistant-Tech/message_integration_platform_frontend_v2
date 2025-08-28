@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { benefits, features } from "@/app/utils/product/utils";
 import { cn } from "@/app/utils/cn";
 
-import crm from "@/app/assets/images/crm.webp";
 import { EmailSignupCTA } from "@/app/pages/products/components/";
 
 const EmpowerBusiness = () => {
@@ -93,7 +92,9 @@ const EmpowerBusiness = () => {
           {/* Main CRM Visual */}
           <div className="relative h-48 sm:h-64 md:h-80 lg:h-96 xl:h-[500px]">
             <img
-              src={crm}
+              src={
+                "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp"
+              }
               alt="CRM Dashboard"
               className="w-full h-full object-cover rounded-2xl"
             />
