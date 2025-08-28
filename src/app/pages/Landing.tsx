@@ -92,7 +92,9 @@ const Landing = () => {
   return (
     <div className="min-h-screen">
       <Theme>
-        <LandingContent />
+        <BannerProvider>
+          <LandingContent />
+        </BannerProvider>
       </Theme>
     </div>
   );

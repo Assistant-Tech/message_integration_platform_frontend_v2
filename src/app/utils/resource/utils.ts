@@ -285,13 +285,14 @@ export const scrollToSection = (
   offset: number = 100,
 ): void => {
   const element = document.getElementById(sectionId);
-  if (element) {
-    const offsetTop = element.offsetTop - offset;
-    window.scrollTo({
-      top: offsetTop,
-      behavior: "smooth",
-    });
-  }
+  if (!element) return;
+
+  const y = element.getBoundingClientRect().top + window.scrollY - offset;
+
+  window.scrollTo({
+    top: y,
+    behavior: "smooth",
+  });
 };
 
 export const getActiveSection = (

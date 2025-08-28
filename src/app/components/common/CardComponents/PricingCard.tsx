@@ -15,6 +15,8 @@ interface PricingCardProps {
 }
 
 const PricingCard = ({ plan, duration }: PricingCardProps) => {
+  // console.log("🚀 ~ PricingCard ~ plan:", plan);
+
   const formatTitle = (rawTitle?: string): string => {
     if (!rawTitle) return "";
     return rawTitle
@@ -24,7 +26,7 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
   };
 
   const getFeaturesList = (
-    features: Record<string, string> | string[],
+    features: Record<string, any> | string[],
   ): string[] => {
     if (Array.isArray(features)) return features;
 
@@ -79,7 +81,7 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
     >
       {plan.isPopular && (
         <div className="absolute -top-0 -right-0 z-20 overflow-hidden w-32 h-32">
-          <div className="absolute transform rotate-45 bg-secondary text-white text-xs font-bold py-2 px-1 w-[140px] top-[22px] right-[-35px] text-center shadow-lg">
+          <div className="absolute transform rotate-45 bg-orange-500 text-white text-xs font-bold py-2 px-1 w-[140px] top-[22px] right-[-35px] text-center shadow-lg">
             Most Popular
           </div>
         </div>
@@ -88,18 +90,16 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
       <div className="text-start">
         <h3
           className={cn(
-            "h4-bold-24 mb-2",
-            plan.isPopular ? "text-white drop-shadow-sm" : "text-grey",
+            "text-2xl font-bold mb-2",
+            plan.isPopular ? "text-white drop-shadow-sm" : "text-gray-900",
           )}
         >
           {formatTitle(plan.title || plan.name)}
         </h3>
         <p
           className={cn(
-            "body-medium-16 mb-6",
-            plan.isPopular
-              ? "text-primary-light opacity-90"
-              : "text-grey-medium",
+            "text-sm mb-6",
+            plan.isPopular ? "text-primary-light opacity-90" : "text-gray-600",
           )}
         >
           {plan.subtitle || plan.description}
@@ -159,10 +159,10 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
             />
             <span
               className={cn(
-                "h5-medium-16",
+                "text-sm",
                 plan.isPopular
                   ? "text-primary-light opacity-90"
-                  : "text-grey-medium",
+                  : "text-gray-600",
               )}
             >
               {feature}
@@ -175,7 +175,7 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
         <a
           href="#"
           className={cn(
-            "body-regular-underlined-16 transition-colors duration-200",
+            "text-sm underline transition-colors duration-200",
             plan.isPopular
               ? "text-primary-light/80 hover:text-white"
               : "text-grey hover:text-grey-medium",

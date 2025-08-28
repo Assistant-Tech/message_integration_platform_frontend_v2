@@ -9,6 +9,7 @@ import { Badge, Button, DynamicToggle } from "@/app/components/ui";
 import { Plan, Duration, APIDuration } from "@/app/types/plan.types";
 import { extractFeatures } from "@/app/utils/helper";
 import { Check } from "lucide-react";
+import Ribbon from "../aboutus/components/Ribbon";
 
 const Pricing = () => {
   const { currency, duration, setCurrency, setDuration } = usePricingStore();
@@ -36,13 +37,13 @@ const Pricing = () => {
   }, [fetchedPlans]);
 
   const pricingOptions = [
-    { id: "MONTHLY", label: "Monthly", value: "MONTHLY" },
     {
       id: "YEARLY",
       label: "Bill Yearly",
       value: "YEARLY",
       extraLabel: "Save 10%",
     },
+    { id: "MONTHLY", label: "Monthly", value: "MONTHLY" },
   ];
 
   return (
@@ -81,10 +82,10 @@ const Pricing = () => {
                 <label
                   className={cn(
                     currency === cur ? "text-primary" : "text-base-black",
-                    "body-regular-16 cursor-pointer lowercase",
+                    "body-regular-16 cursor-pointer",
                   )}
                 >
-                  {cur === "NPR" ? "Nepal (रु)" : "USD ($)"}
+                  {cur === "NPR" ? "NPL (रु)" : "USD ($)"}
                 </label>
               </Flex>
             ))}
@@ -96,12 +97,12 @@ const Pricing = () => {
         {isLoading ? (
           <div className="text-center py-10">Loading plans...</div>
         ) : isError ? (
-          <div className="text-center py-10 text-red-500">
+          <div className="text-center py-10 text-danger">
             Failed to load plans.
           </div>
         ) : (
           <>
-            <div className="hidden md:grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="hidden md:grid grid-cols-1 lg:grid-cols-3 gap-12">
               {plans.map((plan: any) => (
                 <PricingCard
                   key={plan.id}
@@ -123,13 +124,14 @@ const Pricing = () => {
                   <motion.div
                     key={plan.id}
                     className={cn(
-                      "min-w-[85%] max-w-[85%] flex-shrink-0 rounded-2xl border p-6 shadow-sm",
+                      "relative min-w-[85%] max-w-[85%] flex-shrink-0 rounded-2xl border p-6 shadow-sm",
                       plan.isPopular
                         ? "bg-primary text-white border-primary"
                         : "bg-white text-grey border-gray-200",
                     )}
                     whileTap={{ scale: 0.98 }}
                   >
+                    {plan.isPopular && <Ribbon />}
                     <div className="mb-4">
                       <h2
                         className={cn(
@@ -161,7 +163,6 @@ const Pricing = () => {
                       )}
                     >
                       {plan.price}
-                      /month
                     </div>
 
                     <Button

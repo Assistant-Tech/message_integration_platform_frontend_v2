@@ -3,7 +3,7 @@ import { APP_ROUTES } from "@/app/constants/routes";
 
 interface LogoProps {
   className?: string;
-  variant?: "default" | "white"; // default = colored logo, white = white logo
+  variant?: "default" | "white";
 }
 
 const Logo: React.FC<LogoProps> = ({ className = "", variant = "default" }) => {

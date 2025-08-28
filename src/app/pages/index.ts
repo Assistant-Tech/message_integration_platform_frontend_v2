@@ -23,6 +23,9 @@ export { default as PricingPage } from "./pricing/PricingPage";
 // Product exports
 export { default as Product } from "./products/Product";
 export { default as CRM } from "./products/crm/CRM";
+export { default as ChatbotPage } from "./products/chatbot/ChatbotPage";
+export { default as BulkMessagingPage } from "./products/bulk-messaging/BulkMessagingPage";
+export { default as UnifiedMessagePage } from "./products/unified-messaging/UnifiedMessagePage";
 
 // Support exports
 export { default as Support } from "./resources/support/Support";

@@ -25,6 +25,9 @@ import {
   Product,
   Unauthorized,
   NotFound,
+  BlogPage,
+  BlogDetailPage,
+  VideosPage,
 } from "@/app/pages";
 import {
   Dashboard,
@@ -89,6 +92,7 @@ const AppRoutes = () => {
             >
               <Route index element={<Product />} />
               <Route path={APP_ROUTES.PUBLIC.CRM} element={<CRM />} />
+              <Route path={APP_ROUTES.PUBLIC.CHATBOT} element={<ChatbotPage />} />
             </Route>
 
             {/* Resource Pages */}
@@ -97,6 +101,12 @@ const AppRoutes = () => {
               element={<ResourceLayout />}
             >
               <Route path={APP_ROUTES.PUBLIC.FAQ} element={<FAQPage />} />
+              <Route path={APP_ROUTES.PUBLIC.BLOG} element={<BlogPage />} />
+              <Route path={APP_ROUTES.PUBLIC.VIDEOS} element={<VideosPage />} />
+              <Route
+                path={APP_ROUTES.PUBLIC.BLOG_ID}
+                element={<BlogDetailPage />}
+              />
               <Route path={APP_ROUTES.PUBLIC.SUPPORT} element={<Support />} />
               <Route
                 path={APP_ROUTES.PUBLIC.ONBOARDING}

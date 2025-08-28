@@ -92,7 +92,7 @@ const ProductGrid = () => {
                     <img
                       src={group[1].img}
                       alt={`${group[0]?.title}.png`}
-                      className="w-full h-64 md:h-80 px-2 md:px-px px-2"
+                      className="w-full h-64 md:h-80 px-2 md:px-px"
                     />
                   )}
                   {group[2] && (

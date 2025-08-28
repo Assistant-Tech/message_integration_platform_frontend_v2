@@ -1,7 +1,6 @@
 export { default as HeroSection } from "./HeroSection";
 export { default as MainFeature } from "./MainFeature";
 export { default as Contact } from "./Contact";
-export { default as About } from "./About";
 export { default as ChatBot } from "./ChatBot";
 export { default as UnifiedMessageBox } from "./UnifiedMessageBox";
 export { default as GetStarted } from "./GetStarted";

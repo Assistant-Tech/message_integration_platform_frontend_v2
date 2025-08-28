@@ -1,20 +1,27 @@
 import { motion } from "framer-motion";
-
-import onboarding from "@/app/assets/greenIcons/onboarding.svg";
 import { Badge } from "@/app/components/ui";
+import { LucideIcon } from "lucide-react";
 
-type ProcessStepProps = {
+type ProcessStep = {
   step: number;
   title: string;
   description: string;
-  index: number;
+  icon: LucideIcon;
 };
 
-const ProcessStepCard: React.FC<ProcessStepProps> = ({
+type OurProcessProps = {
+  sectionTitle?: string;
+  sectionSubtitle?: string;
+  badgeTitle: string;
+  steps: ProcessStep[];
+};
+
+const ProcessStepCard: React.FC<ProcessStep & { index: number }> = ({
   step,
   title,
   description,
   index,
+  icon: Icon,
 }) => {
   return (
     <motion.div
@@ -47,8 +54,8 @@ const ProcessStepCard: React.FC<ProcessStepProps> = ({
         transition={{ delay: index * 0.2 + 0.4, duration: 0.5 }}
         className="mb-6 pt-4 flex items-center justify-center"
       >
-        <div className="w-16 h-16">
-          <img src={onboarding} alt="onboarding icon" className="w-12 h-12" />
+        <div className="w-16 h-16 text-primary mx-auto">
+          <Icon className="w-12 h-12" />
         </div>
       </motion.div>
 
@@ -56,7 +63,7 @@ const ProcessStepCard: React.FC<ProcessStepProps> = ({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: index * 0.2 + 0.5 }}
-        className="text-xl font-bold text-gray-800 mb-4"
+        className="h5-bold-16 text-grey mb-4"
       >
         {title}
       </motion.h3>
@@ -65,7 +72,7 @@ const ProcessStepCard: React.FC<ProcessStepProps> = ({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: index * 0.2 + 0.6 }}
-        className="text-gray-600 leading-relaxed"
+        className="body-regular-16 text-grey-medium"
       >
         {description}
       </motion.p>
@@ -73,31 +80,15 @@ const ProcessStepCard: React.FC<ProcessStepProps> = ({
   );
 };
 
-const OurProcess: React.FC = () => {
-  const steps = [
-    {
-      step: 1,
-      title: "Onboarding",
-      description:
-        "Fusce volutpat lectus et nisl consectetur finibus. In vitae scelerisque augue, in varius eros.",
-    },
-    {
-      step: 2,
-      title: "Customization",
-      description:
-        "Tailored features are enabled to match your team’s workflow and maximize efficiency from day one.",
-    },
-    {
-      step: 3,
-      title: "Ongoing Support",
-      description:
-        "Get continuous support and product enhancements to adapt with your growing business needs.",
-    },
-  ];
-
+const OurProcess: React.FC<OurProcessProps> = ({
+  badgeTitle,
+  sectionTitle,
+  sectionSubtitle,
+  steps,
+}) => {
   return (
-    <div className="relative bg-gray-50 py-16 overflow-hidden">
-      {/* Curved dotted SVG line behind cards (hidden on small screens) */}
+    <div className="relative bg-base-white py-16 overflow-hidden">
+      {/* Decorative SVG line */}
       <svg
         className="absolute left-0 top-1/2 transform -translate-y-1/2 w-full h-64 z-0 hidden lg:block pointer-events-none"
         viewBox="0 0 1200 200"
@@ -126,7 +117,7 @@ const OurProcess: React.FC = () => {
             transition={{ delay: 0.2, duration: 0.6 }}
             className="inline-block mb-4"
           >
-            <Badge title="OUR PROCESS" textStyle="body-italic-bold-16" />
+            <Badge title={badgeTitle} />
           </motion.div>
 
           <motion.h1
@@ -135,7 +126,7 @@ const OurProcess: React.FC = () => {
             transition={{ delay: 0.4, duration: 0.8 }}
             className="h3-bold-32 text-base-black"
           >
-            How Assistant Tech Works
+            {sectionTitle}
           </motion.h1>
 
           <motion.p
@@ -144,21 +135,19 @@ const OurProcess: React.FC = () => {
             transition={{ delay: 0.6, duration: 0.8 }}
             className="body-regular-16 text-grey-medium max-w-2xl mx-auto mt-4"
           >
-            From onboarding to daily use, we're here to help you succeed. Learn
-            more about how we provide exclusive service customized to your
-            business.
+            {sectionSubtitle}
           </motion.p>
         </motion.div>
 
-        {/* Cards: flex column on mobile, grid on large screens */}
         <div className="flex flex-col items-center gap-10 lg:grid lg:grid-cols-3 lg:gap-4 cursor-pointer">
           {steps.map((step, index) => (
             <ProcessStepCard
               key={index}
+              index={index}
               step={step.step}
               title={step.title}
               description={step.description}
-              index={index}
+              icon={step.icon}
             />
           ))}
         </div>

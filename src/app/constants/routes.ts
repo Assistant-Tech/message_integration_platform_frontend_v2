@@ -26,8 +26,9 @@ export const APP_ROUTES = {
     // For the ["/product"]
     PRODUCTS_OVERVIEW: "/products",
     CRM: "/products/crm",
-    ERP: "/products/erp",
-    HRMS: "/products/hrms",
+    CHATBOT: "/products/chatbot",
+    UNIFIED_MESSAGE: "/products/unified-message",
+    BULK_MESSAGING: "/products/bulk-message",
 
     // For the ["/resources"]
     RESOURCES_OVERVIEW: "/resources",
