@@ -51,7 +51,11 @@ const WhatWeOffer = () => {
         <article className="max-w-2xl flex flex-col justify-center items-start">
           <div className="flex flex-col items-center text-start">
             <div className="space-y-4">
-              <Badge title="WHAT WE OFFER" className="pb-4" />
+              <Badge
+                title="WHAT WE OFFER"
+                className="pb-4"
+                textStyle="body-italic-bold-16"
+              />
               <h1 className="h3-bold-32 text-base-black">
                 Products Designed for You
               </h1>

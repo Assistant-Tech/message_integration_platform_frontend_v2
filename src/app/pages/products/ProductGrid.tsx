@@ -31,7 +31,11 @@ const ProductGrid = () => {
         variants={containerVariants}
         className="text-center"
       >
-        <Badge title="WHAT WE OFFER" className="my-6"/>
+        <Badge
+          title="WHAT WE OFFER"
+          className="my-6"
+          textStyle="body-italic-bold-16"
+        />
         <motion.h2
           variants={itemVariants}
           className="h2-bold-40 mb-4 text-gray-900"

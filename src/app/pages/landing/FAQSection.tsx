@@ -21,7 +21,10 @@ const FAQ = () => {
               className="px-6 sm:px-10 lg:px-16"
             >
               <div className="space-y-4 max-w-xl mx-auto lg:mx-0 text-center lg:text-left">
-                <Badge title="YOU ASK, WE ANSWER" />
+                <Badge
+                  title="YOU ASK, WE ANSWER"
+                  textStyle="body-italic-bold-16"
+                />
                 <h2 className="h2-bold-40 text-grey">
                   Frequently Asked Questions
                 </h2>

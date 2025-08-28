@@ -40,7 +40,10 @@ const ScaleBusiness: React.FC = () => {
             className="space-y-5 w-full lg:max-w-xl text-center lg:text-left"
             variants={itemVariants}
           >
-            <Badge title="Scale Your Business" />
+            <Badge
+              title="Scale Your Business"
+              textStyle="body-italic-bold-16"
+            />
 
             <motion.div variants={itemVariants}>
               <h1 className={cn("text-grey", "h2-semi-bold-40")}>
