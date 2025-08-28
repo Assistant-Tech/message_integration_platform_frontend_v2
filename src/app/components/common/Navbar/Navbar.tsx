@@ -10,9 +10,9 @@ import {
   MenuMobileToggle,
 } from "@/app/components/common";
 import { useScrollEffect } from "@/app/hooks/ui/useScrollEffect";
-import { DemoDialog } from "@/app/components/common/BookADemo";
+import DemoDialog from "@/app/components/common/BookADemo/DemoDialog";
 
-export interface NavbarRef {
+interface NavbarRef {
   getHeight: () => number;
 }
 

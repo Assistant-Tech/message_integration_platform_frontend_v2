@@ -47,7 +47,7 @@ export const smartCards = [
   {
     title: "Onboarding",
     description:
-      "Get started with Assistant Tech right away. Let us guide you through our onboarding process.",
+      "Get started with Chatblix right away. Let us guide you through our onboarding process.",
     icon: onboarding,
     redirectTo: APP_ROUTES.PUBLIC.ONBOARDING,
   },

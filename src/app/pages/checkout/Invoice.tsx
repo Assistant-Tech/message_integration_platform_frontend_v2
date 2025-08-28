@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Agreement, Button } from "@/app/components/ui";
-import { PlanType } from "@/app/types/plan";
+import { PlanType } from "@/app/types/plan.types";
 
 interface InvoiceProps {
   plan: PlanType;

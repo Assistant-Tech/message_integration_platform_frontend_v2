@@ -4,16 +4,15 @@ import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import { Country } from "country-state-city";
 
-import api from "@/app/services/api/auth";
-
 import { Button, Input, Logo } from "@/app/components/ui";
 import { Plus, Minus } from "lucide-react";
 import { Invoice } from "@/app/pages/";
-import { CheckoutFormData, PlanType } from "@/app/types/plan";
 
 import tickIcon from "@/app/assets/icons/tick.svg";
 import tickIcon_filled from "@/app/assets/icons/tick_filled.svg";
 import { toast } from "sonner";
+import { CheckoutFormData, PlanType } from "@/app/types/plan.types";
+import api from "@/app/services/api/axios";
 
 const CheckoutPage = () => {
   const { planId } = useParams<{ planId: string }>();

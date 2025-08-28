@@ -14,7 +14,10 @@ const MainFeature = () => {
         {/* Typography Section */}
         <Box className="lg:max-w-7xl max-w-full">
           <div className="flex lg:justify-start lg:items-start justify-center items-center">
-            <Badge title="USE IT ANYWHERE, ANYTIME" />
+            <Badge
+              title="USE IT ANYWHERE, ANYTIME "
+              textStyle="body-italic-bold-16"
+            />
           </div>
           <h1
             color="gray"

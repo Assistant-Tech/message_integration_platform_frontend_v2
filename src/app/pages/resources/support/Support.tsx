@@ -6,7 +6,7 @@ import { Breadcrumb, SmartCard } from "@/app/components/ui";
 import { APP_ROUTES } from "@/app/constants/routes";
 import { smartCards } from "@/app/utils/resource/utils";
 import { GetStarted } from "@/app/pages/landing/";
-import { FAQ, NewsLetter } from "@/app/components/common";
+import { FrequentlyAskedQuestion, NewsLetter } from "@/app/components/common";
 import RegisterForm from "@/app/features/auth/components/form/RegisterForm";
 
 const Support = () => {
@@ -136,7 +136,7 @@ const Support = () => {
       </motion.div>
 
       {/* FAQ's Section  */}
-      <FAQ variant="default" />
+      <FrequentlyAskedQuestion variant="default" />
       {/* Newsletter */}
       <div className="pb-12">
         <NewsLetter />

@@ -51,7 +51,10 @@ const UnifiedMessagingInbox = () => {
               transition={{ duration: 0.6 }}
               className="flex justify-center mb-8"
             >
-              <Badge title="Unified Messaging Inbox" />
+              <Badge
+                title="Unified Messaging Inbox"
+                textStyle="body-italic-bold-16"
+              />
             </motion.div>
 
             {/* Main Title */}
@@ -205,9 +208,7 @@ const UnifiedMessagingInbox = () => {
                         transition={{ duration: 0.8, delay: 2.2 }}
                         className="text-center"
                       >
-                        <h3 className="text-xl font-bold mb-2">
-                          ASSISTANT TECH
-                        </h3>
+                        <h3 className="text-xl font-bold mb-2">Chatblix</h3>
                         <p className="text-teal-100 text-sm">
                           Unified Messaging
                         </p>

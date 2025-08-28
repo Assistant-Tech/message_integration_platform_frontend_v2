@@ -25,6 +25,9 @@ import {
   Product,
   Unauthorized,
   NotFound,
+  BlogPage,
+  BlogDetailPage,
+  VideosPage,
   CheckoutPage,
 } from "@/app/pages";
 import {
@@ -58,7 +61,7 @@ import {
 import { OnboardingForm } from "@/app/features/auth/pages/onboarding/steps";
 import ProtectedRoute from "@/app/router/guards/ProtectedRoute";
 import OnboardingGuard from "@/app/router/guards/OnboardingGurad";
-import { BannerProvider } from "../context/BannerContext";
+import { BannerProvider } from "@/app/context/BannerContext";
 
 const AppRoutes = () => {
   return (
@@ -98,6 +101,12 @@ const AppRoutes = () => {
               element={<ResourceLayout />}
             >
               <Route path={APP_ROUTES.PUBLIC.FAQ} element={<FAQPage />} />
+              <Route path={APP_ROUTES.PUBLIC.BLOG} element={<BlogPage />} />
+              <Route path={APP_ROUTES.PUBLIC.VIDEOS} element={<VideosPage />} />
+              <Route
+                path={APP_ROUTES.PUBLIC.BLOG_ID}
+                element={<BlogDetailPage />}
+              />
               <Route path={APP_ROUTES.PUBLIC.SUPPORT} element={<Support />} />
               <Route
                 path={APP_ROUTES.PUBLIC.ONBOARDING}
