@@ -1,10 +1,10 @@
-export { default as Loading } from "./Loading";
-export { default as Navbar } from "./Navbar";
-export { default as Footer } from "./Footer";
-export { default as TrialBanner } from "./TrialBanner";
-export { default as PopupModal } from "./PopupModal";
-export { default as NewsLetter } from "./NewsLetter";
-export { default as FrequentlyAskedQuestion } from "./FrequentlyAskedQuestion";
+export { default as Loading } from "./Loading/Loading";
+export { default as Navbar } from "./Navbar/Navbar";
+export { default as Footer } from "./Footer/Footer";
+export { default as AnnoucementBanner } from "./Modal/AnnouncementBanner";
+export { default as NewsLetterModalPopUp } from "./Modal/NewsLetterModalPopUp";
+export { default as NewsLetter } from "./Newsletter/NewsLetter";
+export { default as FAQ } from "./FaqComponent/FAQ";
 
 //Navbar Components
 export { default as NavigationItem } from "./Navbar/NavigationItem";
@@ -20,5 +20,5 @@ export { default as SocialIcons } from "./Hero/SocialIcons";
 export { default as DashboardPreview } from "./Hero/DashboardPreview";
 
 // pricing compoenents
-export { default as PricingCard } from "./PricingCard";
-
+export { default as PricingCard } from "./CardComponents/PricingCard";
+export { default as FrequentlyAskedQuestion } from "./FaqComponent/FAQ";

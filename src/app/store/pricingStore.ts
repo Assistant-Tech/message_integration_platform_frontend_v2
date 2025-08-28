@@ -10,7 +10,7 @@ interface PricingState {
 
 export const usePricingStore = create<PricingState>((set) => ({
   currency: "NPR",
-  duration: "MONTHLY",
+  duration: "YEARLY",
   setCurrency: (currency) => set({ currency }),
   setDuration: (duration) => set({ duration }),
 }));

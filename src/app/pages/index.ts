@@ -23,6 +23,9 @@ export { default as PricingPage } from "./pricing/PricingPage";
 // Product exports
 export { default as Product } from "./products/Product";
 export { default as CRM } from "./products/crm/CRM";
+export { default as ChatbotPage } from "./products/chatbot/ChatbotPage";
+export { default as BulkMessagingPage } from "./products/bulk-messaging/BulkMessagingPage";
+export { default as UnifiedMessagePage } from "./products/unified-messaging/UnifiedMessagePage";
 
 // Support exports
 export { default as Support } from "./resources/support/Support";
@@ -30,3 +33,7 @@ export { default as Onboarding } from "./resources/support/OnBoarding";
 export { default as TermsCondition } from "./resources/support/TermsCondition";
 export { default as Policy } from "./resources/support/Policy";
 export { default as Updates } from "./resources/support/Updates";
+
+//Checkout exports
+export { default as CheckoutPage } from "./checkout/CheckoutPage";
+export { default as Invoice } from "./checkout/Invoice";

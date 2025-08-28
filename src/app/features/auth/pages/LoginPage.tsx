@@ -4,17 +4,17 @@ import loginImage from "@/app/assets/images/loginImage.png";
 
 const LoginPage = () => {
   return (
-    <div className="flex flex-col md:flex-row min-h-screen">
-      {/* Left Section */}
-      <div className="hidden md:flex flex-col w-1/2 items-center justify-center bg-base-white">
+    <div className="flex flex-col lg:flex-row min-h-screen">
+      {/* Left Section (only visible on large screens and up) */}
+      <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center bg-base-white">
         <div>
-          <img src={loginImage} className="max-w-xl h-auto" />
+          <img src={loginImage} className="max-w-lg h-auto" />
         </div>
-        <div className="mt-8 max-w-md">
-          <h2 className="h3-bold-32 text-base-black mb-3 text-center">
+        <div className="mt-8 max-w-md text-center">
+          <h2 className="h3-bold-32 text-base-black mb-3">
             Seamless Experience, Anytime, Anywhere
           </h2>
-          <p className="body-regular-16 text-grey-medium text-center">
+          <p className="body-regular-16 text-grey-medium">
             Stay synced across all devices, both mobile and desktop. No matter
             where you are, enjoy a smooth and seamless experience.
           </p>
@@ -22,7 +22,7 @@ const LoginPage = () => {
       </div>
 
       {/* Right Section (Form) */}
-      <div className="w-full md:w-1/2 flex items-center justify-center px-4 py-8">
+      <div className="w-full lg:w-1/2 flex items-center justify-center px-4 py-8">
         <div className="w-full max-w-md p-6 sm:p-8">
           <Logo />
           <LoginForm />

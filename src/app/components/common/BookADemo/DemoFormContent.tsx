@@ -29,9 +29,8 @@ const DemoFormContent = ({
     mode: "onSubmit",
   });
 
-  const onSubmit = (data: DemoFormData) => {
+  const onSubmit = () => {
     toast.success("Form Submitted Successfully");
-    console.log("Submitted:", data);
     reset();
     onClose?.();
   };
@@ -56,7 +55,9 @@ const DemoFormContent = ({
           </button>
         )}
 
-        <div className={`${isFullPage ? "flex-1 py-6 px-6 lg:py-6 lg:px-12" : ""}`}>
+        <div
+          className={`${isFullPage ? "flex-1 py-6 px-6 lg:py-6 lg:px-12" : ""}`}
+        >
           <div className="flex justify-between items-start">
             <h2
               className={`${isFullPage ? "text-2xl lg:text-3xl font-bold text-gray-800 mb-8" : "h5-bold-16 pt-4 text-grey"}`}
@@ -107,7 +108,7 @@ const DemoFormContent = ({
             />
 
             <Input
-              label="How many people will be using Assistant Tech?"
+              label="How many people will be using Chatblix?"
               placeholder="Enter the range of individuals"
               {...register("usage")}
               error={errors.usage?.message}

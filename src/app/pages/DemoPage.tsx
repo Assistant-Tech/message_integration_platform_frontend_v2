@@ -1,10 +1,6 @@
 import Section from "@/app/components/layout/Section";
 
-import {
-  Footer,
-  FrequentlyAskedQuestion,
-  Navbar,
-} from "@/app/components/common";
+import { Footer, FAQ, Navbar } from "@/app/components/common";
 import { DemoComponent } from "@/app/components/common/BookADemo";
 import { GetStarted, Pricing } from "@/app/pages/landing/";
 
@@ -40,7 +36,7 @@ const Demo = () => {
 
           {/* FAQ Section */}
           <div>
-            <FrequentlyAskedQuestion />
+            <FAQ variant="default" />
           </div>
         </div>
       </Section>

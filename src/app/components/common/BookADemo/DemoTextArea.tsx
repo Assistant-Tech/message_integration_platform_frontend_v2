@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 
 import { X, CircleCheckBig } from "lucide-react";
 import logo from "@/app/assets/icons/logo-white.svg";
-import feature1 from "@/app/assets/images/demo.webp";
 
 const DemoTextArea = () => {
   const { close } = useDemoDialogStore();
@@ -43,11 +42,9 @@ const DemoTextArea = () => {
             <img
               src={logo}
               className="h-12 w-12 text-primary"
-              alt="Assistant Tech Logo"
+              alt="Chatblix Logo"
             />
-            <h1 className="body-bold-16 tex-grey text-white">
-              ASSISTANT <span className="text-secondary">TECH</span>
-            </h1>
+            <h1 className="body-bold-16 tex-grey text-white">CHATBLIX</h1>
           </figure>
         </motion.div>
 
@@ -96,7 +93,9 @@ const DemoTextArea = () => {
         ))}
         <figure className="flex justify-center pt-12">
           <img
-            src={feature1}
+            src={
+              "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920904/demo_snjh0d.webp"
+            }
             alt="feature/image.webp"
             width={620}
             height={142}

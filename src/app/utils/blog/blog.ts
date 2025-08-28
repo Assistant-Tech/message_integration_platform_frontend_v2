@@ -1,6 +1,3 @@
-import crmlaptop from "@/app/assets/images/crmlaptop.webp";
-import jane from "@/app/assets/images/jane.png";
-
 export interface BlogPost {
   [x: string]: any;
   id: string;
@@ -51,9 +48,11 @@ export const blogPosts: BlogPost[] = [
     author: {
       name: "Jane Doe",
       role: "Admin",
-      avatar: jane,
+      avatar:
+        "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753878936/jane_iasge7.png",
     },
-    image: crmlaptop,
+    image:
+      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/crm_video_eq1zqd.webp",
     featured: true,
     content: {
       sections: [
@@ -96,9 +95,11 @@ export const blogPosts: BlogPost[] = [
     author: {
       name: "Jane Doe",
       role: "Assistant Manager",
-      avatar: jane,
+      avatar:
+        "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753878936/jane_iasge7.png",
     },
-    image: crmlaptop,
+    image:
+      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/crm_video_eq1zqd.webp",
     content: {
       sections: [
         {
@@ -139,9 +140,11 @@ export const blogPosts: BlogPost[] = [
     author: {
       name: "Jane Doe",
       role: "Technical Lead",
-      avatar: jane,
+      avatar:
+        "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753878936/jane_iasge7.png",
     },
-    image: crmlaptop,
+    image:
+      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/crm_video_eq1zqd.webp",
     content: {
       sections: [
         {
@@ -183,9 +186,11 @@ export const blogPosts: BlogPost[] = [
     author: {
       name: "Jane Doe",
       role: "Marketing Specialist",
-      avatar: jane,
+      avatar:
+        "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753878936/jane_iasge7.png",
     },
-    image: crmlaptop,
+    image:
+      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/crm_video_eq1zqd.webp",
     content: {
       sections: [
         {
@@ -227,9 +232,11 @@ export const blogPosts: BlogPost[] = [
     author: {
       name: "Jane Doe",
       role: "Strategy Director",
-      avatar: jane,
+      avatar:
+        "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753878936/jane_iasge7.png",
     },
-    image: crmlaptop,
+    image:
+      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/crm_video_eq1zqd.webp",
     featured: true,
     content: {
       sections: [
@@ -271,9 +278,11 @@ export const blogPosts: BlogPost[] = [
     author: {
       name: "Jane Doe",
       role: "Sales Enablement Specialist",
-      avatar: jane,
+      avatar:
+        "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753878936/jane_iasge7.png",
     },
-    image: crmlaptop,
+    image:
+      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/crm_video_eq1zqd.webp",
     content: {
       sections: [
         {
@@ -314,9 +323,11 @@ export const blogPosts: BlogPost[] = [
     author: {
       name: "Jane Doe",
       role: "Customer Success Manager",
-      avatar: jane,
+      avatar:
+        "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753878936/jane_iasge7.png",
     },
-    image: crmlaptop,
+    image:
+      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/crm_video_eq1zqd.webp",
     content: {
       sections: [
         {
@@ -357,9 +368,11 @@ export const blogPosts: BlogPost[] = [
     author: {
       name: "Jane Doe",
       role: "AI Solutions Architect",
-      avatar: jane,
+      avatar:
+        "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753878936/jane_iasge7.png",
     },
-    image: crmlaptop,
+    image:
+      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/crm_video_eq1zqd.webp",
     featured: true,
     content: {
       sections: [
@@ -402,9 +415,11 @@ export const blogPosts: BlogPost[] = [
     author: {
       name: "Jane Doe",
       role: "Digital Marketing Strategist",
-      avatar: jane,
+      avatar:
+        "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753878936/jane_iasge7.png",
     },
-    image: crmlaptop,
+    image:
+      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/crm_video_eq1zqd.webp",
     content: {
       sections: [
         {
@@ -445,9 +460,11 @@ export const blogPosts: BlogPost[] = [
     author: {
       name: "Jane Doe",
       role: "Chief Information Security Officer",
-      avatar: jane,
+      avatar:
+        "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753878936/jane_iasge7.png",
     },
-    image: crmlaptop,
+    image:
+      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/crm_video_eq1zqd.webp",
     content: {
       sections: [
         {
@@ -488,9 +505,11 @@ export const blogPosts: BlogPost[] = [
     author: {
       name: "Jane Doe",
       role: "Operations Manager",
-      avatar: jane,
+      avatar:
+        "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753878936/jane_iasge7.png",
     },
-    image: crmlaptop,
+    image:
+      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/crm_video_eq1zqd.webp",
     content: {
       sections: [
         {
@@ -531,9 +550,11 @@ export const blogPosts: BlogPost[] = [
     author: {
       name: "Jane Doe",
       role: "E-commerce Strategist",
-      avatar: jane,
+      avatar:
+        "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753878936/jane_iasge7.png",
     },
-    image: crmlaptop,
+    image:
+      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/crm_video_eq1zqd.webp",
     content: {
       sections: [
         {
@@ -574,9 +595,11 @@ export const blogPosts: BlogPost[] = [
     author: {
       name: "Jane Doe",
       role: "Event Coordinator",
-      avatar: jane,
+      avatar:
+        "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753878936/jane_iasge7.png",
     },
-    image: crmlaptop,
+    image:
+      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/crm_video_eq1zqd.webp",
     content: {
       sections: [
         {
@@ -618,9 +641,11 @@ export const blogPosts: BlogPost[] = [
     author: {
       name: "Jane Doe",
       role: "Admin",
-      avatar: jane,
+      avatar:
+        "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753878936/jane_iasge7.png",
     },
-    image: crmlaptop,
+    image:
+      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/crm_video_eq1zqd.webp",
     featured: true,
     content: {
       sections: [
@@ -663,9 +688,11 @@ export const blogPosts: BlogPost[] = [
     author: {
       name: "Jane Doe",
       role: "Admin",
-      avatar: jane,
+      avatar:
+        "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753878936/jane_iasge7.png",
     },
-    image: crmlaptop,
+    image:
+      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/crm_video_eq1zqd.webp",
     featured: true,
     content: {
       sections: [

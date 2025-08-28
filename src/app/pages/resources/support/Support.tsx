@@ -6,7 +6,6 @@ import { Breadcrumb, SmartCard } from "@/app/components/ui";
 import { APP_ROUTES } from "@/app/constants/routes";
 import { smartCards } from "@/app/utils/resource/utils";
 import { GetStarted } from "@/app/pages/landing/";
-import support from "@/app/assets/images/support.webp";
 import { FrequentlyAskedQuestion, NewsLetter } from "@/app/components/common";
 import RegisterForm from "@/app/features/auth/components/form/RegisterForm";
 
@@ -41,8 +40,13 @@ const Support = () => {
           transition={{ duration: 0.5 }}
         >
           <img
-            src={support}
+            src={
+              "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920905/navbar-image-test_vd8f8b.webp"
+            }
             alt="Support"
+            loading="lazy"
+            decoding="async"
+            fetchPriority="low"
             className="w-full h-auto rounded-xl"
           />
         </motion.figure>
@@ -132,7 +136,7 @@ const Support = () => {
       </motion.div>
 
       {/* FAQ's Section  */}
-      <FrequentlyAskedQuestion />
+      <FrequentlyAskedQuestion variant="default" />
       {/* Newsletter */}
       <div className="pb-12">
         <NewsLetter />

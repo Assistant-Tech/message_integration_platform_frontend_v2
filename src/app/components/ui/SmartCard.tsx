@@ -1,6 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion";
-import { LucideIcon } from "lucide-react";
+import { motion } from "framer-motion";;
 
 import { cn } from "@/app/utils/cn";
 import { useRedirect } from "@/app/hooks/ui/useRedirect";

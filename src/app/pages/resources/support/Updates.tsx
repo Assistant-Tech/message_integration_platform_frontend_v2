@@ -106,7 +106,7 @@ const Updates = () => {
                   className="text-base md:text-lg text-grey-medium"
                   variants={itemVariants}
                 >
-                  All Assistant Tech's users can now create and customize their
+                  All Chatblix's users can now create and customize their
                   own AI-powered chatbots.
                 </motion.p>
 

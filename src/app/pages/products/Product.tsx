@@ -1,9 +1,8 @@
 import { motion } from "framer-motion";
 import { Agreement, Button } from "@/app/components/ui";
-import crm from "@/app/assets/images/crm.webp";
-import ProductGrid from "./ProductGrid";
 import { GetStarted, Pricing } from "@/app/pages/landing/";
-import { FrequentlyAskedQuestion } from "@/app/components/common";
+import { FAQ } from "@/app/components/common";
+import { ProductGrid } from "@/app/pages/products/components";
 
 const Product = () => {
   const containerVariants = {
@@ -46,7 +45,7 @@ const Product = () => {
             <h1 className="h2-bold-40 text-base-black pt-6">Product</h1>
           </motion.div>
         </div>
-        <div className="grid lg:grid-cols-2 items-center gap-12">
+        <div className="grid lg:grid-cols-2 items-center gap-12 pb-10">
           {/* Left Side */}
           <motion.div variants={itemVariants} className="space-y-6 max-w-2xl">
             <motion.h1
@@ -97,14 +96,18 @@ const Product = () => {
           >
             {/* Desktop Image */}
             <img
-              src={crm}
+              src={
+                "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920901/crm_awlskb.webp"
+              }
               alt="Desktop UI"
               className="w-full h-auto rounded-xl"
             />
 
             {/* Mobile overlapping image */}
             <img
-              src={crm}
+              src={
+                "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920901/crm_awlskb.webp"
+              }
               alt="Mobile UI"
               className="absolute w-1/2 sm:w-1/3 h-96 top-6 sm:top-10 left-4 sm:-left-20 rounded-xl shadow-lg"
               style={{ transform: "translateY(20%)" }}
@@ -114,10 +117,12 @@ const Product = () => {
       </motion.section>
 
       {/* Product Grid */}
-      <ProductGrid />
+      <section className="py-20">
+        <ProductGrid />
+      </section>
 
       {/* GET STARTED */}
-      <div className="relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] w-screen">
+      <div className="relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] w-screen pb-10">
         <GetStarted />
       </div>
 
@@ -128,7 +133,7 @@ const Product = () => {
 
       {/* FAQ */}
       <div className="px-4 sm:px-8 md:px-12 lg:px-20 py-16">
-        <FrequentlyAskedQuestion />
+        <FAQ variant="default" />
       </div>
     </div>
   );

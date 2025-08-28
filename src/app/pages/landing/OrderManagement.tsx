@@ -1,107 +1,140 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/autoplay";
-
 import { Badge, Button } from "@/app/components/ui";
-import crm from "@/app/assets/images/crm.webp";
 
+const images = [
+  "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+  "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920899/support_digede.webp",
+  "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+];
 const steps = ["Create your order", "Dispatch your order", "Track your order"];
 
 const OrderManagement: React.FC = () => {
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [prevIndex, setPrevIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPrevIndex(activeIndex);
+      setActiveIndex((prev) => (prev + 1) % images.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [activeIndex]);
 
   return (
-    <div className="bg-white pt-20">
-      <div className="grid lg:grid-cols-2 gap-8 lg:gap-48 items-center">
-        {/* Left Section - Image Slider with Timeline */}
-        <figure className="space-y-8 order-2 lg:order-1 w-full relative max-w-lg">
-          {/* Timeline Bar with Progress */}
-          <div className="relative mb-6">
-            <div className="flex justify-between items-center w-full">
-              {steps.map((step, index) => (
+    <div className="bg-white pt-20 overflow-hidden">
+      <div className="grid lg:grid-cols-2 gap-12 lg:gap-28 items-center px-4 lg:px-0">
+        {/* Left Section */}
+        <div className="order-2 lg:order-1 w-full space-y-4 ">
+          {/* Step Timeline */}
+          <div className="flex justify-between items-center relative w-full">
+            {steps.map((step, index) => {
+              const isActive = index === activeIndex;
+              const isDone =
+                index < activeIndex ||
+                (activeIndex === 0 && prevIndex === steps.length - 1);
+
+              return (
                 <div
                   key={index}
                   className="flex flex-col items-center w-full relative"
                 >
                   {/* Dot */}
-                  <div
-                    className={`w-4 h-4 rounded-full z-10 ${index <= activeStep ? "bg-blue-600" : "bg-gray-300"}`}
+                  <motion.div
+                    animate={{
+                      backgroundColor:
+                        isDone || isActive ? "#1cb496" : "#e3e3e3",
+                      scale: isActive ? 1.5 : 1,
+                    }}
+                    transition={{ duration: 0.3 }}
+                    className="w-4 h-4 rounded-full z-10"
                   />
-                  <p
-                    className={`text-xs mt-2 text-center ${index === activeStep ? "text-blue-600 font-medium" : "text-gray-500"}`}
+
+                  {/* Label */}
+                  <motion.p
+                    className={`mt-2 text-sm text-center font-medium ${
+                      isActive ? "text-primary" : "text-grey-medium"
+                    }`}
                   >
                     {step}
-                  </p>
-                  {/* Connecting line */}
+                  </motion.p>
+
+                  {/* Connecting Line */}
                   {index < steps.length - 1 && (
-                    <div className="absolute top-2 left-1/2 w-full h-0.5 bg-gray-200 z-0">
+                    <div className="absolute top-2 left-1/2 w-full h-0.5 bg-grey-light z-0 overflow-hidden">
                       <motion.div
-                        initial={false}
+                        key={`${activeIndex === 0 && prevIndex === steps.length - 1 ? "reset" : "progress"}-${index}`}
+                        initial={{ width: 0 }}
                         animate={{
-                          width: activeStep > index ? "100%" : "0%",
+                          width: isDone ? "100%" : "0%",
                         }}
-                        transition={{ duration: 0.5 }}
-                        className="h-full bg-blue-600 origin-left"
+                        transition={{
+                          duration:
+                            activeIndex === 0 && prevIndex === steps.length - 1
+                              ? 0
+                              : 0.5,
+                        }}
+                        className="h-full bg-primary origin-left"
                       />
                     </div>
                   )}
                 </div>
-              ))}
-            </div>
+              );
+            })}
           </div>
 
-          {/* Swiper Slider with overlapping effect */}
-          <div className="relative overflow-visible h-96">
-            <Swiper
-              modules={[Autoplay]}
-              spaceBetween={-180}
-              slidesPerView={2.5}
-              centeredSlides={true}
-              loop={true}
-              autoplay={{ delay: 3000, disableOnInteraction: false }}
-              onSlideChange={(swiper) => setActiveStep(swiper.realIndex)}
-              className="w-full h-full"
-            >
-              {[1, 2, 3].map((i) => (
-                <SwiperSlide key={i}>
-                  {({ isActive, isNext, isPrev }) => (
-                    <div
-                      className={`relative w-full h-96 transition-all duration-500 ${
-                        isActive
-                          ? "z-50 scale-100 opacity-100"
-                          : isNext || isPrev
-                            ? "z-20 scale-90 opacity-60"
-                            : "z-10 scale-80 opacity-40"
-                      }`}
-                      style={{
-                        transform: isActive
-                          ? "translateX(0px) scale(1)"
-                          : isNext
-                            ? "translateX(-30px) scale(0.9)"
-                            : isPrev
-                              ? "translateX(30px) scale(0.9)"
-                              : "scale(0.8)",
-                      }}
-                    >
-                      <img
-                        src={crm}
-                        alt={`Order step ${i}`}
-                        className="rounded-xl shadow-lg w-full h-full object-cover transition-all duration-500"
-                      />
-                      {/* Overlay for non-active slides */}
-                      {!isActive && (
-                        <div className="absolute inset-0 rounded-xl bg-black opacity-20 transition-all duration-500 pointer-events-none" />
-                      )}
-                    </div>
+          {/* Image Gallery */}
+          <div className="relative h-[550px] w-full flex justify-center items-center">
+            {images.map((img, index) => {
+              const position =
+                (index - activeIndex + images.length) % images.length;
+
+              let x = 0,
+                scale = 0.9,
+                zIndex = 10,
+                opacity = 0.5;
+
+              if (position === 0) {
+                x = -160;
+                scale = 0.9;
+                zIndex = 5;
+              } else if (position === 1) {
+                x = 0;
+                scale = 1;
+                zIndex = 30;
+                opacity = 1;
+              } else if (position === 2) {
+                x = 160;
+                scale = 0.8;
+                zIndex = 5;
+              } else {
+                return null;
+              }
+
+              return (
+                <motion.div
+                  key={index}
+                  className="absolute w-[400px] h-[400px] rounded-xl overflow-hidden shadow-lg"
+                  animate={{ x, scale, opacity, zIndex }}
+                  transition={{ duration: 0.6, ease: "easeInOut" }}
+                  style={{ zIndex }}
+                >
+                  {/* Image */}
+                  <img
+                    src={img}
+                    alt={`Order Step ${index + 1}`}
+                    className="w-full h-full object-cover rounded-xl"
+                  />
+
+                  {/* Overlay only if not active */}
+                  {position !== 1 && (
+                    <div className="absolute inset-0 bg-black/55 rounded-xl pointer-events-none" />
                   )}
-                </SwiperSlide>
-              ))}
-            </Swiper>
+                </motion.div>
+              );
+            })}
           </div>
-        </figure>
+        </div>
 
         {/* Right Section - CTA */}
         <div className="order-1 lg:order-2">
@@ -111,16 +144,21 @@ const OrderManagement: React.FC = () => {
               Track and Manage Your Orders
             </h1>
             <p className="h4-regular-24 text-grey-medium">
-              Track and manage all your orders with the help of our Order
-              Management features. View stats and insights for all your orders
-              easily.
+              Stay on top of your operations with our intuitive order management
+              tools. Monitor, track, and streamline your order lifecycle
+              effortlessly.
             </p>
-            <div className="flex justify-start items-start gap-4">
-              <Button label="Start Free Trial" variant="primary" />
+            <div className="flex gap-4 pt-2 justify-center items-center lg:justify-start lg:items-start">
               <Button
-                label="Book a demo"
+                label="Start Free Trial"
+                variant="primary"
+                className="px-3 py-2"
+              />
+              <Button
+                label="Book a Demo"
                 variant="outlined"
                 redirectTo="/demo"
+                className="px-3 py-2"
               />
             </div>
           </motion.article>

@@ -4,9 +4,7 @@ import { Box, Flex } from "@radix-ui/themes";
 import React from "react";
 
 const BuiltAssistant: React.FC = () => {
-  const handleStartTrial = () => {
-    console.log("Starting 14-day free trial...");
-  };
+  const handleStartTrial = () => {};
 
   return (
     <Box className="pt-20">
