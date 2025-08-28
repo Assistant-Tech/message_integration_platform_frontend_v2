@@ -21,6 +21,78 @@ const ResetPassword = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // --- Framer Motion Variants ---
+  const gradientVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { duration: 1.5, ease: "easeInOut" },
+    },
+  };
+
+  // Container fade + stagger
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.3,
+        when: "beforeChildren",
+      },
+    },
+  };
+
+  // Floating effect for icons/elements
+  const floatVariants = {
+    hidden: { y: 0, opacity: 0 },
+    visible: {
+      y: [0, -10, 0], // float up & down
+      opacity: 1,
+      transition: {
+        duration: 4,
+        repeat: Infinity,
+        ease: "easeInOut",
+      },
+    },
+  };
+
+  // Simple fade-in & upward motion
+  const FadeInAndUp = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, ease: "easeOut" },
+    },
+  };
+
+  // Shimmer effect
+  const shimmerVariants = {
+    hidden: { x: "-100%" },
+    visible: {
+      x: "100%",
+      transition: {
+        duration: 2,
+        repeat: Infinity,
+        ease: "linear",
+      },
+    },
+  };
+
+  // Ping / pulse animation
+  const pingVariants = {
+    hidden: { scale: 0.8, opacity: 0 },
+    visible: {
+      scale: [1, 1.3, 1],
+      opacity: [0.4, 0, 0.4],
+      transition: {
+        duration: 2,
+        repeat: Infinity,
+        ease: "easeInOut",
+      },
+    },
+  };
+
   const handleResetPassword = async () => {
     let isValid = true;
     setPasswordError("");
