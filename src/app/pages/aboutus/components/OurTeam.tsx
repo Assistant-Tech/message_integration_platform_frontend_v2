@@ -8,8 +8,8 @@ const OurTeam = () => {
     <motion.div>
       <div className="w-full pt-20">
         <article className="flex flex-col justify-center items-center text-center space-y-4">
-          <Badge title="OUR TEAM" textStyle="body-italic-bold-16" />
-          <h1 className="h3-bold-32 text-grey">Team Behind Assistant Tech</h1>
+          <Badge title="OUR TEAM" />
+          <h1 className="h3-bold-32 text-grey">Team Behind Chatblix</h1>
         </article>
 
         {/* Card Section */}

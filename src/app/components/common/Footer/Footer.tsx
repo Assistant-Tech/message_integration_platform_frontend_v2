@@ -22,6 +22,7 @@ const itemVariants = {
     transition: { duration: 0.5 },
   },
 };
+
 const storeLinks = [
   { img: app, label: "App Store" },
   { img: play, label: "Google Play" },
@@ -36,13 +37,10 @@ const Footer = () => {
   };
 
   return (
-    <footer
-      className="bg-primary-light pt-10 w-full sticky"
-      id="footer-observer"
-    >
-      <div>
+    <footer className="bg-primary-light pt-10 w-full" id="footer-observer">
+      <div className="w-full max-w-[1600px] mx-auto px-6">
         {/* Top */}
-        <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-x-40 w-full max-w-[1600px] mx-auto px-6">
+        <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-x-40">
           {/* Brand */}
           <div className="flex flex-col items-center text-center md:items-start md:text-left">
             <motion.div
@@ -156,45 +154,45 @@ const Footer = () => {
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Bottom */}
-        <div className="bg-primary text-white">
-          <div className="max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4 py-6 px-4">
-            {/* Copyright */}
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="h5-bold-16"
-            >
-              &copy; {currentYear} Assistant Tech. All Rights Reserved.
-            </motion.p>
+      {/* Bottom */}
+      <div className="bg-primary text-white flex flex-col md:flex-row justify-between items-center gap-4 px-4 md:px-40 py-6">
+        {/* Copyright */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="h5-bold-16"
+        >
+          &copy; {currentYear} Chatblix. All Rights Reserved.
+        </motion.p>
 
-            {/* Social */}
-            <motion.ul
-              initial="hidden"
-              animate="visible"
-              variants={containerVariants}
-              className="flex gap-6"
-            >
-              {SocialFooter.map((item, index) => (
-                <motion.li
-                  key={index}
-                  variants={itemVariants}
-                  whileHover={{ scale: 1.2, rotate: 10 }}
-                >
-                  <a href={item.href} aria-label={item.name}>
-                    <img
-                      src={item.src}
-                      alt={`${item.name} icon`}
-                      className="w-6 h-6 "
-                    />
-                  </a>
-                </motion.li>
-              ))}
-            </motion.ul>
-          </div>
-        </div>
+        {/* Social */}
+        <motion.nav
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
+          aria-label="social media"
+        >
+          <ul className="flex gap-6">
+            {SocialFooter.map((item, index) => (
+              <motion.li
+                key={index}
+                variants={itemVariants}
+                whileHover={{ scale: 1.2, rotate: 10 }}
+              >
+                <a href={item.href} aria-label={item.name}>
+                  <img
+                    src={item.src}
+                    alt={`${item.name} icon`}
+                    className="w-6 h-6"
+                  />
+                </a>
+              </motion.li>
+            ))}
+          </ul>
+        </motion.nav>
       </div>
     </footer>
   );

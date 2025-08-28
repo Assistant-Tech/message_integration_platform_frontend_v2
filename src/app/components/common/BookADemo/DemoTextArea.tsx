@@ -43,11 +43,9 @@ const DemoTextArea = () => {
             <img
               src={logo}
               className="h-12 w-12 text-primary"
-              alt="Assistant Tech Logo"
+              alt="Chatblix Logo"
             />
-            <h1 className="body-bold-16 tex-grey text-white">
-              ASSISTANT <span className="text-secondary">TECH</span>
-            </h1>
+            <h1 className="body-bold-16 tex-grey text-white">CHATBLIX</h1>
           </figure>
         </motion.div>
 

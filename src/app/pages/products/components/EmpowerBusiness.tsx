@@ -18,17 +18,17 @@ const EmpowerBusiness = () => {
       >
         <div className="space-y-3 sm:space-y-4 md:space-y-6">
           <h1 className="h2-bold-40 text-base-black">
-            Empowering Your Business with Assistant's
+            Empowering Your Business with Chatblix's
             <span className="text-primary block sm:inline sm:ps-2">
               <span className="block sm:inline">AI-Powered CRM Software</span>
             </span>
           </h1>
 
           <p className="body-regular-16 text-grey-medium">
-            Assistant Tech's CRM software helps you respond to your customer
-            inquiries instantly and efficiently. It streamlines your company's
-            workflow, helps with customer retention and simultaneously reduces
-            marketing costs.
+            Chatblix's CRM software helps you respond to your customer inquiries
+            instantly and efficiently. It streamlines your company's workflow,
+            helps with customer retention and simultaneously reduces marketing
+            costs.
           </p>
         </div>
 
