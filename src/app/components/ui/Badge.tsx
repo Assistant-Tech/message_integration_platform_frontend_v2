@@ -6,6 +6,7 @@ interface BadgeProps {
   bgColor?: string;
   textColor?: string;
   className?: string;
+  textStyle?: string;
 }
 
 const Badge = ({
@@ -13,6 +14,7 @@ const Badge = ({
   bgColor = "bg-secondary-light",
   textColor = "text-secondary",
   className,
+  textStyle,
 }: BadgeProps) => {
   return (
     <motion.div
@@ -24,7 +26,7 @@ const Badge = ({
       whileHover={{ scale: 1.05 }}
       transition={{ type: "spring", stiffness: 300 }}
     >
-      <span className={cn("body-italic-bold-16 cursor-pointer", textColor)}>
+      <span className={cn("cursor-pointer", textColor, textStyle)}>
         {title}
       </span>
     </motion.div>

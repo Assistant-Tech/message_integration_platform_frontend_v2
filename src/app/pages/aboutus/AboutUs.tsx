@@ -7,7 +7,7 @@ import {
   Footer,
   NewsLetter,
   Loading,
-  FrequentlyAskedQuestion,
+  FAQ,
 } from "@/app/components/common";
 import Section from "@/app/components/layout/Section";
 import {
@@ -27,7 +27,12 @@ import essentials from "@/app/assets/greenIcons/essentials.svg";
 const GetStarted = lazy(() => import("@/app/pages/landing/GetStarted"));
 const Testimonials = lazy(() => import("@/app/pages/landing/Testimonials"));
 
-import { Check } from "lucide-react";
+import {
+  ChartNoAxesCombined,
+  Check,
+  FolderSync,
+  MessageSquareQuote,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/app/components/ui";
 
@@ -52,6 +57,30 @@ const About = () => {
       },
     },
   };
+
+  const chatbotProcessSteps = [
+    {
+      step: 1,
+      title: "Sign Up & Sync",
+      description:
+        "Create an account and link your CRM or website to start training the bot.",
+      icon: FolderSync,
+    },
+    {
+      step: 2,
+      title: "Customize Responses",
+      description:
+        "Tailor intents, flows, and tone to match your brand voice and goals.",
+      icon: MessageSquareQuote,
+    },
+    {
+      step: 3,
+      title: "Go Live & Monitor",
+      description:
+        "Launch your bot and access real-time analytics to keep improving.",
+      icon: ChartNoAxesCombined,
+    },
+  ];
 
   const sections = [
     {
@@ -176,13 +205,18 @@ const About = () => {
     {
       element: (
         <Suspense fallback={<Loading />}>
-          <OurProcess />
+          <OurProcess
+            badgeTitle="OUR PROCESS"
+            sectionTitle="Steps to Get Your Chatbot Running"
+            sectionSubtitle="Launch your intelligent assistant in just a few simple steps. Designed to integrate quickly and scale easily."
+            steps={chatbotProcessSteps}
+          />
         </Suspense>
       ),
       useContainer: false,
     },
     {
-      element: <FrequentlyAskedQuestion />,
+      element: <FAQ variant="default" />,
     },
     {
       element: (

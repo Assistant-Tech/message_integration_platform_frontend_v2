@@ -1,23 +1,12 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
-import { Zap, Target } from "lucide-react";
 
-import { Agreement, Input } from "@/app/components/ui";
-import { Button } from "@/app/components/ui";
 import { benefits, features } from "@/app/utils/product/utils";
 import { cn } from "@/app/utils/cn";
 
 import crm from "@/app/assets/images/crm.webp";
+import { EmailSignupCTA } from "@/app/pages/products/components/";
 
 const EmpowerBusiness = () => {
-  const [email, setEmail] = useState("");
-
-  const handleGetStarted = async () => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log("Starting trial with email:", email);
-  };
-
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-12 lg:gap-16 items-center mb-12 sm:mb-16 md:mb-20 lg:mb-24">
       {/* Left Content */}
@@ -25,7 +14,7 @@ const EmpowerBusiness = () => {
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
-        className="space-y-4 sm:space-y-6 md:space-y-8 order-2 lg:order-1 max-w-2xl"
+        className="space-y-4 sm:space-y-6 md:space-y-8 order-2 lg:order-1 max-w-xl"
       >
         <div className="space-y-3 sm:space-y-4 md:space-y-6">
           <h1 className="h2-bold-40 text-base-black">
@@ -43,36 +32,13 @@ const EmpowerBusiness = () => {
           </p>
         </div>
 
-        {/* CTA Section */}
-        <div className="space-y-3 sm:space-y-4">
-          <p className="body-regular-16 text-grey-medium">
-            Start your 14-days free trial today!
-          </p>
-
-          {/* Input & Button */}
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
-            <div className="flex-1">
-              <Input
-                placeholder="Enter your email"
-                variant="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="focus:border-primary focus:ring-1 focus:ring-primary w-full h-12 sm:h-14 text-base"
-              />
-            </div>
-            <Button
-              label={"Get Started"}
-              variant="primary"
-              onClick={handleGetStarted}
-              className="py-3"
-            />
-          </div>
-
-          <div className="body-regular-16 text-grey-medium">
-            No credit card needed.
-            <Agreement />
-          </div>
-        </div>
+        <EmailSignupCTA
+          title="Join 1,000+ businesses using our platform"
+          placeholder="Your work email"
+          buttonLabel="Start Free Trial"
+          note="Free for 14 days. Cancel anytime."
+          onSubmit={(email) => console.log("Submitted email:", email)}
+        />
 
         {/* Features Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 md:gap-8 pt-4">
@@ -99,11 +65,11 @@ const EmpowerBusiness = () => {
         initial={{ opacity: 0, x: 50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6, delay: 0.4 }}
-        className="relative order-1 lg:order-2"
+        className=" order-1 lg:order-2 w-full"
       >
-        <div className="relative rounded-2xl overflow-hidden">
+        <div className=" rounded-2xl overflow-hidden">
           {/* Benefit Tags */}
-          <div className="absolute top-2 sm:top-4 md:top-6 right-2 sm:right-4 md:right-6 space-y-1 sm:space-y-2 z-10">
+          <div className="absolute top-12 sm:top-14 md:top-20 right-6 sm:right-14 md:-right-16 space-y-1 sm:space-y-2 z-10">
             {benefits.map((benefit, index) => (
               <motion.div
                 key={index}
@@ -133,38 +99,6 @@ const EmpowerBusiness = () => {
             />
           </div>
         </div>
-
-        {/* Floating Elements */}
-        <motion.div
-          animate={{
-            y: [0, -10, 0],
-            rotate: [0, 2, 0],
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="absolute -top-2 sm:-top-4 md:-top-6 -left-2 sm:-left-4 md:-left-6 w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 bg-primary-light rounded-xl flex items-center justify-center"
-        >
-          <Zap className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 text-primary" />
-        </motion.div>
-
-        <motion.div
-          animate={{
-            y: [0, 10, 0],
-            rotate: [0, -2, 0],
-          }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1,
-          }}
-          className="absolute -bottom-2 sm:-bottom-4 md:-bottom-6 -right-2 sm:-right-4 md:-right-6 w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-information-light rounded-xl flex items-center justify-center"
-        >
-          <Target className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-information-dark" />
-        </motion.div>
       </motion.div>
     </div>
   );

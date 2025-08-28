@@ -7,7 +7,7 @@ import {
 } from "@/app/features/auth/pages/onboarding/schemas/Onboarding.schema";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Country, State, City } from "country-state-city";
-import Select from "react-select/creatable"; // import creatable select for adding options
+import Select from "react-select/creatable"; 
 import { motion } from "framer-motion";
 
 interface OnboardingStep2Props {

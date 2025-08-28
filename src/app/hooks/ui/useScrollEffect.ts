@@ -10,7 +10,6 @@ export const useScrollEffect = (threshold: number = 50) => {
       setIsScrolled(scrollTop > threshold);
     };
 
-    // Check initial scroll position
     handleScroll();
 
     window.addEventListener("scroll", handleScroll, { passive: true });

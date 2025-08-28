@@ -1,30 +1,29 @@
-import { useLocation } from "react-router-dom";
 import { navigation } from "@/app/utils/utils";
 import { NavigationItem } from "@/app/components/common";
-
 interface DesktopNavigationProps {
   activeDropdown: string | null;
   onMouseEnter: (itemName: string) => void;
   onMouseLeave: () => void;
+  onToggleDropdown: (itemName: string) => void;
 }
+
 const DesktopNavigation: React.FC<DesktopNavigationProps> = ({
   activeDropdown,
   onMouseEnter,
   onMouseLeave,
+  onToggleDropdown,
 }) => {
-  const location = useLocation();
-  const isActiveRoute = (path: string) => location.pathname === path;
-
   return (
-    <nav className="hidden lg:flex items-center space-x-8">
+    <nav className="hidden xl:flex items-center space-x-8">
       {navigation.map((item) => (
         <NavigationItem
           key={item.name}
           item={item}
-          isActive={item.href ? isActiveRoute(item.href) : false}
+          isActive={location.pathname === item.href}
           activeDropdown={activeDropdown}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
+          onToggleDropdown={onToggleDropdown}
         />
       ))}
     </nav>

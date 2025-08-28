@@ -35,7 +35,7 @@ const DynamicToggle: React.FC<DynamicToggleProps> = ({
   };
 
   return (
-    <div className={cn("inline-flex p-1 rounded-full bg-gray-100", className)}>
+    <div className={cn("inline-flex p-1 rounded-xl bg-base-white", className)}>
       {options.map((option) => {
         const isSelected = selectedId === option.id;
 
@@ -44,21 +44,21 @@ const DynamicToggle: React.FC<DynamicToggleProps> = ({
             key={option.id}
             onClick={() => handleToggle(option)}
             className={cn(
-              "relative z-10 flex items-center justify-center px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap",
+              "relative z-10 flex items-center justify-center px-4 py-2 rounded-2xl text-sm font-medium transition-colors whitespace-nowrap",
             )}
           >
             {isSelected && (
               <motion.div
                 layoutId="toggle"
-                className="absolute inset-0 z-0 bg-black rounded-full"
+                className="absolute inset-0 z-0 bg-black rounded-lg"
                 transition={{ type: "spring", stiffness: 500, damping: 30 }}
               />
             )}
 
             <span
               className={cn(
-                "relative z-10 flex items-center gap-2",
-                isSelected ? "text-white" : "text-gray-400",
+                "relative z-10 flex items-center gap-2 body-regular-16",
+                isSelected ? "text-white" : "text-grey-medium",
               )}
             >
               <span>{option.label}</span>
@@ -66,10 +66,10 @@ const DynamicToggle: React.FC<DynamicToggleProps> = ({
               {option.extraLabel && (
                 <span
                   className={cn(
-                    "text-xs font-medium px-2 py-0.5 rounded-full",
+                    "body-medium-16 font-medium px-2 py-0.5 rounded-lg",
                     isSelected
                       ? "text-black bg-white"
-                      : "text-primary bg-primary-light border border-primarypric",
+                      : "text-primary bg-primary-light border border-primary",
                   )}
                 >
                   {option.extraLabel}

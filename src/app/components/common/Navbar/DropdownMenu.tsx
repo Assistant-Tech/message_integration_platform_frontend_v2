@@ -4,6 +4,8 @@ import testImage from "@/app/assets/images/navbar-image-test.webp";
 import { Button } from "@/app/components/ui";
 import { ArrowUpRight } from "lucide-react";
 import { APP_ROUTES } from "@/app/constants/routes";
+import { cn } from "@/app/utils/cn";
+import { useBanner } from "@/app/context/BannerContext";
 
 interface DropdownItem {
   name: string;
@@ -15,12 +17,14 @@ interface DropdownItem {
 interface DropdownMenuProps {
   items: {
     name: string;
-    dropdown?: DropdownItem[];
+    dropdown: DropdownItem[];
   };
   isVisible: boolean;
 }
 
 const DropdownMenu = ({ items, isVisible }: DropdownMenuProps) => {
+  const { bannerVisible } = useBanner();
+
   return (
     <AnimatePresence>
       {isVisible && (
@@ -29,14 +33,18 @@ const DropdownMenu = ({ items, isVisible }: DropdownMenuProps) => {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 10, scale: 0.95 }}
           transition={{ duration: 0.2 }}
-          className="fixed top-20 left-0 right-0 z-40 w-screen"
+          className={cn(
+            "fixed left-0 right-0 z-40 w-screen",
+            bannerVisible ? "top-32" : "top-20",
+          )}
         >
           <div>
             <div className="w-full bg-white">
-              <div className="max-w-[1600px] mx-auto">
-                <div className="flex justify-center items-center">
+              {/* Center and constrain max width, add responsive horizontal padding */}
+              <div className="max-w-[1700px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
+                <div className="flex flex-col md:flex-row justify-center items-start md:items-center gap-8 md:gap-12">
                   {/* ---------- left column ---------- */}
-                  <div className="flex flex-col">
+                  <div className="flex flex-col flex-1 min-w-0">
                     <article className="flex flex-col items-start">
                       <Link to={APP_ROUTES.PUBLIC.SLUG(items.name)}>
                         <h1 className="h4-bold-24 text-primary">
@@ -44,36 +52,38 @@ const DropdownMenu = ({ items, isVisible }: DropdownMenuProps) => {
                         </h1>
                       </Link>
 
-                      <p className="body-regular-16 text-base-black">
+                      <p className="body-regular-16 text-base-black max-w-prose mt-2">
                         Vestibulum tempus imperdiet sem ac porttitor. Vivamus
                         pulvinar commodo orci, suscipit porttitor velit
                         elementum non.
                       </p>
                     </article>
 
-                    <div className="min-w-5xl w-full grid grid-cols-2 gap-x-10 gap-y-6 py-6">
+                    <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-6 py-6">
                       {items.dropdown?.map((item) => (
                         <Link
                           key={item.name}
                           to={item.href}
-                          className="flex gap-6 rounded-lg transition-colors group"
+                          className="flex gap-4 rounded-lg transition-colors group"
                         >
-                          <div className="flex items-center p-2">
-                            <div className="w-14 h-14 p-2 bg-primary-light flex justify-center items-center mr-3 rounded-lg">
-                              {item.icon && (
-                                <img src={item.icon} className="h-8 w-8" />
-                              )}
+                          <div className="w-14 h-14 p-2 bg-primary-light flex justify-center items-center rounded-lg flex-shrink-0">
+                            {item.icon && (
+                              <img
+                                src={item.icon}
+                                alt={`${item.name} icon`}
+                                className="h-8 w-8"
+                              />
+                            )}
+                          </div>
+                          <div className="min-w-0">
+                            <div className="h4-bold-24 text-grey group-hover:text-primary transition-colors truncate">
+                              {item.name}
                             </div>
-                            <div>
-                              <div className="h4-bold-24 text-gray-900 group-hover:text-primary transition-colors">
-                                {item.name}
+                            {item.description && (
+                              <div className="text-sm text-grey-medium mt-1 line-clamp-2">
+                                {item.description}
                               </div>
-                              {item.description && (
-                                <div className="text-sm text-gray-500 mt-1">
-                                  {item.description}
-                                </div>
-                              )}
-                            </div>
+                            )}
                           </div>
                         </Link>
                       ))}
@@ -81,18 +91,18 @@ const DropdownMenu = ({ items, isVisible }: DropdownMenuProps) => {
                   </div>
 
                   {/* ---------- right column ---------- */}
-                  <div className="bg-base-white w-3xl rounded-lg ">
-                    <figure className="py-8 px-15">
+                  <div className="bg-base-white w-full md:w-[480px] rounded-lg flex-shrink-0">
+                    <figure className="py-6 px-6 sm:py-8 sm:px-10">
                       <img
                         src={testImage}
                         alt="dropdown illustration"
-                        className="rounded-lg"
+                        className="rounded-lg w-full h-auto object-cover"
                       />
                       <div className="pt-3 text-start">
                         <h1 className="body-bold-16 text-base-black">
                           Lorem Ipsum
                         </h1>
-                        <p className="body-regular-16 text-gray-400">
+                        <p className="body-regular-16 text-grey-medium">
                           Vestibulum tempus imperdiet sem ac porttitor. Vivamus
                           pulvinar commodo orci, suscipit porttitor velit
                           elementum non.
@@ -102,9 +112,10 @@ const DropdownMenu = ({ items, isVisible }: DropdownMenuProps) => {
                   </div>
                 </div>
               </div>
+
               {/* Bottom Stripe */}
               <div className="bg-primary-light body-regular-16 text-grey py-4">
-                <div className="max-w-[1600px] mx-auto flex justify-between items-center">
+                <div className="max-w-[1700px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 flex justify-between items-center">
                   <div className="flex gap-8">
                     <span>Terms&nbsp;and&nbsp;Conditions</span>
                     <span>Help&nbsp;Center</span>
@@ -113,7 +124,7 @@ const DropdownMenu = ({ items, isVisible }: DropdownMenuProps) => {
                     label="Book a demo"
                     variant="secondary"
                     IconRight={<ArrowUpRight size={24} />}
-                    className="flex flex-cols justify-center items-center"
+                    className="flex justify-center items-center"
                     redirectTo="/demo"
                   />
                 </div>

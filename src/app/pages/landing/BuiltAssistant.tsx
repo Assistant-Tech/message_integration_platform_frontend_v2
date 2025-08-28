@@ -4,9 +4,7 @@ import { Box, Flex } from "@radix-ui/themes";
 import React from "react";
 
 const BuiltAssistant: React.FC = () => {
-  const handleStartTrial = () => {
-    console.log("Starting 14-day free trial...");
-  };
+  const handleStartTrial = () => {};
 
   return (
     <Box className="pt-20">
@@ -20,7 +18,10 @@ const BuiltAssistant: React.FC = () => {
         >
           {/* Header Section */}
           <Box className="max-w-4xl">
-            <Badge title="Why We Built Assistant" />
+            <Badge
+              title="Why We Built Assistant"
+              textStyle="body-italic-bold-16"
+            />
             <h1 className="h2-bold-40 py-4">
               Simplify life for daily
               <span className="text-primary"> customer communicators</span>.

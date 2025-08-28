@@ -11,13 +11,14 @@ interface NavigationItemProps {
       name: string;
       href: string;
       description?: string;
-      icon?: React.ComponentType<{ className?: string }>;
+      icon?: string;
     }>;
   };
   isActive: boolean;
   activeDropdown: string | null;
   onMouseEnter: (itemName: string) => void;
   onMouseLeave: () => void;
+  onToggleDropdown: (itemName: string) => void;
   className?: string;
 }
 
@@ -27,14 +28,17 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
   activeDropdown,
   onMouseEnter,
   onMouseLeave,
+  onToggleDropdown,
   className = "",
 }) => {
+  const isOpen = activeDropdown === item.name;
+
   if (item.href) {
     return (
       <Link
         to={item.href}
         className={`body-bold-16 transition-colors ${
-          isActive ? "text-primary" : "text-gray-700 hover:text-primary"
+          isActive ? "text-primary" : "text-grey-medium hover:text-primary"
         } ${className}`}
       >
         {item.name}
@@ -43,31 +47,33 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
   }
 
   return (
-    <div
-      onMouseEnter={() => item.dropdown && onMouseEnter(item.name)}
-      onMouseLeave={onMouseLeave}
-    >
+    <div onMouseEnter={() => onMouseEnter(item.name)} className="relative">
       <button
+        onClick={() => onToggleDropdown(item.name)}
         className={`inline-flex items-center body-bold-16 transition-colors ${
-          activeDropdown === item.name
-            ? "text-primary"
-            : "text-gray-700 hover:text-primary"
+          isOpen ? "text-primary" : "text-grey-medium hover:text-primary"
         } ${className}`}
       >
         {item.name}
         <ChevronDown
-          className={`ml-2 h-6 w-6 transition-transform ${
-            activeDropdown === item.name ? "rotate-180" : ""
+          className={`ml-2 h-5 w-5 transition-transform ${
+            isOpen ? "rotate-180" : ""
           }`}
         />
       </button>
 
       <AnimatePresence>
-        {item.dropdown && activeDropdown === item.name && (
-          <DropdownMenu items={item} isVisible={activeDropdown === item.name} />
+        {item.dropdown && isOpen && (
+          <div onMouseLeave={onMouseLeave}>
+            <DropdownMenu
+              items={{ name: item.name, dropdown: item.dropdown }}
+              isVisible={isOpen}
+            />
+          </div>
         )}
       </AnimatePresence>
     </div>
   );
 };
+
 export default NavigationItem;

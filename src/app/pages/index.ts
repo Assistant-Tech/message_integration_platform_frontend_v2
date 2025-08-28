@@ -4,6 +4,13 @@ export { default as Unauthorized } from "./Unauthorized";
 export { default as Landing } from "./Landing";
 export { default as Demo } from "./DemoPage";
 
+// Videos Exports
+export { default as VideosPage } from "@/app/pages/videos/VideosPage";
+
+// Blog Exports
+export { default as BlogPage } from "./blog/BlogPage";
+export { default as BlogDetailPage } from "../pages/blog/BlogDetails";
+
 // Faq Exports
 export { default as FAQPage } from "./faq/FAQPage";
 
@@ -16,6 +23,9 @@ export { default as PricingPage } from "./pricing/PricingPage";
 // Product exports
 export { default as Product } from "./products/Product";
 export { default as CRM } from "./products/crm/CRM";
+export { default as ChatbotPage } from "./products/chatbot/ChatbotPage";
+export { default as BulkMessagingPage } from "./products/bulk-messaging/BulkMessagingPage";
+export { default as UnifiedMessagePage } from "./products/unified-messaging/UnifiedMessagePage";
 
 // Support exports
 export { default as Support } from "./resources/support/Support";

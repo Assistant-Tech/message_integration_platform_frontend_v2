@@ -7,10 +7,9 @@ import SubMenu from "./SubMenu";
 
 interface MobileMenuProps {
   isOpen: boolean;
-  onClose: () => void;
 }
 
-const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
+const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen }) => {
   const [activeSubmenu, setActiveSubmenu] = useState<NavigationItem | null>(
     null,
   );
@@ -20,16 +19,13 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
       // Show submenu
       setActiveSubmenu(item);
     } else if (item.href) {
-      // Direct navigation
       window.location.href = item.href;
-      onClose();
     }
   };
 
   const handleSubItemClick = (href: string) => {
     // Navigate to the specific page
     window.location.href = href;
-    onClose();
   };
 
   const handleBackToMain = () => {
@@ -38,7 +34,6 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
 
   const handleClose = () => {
     setActiveSubmenu(null);
-    onClose();
   };
 
   return (
@@ -89,7 +84,6 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
                 key="submenu"
                 item={activeSubmenu}
                 onBack={handleBackToMain}
-                onClose={handleClose}
                 onItemClick={handleSubItemClick}
               />
             )}

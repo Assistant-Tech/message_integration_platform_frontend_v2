@@ -8,7 +8,7 @@ export const APP_ROUTES = {
     CONTACT: "/contact",
     UNAUTHORIZED: "/unauthorized",
     PRICING: "/pricing",
-    PRODUCTS: "/products",
+    PRODUCTS: "/products",  
     SLUG: (slug: string) => `/${slug}`,
     DEMO: "/demo",
     FORGOT_PASSWORD: "/forgot-password",
@@ -26,13 +26,15 @@ export const APP_ROUTES = {
     // For the ["/product"]
     PRODUCTS_OVERVIEW: "/products",
     CRM: "/products/crm",
-    ERP: "/products/erp",
-    HRMS: "/products/hrms",
+    CHATBOT: "/products/chatbot",
+    UNIFIED_MESSAGE: "/products/unified-message",
+    BULK_MESSAGING: "/products/bulk-message",
 
     // For the ["/resources"]
     RESOURCES_OVERVIEW: "/resources",
     SUPPORT: "/resources/support",
-    BLOG: "/resources/blog",
+    BLOG: "/resources/blogs",
+    BLOG_ID: "/resources/blogs/:id",
     VIDEOS: "/resources/videos",
     FAQ: "/resources/faq",
 

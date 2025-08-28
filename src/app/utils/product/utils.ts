@@ -5,11 +5,9 @@
 */
 import {
   LucideIcon,
-  Zap,
   Shield,
   Target,
   Building2,
-  ShieldUser,
 } from "lucide-react";
 
 export interface crm {
