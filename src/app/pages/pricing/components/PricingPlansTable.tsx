@@ -15,79 +15,55 @@ const featuresList = [
 
 const PricingPlansTable = () => {
   return (
-    <div className="w-full overflow-x-auto p-4 pb-20">
-      <div className="min-w-[600px] sm:min-w-full">
-        <motion.h2
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="h3-bold-32 mb-6"
-        >
-          Compare Our Plans
-        </motion.h2>
+    <div className="w-full p-4 pb-20">
+      <motion.h2
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="h3-bold-32 mb-8 text-center"
+      >
+        Compare Our Plans
+      </motion.h2>
 
-        <motion.table
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="w-full table-auto border border-grey-light rounded-lg shadow-md"
-        >
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="p-4 text-left text-sm font-semibold text-gray-700 border-r border-grey-light min-w-[180px]">
-                &nbsp;
-              </th>
-              {plans.map((plan, idx) => (
-                <th
-                  key={plan.name}
-                  className={`p-4 text-center h4-bold-24 text-base-black ${
-                    idx !== plans.length - 1 ? "border-r border-grey-light" : ""
-                  }`}
-                >
-                  {plan.name}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {featuresList.map((feature) => (
-              <tr key={feature} className="border-t border-grey-light">
-                <td className="px-6 py-4 body-medium-16 text-grey-medium border-r border-grey-light">
-                  {feature}
-                </td>
-                {plans.map((plan, idx) => {
-                  const value = plan.features[feature];
-                  const isBoolean = typeof value === "boolean";
+      {/* Responsive Grid View */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {plans.map((plan) => (
+          <motion.div
+            key={plan.name}
+            className="border border-grey-light rounded-xl shadow-md p-6 flex flex-col"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <h3 className="h4-bold-24 text-center mb-4">{plan.name}</h3>
+            <ul className="space-y-3 flex-1">
+              {featuresList.map((feature) => {
+                const value = plan.features[feature];
+                const isBoolean = typeof value === "boolean";
 
-                  return (
-                    <td
-                      key={plan.name + feature}
-                      className={`px-6 py-4 text-center h5-medium-16 text-grey ${
-                        idx !== plans.length - 1
-                          ? "border-r border-grey-light"
-                          : ""
-                      }`}
-                    >
+                return (
+                  <li
+                    key={feature}
+                    className="flex items-start justify-between text-sm text-grey-medium"
+                  >
+                    <span className="w-2/3 pr-2">{feature}</span>
+                    <span className="w-1/3 text-right">
                       {isBoolean ? (
                         value ? (
-                          <div className="p-2 rounded-full bg-primary inline-flex items-center justify-center">
-                            <Check className="text-white w-5 h-5" />
-                          </div>
+                          <Check className="text-primary w-5 h-5 inline" />
                         ) : (
-                          <div className="p-2 rounded-full bg-danger inline-flex items-center justify-center">
-                            <X className="text-white w-5 h-5" />
-                          </div>
+                          <X className="text-danger w-5 h-5 inline" />
                         )
                       ) : (
                         value
                       )}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </motion.table>
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </motion.div>
+        ))}
       </div>
     </div>
   );

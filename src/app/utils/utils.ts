@@ -23,8 +23,8 @@ import faq from "@/app/assets/greenIcons/faq.svg";
 import support from "@/app/assets/greenIcons/support.svg";
 
 export interface DropdownItem {
-  name?: string;
-  href?: string;
+  name: string;
+  href: string;
   description?: string;
   icon?: string;
 }
@@ -36,6 +36,7 @@ export interface NavigationItem {
   dropdown?: DropdownItem[];
   icon?: string;
 }
+
 export const navigation: NavigationItem[] = [
   {
     id: 1,
@@ -460,6 +461,7 @@ import fbBNW from "@/app/assets/icons/fb1.svg";
 import instaBNW from "@/app/assets/icons/in.svg";
 import LinkBNW from "@/app/assets/icons/link.svg";
 import xBNW from "@/app/assets/icons/xx.svg";
+import { APP_ROUTES } from "@/app/constants/routes";
 
 export type FooterLink = {
   name: string;
@@ -489,21 +491,21 @@ export type SocialLink = {
 
 export const footerLinks: FooterLinks = {
   products: [
-    { name: "Products One", url: "#" },
-    { name: "Products Two", url: "#" },
-    { name: "Products Three", url: "#" },
-    { name: "Products Four", url: "#" },
+    { name: "CRM", url: APP_ROUTES.PUBLIC.CRM },
+    { name: "Unified Inbox", url: APP_ROUTES.PUBLIC.CRM },
+    { name: "Chatbots", url: APP_ROUTES.PUBLIC.CRM },
+    { name: "Bulk Messaging", url: APP_ROUTES.PUBLIC.CRM },
   ],
   resources: [
-    { name: "FAQs", url: "#" },
-    { name: "Support", url: "#" },
-    { name: "Blogs", url: "#" },
-    { name: "Videos", url: "#" },
+    { name: "FAQs", url: APP_ROUTES.PUBLIC.FAQ },
+    { name: "Support", url: APP_ROUTES.PUBLIC.SUPPORT },
+    { name: "Blogs", url: APP_ROUTES.PUBLIC.BLOG },
+    { name: "Videos", url: APP_ROUTES.PUBLIC.VIDEOS },
   ],
   pricing: [
-    { name: "Starter Plan", url: "#" },
-    { name: "Growth Plan", url: "#" },
-    { name: "Pro Plan", url: "#" },
+    { name: "Starter Plan", url: APP_ROUTES.PUBLIC.PRICING },
+    { name: "Growth Plan", url: APP_ROUTES.PUBLIC.PRICING },
+    { name: "Pro Plan", url: APP_ROUTES.PUBLIC.PRICING },
   ],
   contact: [
     {

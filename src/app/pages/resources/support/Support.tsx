@@ -132,7 +132,7 @@ const Support = () => {
       </motion.div>
 
       {/* FAQ's Section  */}
-      <FrequentlyAskedQuestion />
+      <FrequentlyAskedQuestion variant="default" />
       {/* Newsletter */}
       <div className="pb-12">
         <NewsLetter />

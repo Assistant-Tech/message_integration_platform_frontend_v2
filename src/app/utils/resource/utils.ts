@@ -8,7 +8,7 @@ export const registerFields: {
   label: string;
   placeholder: string;
   type?: React.InputHTMLAttributes<HTMLInputElement>["type"];
-  variant?: any;
+  variant?: string;
   component?: "Input" | "PhoneInput";
 }[] = [
   { name: "firstName", label: "First Name", placeholder: "Enter first name" },

@@ -31,12 +31,9 @@ const TermsCondition: React.FC = () => {
     }),
   );
 
-  // Get content IDs for active section tracking
-  // For now im using terms dataset after gettijg actual data change it accordingly.
   const contentIds = termsContentData.map((item) => item.id);
   const activeSection = useActiveSection(contentIds);
 
-  // Handle smooth scrolling to sections
   const handleSectionClick = (sectionId: string): void => {
     scrollToSection(sectionId, 100);
   };

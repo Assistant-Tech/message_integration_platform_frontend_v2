@@ -1,12 +1,14 @@
 import { useMemo } from "react";
+import { motion } from "framer-motion";
 import { Box, Flex, RadioGroup } from "@radix-ui/themes";
 import { cn } from "@/app/utils/cn";
 import { usePlans } from "@/app/hooks/usePlans";
 import { usePricingStore } from "@/app/store/pricingStore";
 import { PricingCard } from "@/app/components/common";
-import { Badge, DynamicToggle } from "@/app/components/ui";
+import { Badge, Button, DynamicToggle } from "@/app/components/ui";
 import { Plan, Duration, APIDuration } from "@/app/types/plan.types";
 import { extractFeatures } from "@/app/utils/helper";
+import { Check } from "lucide-react";
 
 const Pricing = () => {
   const { currency, duration, setCurrency, setDuration } = usePricingStore();
@@ -16,8 +18,6 @@ const Pricing = () => {
     isLoading,
     isError,
   } = usePlans(duration, currency);
-
-  // console.log("🚀 ~ Pricing ~ data:", fetchedPlans);
 
   const transformPlan = (plan: Plan) => ({
     ...plan,
@@ -74,7 +74,7 @@ const Pricing = () => {
           color="teal"
           className="w-full pb-4 md:pb-8"
         >
-          <Flex justify="end" align="center" className="py-4 gap-4">
+          <Flex justify="end" align="center" className="pt-4 gap-4">
             {["NPR", "USD"].map((cur) => (
               <Flex key={cur} direction="row" align="center" gap="2">
                 <RadioGroup.Item value={cur} id={cur.toLowerCase()} />
@@ -111,20 +111,109 @@ const Pricing = () => {
               ))}
             </div>
 
-            <div className="md:hidden overflow-x-auto px-4 -mx-4">
-              <div className="flex gap-4 w-max">
+            <div className="md:hidden px-4 overflow-hidden">
+              <motion.div
+                className="flex gap-4"
+                drag="x"
+                dragConstraints={{ left: -500, right: 0 }}
+                dragElastic={0.2}
+                style={{ WebkitOverflowScrolling: "touch" }}
+              >
                 {plans.map((plan: any) => (
-                  <div
+                  <motion.div
                     key={plan.id}
-                    className="min-w-[85%] max-w-[85%] sm:min-w-[75%] sm:max-w-[75%]"
+                    className={cn(
+                      "min-w-[85%] max-w-[85%] flex-shrink-0 rounded-2xl border p-6 shadow-sm",
+                      plan.isPopular
+                        ? "bg-primary text-white border-primary"
+                        : "bg-white text-grey border-gray-200",
+                    )}
+                    whileTap={{ scale: 0.98 }}
                   >
-                    <PricingCard
-                      plan={plan}
-                      duration={duration.toLowerCase() as Duration}
+                    <div className="mb-4">
+                      <h2
+                        className={cn(
+                          "h5-bold-16",
+                          plan.isPopular ? "text-white" : "text-grey",
+                        )}
+                      >
+                        {plan.title
+                          .replace(/_/g, " ")
+                          .toLowerCase()
+                          .replace(/\b\w/g, (c: string) => c.toUpperCase())}
+                      </h2>
+                      <p
+                        className={cn(
+                          "label-medium-14",
+                          plan.isPopular ? "text-white/80" : "text-grey-medium",
+                        )}
+                      >
+                        {plan.subtitle}
+                      </p>
+                    </div>
+
+                    <div
+                      className={cn(
+                        "h5-bold-16 mb-4 pt-4 border-t-2",
+                        plan.isPopular
+                          ? "border-white text-white"
+                          : "border-grey-light text-grey",
+                      )}
+                    >
+                      {plan.price}
+                      /month
+                    </div>
+
+                    <Button
+                      label={plan.buttonText}
+                      className={cn(
+                        "mb-6 w-full py-2",
+                        plan.isPopular
+                          ? "bg-white text-primary hover:bg-white/90"
+                          : "",
+                      )}
                     />
-                  </div>
+
+                    <ul
+                      className={cn(
+                        "space-y-3 label-medium-14",
+                        plan.isPopular ? "text-white/90" : "text-grey",
+                      )}
+                    >
+                      {plan.features
+                        ?.filter(
+                          (value: string, index: number, self: string[]) =>
+                            self.indexOf(value) === index,
+                        )
+                        .map((feature: string, i: number) => (
+                          <li key={i} className="flex items-start gap-2">
+                            <span
+                              className={cn(
+                                "font-bold",
+                                plan.isPopular
+                                  ? "text-white"
+                                  : "text-grey-medium",
+                              )}
+                            >
+                              <Check size={20} />
+                            </span>
+                            <span>{feature}</span>
+                          </li>
+                        ))}
+                    </ul>
+
+                    <a
+                      href="/pricing"
+                      className={cn(
+                        "block mt-6 label-regular-14 underline ps-7 text-left",
+                        plan.isPopular ? "text-white/80" : "text-grey-medium",
+                      )}
+                    >
+                      Learn more
+                    </a>
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             </div>
           </>
         )}

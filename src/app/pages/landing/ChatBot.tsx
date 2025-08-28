@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Box, Flex } from "@radix-ui/themes";
-import { AnimatedProcessCard } from "@/app/components/animations/";
+import { AnimatedProcessCard } from "@/app/components/animation";
 import createbot from "@/app/assets/images/createbot.webp";
 import { Badge, Button } from "@/app/components/ui";
 
@@ -35,7 +35,7 @@ const ChatBot: React.FC = () => {
   ];
 
   return (
-    <Box className="pt-20 pb-4" id="chatbot">
+    <Box className="pt-20 mb-20" id="chatbot">
       <motion.div
         className="w-full"
         variants={containerVariants}

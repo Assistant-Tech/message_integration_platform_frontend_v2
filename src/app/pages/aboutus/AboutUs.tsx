@@ -7,7 +7,7 @@ import {
   Footer,
   NewsLetter,
   Loading,
-  FrequentlyAskedQuestion,
+  FAQ,
 } from "@/app/components/common";
 import Section from "@/app/components/layout/Section";
 import {
@@ -182,7 +182,7 @@ const About = () => {
       useContainer: false,
     },
     {
-      element: <FrequentlyAskedQuestion />,
+      element: <FAQ variant="default" />,
     },
     {
       element: (
