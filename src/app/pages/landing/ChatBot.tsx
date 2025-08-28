@@ -78,7 +78,10 @@ const ChatBot: React.FC = () => {
             variants={itemVariants}
             className="w-full lg:w-1/2 max-w-2xl px-4"
           >
-            <Badge title="AI DRIVEN CHATBOTS " />
+            <Badge
+              title="AI DRIVEN CHATBOTS "
+              textStyle="body-italic-bold-16"
+            />
 
             <motion.h1
               variants={itemVariants}

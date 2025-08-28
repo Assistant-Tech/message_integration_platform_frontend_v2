@@ -135,11 +135,11 @@ const OrderManagement: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Section */}
-        <div className="order-1 lg:order-2 w-full max-w-4xl text-center md:text-start max-h-72">
-          <Badge title="MANAGE YOUR ORDERS" />
-          <motion.article className="space-y-6 pt-4">
-            <h1 className="h2-bold-40 text-grey">
+        {/* Right Section - CTA */}
+        <div className="order-1 lg:order-2">
+          <Badge title="MANAGE YOUR ORDERS" textStyle="body-italic-bold-16" />
+          <motion.article className="w-full max-w-lg space-y-4">
+            <h1 className="h2-bold-40 text-grey text-start pt-4">
               Track and Manage Your Orders
             </h1>
             <p className="h4-regular-24 text-grey-medium">

@@ -91,7 +91,10 @@ const SeemlessExperience: React.FC = () => {
           className="space-y-8"
         >
           <motion.div variants={itemVariants} className="space-y-6">
-            <Badge title="Cross-Platform Solution" />
+            <Badge
+              title="Cross-Platform Solution"
+              textStyle="body-italic-bold-16"
+            />
 
             <h1 className="h2-bold-40 text-base-black">
               Seamless Experience,
