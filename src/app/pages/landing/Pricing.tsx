@@ -49,7 +49,10 @@ const Pricing = () => {
     <Box className="px-6 md:px-2 max-w-full mx-auto">
       <Flex direction="column" align="center" gap="3" mb="6">
         <article className="flex flex-col items-center text-center space-y-4">
-          <Badge title="PLANS TAILORED TO YOUR NEEDS" />
+          <Badge
+            title="PLANS TAILORED TO YOUR NEEDS"
+            textStyle="body-italic-bold-16"
+          />
           <h1 className="h2-bold-40 text-grey">Discover Plans For You</h1>
           <p className="h4-regular-24 text-grey-medium">
             Whether you're just starting out or ready to scale, we have a plan

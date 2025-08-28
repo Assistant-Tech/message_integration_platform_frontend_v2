@@ -126,7 +126,7 @@ const OurProcess: React.FC = () => {
             transition={{ delay: 0.2, duration: 0.6 }}
             className="inline-block mb-4"
           >
-            <Badge title="OUR PROCESS" />
+            <Badge title="OUR PROCESS" textStyle="body-italic-bold-16" />
           </motion.div>
 
           <motion.h1
