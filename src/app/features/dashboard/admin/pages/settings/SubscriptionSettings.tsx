@@ -4,7 +4,7 @@ import {
   YourSubscription,
   PurchaseHistory,
 } from "@/app/features/dashboard/admin/component/";
-import Pricing from "@/app/pages/landing/Pricing";
+import { PricingSubscription } from "@/app/features/dashboard/admin/component";
 
 const SubscriptionSettings = () => {
   const [activeTab, setActiveTab] = useState<
@@ -97,7 +97,7 @@ const SubscriptionSettings = () => {
       <div className="py-4">
         {/* available plans */}
         <h1 className="h4-bold-24 text-grey py-6">Available Plans</h1>
-        <Pricing />
+        <PricingSubscription />
       </div>
     </motion.div>
   );

@@ -12,9 +12,14 @@ interface PricingCardProps {
     features?: string[];
   };
   duration: "monthly" | "yearly";
+  onSelect?: () => void; // new
 }
 
-const PricingCardSubscription = ({ plan, duration }: PricingCardProps) => {
+const PricingcardSubscription = ({
+  plan,
+  duration,
+  onSelect,
+}: PricingCardProps) => {
   const formatTitle = (rawTitle?: string): string => {
     if (!rawTitle) return "";
     return rawTitle
@@ -23,37 +28,7 @@ const PricingCardSubscription = ({ plan, duration }: PricingCardProps) => {
       .replace(/\b\w/g, (char) => char.toUpperCase());
   };
 
-  const getFeaturesList = (
-    features: Record<string, any> | string[],
-  ): string[] => {
-    if (Array.isArray(features)) return features;
-
-    const featuresList: string[] = [];
-    Object.entries(features).forEach(([key, value]) => {
-      if (key === "includes") {
-        featuresList.push(`Includes ${value} features`);
-      } else if (key === "channels" && Array.isArray(value)) {
-        featuresList.push(`Channels: ${value.join(", ")}`);
-      } else if (key === "chatAgents") {
-        featuresList.push(`${value} Chat Agents`);
-      } else if (key === "integrations") {
-        featuresList.push(`${value} Integrations`);
-      } else if (typeof value === "boolean" && value) {
-        const readableKey = key
-          .replace(/([A-Z])/g, " $1")
-          .replace(/^./, (str) => str.toUpperCase());
-        featuresList.push(readableKey);
-      } else if (typeof value === "number") {
-        const readableKey = key
-          .replace(/([A-Z])/g, " $1")
-          .replace(/^./, (str) => str.toUpperCase());
-        featuresList.push(`${readableKey}: ${value}`);
-      }
-    });
-    return featuresList;
-  };
-
-  const displayFeatures = plan.features ? getFeaturesList(plan.features) : [];
+  const displayFeatures = Array.isArray(plan.features) ? plan.features : [];
   const displayPrice =
     plan.price || `${plan.currency === "NPR" ? "रु" : "$"}${plan.amount}`;
   const buttonText =
@@ -68,14 +43,6 @@ const PricingCardSubscription = ({ plan, duration }: PricingCardProps) => {
           : "bg-white border-2 border-grey-light shadow-lg hover:shadow-xl",
         "min-w-[280px] max-w-sm md:max-w-full flex-shrink-0",
       )}
-      style={
-        plan.isPopular
-          ? {
-              boxShadow:
-                "0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
-            }
-          : {}
-      }
     >
       {plan.isPopular && (
         <div className="absolute -top-0 -right-0 z-20 overflow-hidden w-32 h-32">
@@ -131,6 +98,7 @@ const PricingCardSubscription = ({ plan, duration }: PricingCardProps) => {
             )}
             label={buttonText}
             variant="primary"
+            onClick={onSelect} // ✅ open dialog
           />
         </div>
       </div>
@@ -168,22 +136,8 @@ const PricingCardSubscription = ({ plan, duration }: PricingCardProps) => {
           </li>
         ))}
       </ul>
-
-      <div className="my-6 px-8">
-        <a
-          href="#"
-          className={cn(
-            "text-sm underline transition-colors duration-200",
-            plan.isPopular
-              ? "text-primary-light/80 hover:text-white"
-              : "text-grey hover:text-grey-medium",
-          )}
-        >
-          Learn more
-        </a>
-      </div>
     </div>
   );
 };
 
-export default PricingCardSubscription;
+export default PricingcardSubscription;

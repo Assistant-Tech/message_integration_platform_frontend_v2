@@ -1,179 +1,147 @@
-// src/app/components/common/PricingCard-subscription.tsx
-
-import { Check } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Box, Flex, RadioGroup } from "@radix-ui/themes";
 import { cn } from "@/app/utils/cn";
-import { Button } from "@/app/components/ui";
-import { Plan } from "@/app/types/plan.types";
-import { ReactNode, FC } from "react";
+import { usePlans } from "@/app/hooks/usePlans";
+import { usePricingStore } from "@/app/store/pricingStore";
+import { PricingcardSubscription } from "@/app/features/dashboard/admin/component";
+import { Badge, DynamicToggle } from "@/app/components/ui";
+import { Plan, Duration, APIDuration } from "@/app/types/plan.types";
+import { extractFeatures } from "@/app/utils/helper";
+import CheckoutDialogPop from "@/app/features/dashboard/admin/component/CheckoutDialogPop";
 
-interface PricingCardProps {
-  plan: Plan & {
-    title?: string;
-    subtitle?: string;
-    price?: string;
-    buttonText?: string;
-    features?: string[];
+const PricingSubscription = () => {
+  const { currency, duration, setCurrency, setDuration } = usePricingStore();
+
+  const {
+    data: fetchedPlans = [],
+    isLoading,
+    isError,
+  } = usePlans(duration, currency);
+
+  const [selectedPlan, setSelectedPlan] = useState<any | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const transformPlan = (plan: Plan) => ({
+    ...plan,
+    title: plan.name,
+    subtitle: plan.description,
+    price: `${plan.currency === "NPR" ? "रु" : "$"}${plan.amount}`,
+    buttonText: plan.amount === 0 ? "Contact Us" : "Choose Plan",
+    features: extractFeatures(plan.features),
+  });
+
+  const plans = useMemo(() => {
+    if (!fetchedPlans || !Array.isArray(fetchedPlans)) return [];
+    return fetchedPlans.map(transformPlan);
+  }, [fetchedPlans]);
+
+  const pricingOptions = [
+    { id: "MONTHLY", label: "Monthly", value: "MONTHLY" },
+    {
+      id: "YEARLY",
+      label: "Bill Yearly",
+      value: "YEARLY",
+      extraLabel: "Save 10%",
+    },
+  ];
+
+  const handlePlanSelect = (plan: any) => {
+    setSelectedPlan(plan);
+    setIsDialogOpen(true);
   };
-  duration: "monthly" | "yearly";
-  checkoutComponent: ReactNode;
-}
-
-const PricingCardSubscription: FC<PricingCardProps> = ({
-  plan,
-  duration,
-  checkoutComponent,
-}) => {
-  const formatTitle = (rawTitle?: string): string => {
-    if (!rawTitle) return "";
-    return rawTitle
-      .toLowerCase()
-      .replace(/_/g, " ")
-      .replace(/\b\w/g, (char) => char.toUpperCase());
-  };
-
-  const getFeaturesList = (
-    features: Record<string, any> | string[],
-  ): string[] => {
-    if (Array.isArray(features)) return features;
-    const featuresList: string[] = [];
-    Object.entries(features).forEach(([key, value]) => {
-      if (key === "includes") {
-        featuresList.push(`Includes ${value} features`);
-      } else if (key === "channels" && Array.isArray(value)) {
-        featuresList.push(`Channels: ${value.join(", ")}`);
-      } else if (key === "chatAgents") {
-        featuresList.push(`${value} Chat Agents`);
-      } else if (key === "integrations") {
-        featuresList.push(`${value} Integrations`);
-      } else if (typeof value === "boolean" && value) {
-        const readableKey = key
-          .replace(/([A-Z])/g, " $1")
-          .replace(/^./, (str) => str.toUpperCase());
-        featuresList.push(readableKey);
-      } else if (typeof value === "number") {
-        const readableKey = key
-          .replace(/([A-Z])/g, " $1")
-          .replace(/^./, (str) => str.toUpperCase());
-        featuresList.push(`${readableKey}: ${value}`);
-      }
-    });
-    return featuresList;
-  };
-
-  const displayFeatures = plan.features ? getFeaturesList(plan.features) : [];
-  const displayPrice =
-    plan.price || `${plan.currency === "NPR" ? "रु" : "$"}${plan.amount}`;
 
   return (
-    <div
-      className={cn(
-        "relative rounded-2xl p-6 sm:p-8 transition-all duration-300 w-full h-full",
-        plan.isPopular
-          ? "bg-primary text-white transform scale-105 shadow-2xl shadow-primary/25 border-2 border-primary-light z-10 overflow-hidden"
-          : "bg-white border-2 border-grey-light shadow-lg hover:shadow-xl",
-        "min-w-[280px] max-w-sm md:max-w-full flex-shrink-0",
-      )}
-      style={
-        plan.isPopular
-          ? {
-              boxShadow:
-                "0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
-            }
-          : {}
-      }
-    >
-      {plan.isPopular && (
-        <div className="absolute -top-0 -right-0 z-20 overflow-hidden w-32 h-32">
-          <div className="absolute transform rotate-45 bg-orange-500 text-white text-xs font-bold py-2 px-1 w-[140px] top-[22px] right-[-35px] text-center shadow-lg">
-            Most Popular
-          </div>
+    <Box className="px-6 md:px-2 max-w-full mx-auto">
+      <Flex direction="column" align="center" gap="3" mb="6">
+        <article className="flex flex-col items-center text-center space-y-4">
+          <Badge title="PLANS TAILORED TO YOUR NEEDS" />
+          <h1 className="h2-bold-40 text-grey">Discover Plans For You</h1>
+          <p className="h4-regular-24 text-grey-medium">
+            Whether you're just starting out or ready to scale, we have a plan
+            designed to fit your goals.
+          </p>
+        </article>
+
+        <div className="pt-6">
+          <DynamicToggle
+            options={pricingOptions}
+            defaultSelected={duration}
+            onChange={(val) => setDuration(val.value as APIDuration)}
+          />
         </div>
-      )}
-      <div className="text-start">
-        <h3
-          className={cn(
-            "text-2xl font-bold mb-2",
-            plan.isPopular ? "text-white drop-shadow-sm" : "text-gray-900",
-          )}
+
+        <RadioGroup.Root
+          value={currency}
+          onValueChange={(val) => setCurrency(val as any)}
+          color="teal"
+          className="w-full pb-4 md:pb-8"
         >
-          {formatTitle(plan.title || plan.name)}
-        </h3>
-        <p
-          className={cn(
-            "text-sm mb-6",
-            plan.isPopular ? "text-primary-light opacity-90" : "text-gray-600",
-          )}
-        >
-          {plan.subtitle || plan.description}
-        </p>
-        <div
-          className={cn(
-            "w-full my-6",
-            plan.isPopular
-              ? "border border-primary-light/30"
-              : "border border-grey-light",
-          )}
-        />
-        <div className="h-full">
-          <div
-            className={cn(
-              "h3-bold-32",
-              plan.isPopular ? "text-white drop-shadow-sm" : "text-grey",
-            )}
-          >
-            {displayPrice}
-            {plan.amount !== 0 && <span className="ps-2">/{duration}</span>}
+          <Flex justify="end" align="center" className="py-4 gap-4">
+            {["NPR", "USD"].map((cur) => (
+              <Flex key={cur} direction="row" align="center" gap="2">
+                <RadioGroup.Item value={cur} id={cur.toLowerCase()} />
+                <label
+                  className={cn(
+                    currency === cur ? "text-primary" : "text-base-black",
+                    "body-regular-16 cursor-pointer lowercase",
+                  )}
+                >
+                  {cur === "NPR" ? "Nepal (रु)" : "USD ($)"}
+                </label>
+              </Flex>
+            ))}
+          </Flex>
+        </RadioGroup.Root>
+      </Flex>
+
+      <div className="w-full">
+        {isLoading ? (
+          <div className="text-center py-10">Loading plans...</div>
+        ) : isError ? (
+          <div className="text-center py-10 text-red-500">
+            Failed to load plans.
           </div>
-          {checkoutComponent}
-        </div>
-      </div>
-      <div
-        className={cn(
-          "w-full my-6",
-          plan.isPopular
-            ? "border border-primary-light/30"
-            : "border border-grey-light",
+        ) : (
+          <>
+            <div className="hidden md:grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {plans.map((plan: any) => (
+                <PricingcardSubscription
+                  key={plan.id}
+                  plan={plan}
+                  duration={duration.toLowerCase() as Duration}
+                  onSelect={() => handlePlanSelect(plan)}
+                />
+              ))}
+            </div>
+
+            <div className="md:hidden overflow-x-auto px-4 -mx-4">
+              <div className="flex gap-4 w-max">
+                {plans.map((plan: any) => (
+                  <div
+                    key={plan.id}
+                    className="min-w-[85%] max-w-[85%] sm:min-w-[75%] sm:max-w-[75%]"
+                  >
+                    <PricingcardSubscription
+                      plan={plan}
+                      duration={duration.toLowerCase() as Duration}
+                      onSelect={() => handlePlanSelect(plan)}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
         )}
-      />
-      <ul className="space-y-4">
-        {displayFeatures.map((feature: string, i: number) => (
-          <li key={i} className="flex items-start gap-3">
-            <Check
-              className={cn(
-                "w-5 h-5 mt-0.5 flex-shrink-0",
-                plan.isPopular
-                  ? "text-primary-light drop-shadow-sm"
-                  : "text-primary",
-              )}
-            />
-            <span
-              className={cn(
-                "text-sm",
-                plan.isPopular
-                  ? "text-primary-light opacity-90"
-                  : "text-gray-600",
-              )}
-            >
-              {feature}
-            </span>
-          </li>
-        ))}
-      </ul>
-      <div className="my-6 px-8">
-        <a
-          href="#"
-          className={cn(
-            "text-sm underline transition-colors duration-200",
-            plan.isPopular
-              ? "text-primary-light/80 hover:text-white"
-              : "text-grey hover:text-grey-medium",
-          )}
-        >
-          Learn more
-        </a>
       </div>
-    </div>
+
+      {/* Checkout Dialog */}
+      <CheckoutDialogPop
+        open={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        plan={selectedPlan}
+      />
+    </Box>
   );
 };
 
-export default PricingCardSubscription;
+export default PricingSubscription;
