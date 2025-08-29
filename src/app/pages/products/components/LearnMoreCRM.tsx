@@ -4,7 +4,6 @@ import { useState } from "react";
 import { X } from "lucide-react";
 
 import test from "@/app/assets/video/test_clip.mp4";
-import crmIntro from "@/app/assets/images/crm_video.webp";
 
 const LearnMoreCRM = () => {
   const [open, setOpen] = useState(false);
@@ -32,7 +31,9 @@ const LearnMoreCRM = () => {
       {/* Video Thumbnail with Play Button */}
       <div className="relative w-full max-w-6xl mx-auto aspect-video rounded-3xl overflow-hidden">
         <img
-          src={crmIntro}
+          src={
+            "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp"
+          }
           alt="CRM Intro"
           className="w-full h-full object-full"
         />

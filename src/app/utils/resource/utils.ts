@@ -8,7 +8,7 @@ export const registerFields: {
   label: string;
   placeholder: string;
   type?: React.InputHTMLAttributes<HTMLInputElement>["type"];
-  variant?: any;
+  variant?: string;
   component?: "Input" | "PhoneInput";
 }[] = [
   { name: "firstName", label: "First Name", placeholder: "Enter first name" },
@@ -47,7 +47,7 @@ export const smartCards = [
   {
     title: "Onboarding",
     description:
-      "Get started with Assistant Tech right away. Let us guide you through our onboarding process.",
+      "Get started with Chatblix right away. Let us guide you through our onboarding process.",
     icon: onboarding,
     redirectTo: APP_ROUTES.PUBLIC.ONBOARDING,
   },
@@ -285,13 +285,14 @@ export const scrollToSection = (
   offset: number = 100,
 ): void => {
   const element = document.getElementById(sectionId);
-  if (element) {
-    const offsetTop = element.offsetTop - offset;
-    window.scrollTo({
-      top: offsetTop,
-      behavior: "smooth",
-    });
-  }
+  if (!element) return;
+
+  const y = element.getBoundingClientRect().top + window.scrollY - offset;
+
+  window.scrollTo({
+    top: y,
+    behavior: "smooth",
+  });
 };
 
 export const getActiveSection = (

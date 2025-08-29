@@ -23,8 +23,8 @@ import faq from "@/app/assets/greenIcons/faq.svg";
 import support from "@/app/assets/greenIcons/support.svg";
 
 export interface DropdownItem {
-  name?: string;
-  href?: string;
+  name: string;
+  href: string;
   description?: string;
   icon?: string;
 }
@@ -36,6 +36,7 @@ export interface NavigationItem {
   dropdown?: DropdownItem[];
   icon?: string;
 }
+
 export const navigation: NavigationItem[] = [
   {
     id: 1,
@@ -45,25 +46,25 @@ export const navigation: NavigationItem[] = [
     dropdown: [
       {
         name: "CRM",
-        href: "/products/crm",
+        href: APP_ROUTES.PUBLIC.CRM,
         description: "Customer relationship management",
         icon: crm,
       },
       {
         name: "Chatbot",
-        href: "/products/chatbot",
+        href: APP_ROUTES.PUBLIC.CHATBOT,
         description: "AI-powered customer support",
         icon: bot,
       },
       {
         name: "Unified Messaging",
-        href: "/products/crm",
+        href: APP_ROUTES.PUBLIC.UNIFIED_MESSAGE,
         description: "Vestibulum tempus imperdiet",
         icon: unified,
       },
       {
         name: "Bulk Messaging",
-        href: "/products/bulkmessage",
+        href: APP_ROUTES.PUBLIC.BULK_MESSAGING,
         description: "Vestibulum tempus imperdiet",
         icon: bulk,
       },
@@ -314,9 +315,6 @@ export const imageSlides: ImageSlide[] = [
  📦 ▶ Built Assistant Feature data utils
  ─────────────────────────────────────────────────────────────────────────────
 */
-import feature1 from "@/app/assets/images/feature1.png";
-import feature2 from "@/app/assets/images/feature2.png";
-import feature3 from "@/app/assets/images/feature3.png";
 
 export type BuildFeature = {
   title: string;
@@ -329,19 +327,19 @@ export const buildFeature: BuildFeature[] = [
   {
     title: "All Messages in One Inbox",
     description: "A clean inbox for all your chats",
-    img: feature1,
+    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920904/feature1_msvw3f.png",
     animate: true,
   },
   {
     title: "Lightning Fast Responses",
     description: "Easy tools for your team to reply faster",
-    img: feature2,
+    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920904/feature2_qcnqm3.png",
     animate: true,
   },
   {
     title: "Secure & Private",
     description: "Reports to see how you're doing",
-    img: feature3,
+    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920904/feature3_lfvett.png",
     animate: true,
   },
 ];
@@ -460,6 +458,7 @@ import fbBNW from "@/app/assets/icons/fb1.svg";
 import instaBNW from "@/app/assets/icons/in.svg";
 import LinkBNW from "@/app/assets/icons/link.svg";
 import xBNW from "@/app/assets/icons/xx.svg";
+import { APP_ROUTES } from "@/app/constants/routes";
 
 export type FooterLink = {
   name: string;
@@ -489,21 +488,21 @@ export type SocialLink = {
 
 export const footerLinks: FooterLinks = {
   products: [
-    { name: "Products One", url: "#" },
-    { name: "Products Two", url: "#" },
-    { name: "Products Three", url: "#" },
-    { name: "Products Four", url: "#" },
+    { name: "CRM", url: APP_ROUTES.PUBLIC.CRM },
+    { name: "Unified Inbox", url: APP_ROUTES.PUBLIC.CRM },
+    { name: "Chatbots", url: APP_ROUTES.PUBLIC.CRM },
+    { name: "Bulk Messaging", url: APP_ROUTES.PUBLIC.CRM },
   ],
   resources: [
-    { name: "FAQs", url: "#" },
-    { name: "Support", url: "#" },
-    { name: "Blogs", url: "#" },
-    { name: "Videos", url: "#" },
+    { name: "FAQs", url: APP_ROUTES.PUBLIC.FAQ },
+    { name: "Support", url: APP_ROUTES.PUBLIC.SUPPORT },
+    { name: "Blogs", url: APP_ROUTES.PUBLIC.BLOG },
+    { name: "Videos", url: APP_ROUTES.PUBLIC.VIDEOS },
   ],
   pricing: [
-    { name: "Starter Plan", url: "#" },
-    { name: "Growth Plan", url: "#" },
-    { name: "Pro Plan", url: "#" },
+    { name: "Starter Plan", url: APP_ROUTES.PUBLIC.PRICING },
+    { name: "Growth Plan", url: APP_ROUTES.PUBLIC.PRICING },
+    { name: "Pro Plan", url: APP_ROUTES.PUBLIC.PRICING },
   ],
   contact: [
     {

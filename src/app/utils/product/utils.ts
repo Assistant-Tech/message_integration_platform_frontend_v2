@@ -3,14 +3,7 @@
  📦 ▶ CRM data utils
 ─────────────────────────────────────────────────────────────────────────────
 */
-import {
-  LucideIcon,
-  Zap,
-  Shield,
-  Target,
-  Building2,
-  ShieldUser,
-} from "lucide-react";
+import { LucideIcon, Shield, Target, Building2 } from "lucide-react";
 
 export interface crm {
   label: string;
@@ -102,7 +95,6 @@ export const smartCardData = [
 ];
 
 import { Users, FileText, BarChart3, Globe } from "lucide-react";
-import crm from "@/app/assets/images/crm.webp";
 import type { ServiceItem } from "@/app/types/product.types";
 
 export const services: ServiceItem[] = [
@@ -111,71 +103,71 @@ export const services: ServiceItem[] = [
     icon: FileText,
     title: "Literature",
     description:
-      "Assistant Tech’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: crm,
+      "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
+    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
   },
   {
     id: 2,
     icon: Users,
     title: "CRM",
     description:
-      "Assistant Tech’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: crm,
+      "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
+    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
   },
   {
     id: 3,
     icon: BarChart3,
     title: "Self Sourcing",
     description:
-      "Assistant Tech’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: crm,
+      "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
+    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
   },
   {
     id: 4,
     icon: Globe,
     title: "Business",
     description:
-      "Assistant Tech’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: crm,
+      "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
+    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
   },
   {
     id: 5,
     icon: Globe,
     title: "Business",
     description:
-      "Assistant Tech’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: crm,
+      "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
+    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
   },
   {
     id: 6,
     icon: Globe,
     title: "Business",
     description:
-      "Assistant Tech’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: crm,
+      "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
+    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
   },
   {
     id: 7,
     icon: Globe,
     title: "Business",
     description:
-      "Assistant Tech’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: crm,
+      "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
+    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
   },
   {
     id: 8,
     icon: Globe,
     title: "Business",
     description:
-      "Assistant Tech’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: crm,
+      "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
+    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
   },
   {
     id: 9,
     icon: Globe,
     title: "Business",
     description:
-      "Assistant Tech’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: crm,
+      "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
+    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
   },
 ];

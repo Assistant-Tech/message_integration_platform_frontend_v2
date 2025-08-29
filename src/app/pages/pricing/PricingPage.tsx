@@ -3,18 +3,17 @@ import { motion } from "framer-motion";
 import { Theme } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
 
-import { Navbar, Footer, Loading, FrequentlyAskedQuestion } from "@/app/components/common";
+import { Navbar, Footer, Loading, FAQ } from "@/app/components/common";
 import Section from "@/app/components/layout/Section";
 
 import { PricingPlansTable } from "@/app/pages/pricing/components";
 
-// Lazy loaded
 const GetStarted = lazy(() => import("@/app/pages/landing/GetStarted"));
 const Pricing = lazy(() => import("@/app/pages/landing/Pricing"));
 
 const PricingPage = () => {
   const containerVariants = {
-    hidden: { opacity: 0 },
+    hidden: { opacity: 0 }, 
     visible: {
       opacity: 1,
       transition: {
@@ -93,7 +92,7 @@ const PricingPage = () => {
       useContainer: false,
     },
     {
-      element: <FrequentlyAskedQuestion />,
+      element: <FAQ variant="default" />,
     },
     { element: <Footer />, useContainer: false },
   ];

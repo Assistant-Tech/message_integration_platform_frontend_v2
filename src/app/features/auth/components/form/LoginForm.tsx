@@ -17,15 +17,10 @@ import { useAuthStore } from "@/app/store/auth.store";
 import { handleApiError } from "@/app/utils/handlerApiError";
 
 import { useState } from "react";
-import { LockoutTimer } from "@/app/features/auth/components/ui";
-import { useLockoutTimer } from "@/app/hooks/useLockoutTimer";
 
 const LoginForm = () => {
   const { login } = useAuthStore();
   const navigate = useNavigate();
-
-  const { isLockedOut, lockoutTimeLeft, initiateLockout, formatTime } =
-    useLockoutTimer();
 
   const [showPasswordChecks, setShowPasswordChecks] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -50,9 +45,13 @@ const LoginForm = () => {
     hasSpecialChar: /[@$!%*?&]/.test(password),
   };
 
-  const onSubmit = async (data: LoginFormData) => {
-    if (isLockedOut) return;
+  const handleForgotpassword = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    toast.info("Redirecting to forgot password page...");
+    navigate("/forgot-password");
+  };
 
+  const onSubmit = async (data: LoginFormData) => {
     try {
       const res = await login(data.email, data.password);
       toast.success(res.message);
@@ -72,18 +71,7 @@ const LoginForm = () => {
       if ("message" in parsedError) {
         const errorMessage = parsedError.message;
 
-        const lockoutMessageMatch = errorMessage.match(
-          /Your account has been temporarily locked.*,(\d+)\s*minutes remaining/
-        );
-
-        if (lockoutMessageMatch && lockoutMessageMatch[1] !== undefined) {
-          const minutes = parseInt(lockoutMessageMatch[1], 10);
-          const seconds = minutes * 60;
-          toast.error(errorMessage);
-          initiateLockout(seconds);
-        } else if (
-          errorMessage === "Email not verified. Please check your inbox."
-        ) {
+        if (errorMessage === "Email not verified. Please check your inbox.") {
           toast.error(errorMessage);
           navigate("/check-email", { state: { email: data.email } });
         } else {
@@ -101,21 +89,11 @@ const LoginForm = () => {
         <p className="mt-1 font-bold text-3xl">Log in to your account</p>
       </div>
 
-      <AnimatePresence>
-        {isLockedOut && (
-          <LockoutTimer
-            lockoutTimeLeft={lockoutTimeLeft}
-            formatTime={formatTime}
-          />
-        )}
-      </AnimatePresence>
-
       <Input
         label="Email / Phone Number"
         placeholder="Enter your email or phone number"
         {...register("email")}
         error={errors.email?.message}
-        disabled={isLockedOut}
       />
 
       {/* Password input */}
@@ -126,23 +104,20 @@ const LoginForm = () => {
           {...register("password")}
           error={errors.password?.message}
           type={showPassword ? "text" : "password"}
-          onFocus={() => !isLockedOut && setShowPasswordChecks(true)}
           onBlur={() => {
             if (!password) setShowPasswordChecks(false);
           }}
-          disabled={isLockedOut}
         />
         <button
           type="button"
           onClick={() => setShowPassword(!showPassword)}
           className="absolute top-[38px] right-3"
-          disabled={isLockedOut}
         >
           {showPassword ? <EyeIcon /> : <EyeOffIcon />}
         </button>
 
         <AnimatePresence>
-          {showPasswordChecks && !isLockedOut && (
+          {showPasswordChecks && (
             <motion.div
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
@@ -176,37 +151,28 @@ const LoginForm = () => {
       </div>
 
       {/* Remember me + Forgot password */}
-      <div
-        className={`flex items-center justify-between text-sm ${isLockedOut ? "opacity-50" : ""}`}
-      >
+      <div className="flex items-center justify-between text-sm">
         <label className="flex items-center gap-2">
           <input
             type="checkbox"
             className="accent-primary"
             {...register("rememberMe")}
-            disabled={isLockedOut}
           />
           Remember Me
         </label>
-        <a
-          href="/forgot-password"
-          className={`text-grey-medium hover:underline ${isLockedOut ? "pointer-events-none" : ""}`}
+        <button
+          type="button"
+          onClick={handleForgotpassword}
+          className="text-grey-medium hover:underline"
         >
           Forgot Password?
-        </a>
+        </button>
       </div>
 
-      <Button
-        label={`Sign In`}
-        type="submit"
-        className="w-full"
-        disabled={isLockedOut}
-      />
+      <Button label="Sign In" type="submit" className="w-full" />
 
       {/* Divider */}
-      <div
-        className={`flex items-center gap-2 text-grey-medium ${isLockedOut ? "opacity-50" : ""}`}
-      >
+      <div className="flex items-center gap-2 text-grey-medium">
         <hr className="flex-grow border-grey-light" />
         <span className="text-sm">OR</span>
         <hr className="flex-grow border-grey-light" />
@@ -219,22 +185,18 @@ const LoginForm = () => {
           variant="outlined"
           IconLeft={<img src={google} alt="Google" className="w-5 h-5" />}
           className="w-full"
-          disabled={isLockedOut}
         />
         <Button
           label="Sign in with Facebook"
           variant="outlined"
           IconLeft={<img src={fb} alt="Facebook" className="w-5 h-5" />}
           className="w-full"
-          disabled={isLockedOut}
         />
       </div>
 
       <Agreement />
 
-      <p
-        className={`text-center text-grey-medium mt-4 ${isLockedOut ? "opacity-50" : ""}`}
-      >
+      <p className="text-center text-grey-medium mt-4">
         Don't have an account?{" "}
         <a href="/register" className="text-primary hover:underline">
           Register

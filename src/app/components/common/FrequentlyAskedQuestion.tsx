@@ -8,7 +8,7 @@ const FrequentlyAskedQuestion = () => {
       <div className="py-20 px-2" id="faq">
         <div className="w-full">
           {/* Main Heading */}
-          <div className="mb-12">
+          <div>
             <h2 className="h2-bold-40 text-grey mb-4">
               Frequently Asked Questions
             </h2>

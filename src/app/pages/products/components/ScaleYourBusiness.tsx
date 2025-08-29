@@ -1,16 +1,13 @@
 import { motion } from "framer-motion";
 import { Circle, Check } from "lucide-react";
 
-// Images
-import business from "@/app/assets/images/CRM1.webp";
-import purchase from "@/app/assets/images/CRM2.webp";
 import { Button } from "@/app/components/ui";
 
 const ScaleYourBusiness = () => {
   return (
-    <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20 px-4 sm:px-6 lg:px-px py-6 sm:py-20 lg:py-24">
+    <div className="flex flex-col md:flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20 px-4 sm:px-6 lg:px-px py-6 sm:py-20 lg:py-24">
       {/* Image Section */}
-      <motion.div className="relative w-full lg:w-1/2 max-w-4xl">
+      <motion.div className="relative w-full md:w-full lg:w-1/2 max-w-4xl">
         {/* Background decoration */}
         <div className="absolute -left-6 sm:-left-10 md:-left-16 bottom-0 -z-10">
           <Circle
@@ -22,7 +19,9 @@ const ScaleYourBusiness = () => {
         {/* Main image */}
         <motion.figure className="rounded-2xl overflow-hidden">
           <img
-            src={business}
+            src={
+              "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp"
+            }
             alt="Online business dashboard"
             className="w-full h-auto object-cover rounded-2xl"
           />
@@ -31,16 +30,18 @@ const ScaleYourBusiness = () => {
         {/* Overlapping image */}
         <motion.figure className="absolute -bottom-6 sm:-bottom-10 md:-bottom-14 right-4 sm:right-8 md:right-12 w-36 sm:w-48 md:w-64 lg:w-72 rounded-2xl overflow-hidden border-4 border-white shadow-xl">
           <img
-            src={purchase}
+            src={
+              "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp"
+            }
             alt="Purchase analytics"
             className="w-full h-auto object-cover"
           />
         </motion.figure>
       </motion.div>
       {/* Text Content Section */}
-      <motion.div className="w-full lg:w-1/2 lg:max-w-xl space-y-6 md:space-y-8">
-        <h2 className="h2-bold-40 text-base-black">Scale Your Business</h2>
-        <p className="lg:max-w-5xl flex justify-start items-center">
+      <motion.div className="w-full md:w-full lg:w-1/2 lg:max-w-xl space-y-6 md:space-y-8">
+        <h2 className="h2-bold-40 text-base-black text-center md:text-center lg:text-start">Scale Your Business</h2>
+        <p className="lg:max-w-5xl flex justify-start items-center text-center md:text-center lg:text-start md:max-w-none">
           Whether you're a startup or an enterprise, our AI-enabled CRM helps
           take your business to the next level with intelligent automation and
           insights.
@@ -64,12 +65,14 @@ const ScaleYourBusiness = () => {
           ))}
         </ul>
 
-        <Button
-          label="Book a Demo"
-          variant="primary"
-          redirectTo="/demo"
-          className="w-full sm:w-auto px-6 sm:px-8 md:px-10 h-12 sm:h-14 text-base font-medium mt-8"
-        />
+        <div className="flex justify-center md:justify-center lg:justify-start">
+          <Button
+            label="Book a Demo"
+            variant="primary"
+            redirectTo="/demo"
+            className="w-full sm:w-auto px-6 sm:px-8 md:px-10 h-12 sm:h-14 text-base font-medium mt-8"
+          />
+        </div>
       </motion.div>
     </div>
   );

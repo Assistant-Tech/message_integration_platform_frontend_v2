@@ -12,6 +12,41 @@
 @import "@fontsource/merriweather/400.css";
 @import "@fontsource/merriweather/400-italic.css";
 
+/* Performance optimizations */
+* {
+  box-sizing: border-box;
+}
+
+/* Prevent layout shifts for images */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Optimize animations */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Optimize font loading */
+@font-face {
+  font-family: 'Nunito Sans';
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Merriweather';
+  font-display: swap;
+}
+
 @theme {
   /* Breakpoints */
   --breakpoint-mobile: 480px; /* Mobile devices (phones) */
@@ -105,6 +140,10 @@
 */
 body {
   @apply bg-white text-primary-dark font-sans;
+  /* Optimize rendering */
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Base typography classes (mobile-first) */

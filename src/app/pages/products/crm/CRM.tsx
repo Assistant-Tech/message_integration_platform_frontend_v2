@@ -11,7 +11,7 @@ import {
 
 import ScaleYourBusiness from "../components/ScaleYourBusiness";
 import { Breadcrumb } from "@/app/components/ui";
-import { FrequentlyAskedQuestion } from "@/app/components/common";
+import { FAQ } from "@/app/components/common";
 
 const CRM: React.FC = () => {
   const CrmBreadCrumb = [
@@ -57,7 +57,7 @@ const CRM: React.FC = () => {
         <Pricing />
 
         {/* FAQ SECTION */}
-        <FrequentlyAskedQuestion />
+        <FAQ variant="default" />
       </div>
     </div>
   );
