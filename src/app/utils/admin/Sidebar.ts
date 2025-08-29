@@ -57,5 +57,35 @@ export const sidebarItems = [
     icon: Settings,
     href: APP_ROUTES.ADMIN.SETTINGS,
     hasSubmenu: true,
+    submenu: [
+      {
+        label: "My Profile",
+        href: APP_ROUTES.ADMIN.SETTINGS_PROFILE,
+      },
+      {
+        label: "Company Settings",
+        href: APP_ROUTES.ADMIN.SETTINGS_COMPANY,
+      },
+      {
+        label: "Role Management",
+        href: APP_ROUTES.ADMIN.SETTINGS_ROLE_MANAGEMENT,
+      },
+      {
+        label: "Security Settings",
+        href: APP_ROUTES.ADMIN.SETTINGS_SECURITY,
+      },
+      {
+        label: "Chat Settings",
+        href: APP_ROUTES.ADMIN.SETTINGS_CHAT_SETTINGS,
+      },
+      {
+        label: "Shipping",
+        href: APP_ROUTES.ADMIN.SETTINGS_SHIPPING,
+      },
+      {
+        label: "Subscription",
+        href: APP_ROUTES.ADMIN.SETTINGS_SUBSCRIPTION,
+      },
+    ],
   },
 ];

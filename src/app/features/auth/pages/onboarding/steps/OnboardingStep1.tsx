@@ -33,7 +33,7 @@ const OnboardingStep1: React.FC<OnboardingStep1Props> = ({
       email: "",
       contactNumber: "",
       website: "",
-    },
+    }
   );
 
   const [errors, setErrors] = useState<FormErrors>({});
@@ -41,7 +41,7 @@ const OnboardingStep1: React.FC<OnboardingStep1Props> = ({
 
   const handleInputChange = (
     field: keyof OnboardingStep1FormData,
-    value: string,
+    value: string
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {

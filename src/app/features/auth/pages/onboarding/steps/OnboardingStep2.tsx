@@ -53,7 +53,6 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
     [formData.country, countries],
   );
 
-  // States
   const states = useMemo(() => {
     if (!selectedCountry) return [];
 
@@ -80,7 +79,6 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
     [formData.state, states],
   );
 
-  // Cities
   const cities = useMemo(() => {
     if (!selectedCountry || !selectedState) return [];
 
@@ -121,7 +119,6 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
     }
   };
 
-  // Unified validation with Zod
   const validateForm = (): boolean => {
     const currentSchema = onboardingStep2Schema.superRefine((data, ctx) => {
       if (!data.country) {
