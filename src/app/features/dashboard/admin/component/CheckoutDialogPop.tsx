@@ -1,16 +1,16 @@
-import * as Dialog from "@radix-ui/react-dialog";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { Button, Input } from "@/app/components/ui";
-import { Minus, Plus, X } from "lucide-react";
+import { Minus, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import { Country } from "country-state-city";
-import Invoice from "./Invoice";
-import { PlanType, CheckoutFormData } from "@/app/types/plan.types";
 import { toast } from "sonner";
 
-import tickIcon from "@/app/assets/icons/tick.svg";
+import { PlanType, CheckoutFormData } from "@/app/types/plan.types";
+
 import tickIcon_filled from "@/app/assets/icons/tick_filled.svg";
+import { GenericDialog } from "@/app/components/common";
+import { Invoice } from "@/app/pages";
 
 interface CheckoutDialogProps {
   open: boolean;
@@ -49,7 +49,6 @@ const CheckoutDialogPop = ({ open, onClose, plan }: CheckoutDialogProps) => {
       "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920897/stripe_py4qze.webp",
   };
 
-  // Filter payment options based on currency
   const getAvailablePaymentOptions = useCallback((): PaymentOption[] => {
     return currency === "NPR" ? ["khalti", "esewa"] : ["stripe"];
   }, [currency]);
@@ -76,7 +75,7 @@ const CheckoutDialogPop = ({ open, onClose, plan }: CheckoutDialogProps) => {
     setCountries(Country.getAllCountries());
   }, []);
 
-  // Set default payment type based on plan interval
+  // Sync interval with plan
   useEffect(() => {
     if (plan?.interval) {
       const defaultType =
@@ -140,11 +139,10 @@ const CheckoutDialogPop = ({ open, onClose, plan }: CheckoutDialogProps) => {
   const handleIntervalChange = useCallback(
     (newInterval: IntervalType) => {
       setInterval(newInterval);
-
-      // Update payment type accordingly
-      const newPaymentType =
-        newInterval === "YEARLY" ? "BILL_YEARLY" : "BILL_MONTHLY";
-      setValue("paymentType", newPaymentType);
+      setValue(
+        "paymentType",
+        newInterval === "YEARLY" ? "BILL_YEARLY" : "BILL_MONTHLY",
+      );
     },
     [setValue],
   );
@@ -168,293 +166,213 @@ const CheckoutDialogPop = ({ open, onClose, plan }: CheckoutDialogProps) => {
   if (!plan) return null;
 
   return (
-    <Dialog.Root open={open} onOpenChange={onClose}>
-      <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/50 z-40" />
-        <Dialog.Content className="fixed z-50 top-1/2 left-1/2 w-[95vw] max-w-6xl max-h-[90vh] overflow-auto -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white shadow-lg focus:outline-none">
-          {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b">
-            <div className="flex items-center justify-between w-full">
-              <h1 className="h3-bold-32 text-base-black">
-                Billing Information
-              </h1>
+    <GenericDialog open={open} onClose={onClose} title="Billing Information">
+      {/* Currency + Interval Selectors */}
+      <div className="flex justify-end gap-4 mb-6">
+        <select
+          value={currency}
+          onChange={(e) => handleCurrencyChange(e.target.value as CurrencyType)}
+          className="px-4 py-2 border border-grey-light rounded-lg text-grey bg-white"
+        >
+          <option value="USD">USD ($)</option>
+          <option value="NPR">NPR (₨)</option>
+        </select>
 
-              {/* Currency and Interval Selectors */}
-              <div className="flex gap-4">
-                <select
-                  value={currency}
-                  onChange={(e) =>
-                    handleCurrencyChange(e.target.value as CurrencyType)
-                  }
-                  className="px-4 py-2 border border-grey-light rounded-lg text-grey bg-white focus:ring-2 focus:ring-primary focus:border-primary"
-                >
-                  <option value="USD">USD ($)</option>
-                  <option value="NPR">NPR (₨)</option>
-                </select>
+        <select
+          value={interval}
+          onChange={(e) => handleIntervalChange(e.target.value as IntervalType)}
+          className="px-4 py-2 border border-grey-light rounded-lg text-grey bg-white"
+        >
+          <option value="MONTHLY">Monthly</option>
+          <option value="YEARLY">Yearly</option>
+        </select>
+      </div>
 
-                <select
-                  value={interval}
-                  onChange={(e) =>
-                    handleIntervalChange(e.target.value as IntervalType)
-                  }
-                  className="px-4 py-2 border border-grey-light rounded-lg text-grey bg-white focus:ring-2 focus:ring-primary focus:border-primary"
+      {/* Main Content */}
+      <div className="flex flex-col lg:flex-row w-full gap-12">
+        {/* Form Section */}
+        <div className="w-full lg:max-w-xl">
+          <form onSubmit={handleFinalSubmit} className="space-y-6">
+            {/* Plan Header */}
+            <div className="flex flex-wrap items-center gap-4">
+              <h2 className="h4-bold-24 text-grey">{formattedPlanName}</h2>
+              {plan.isPopular && (
+                <motion.div
+                  className="inline-flex items-center px-4 py-3 rounded-full bg-secondary"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <option value="MONTHLY">Monthly</option>
-                  <option value="YEARLY">Yearly</option>
-                </select>
+                  <span className="body-bold-16 text-white">Most Popular</span>
+                </motion.div>
+              )}
+            </div>
+
+            {/* Full Name */}
+            <div>
+              <label className="body-bold-16 text-grey pb-1 block">
+                Full Name
+              </label>
+              <Input
+                placeholder="Jane Doe"
+                className="w-full"
+                {...register("fullName", { required: "Full Name is required" })}
+              />
+              {errors.fullName && (
+                <p className="text-danger body-regular-16">
+                  {errors.fullName.message}
+                </p>
+              )}
+            </div>
+
+            {/* Country */}
+            <div>
+              <label className="body-bold-16 text-grey pb-1 block">
+                Your Country
+              </label>
+              <select
+                className="w-full border rounded-lg px-4 py-3 text-grey"
+                {...register("country", { required: "Country is required" })}
+                defaultValue=""
+              >
+                <option value="" disabled hidden>
+                  Select your country
+                </option>
+                {countries.map((country) => (
+                  <option key={country.isoCode} value={country.isoCode}>
+                    {country.name}
+                  </option>
+                ))}
+              </select>
+              {errors.country && (
+                <p className="text-danger body-regular-16">
+                  {errors.country.message}
+                </p>
+              )}
+            </div>
+
+            {/* Staff Count */}
+            <div>
+              <label className="body-bold-16 text-grey pb-1 block">
+                Number of Staffs
+              </label>
+              <div className="flex items-center border rounded-lg overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => handleStaffChange(-1)}
+                  className="px-4 py-3 bg-grey-light disabled:opacity-10"
+                  disabled={staffCount <= 1}
+                >
+                  <Minus size={16} color="grey" />
+                </button>
+                <Input
+                  placeholder="Staff Count"
+                  type="number"
+                  className="text-center border-none focus:ring-0 rounded-none"
+                  value={staffCount}
+                  onChange={(e) =>
+                    setStaffCount(Math.max(1, parseInt(e.target.value) || 1))
+                  }
+                  min={1}
+                />
+                <button
+                  type="button"
+                  onClick={() => handleStaffChange(1)}
+                  className="px-4 py-3 bg-grey-light"
+                >
+                  <Plus size={16} color="grey" />
+                </button>
               </div>
             </div>
 
-            <Dialog.Close className="p-1 rounded-lg hover:bg-gray-100">
-              <X size={24} />
-            </Dialog.Close>
-          </div>
+            {/* Payment Options */}
+            <div>
+              <label className="body-bold-16 text-grey pb-1 block">
+                Payment Option
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {getAvailablePaymentOptions().map((option, index) => {
+                  const isSelected = watch("paymentOption") === option;
+                  const availableOptions = getAvailablePaymentOptions();
 
-          {/* Main Content */}
-          <div className="flex flex-col lg:flex-row w-full gap-12 p-6">
-            {/* Form Section */}
-            <div className="w-full lg:max-w-xl">
-              <form onSubmit={handleFinalSubmit} className="space-y-6">
-                <div className="flex flex-wrap items-center gap-4">
-                  <h2 className="h4-bold-24 text-grey">{formattedPlanName}</h2>
-                  {plan.isPopular && (
-                    <motion.div
-                      className="inline-flex items-center px-4 py-3 rounded-full bg-secondary"
-                      whileHover={{ scale: 1.05 }}
-                      transition={{ type: "spring", stiffness: 300 }}
-                    >
-                      <span className="body-bold-16 text-white cursor-pointer">
-                        Most Popular
-                      </span>
-                    </motion.div>
-                  )}
-                </div>
-
-                {/* Full Name */}
-                <div>
-                  <label className="body-bold-16 text-grey pb-1 block">
-                    Full Name
-                  </label>
-                  <Input
-                    placeholder="Jane Doe"
-                    className="w-full"
-                    {...register("fullName", {
-                      required: "Full Name is required",
-                    })}
-                  />
-                  {errors.fullName && (
-                    <p className="text-danger body-regular-16">
-                      {errors.fullName.message}
-                    </p>
-                  )}
-                </div>
-
-                {/* Country */}
-                <div>
-                  <label className="body-bold-16 text-grey pb-1 block">
-                    Your Country
-                  </label>
-                  <select
-                    className="w-full border placeholder-grey-light text-grey border-grey-light rounded-lg px-4 py-3"
-                    {...register("country", {
-                      required: "Country is required",
-                    })}
-                    defaultValue=""
-                  >
-                    <option value="" disabled hidden>
-                      Select your country
-                    </option>
-                    {countries.map((country) => (
-                      <option key={country.isoCode} value={country.isoCode}>
-                        {country.name}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.country && (
-                    <p className="text-danger body-regular-16">
-                      {errors.country.message}
-                    </p>
-                  )}
-                </div>
-
-                {/* Staff Count */}
-                <div>
-                  <label className="body-bold-16 text-grey pb-1 block">
-                    Number of Staffs
-                  </label>
-                  <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
+                  return (
                     <button
+                      key={option}
                       type="button"
-                      onClick={() => handleStaffChange(-1)}
-                      className="px-4 py-3 bg-grey-light hover:bg-grey-light cursor-pointer disabled:opacity-10 disabled:cursor-not-allowed"
-                      disabled={staffCount <= 1}
+                      onClick={() => setValue("paymentOption", option)}
+                      className={`relative border rounded-lg p-4 flex items-center justify-center ${
+                        isSelected
+                          ? "border-primary ring-1 ring-primary"
+                          : "border-grey-light"
+                      } ${
+                        availableOptions.length === 1
+                          ? "sm:col-span-2 col-span-1"
+                          : index === 2
+                            ? "sm:col-span-2 col-span-1"
+                            : ""
+                      }`}
                     >
-                      <Minus size={16} color="grey" />
+                      {isSelected && (
+                        <img
+                          src={tickIcon_filled}
+                          alt="Selected"
+                          className="absolute top-1 right-1 h-8 w-8"
+                        />
+                      )}
+                      <img
+                        src={paymentIcons[option]}
+                        alt={option}
+                        className="h-6 sm:h-16 object-contain"
+                      />
                     </button>
-                    <Input
-                      placeholder="1"
-                      type="number"
-                      className="text-center border-none focus:ring-0 rounded-none"
-                      value={staffCount}
-                      onChange={(e) => {
-                        const val = Math.max(1, parseInt(e.target.value) || 1);
-                        setStaffCount(val);
-                      }}
-                      min={1}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => handleStaffChange(1)}
-                      className="px-4 py-3 bg-grey-light hover:bg-grey-light cursor-pointer"
-                    >
-                      <Plus size={16} color="grey" />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Payment Type - Syncs with interval */}
-                <div>
-                  <label className="body-bold-16 text-grey pb-1 block">
-                    Payment Type
-                  </label>
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    {["BILL_MONTHLY", "BILL_YEARLY"].map((type) => {
-                      const label =
-                        type === "BILL_MONTHLY"
-                          ? "Bill Monthly"
-                          : "Bill Yearly";
-                      const isSelected =
-                        (type === "BILL_MONTHLY" && interval === "MONTHLY") ||
-                        (type === "BILL_YEARLY" && interval === "YEARLY");
-
-                      return (
-                        <div key={type} className="relative flex-1">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const newInterval =
-                                type === "BILL_MONTHLY" ? "MONTHLY" : "YEARLY";
-                              handleIntervalChange(newInterval);
-                            }}
-                            className={`w-full h-full border rounded-xl py-4 px-6 text-center cursor-pointer relative ${
-                              isSelected
-                                ? "bg-primary text-white border-primary"
-                                : "bg-white border-primary text-primary"
-                            }`}
-                          >
-                            <span className="button-semi-bold-16">{label}</span>
-                            {type === "BILL_YEARLY" && (
-                              <div className="label-regular-16 mt-1">
-                                (Save 10%)
-                              </div>
-                            )}
-                          </button>
-                          {isSelected && (
-                            <img
-                              src={tickIcon}
-                              alt="Selected"
-                              className="absolute top-2 right-2 w-6 h-6"
-                            />
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Payment Option - Filtered by currency */}
-                <div>
-                  <label className="body-bold-16 text-grey pb-1 block">
-                    Payment Option
-                  </label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {getAvailablePaymentOptions().map((option, index) => {
-                      const isSelected = watch("paymentOption") === option;
-                      const availableOptions = getAvailablePaymentOptions();
-
-                      return (
-                        <button
-                          key={option}
-                          type="button"
-                          onClick={() => setValue("paymentOption", option)}
-                          className={`relative border rounded-lg p-4 flex items-center justify-center cursor-pointer ${
-                            isSelected
-                              ? "border-primary ring-1 ring-primary"
-                              : "border-grey-light"
-                          } ${
-                            availableOptions.length === 1
-                              ? "sm:col-span-2 col-span-1"
-                              : index === 2
-                                ? "sm:col-span-2 col-span-1"
-                                : ""
-                          }`}
-                        >
-                          {isSelected && (
-                            <img
-                              src={tickIcon_filled}
-                              alt="Selected"
-                              className="absolute top-1 right-1 h-8 w-8"
-                            />
-                          )}
-                          <img
-                            src={paymentIcons[option]}
-                            alt={option}
-                            className="h-6 sm:h-16 object-contain"
-                          />
-                        </button>
-                      );
-                    })}
-                  </div>
-                  {errors.paymentOption && (
-                    <p className="text-danger body-regular-16 mt-1">
-                      {errors.paymentOption.message}
-                    </p>
-                  )}
-                </div>
-
-                {/* Promo Code */}
-                <div>
-                  <label className="body-bold-16 text-grey pb-1 block">
-                    Add a Promo Code (Optional)
-                  </label>
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <input
-                      value={promoInput}
-                      placeholder="Enter promo code"
-                      className="w-full px-4 py-3 border border-grey-light rounded-lg"
-                      onChange={(e) => setPromoInput(e.target.value)}
-                    />
-                    <Button
-                      type="button"
-                      label="Apply"
-                      onClick={() => setAppliedPromoCode(promoInput)}
-                      className="bg-base-black text-white px-4 py-3"
-                    />
-                  </div>
-                </div>
-              </form>
+                  );
+                })}
+              </div>
+              {errors.paymentOption && (
+                <p className="text-danger body-regular-16 mt-1">
+                  {errors.paymentOption.message}
+                </p>
+              )}
             </div>
 
-            {/* Invoice Section */}
-            <div className="w-full lg:w-2xl bg-base-white rounded-lg">
-              <h2 className="h3-bold-32 text-grey px-6 py-6 border-b-2 border-grey-light">
-                Invoice
-              </h2>
-              <Invoice
-                plan={plan}
-                staffCount={staffCount}
-                paymentType={watch("paymentType")}
-                paymentOption={watch("paymentOption")}
-                currency={currency}
-                interval={interval}
-                onConfirm={handleFinalSubmit}
-                promocode={appliedPromoCode}
-              />
+            {/* Promo Code */}
+            <div>
+              <label className="body-bold-16 text-grey pb-1 block">
+                Add a Promo Code (Optional)
+              </label>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <input
+                  value={promoInput}
+                  placeholder="Enter promo code"
+                  className="w-full px-4 py-3 border border-grey-light rounded-lg"
+                  onChange={(e) => setPromoInput(e.target.value)}
+                />
+                <Button
+                  type="button"
+                  label="Apply"
+                  onClick={() => setAppliedPromoCode(promoInput)}
+                  className="bg-base-black text-white px-4 py-3"
+                />
+              </div>
             </div>
-          </div>
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
+          </form>
+        </div>
+
+        {/* Invoice */}
+        <div className="w-full lg:w-2xl bg-base-white rounded-lg">
+          <h2 className="h3-bold-32 text-grey px-6 py-6 border-b-2">Invoice</h2>
+          <Invoice
+            plan={plan}
+            staffCount={staffCount}
+            paymentType={watch("paymentType")}
+            paymentOption={watch("paymentOption")}
+            currency={currency}
+            interval={interval}
+            onConfirm={handleFinalSubmit}
+            promocode={appliedPromoCode}
+          />
+        </div>
+      </div>
+    </GenericDialog>
   );
 };
 
