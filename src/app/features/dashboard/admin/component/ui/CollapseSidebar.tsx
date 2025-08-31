@@ -13,7 +13,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/app/components/common/Tooltip";
-import { sidebarItems } from "@/app/utils/admin/Sidebar";
+import { sidebarItems } from "@/app/utils/admin/sidebar.config";
 import { CollapsedLogo, Logo } from "@/app/components/ui";
 
 const CollapsibleSidebar = () => {

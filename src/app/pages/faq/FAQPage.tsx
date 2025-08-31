@@ -1,5 +1,5 @@
 import { Accordian, Input } from "@/app/components/ui";
-import { faqData } from "@/app/utils/faq/faq";
+import { faqData } from "@/app/utils/faq/faq.config";
 import { Search } from "lucide-react";
 import { useState } from "react";
 

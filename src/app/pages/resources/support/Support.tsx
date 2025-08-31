@@ -4,7 +4,7 @@ import { Headset, Mail, MapPin, MapPinHouse, PhoneCall } from "lucide-react";
 
 import { Breadcrumb, SmartCard } from "@/app/components/ui";
 import { APP_ROUTES } from "@/app/constants/routes";
-import { smartCards } from "@/app/utils/resource/utils";
+import { smartCards } from "@/app/utils/resource/resource.config";
 import { GetStarted } from "@/app/pages/landing/";
 import { FrequentlyAskedQuestion, NewsLetter } from "@/app/components/common";
 import RegisterForm from "@/app/features/auth/components/form/RegisterForm";

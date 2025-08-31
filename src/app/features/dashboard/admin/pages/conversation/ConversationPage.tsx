@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Heading } from "@/app/features/dashboard/admin/component/ui/";
-import { conversations } from "@/app/utils/admin/conversation";
+import { conversations } from "@/app/utils/admin/conversation.config";
 import { ChatPannel } from "@/app/features/dashboard/admin/component/";
 import { Input } from "@/app/components/ui";
 

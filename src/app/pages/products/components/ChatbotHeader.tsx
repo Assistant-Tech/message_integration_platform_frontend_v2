@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { features } from "@/app/utils/product/utils";
+import { features } from "@/app/utils/product/product.config";
 import chatbot from "@/app/assets/video/chatbot.mp4";
 import { EmailSignupCTA } from "@/app/pages/products/components/";
 

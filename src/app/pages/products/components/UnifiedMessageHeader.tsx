@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { EmailSignupCTA } from "@/app/pages/products/components/";
-import { features } from "@/app/utils/product/utils";
+import { features } from "@/app/utils/product/product.config";
 import { UNIFIED_MESSAGE_IMAGE_URL } from "@/app/constants/image-cloudinary";
 
 const stats = [

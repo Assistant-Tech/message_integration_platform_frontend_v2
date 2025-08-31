@@ -6,7 +6,7 @@ import {
   scrollToSection,
   TableOfContentsItem,
   termsContentData,
-} from "@/app/utils/resource/utils";
+} from "@/app/utils/resource/resource.config";
 
 import { useActiveSection } from "@/app/hooks/useActiveSection";
 import { TermsContent } from "@/app/pages/resources/components";

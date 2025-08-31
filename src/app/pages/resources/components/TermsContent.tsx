@@ -1,5 +1,5 @@
 import React from "react";
-import { TermsContentProps } from "@/app/utils/resource/utils";
+import { TermsContentProps } from "@/app/utils/resource/resource.config";
 import ContentSection from "./ContentSection";
 
 const TermsContent: React.FC<TermsContentProps> = ({ content }) => {

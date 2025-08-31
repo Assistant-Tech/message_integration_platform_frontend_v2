@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getActiveSection } from "@/app/utils/resource/utils";
+import { getActiveSection } from "@/app/utils/resource/resource.config";
 
 export const useActiveSection = (
   contentIds: string[],
@@ -18,7 +18,7 @@ export const useActiveSection = (
     };
 
     window.addEventListener("scroll", handleScroll);
-    handleScroll(); 
+    handleScroll();
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, [contentIds, scrollOffset]);

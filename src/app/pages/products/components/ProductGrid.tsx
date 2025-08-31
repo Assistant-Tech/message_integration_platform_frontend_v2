@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { services } from "@/app/utils/product/utils";
+import { services } from "@/app/utils/product/product.config";
 import ProductCard from "@/app/components/ui/ProductCard";
 import { Badge } from "@/app/components/ui";
 

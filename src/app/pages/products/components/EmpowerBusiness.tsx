@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-import { benefits, features } from "@/app/utils/product/utils";
+import { benefits, features } from "@/app/utils/product/product.config";
 import { cn } from "@/app/utils/cn";
 
 import { EmailSignupCTA } from "@/app/pages/products/components/";

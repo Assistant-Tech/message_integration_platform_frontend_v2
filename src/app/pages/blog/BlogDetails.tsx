@@ -6,7 +6,7 @@ import {
   getBlogPostById,
   getTableOfContents,
   getRelatedPosts,
-} from "@/app/utils/blog/blog";
+} from "@/app/utils/blog/blog.config";
 import { Badge } from "@/app/components/ui";
 import Button from "@/app/components/ui/Button";
 
