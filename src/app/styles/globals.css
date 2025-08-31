@@ -117,6 +117,22 @@ img {
   display: none;
 }
 
+/* Global CSS or in your tailwind config file */
+::-webkit-scrollbar {
+  width: 8px; /* Set the width of the scrollbar */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #68dac5; /* Replace with your bg-primary color */
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #1cb496; /* Replace with your bg-primary-dark color */
+  border-radius: 8px;
+}
+
+
 /*
 ─────────────────────────────────────────────────────────────────────────────
  📦 ▶ Base Styles

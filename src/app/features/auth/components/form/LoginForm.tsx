@@ -75,6 +75,7 @@ const LoginForm = () => {
           toast.error(errorMessage);
           navigate("/check-email", { state: { email: data.email } });
         } else {
+          console.log("Login error:", errorMessage);
           toast.error(errorMessage);
         }
       }

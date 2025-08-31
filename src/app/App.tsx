@@ -10,6 +10,7 @@ import ErrorBoundary from "@/app/ErrorBoundary";
 const App = () => {
   const isRefreshing = useAuthStore((s) => s.isRefreshing);
 
+  // Initial auth bootstrap: attempt token refresh then load user profile.
   useEffect(() => {
     let cancelled = false;
     const bootstrap = async () => {

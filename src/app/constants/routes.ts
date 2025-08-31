@@ -8,7 +8,7 @@ export const APP_ROUTES = {
     CONTACT: "/contact",
     UNAUTHORIZED: "/unauthorized",
     PRICING: "/pricing",
-    PRODUCTS: "/products",  
+    PRODUCTS: "/products",
     SLUG: (slug: string) => `/${slug}`,
     DEMO: "/demo",
     FORGOT_PASSWORD: "/forgot-password",
@@ -72,6 +72,14 @@ export const APP_ROUTES = {
 
     // Sub Settings
     SETTINGS: "settings",
+    SETTINGS_PROFILE: "settings/profile",
+    SETTINGS_COMPANY: "settings/company",
+    SETTINGS_SECURITY: "settings/security",
+    SETTINGS_ROLE_MANAGEMENT: "settings/role-management",
+    SETTINGS_NOTIFICATIONS: "settings/notifications",
+    SETTINGS_CHAT_SETTINGS: "settings/chat_settings",
+    SETTINGS_SHIPPING: "settings/shipping",
+    SETTINGS_SUBSCRIPTION: "settings/subscription",
 
     // Sub Products
     PRODUCTS: "product",
