@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 
 import { APP_ROUTES } from "@/app/constants/routes";
 import { ArrowLeft } from "lucide-react";
+import { LOGIN_OTP_IMAGE_URL } from "@/app/constants/image-cloudinary";
 
 const LoginOTP: React.FC = () => {
   const [code, setCode] = useState<string>("");
@@ -74,9 +75,7 @@ const LoginOTP: React.FC = () => {
       {/* Left Section */}
       <div className="hidden bg-base-white md:flex flex-col w-1/2 items-center justify-center px-10">
         <img
-          src={
-            "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1756630890/loginImage_dhul1r.png"
-          }
+          src={LOGIN_OTP_IMAGE_URL}
           alt="Login Visual"
           className="w-96 h-auto"
         />

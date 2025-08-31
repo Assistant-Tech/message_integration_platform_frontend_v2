@@ -3,6 +3,7 @@ import { Button, Logo } from "@/app/components/ui";
 
 import google from "@/app/assets/icons/google.svg";
 import circlefb from "@/app/assets/icons/circlefb.svg";
+import { REGISTER_IMAGE_URL } from "@/app/constants/image-cloudinary";
 
 const RegisterPage = () => {
   return (
@@ -10,7 +11,7 @@ const RegisterPage = () => {
       {/* Left Section with gradient overlay */}
       <div className="hidden md:block w-1/2 h-full relative">
         <img
-          src="https://res.cloudinary.com/dtoqwn0gx/image/upload/v1755078235/register_tmr4r8.png"
+          src={REGISTER_IMAGE_URL}
           alt="register"
           className="w-full h-full object-cover"
         />

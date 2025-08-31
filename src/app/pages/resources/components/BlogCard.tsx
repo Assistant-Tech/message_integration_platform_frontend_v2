@@ -1,5 +1,6 @@
 import { Calendar } from "lucide-react";
 import { motion } from "framer-motion";
+import { BLOG_IMAGE_URL } from "@/app/constants/image-cloudinary";
 
 const BlogCard = () => {
   return (
@@ -10,9 +11,7 @@ const BlogCard = () => {
     >
       <div className="rounded-2xl bg-base-white mb-20 p-8">
         <img
-          src={
-            "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753878938/feature1_mss3ho.png"
-          }
+          src={BLOG_IMAGE_URL}
           alt="CRM Dashboard"
           className="w-full h-96 object-cover rounded-xl"
         />

@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 
 import { X, CircleCheckBig } from "lucide-react";
 import logo from "@/app/assets/icons/logo-white.svg";
+import { DEMO_IMAGE_URL } from "@/app/constants/image-cloudinary";
 
 const DemoTextArea = () => {
   const { close } = useDemoDialogStore();
@@ -93,9 +94,7 @@ const DemoTextArea = () => {
         ))}
         <figure className="flex justify-center pt-12">
           <img
-            src={
-              "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920904/demo_snjh0d.webp"
-            }
+            src={DEMO_IMAGE_URL}
             alt="feature/image.webp"
             width={620}
             height={142}

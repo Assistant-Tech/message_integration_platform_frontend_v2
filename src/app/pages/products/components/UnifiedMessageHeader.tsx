@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { EmailSignupCTA } from "@/app/pages/products/components/";
 import { features } from "@/app/utils/product/utils";
+import { UNIFIED_MESSAGE_IMAGE_URL } from "@/app/constants/image-cloudinary";
 
 const stats = [
   { value: "95%", label: "Customer Satisfaction" },
@@ -93,9 +94,7 @@ const UnifiedMessageHeader = () => {
               {/* 📹 Chatbot Video */}
               <div className="aspect-[4/3] bg-black">
                 <img
-                  src={
-                    "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920901/unified-message_mcy7rj.webp"
-                  }
+                  src={UNIFIED_MESSAGE_IMAGE_URL}
                   className="w-full h-full object-cover"
                 />
               </div>

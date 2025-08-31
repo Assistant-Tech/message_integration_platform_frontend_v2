@@ -1,3 +1,9 @@
+import {
+  CASH_ON_DELIVERY_IMAGE_URL,
+  ESEWA_IMAGE_URL,
+  KHALTI_IMAGE_URL,
+  STRIPE_IMAGE_URL,
+} from "@/app/constants/image-cloudinary";
 import { BadgeCheck } from "lucide-react";
 
 // images import
@@ -20,26 +26,22 @@ const PaymentMethods = () => {
   const paymentOptions = [
     {
       id: "Khalti",
-      image:
-        "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920905/khalti_xsudv7.webp",
+      image: KHALTI_IMAGE_URL,
       label: "Khalti",
     },
     {
       id: "eSewa",
-      image:
-        "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920903/esewa_cmqyoh.webp",
+      image: ESEWA_IMAGE_URL,
       label: "eSewa",
     },
     {
       id: "Stripe",
-      image:
-        "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920897/stripe_py4qze.webp",
+      image: STRIPE_IMAGE_URL,
       label: "Stripe",
     },
     {
       id: "Cash On Delivery",
-      image:
-        "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1756631203/cod_qyz92a.jpg",
+      image: CASH_ON_DELIVERY_IMAGE_URL,
       label: "Cash On Delivery",
     },
   ];

@@ -96,6 +96,7 @@ export const smartCardData = [
 
 import { Users, FileText, BarChart3, Globe } from "lucide-react";
 import type { ServiceItem } from "@/app/types/product.types";
+import { PRODUCT_IMAGE_URL } from "@/app/constants/image-cloudinary";
 
 export const services: ServiceItem[] = [
   {
@@ -104,7 +105,7 @@ export const services: ServiceItem[] = [
     title: "Literature",
     description:
       "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+    img: PRODUCT_IMAGE_URL,
   },
   {
     id: 2,
@@ -112,7 +113,7 @@ export const services: ServiceItem[] = [
     title: "CRM",
     description:
       "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+    img: PRODUCT_IMAGE_URL,
   },
   {
     id: 3,
@@ -120,7 +121,7 @@ export const services: ServiceItem[] = [
     title: "Self Sourcing",
     description:
       "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+    img: PRODUCT_IMAGE_URL,
   },
   {
     id: 4,
@@ -128,7 +129,7 @@ export const services: ServiceItem[] = [
     title: "Business",
     description:
       "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+    img: PRODUCT_IMAGE_URL,
   },
   {
     id: 5,
@@ -136,7 +137,7 @@ export const services: ServiceItem[] = [
     title: "Business",
     description:
       "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+    img: PRODUCT_IMAGE_URL,
   },
   {
     id: 6,
@@ -144,7 +145,7 @@ export const services: ServiceItem[] = [
     title: "Business",
     description:
       "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+    img: PRODUCT_IMAGE_URL,
   },
   {
     id: 7,
@@ -152,7 +153,7 @@ export const services: ServiceItem[] = [
     title: "Business",
     description:
       "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+    img: PRODUCT_IMAGE_URL,
   },
   {
     id: 8,
@@ -160,7 +161,7 @@ export const services: ServiceItem[] = [
     title: "Business",
     description:
       "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+    img: PRODUCT_IMAGE_URL,
   },
   {
     id: 9,
@@ -168,6 +169,6 @@ export const services: ServiceItem[] = [
     title: "Business",
     description:
       "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+    img: PRODUCT_IMAGE_URL,
   },
 ];

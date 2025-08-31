@@ -2,9 +2,8 @@
 // Register Fields Config
 // ----------------------
 import { APP_ROUTES } from "@/app/constants/routes";
-import { RegisterFormInputs } from "@/app/schemas/registerSchema";
 export const registerFields: {
-  name: keyof RegisterFormInputs;
+  name: string;
   label: string;
   placeholder: string;
   type?: React.InputHTMLAttributes<HTMLInputElement>["type"];

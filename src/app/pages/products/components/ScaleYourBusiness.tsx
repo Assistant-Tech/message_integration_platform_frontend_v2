@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Circle, Check } from "lucide-react";
 
 import { Button } from "@/app/components/ui";
+import { SCALE_IMAGE_URL } from "@/app/constants/image-cloudinary";
 
 const ScaleYourBusiness = () => {
   return (
@@ -19,9 +20,7 @@ const ScaleYourBusiness = () => {
         {/* Main image */}
         <motion.figure className="rounded-2xl overflow-hidden">
           <img
-            src={
-              "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp"
-            }
+            src={SCALE_IMAGE_URL}
             alt="Online business dashboard"
             className="w-full h-auto object-cover rounded-2xl"
           />
@@ -30,9 +29,7 @@ const ScaleYourBusiness = () => {
         {/* Overlapping image */}
         <motion.figure className="absolute -bottom-6 sm:-bottom-10 md:-bottom-14 right-4 sm:right-8 md:right-12 w-36 sm:w-48 md:w-64 lg:w-72 rounded-2xl overflow-hidden border-4 border-white shadow-xl">
           <img
-            src={
-              "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp"
-            }
+            src={SCALE_IMAGE_URL}
             alt="Purchase analytics"
             className="w-full h-auto object-cover"
           />
@@ -40,7 +37,9 @@ const ScaleYourBusiness = () => {
       </motion.div>
       {/* Text Content Section */}
       <motion.div className="w-full md:w-full lg:w-1/2 lg:max-w-xl space-y-6 md:space-y-8">
-        <h2 className="h2-bold-40 text-base-black text-center md:text-center lg:text-start">Scale Your Business</h2>
+        <h2 className="h2-bold-40 text-base-black text-center md:text-center lg:text-start">
+          Scale Your Business
+        </h2>
         <p className="lg:max-w-5xl flex justify-start items-center text-center md:text-center lg:text-start md:max-w-none">
           Whether you're a startup or an enterprise, our AI-enabled CRM helps
           take your business to the next level with intelligent automation and

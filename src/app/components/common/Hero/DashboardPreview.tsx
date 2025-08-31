@@ -1,5 +1,9 @@
 import React, { useRef } from "react";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import {
+  DASHBOARD_IMAGE_URL,
+  DASHBOARD_IMAGE_URL_2,
+} from "@/app/constants/image-cloudinary";
 
 const DashboardPreview: React.FC = () => {
   const ref = useRef(null);
@@ -48,7 +52,7 @@ const DashboardPreview: React.FC = () => {
               className="relative transform-gpu p-2 border-4 border-base-white rounded-lg"
             >
               <img
-                src="https://res.cloudinary.com/dtoqwn0gx/image/upload/v1754284164/dash1_nvbxo9.png"
+                src={DASHBOARD_IMAGE_URL}
                 srcSet="
                   https://res.cloudinary.com/dtoqwn0gx/image/upload/v1754284164/dash1_nvbxo9.png 600w,
                 "
@@ -77,7 +81,7 @@ const DashboardPreview: React.FC = () => {
               className="relative transform-gpu -ml-10 mt-8 p-2 border-4 border-base-white rounded-lg"
             >
               <img
-                src="https://res.cloudinary.com/dtoqwn0gx/image/upload/v1754284165/dash2_nzxj83.png"
+                src={DASHBOARD_IMAGE_URL_2}
                 srcSet="
                   https://res.cloudinary.com/dtoqwn0gx/image/upload/v1754284165/dash2_nzxj83.png 600w,
                 "

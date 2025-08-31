@@ -8,6 +8,7 @@ import { smartCards } from "@/app/utils/resource/utils";
 import { GetStarted } from "@/app/pages/landing/";
 import { FrequentlyAskedQuestion, NewsLetter } from "@/app/components/common";
 import RegisterForm from "@/app/features/auth/components/form/RegisterForm";
+import { SUPPORT_IMAGE_URL } from "@/app/constants/image-cloudinary";
 
 const Support = () => {
   const SupportCrumb = [
@@ -40,9 +41,7 @@ const Support = () => {
           transition={{ duration: 0.5 }}
         >
           <img
-            src={
-              "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920905/navbar-image-test_vd8f8b.webp"
-            }
+            src={SUPPORT_IMAGE_URL}
             alt="Support"
             loading="lazy"
             decoding="async"
