@@ -161,16 +161,19 @@ export const useAuthStore = create<AuthState>()(
       logout: async () => {
         set({ isloading: true });
         try {
-          await logout();
+          await logout(); 
+        } catch (error) {
+          console.error("Logout failed:", error);
+        } finally {
           set({
             user: null,
             accessToken: null,
             requiresOnboarding: false,
             onboardingToken: null,
             isVerified: false,
+            isAuthenticated: false,
+            isloading: false,
           });
-        } finally {
-          set({ isloading: false });
         }
       },
     }),
