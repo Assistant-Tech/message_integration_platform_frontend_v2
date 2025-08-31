@@ -134,3 +134,14 @@ export const logout = async () => {
     throw parsedError;
   }
 };
+/**
+ * Handles the user resend email API call.
+ */
+export const resendEmailVerification = async (email: string) => {
+  try {
+    const res = await api.post("/auth/verify/resend", { email });
+    return res.data;
+  } catch (error) {
+    throw handleApiError(error);
+  }
+};

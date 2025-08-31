@@ -81,3 +81,7 @@ export const SCALE_IMAGE_URL =
 // URL for a product-related image.
 export const PRODUCT_IMAGE_URL =
   "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp";
+
+// URL for a CHECK email image.
+export const CHECK_EMAIL_URL =
+  "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1755061535/verify_b097yg.png";

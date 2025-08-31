@@ -12,7 +12,12 @@ import tickIcon from "@/app/assets/icons/tick.svg";
 import tickIcon_filled from "@/app/assets/icons/tick_filled.svg";
 import { toast } from "sonner";
 import { CheckoutFormData, PlanType } from "@/app/types/plan.types";
-import api from "@/app/services/api/axios";
+import {
+  ESEWA_IMAGE_URL,
+  KHALTI_IMAGE_URL,
+  STRIPE_IMAGE_URL,
+} from "@/app/constants/image-cloudinary";
+import { fetchPlanById } from "@/app/services/plan.services";
 
 const CheckoutPage = () => {
   const { planId } = useParams<{ planId: string }>();
@@ -49,12 +54,9 @@ const CheckoutPage = () => {
   type PaymentOption = "khalti" | "esewa" | "stripe";
 
   const paymentIcons: Record<PaymentOption, string> = {
-    khalti:
-      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920905/khalti_xsudv7.webp",
-    esewa:
-      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920903/esewa_cmqyoh.webp",
-    stripe:
-      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920897/stripe_py4qze.webp",
+    khalti: KHALTI_IMAGE_URL,
+    esewa: ESEWA_IMAGE_URL,
+    stripe: STRIPE_IMAGE_URL,
   };
 
   // Filter payment options based on currency
@@ -100,102 +102,34 @@ const CheckoutPage = () => {
         params.set("currency", newCurrency);
         setCurrency(newCurrency);
         shouldUpdate = true;
-        console.log("🔄 Currency changed:", currency, "→", newCurrency);
       }
 
       if (newInterval && newInterval !== interval) {
         params.set("interval", newInterval);
         setInterval(newInterval);
         shouldUpdate = true;
-        console.log("🔄 Interval changed:", interval, "→", newInterval);
       }
 
       if (shouldUpdate) {
         setSearchParams(params);
-        // Force clear the current plan to show loading state
-        setPlan(null);
-        console.log("🔄 URL params updated, plan data will refresh");
+        setPlan(null); // force reload
       }
     },
     [searchParams, currency, interval, setSearchParams],
   );
 
-  // Fetch plan data - THIS IS THE KEY FIX
+  // ✅ Replace inline fetch with fetchPlanById util
   const fetchPlan = useCallback(async () => {
     if (!planId) return;
-
     setLoading(true);
     setError(null);
 
-    const apiUrl = `/plans/${planId}?interval=${interval}&currency=${currency}`;
-
-    console.log("🔍 Fetching plan with:", {
-      planId,
-      interval,
-      currency,
-      apiUrl,
-    });
-
     try {
-      const res = await api.get(apiUrl);
-      console.log("✅ API Response:", res.data);
-      console.log("🔄 Expected vs Received:", {
-        expectedInterval: interval,
-        receivedInterval: res.data.interval,
-        expectedCurrency: currency,
-        receivedCurrency: res.data.currency,
-      });
-
-      let planData = res.data;
-
-      // TEMPORARY FIX: Transform data if API doesn't handle params correctly
-      if (res.data.interval !== interval) {
-        console.warn(
-          "⚠️ API returned wrong interval, attempting to transform data",
-        );
-
-        // Transform yearly to monthly (divide by 12) or monthly to yearly (multiply by 12)
-        if (interval === "MONTHLY" && res.data.interval === "YEARLY") {
-          planData = {
-            ...res.data,
-            interval: "MONTHLY",
-            name: res.data.name.replace("YEARLY", "MONTHLY"),
-            description: res.data.description.replace("Yearly", "Monthly"),
-            amount: Math.round(res.data.amount / 12),
-            durationInDays: 30,
-          };
-          console.log("🔄 Transformed yearly to monthly:", planData);
-        } else if (interval === "YEARLY" && res.data.interval === "MONTHLY") {
-          planData = {
-            ...res.data,
-            interval: "YEARLY",
-            name: res.data.name.replace("MONTHLY", "YEARLY"),
-            description: res.data.description.replace("Monthly", "Yearly"),
-            amount: res.data.amount * 12,
-            durationInDays: 365,
-          };
-          console.log("🔄 Transformed monthly to yearly:", planData);
-        }
-      }
-
-      // Validation: Check if the API returned the correct currency
-      if (planData.currency !== currency) {
-        console.warn("⚠️ API returned different currency than requested:", {
-          requested: currency,
-          received: planData.currency,
-        });
-        // You might want to handle currency conversion here if needed
-      }
-
+      const planData = await fetchPlanById(planId, interval, currency);
       setPlan(planData);
     } catch (err: any) {
       console.error("❌ Error fetching plan:", err);
-      console.error("Error details:", {
-        status: err.response?.status,
-        message: err.response?.data?.message,
-        url: apiUrl,
-      });
-      setError(err.response?.data?.message || "Failed to fetch plan data");
+      setError(err.message || "Failed to fetch plan data");
     } finally {
       setLoading(false);
     }

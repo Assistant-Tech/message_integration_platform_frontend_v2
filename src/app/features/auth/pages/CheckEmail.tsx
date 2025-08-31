@@ -1,9 +1,11 @@
-import { Button, Logo } from "@/app/components/ui";
-import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { useState } from "react";
-import api from "@/app/services/api/axios";
+import { useNavigate, useLocation } from "react-router-dom";
+
+import { Button, Logo } from "@/app/components/ui";
 import { handleApiError } from "@/app/utils/handlerApiError";
+import { CHECK_EMAIL_URL } from "@/app/constants/image-cloudinary";
+import { resendEmailVerification } from "@/app/services/auth.services";
 
 const CheckEmail = () => {
   const navigate = useNavigate();
@@ -19,24 +21,32 @@ const CheckEmail = () => {
 
     setResendLoading(true);
     try {
-      const res = await api.post("/auth/verify/resend", {
-        email: resendEmail,
-      });
+      const res = await resendEmailVerification(resendEmail);
       toast.success(
         res.data?.message ||
           `Verification email resent to ${resendEmail}! Please check your inbox.`,
       );
     } catch (error: any) {
-      const parsedError = handleApiError(error);
+      const parsedError: any = handleApiError(error);
       let errorMessage = "Failed to resend email.";
 
-      if ("message" in parsedError) {
+      if (
+        parsedError &&
+        typeof parsedError === "object" &&
+        "message" in parsedError &&
+        typeof parsedError.message === "string"
+      ) {
         toast.error(parsedError.message);
-      } else if (parsedError.type === "validation") {
-        errorMessage =
-          parsedError.formErrors?.[0] ||
-          Object.values(parsedError.fieldErrors)?.[0]?.[0] ||
-          errorMessage;
+      } else if (parsedError && parsedError.type === "validation") {
+        const firstFormError = Array.isArray(parsedError.formErrors)
+          ? parsedError.formErrors[0]
+          : undefined;
+        const firstFieldError =
+          parsedError.fieldErrors && typeof parsedError.fieldErrors === "object"
+            ? (Object.values(parsedError.fieldErrors)[0] as any)?.[0]
+            : undefined;
+
+        errorMessage = firstFormError || firstFieldError || errorMessage;
       }
       toast.error(errorMessage);
     } finally {
@@ -48,11 +58,7 @@ const CheckEmail = () => {
     <div className="max-w-screen max-h-screen">
       <div className="w-full h-screen flex flex-col justify-center items-center">
         <Logo />
-        <img
-          src={`https://res.cloudinary.com/dtoqwn0gx/image/upload/v1755061535/verify_b097yg.png`}
-          alt="verify.png"
-          className="mt-10"
-        />
+        <img src={CHECK_EMAIL_URL} alt="verify.png" className="mt-10" />
         <article className="space-y-4 text-center py-8 px-6">
           <h1 className="font-bold text-3xl text-gray-900">Check your Email</h1>
           <p className="text-base text-grey-medium">
