@@ -1,8 +1,15 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import api from "@/app/services/api/axios";
 import { User } from "@/app/types/auth.types";
-import { fetchCurrentUser } from "@/app/services/auth.services";
+import {
+  fetchCurrentUser,
+  signup,
+  verifyEmail,
+  onboarding,
+  login,
+  refreshAccessToken,
+  logout,
+} from "@/app/services/auth.services";
 
 interface AuthState {
   user: User | null;
@@ -67,13 +74,13 @@ export const useAuthStore = create<AuthState>()(
       signup: async (name, email, password) => {
         set({ isloading: true });
         try {
-          const res = await api.post("/auth/signup", { name, email, password });
+          const res = await signup(name, email, password);
           set({
-            user: res.data.user,
-            requiresOnboarding: res.data.requiresOnboarding,
+            user: res.user,
+            requiresOnboarding: res.requiresOnboarding,
             isVerified: false,
           });
-          return { message: res.data.message, email };
+          return { message: res.message, email };
         } finally {
           set({ isloading: false });
         }
@@ -81,14 +88,12 @@ export const useAuthStore = create<AuthState>()(
       verifyEmail: async (token) => {
         set({ isloading: true });
         try {
-          const res = await api.get(`/auth/verify/${token}`, {
-            withCredentials: true,
-          });
+          const res = await verifyEmail(token);
           set({
             isVerified: true,
             requiresOnboarding: true,
           });
-          return { message: res.data.message };
+          return { message: res.message };
         } finally {
           set({ isloading: false });
         }
@@ -96,16 +101,11 @@ export const useAuthStore = create<AuthState>()(
       onboarding: async (data) => {
         set({ isloading: true });
         try {
-          const res = await api.post("/auth/onboarding", data, {
-            headers: { "Content-Type": "multipart/form-data" },
-          });
-
-          const onboardingData = res.data?.data || {};
+          const res = await onboarding(data);
+          const onboardingData = res.data || {};
           set({ requiresOnboarding: false });
-
           // Refresh user so tenant appears on the profile
           await get().fetchCurrentUserProfile();
-
           // Prefer store user’s tenant slug; fall back to API's onboarding slug
           const slug = get().user?.tenant?.slug ?? onboardingData.slug ?? "";
           return { slug };
@@ -113,29 +113,24 @@ export const useAuthStore = create<AuthState>()(
           set({ isloading: false });
         }
       },
-
       login: async (email, password) => {
         set({ isloading: true });
         try {
-          const res = await api.post("/auth/login", { email, password });
-          const { accessToken, requiresOnboarding, csrfToken } = res.data;
-
+          const res = await login(email, password);
+          const { accessToken, requiresOnboarding, csrfToken } = res;
           set({
             accessToken,
             requiresOnboarding,
             csrfToken,
             isAuthenticated: true,
           });
-
           await get().fetchCurrentUserProfile();
-
-          const tenantSlug = res.data.tenantSlug;
+          const tenantSlug = res.tenantSlug;
           if (!tenantSlug) {
             console.warn("⚠️ No tenantSlug found after login");
           }
-
           return {
-            message: res.data.message || "Login successful!",
+            message: res.message || "Login successful!",
             requiresOnboarding,
             tenantSlug: tenantSlug,
           };
@@ -143,19 +138,14 @@ export const useAuthStore = create<AuthState>()(
           set({ isloading: false });
         }
       },
-
       refreshAccessToken: async () => {
         try {
           set({ isRefreshing: true });
-          const res = await api.get("/auth/refresh", {
-            headers: {
-              "X-CSRF-Token": get().csrfToken,
-            },
-          });
-          const { accessToken } = res.data;
-          set({ accessToken });
+          const accessToken = await refreshAccessToken(get().csrfToken);
+          set({ accessToken, isRefreshing: false });
           return accessToken;
         } catch {
+          set({ isRefreshing: false });
           return null;
         }
       },
@@ -171,9 +161,7 @@ export const useAuthStore = create<AuthState>()(
       logout: async () => {
         set({ isloading: true });
         try {
-          await api.post("/auth/logout", {}).catch(() => {
-            console.log("Logout Error");
-          });
+          await logout();
           set({
             user: null,
             accessToken: null,

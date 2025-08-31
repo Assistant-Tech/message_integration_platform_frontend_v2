@@ -63,7 +63,7 @@ const LoginForm = () => {
       navigate(
         res.requiresOnboarding
           ? "/onboardingform"
-          : `/${res.tenantSlug}/admin/dashboard`
+          : `/${res.tenantSlug}/admin/dashboard`,
       );
       reset();
     } catch (error) {
@@ -104,10 +104,12 @@ const LoginForm = () => {
           {...register("password")}
           error={errors.password?.message}
           type={showPassword ? "text" : "password"}
+          onFocus={() => setShowPasswordChecks(true)}
           onBlur={() => {
             if (!password) setShowPasswordChecks(false);
           }}
         />
+
         <button
           type="button"
           onClick={() => setShowPassword(!showPassword)}

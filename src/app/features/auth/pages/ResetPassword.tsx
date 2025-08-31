@@ -4,9 +4,9 @@ import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import { ForgetPassword as forgetPasswordApi } from "@/app/services/auth.services";
 import { motion } from "framer-motion";
 import { cn } from "@/app/utils/cn";
+import { forgetPassword } from "@/app/services/auth.services";
 
 const ForgetPassword = () => {
   const [email, setEmail] = useState<string>("");
@@ -20,7 +20,7 @@ const ForgetPassword = () => {
 
     try {
       setLoading(true);
-      const res = await forgetPasswordApi(email);
+      const res = await forgetPassword(email);
       toast.success(
         res.message || "A password reset link has been sent to your email.",
       );
