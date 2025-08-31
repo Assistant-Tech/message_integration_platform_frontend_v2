@@ -1,6 +1,5 @@
 import React, { useRef, useState, useLayoutEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import loginImage from "@/app/assets/images/loginImage.png";
 import { Logo, Button } from "@/app/components/ui/";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
@@ -74,7 +73,13 @@ const LoginOTP: React.FC = () => {
     <div className="flex flex-col md:flex-row min-h-screen">
       {/* Left Section */}
       <div className="hidden bg-base-white md:flex flex-col w-1/2 items-center justify-center px-10">
-        <img src={loginImage} alt="Login Visual" className="w-96 h-auto" />
+        <img
+          src={
+            "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1756630890/loginImage_dhul1r.png"
+          }
+          alt="Login Visual"
+          className="w-96 h-auto"
+        />
         <div className="mt-8 text-center max-w-md">
           <h2 className="text-2xl font-bold text-gray-900 mb-3">
             Seamless Experience, Anytime, Anywhere

@@ -1,10 +1,6 @@
 import { BadgeCheck } from "lucide-react";
 
 // images import
-import Khalti from "@/app/assets/icons/khalti.png";
-import eSewa from "@/app/assets/icons/esewa.png";
-import Stripe from "@/app/assets/icons/stripe.png";
-import cod from "@/app/assets/icons/cod.jpg";
 import { useForm } from "react-hook-form";
 
 interface OrderFormValues {
@@ -22,10 +18,30 @@ const PaymentMethods = () => {
 
   // Mapping the images && Texts for payment methods
   const paymentOptions = [
-    { id: "Khalti", image: Khalti, label: "Khalti" },
-    { id: "eSewa", image: eSewa, label: "eSewa" },
-    { id: "Stripe", image: Stripe, label: "Stripe" },
-    { id: "Cash On Delivery", image: cod, label: "Cash On Delivery" },
+    {
+      id: "Khalti",
+      image:
+        "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920905/khalti_xsudv7.webp",
+      label: "Khalti",
+    },
+    {
+      id: "eSewa",
+      image:
+        "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920903/esewa_cmqyoh.webp",
+      label: "eSewa",
+    },
+    {
+      id: "Stripe",
+      image:
+        "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920897/stripe_py4qze.webp",
+      label: "Stripe",
+    },
+    {
+      id: "Cash On Delivery",
+      image:
+        "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1756631203/cod_qyz92a.jpg",
+      label: "Cash On Delivery",
+    },
   ];
   return (
     <div className="border border-grey-light rounded-md">

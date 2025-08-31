@@ -1,6 +1,5 @@
 import { Logo } from "@/app/components/ui";
 import LoginForm from "@/app/features/auth/components/form/LoginForm";
-import loginImage from "@/app/assets/images/loginImage.png";
 
 const LoginPage = () => {
   return (
@@ -8,7 +7,7 @@ const LoginPage = () => {
       {/* Left Section (only visible on large screens and up) */}
       <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center bg-base-white">
         <div>
-          <img src={loginImage} className="max-w-lg h-auto" />
+          <img src={"https://res.cloudinary.com/dtoqwn0gx/image/upload/v1756630890/loginImage_dhul1r.png"} className="max-w-lg h-auto" />
         </div>
         <div className="mt-8 max-w-md text-center">
           <h2 className="h3-bold-32 text-base-black mb-3">

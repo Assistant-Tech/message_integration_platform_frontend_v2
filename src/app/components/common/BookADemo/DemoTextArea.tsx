@@ -1,4 +1,4 @@
-import { useDemoDialogStore } from "@/app/store/DemoDialogStore";
+import { useDemoDialogStore } from "@/app/store/demo-dialog.store";
 import { motion } from "framer-motion";
 
 import { X, CircleCheckBig } from "lucide-react";
