@@ -1,8 +1,36 @@
 import { Check } from "lucide-react";
-
 import { cn } from "@/app/utils/cn";
 import { Button } from "@/app/components/ui";
 import { Plan } from "@/app/types/plan.types";
+
+// 🔹 Utility to make keys human-readable
+const toReadable = (key: string): string =>
+  key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase());
+
+// 🔹 Formatter for plan features
+const formatFeatures = (features: Record<string, any> | string[]): string[] => {
+  if (Array.isArray(features)) return features;
+
+  const formatters: Record<string, (value: any) => string | string[] | null> = {
+    includes: (v) => `Includes ${v} features`,
+    channels: (v) => (Array.isArray(v) ? `Channels: ${v.join(", ")}` : null),
+    chatAgents: (v) => `${v} Chat Agents`,
+    integrations: (v) => `${v} Integrations`,
+  };
+
+  return Object.entries(features).flatMap(([key, value]) => {
+    if (key in formatters) {
+      return formatters[key]?.(value) ?? [];
+    }
+    if (typeof value === "boolean" && value) {
+      return toReadable(key);
+    }
+    if (typeof value === "number") {
+      return `${toReadable(key)}: ${value}`;
+    }
+    return [];
+  });
+};
 
 interface PricingCardProps {
   plan: Plan & {
@@ -10,14 +38,12 @@ interface PricingCardProps {
     subtitle?: string;
     price?: string;
     buttonText?: string;
-    features?: string[];
+    features?: Record<string, any> | string[];
   };
   duration: "monthly" | "yearly";
 }
 
 const PricingCard = ({ plan, duration }: PricingCardProps) => {
-  // console.log("🚀 ~ PricingCard ~ plan:", plan);
-
   const formatTitle = (rawTitle?: string): string => {
     if (!rawTitle) return "";
     return rawTitle
@@ -26,54 +52,16 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
       .replace(/\b\w/g, (char) => char.toUpperCase());
   };
 
-  const getFeaturesList = (
-    features: Record<string, any> | string[],
-  ): string[] => {
-    if (Array.isArray(features)) return features;
+  const getInterval = () => (duration === "yearly" ? "YEARLY" : "MONTHLY");
+  const getCurrency = () => plan.currency || "USD";
 
-    const featuresList: string[] = [];
-    Object.entries(features).forEach(([key, value]) => {
-      if (key === "includes") {
-        featuresList.push(`Includes ${value} features`);
-      } else if (key === "channels" && Array.isArray(value)) {
-        featuresList.push(`Channels: ${value.join(", ")}`);
-      } else if (key === "chatAgents") {
-        featuresList.push(`${value} Chat Agents`);
-      } else if (key === "integrations") {
-        featuresList.push(`${value} Integrations`);
-      } else if (typeof value === "boolean" && value) {
-        const readableKey = key
-          .replace(/([A-Z])/g, " $1")
-          .replace(/^./, (str) => str.toUpperCase());
-        featuresList.push(readableKey);
-      } else if (typeof value === "number") {
-        const readableKey = key
-          .replace(/([A-Z])/g, " $1")
-          .replace(/^./, (str) => str.toUpperCase());
-        featuresList.push(`${readableKey}: ${value}`);
-      }
-    });
-    return featuresList;
-  };
-
-  // Convert duration to API format
-  const getInterval = () => {
-    return duration === "yearly" ? "YEARLY" : "MONTHLY";
-  };
-
-  // Get currency from plan or default to USD
-  const getCurrency = () => {
-    return plan.currency || "USD";
-  };
-
-  // Build checkout URL with proper parameters
   const getCheckoutUrl = () => {
     const interval = getInterval();
     const currency = getCurrency();
     return `/checkout/${plan.id}?interval=${interval}&currency=${currency}`;
   };
 
-  const displayFeatures = plan.features ? getFeaturesList(plan.features) : [];
+  const displayFeatures = plan.features ? formatFeatures(plan.features) : [];
   const displayPrice =
     plan.price || `${plan.currency === "NPR" ? "रु" : "$"}${plan.amount}`;
   const buttonText =
