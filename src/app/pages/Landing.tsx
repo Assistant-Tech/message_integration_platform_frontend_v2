@@ -18,7 +18,7 @@ import {
   OrderManagement,
 } from "@/app/pages/landing/index";
 import Section from "@/app/components/layout/Section";
-import { BannerProvider, useBanner } from "@/app/context/BannerContext";
+import { useBanner } from "@/app/context/BannerContext";
 import { useWindowSize } from "react-use";
 import ChatToggleButton from "@/app/components/common/ChatToggleButton";
 

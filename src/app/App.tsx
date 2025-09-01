@@ -43,7 +43,7 @@ const App = () => {
     return () => {
       cancelled = true;
     };
-  }, [isRefreshing]);
+  }, []);
 
   return (
     <ErrorBoundary>

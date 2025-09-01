@@ -142,13 +142,22 @@ export const useAuthStore = create<AuthState>()(
         try {
           set({ isRefreshing: true });
           const accessToken = await refreshAccessToken(get().csrfToken);
-          set({ accessToken, isRefreshing: false });
+          set({
+            accessToken,
+            isRefreshing: false,
+            isAuthenticated: !!accessToken,
+          });
           return accessToken;
         } catch {
-          set({ isRefreshing: false });
+          set({
+            accessToken: null,
+            isAuthenticated: false,
+            isRefreshing: false,
+          });
           return null;
         }
       },
+
       fetchCurrentUserProfile: async () => {
         set({ isloading: true });
         try {
@@ -161,19 +170,13 @@ export const useAuthStore = create<AuthState>()(
       logout: async () => {
         set({ isloading: true });
         try {
-          await logout(); 
+          await logout();
         } catch (error) {
           console.error("Logout failed:", error);
+          throw error;
         } finally {
-          set({
-            user: null,
-            accessToken: null,
-            requiresOnboarding: false,
-            onboardingToken: null,
-            isVerified: false,
-            isAuthenticated: false,
-            isloading: false,
-          });
+          get().resetAuth();
+          set({ isloading: false });
         }
       },
     }),
