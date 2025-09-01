@@ -11,6 +11,11 @@ import { PlanType, CheckoutFormData } from "@/app/types/plan.types";
 import tickIcon_filled from "@/app/assets/icons/tick_filled.svg";
 import { GenericDialog } from "@/app/components/common";
 import { Invoice } from "@/app/pages";
+import {
+  ESEWA_IMAGE_URL,
+  KHALTI_IMAGE_URL,
+  STRIPE_IMAGE_URL,
+} from "@/app/constants/image-cloudinary";
 
 interface CheckoutDialogProps {
   open: boolean;
@@ -41,12 +46,9 @@ const CheckoutDialogPop = ({ open, onClose, plan }: CheckoutDialogProps) => {
   type PaymentOption = "khalti" | "esewa" | "stripe";
 
   const paymentIcons: Record<PaymentOption, string> = {
-    khalti:
-      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920905/khalti_xsudv7.webp",
-    esewa:
-      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920903/esewa_cmqyoh.webp",
-    stripe:
-      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920897/stripe_py4qze.webp",
+    khalti: KHALTI_IMAGE_URL,
+    esewa: ESEWA_IMAGE_URL,
+    stripe: STRIPE_IMAGE_URL,
   };
 
   const getAvailablePaymentOptions = useCallback((): PaymentOption[] => {
