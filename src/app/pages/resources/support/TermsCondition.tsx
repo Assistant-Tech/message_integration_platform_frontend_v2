@@ -34,7 +34,7 @@ const TermsCondition: React.FC = () => {
 
   return (
     <StickyTOCLayout
-      title="Assistant Tech's Terms & Condition"
+      title="Chatblix's Terms & Condition"
       subtitle="Please read these terms & condition carefully before using our services."
       breadcrumb={<Breadcrumb items={SupportCrumb} />}
       tocItems={tableOfContentsItems}
