@@ -3,6 +3,7 @@ import { cn } from "@/app/utils/cn";
 import { Button } from "@/app/components/ui";
 import { Plan } from "@/app/types/plan.types";
 import { usePricingCardData } from "@/app/hooks/usePricingCardData";
+import { memo } from "react";
 
 interface PricingCardProps {
   plan: Plan & {
@@ -157,4 +158,15 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
   );
 };
 
-export default PricingCard;
+// Only re-render if duration or plan.id changes
+const arePropsEqual = (
+  prevProps: PricingCardProps,
+  nextProps: PricingCardProps,
+) => {
+  return (
+    prevProps.duration === nextProps.duration &&
+    prevProps.plan.id === nextProps.plan.id
+  );
+};
+
+export default memo(PricingCard, arePropsEqual);
