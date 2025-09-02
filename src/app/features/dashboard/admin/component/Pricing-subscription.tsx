@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Box, Flex, RadioGroup } from "@radix-ui/themes";
 import { cn } from "@/app/utils/cn";
 import { usePlans } from "@/app/hooks/usePlans";
-import { usePricingStore } from "@/app/store/pricingStore";
+import { usePricingStore } from "@/app/store/pricing.store";
 import { PricingcardSubscription } from "@/app/features/dashboard/admin/component";
 import { Badge, DynamicToggle } from "@/app/components/ui";
 import { Plan, Duration, APIDuration } from "@/app/types/plan.types";

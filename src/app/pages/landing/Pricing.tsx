@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Box, Flex, RadioGroup } from "@radix-ui/themes";
 import { cn } from "@/app/utils/cn";
 import { usePlans } from "@/app/hooks/usePlans";
-import { usePricingStore } from "@/app/store/pricingStore";
+import { usePricingStore } from "@/app/store/pricing.store";
 import { PricingCard } from "@/app/components/common";
 import { Badge, Button, DynamicToggle } from "@/app/components/ui";
 import { Plan, Duration, APIDuration } from "@/app/types/plan.types";

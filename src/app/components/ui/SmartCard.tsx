@@ -1,5 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion";;
+import { motion } from "framer-motion";
 
 import { cn } from "@/app/utils/cn";
 import { useRedirect } from "@/app/hooks/ui/useRedirect";
@@ -13,7 +13,7 @@ interface SmartCardProps {
   title: string;
   description: string;
   redirectTo?: string;
-  icon?: string;
+  Icon?: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
   actions?: Action[];
   className?: string;
 }
@@ -21,7 +21,7 @@ interface SmartCardProps {
 const SmartCard: React.FC<SmartCardProps> = ({
   title,
   description,
-  icon,
+  Icon,
   redirectTo,
   className = "",
 }) => {
@@ -45,9 +45,10 @@ const SmartCard: React.FC<SmartCardProps> = ({
       )}
     >
       <div>
-        {icon && (
+        {Icon && (
           <div className="w-12 h-12 bg-primary-light rounded-md mb-3 flex items-center justify-center text-gray-700">
-            <img src={icon} className="w-8 h-8" />
+            <Icon className="w-6 h-6 text-primary" />
+            {/* component */}
           </div>
         )}
         <h3 className="h5-bold-16 text-base-black mb-2">{title}</h3>

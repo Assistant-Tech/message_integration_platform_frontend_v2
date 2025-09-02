@@ -35,7 +35,7 @@ export const registerFields: {
 // ----------------------
 // CARDS Fields Config
 // ----------------------
-import onboarding from "@/app/assets/greenIcons/onboarding.svg";
+import onboarding from "@/app/assets/greenIcons/onboarding.svg?component";
 import subscription from "@/app/assets/greenIcons/subscription.svg";
 import updates from "@/app/assets/greenIcons/updates.svg";
 import mobile from "@/app/assets/greenIcons/mobile-app.svg";
