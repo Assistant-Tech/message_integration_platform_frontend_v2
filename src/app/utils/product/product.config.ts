@@ -65,32 +65,37 @@ export const benefits: BenefitProps[] = [
 
 /*
 ─────────────────────────────────────────────────────────────────────────────
- 📦 ▶ CARD data utils
+📦 ▶ CARD data utils
 ─────────────────────────────────────────────────────────────────────────────
 */
+import {
+  OnboardingIcon,
+  SubscriptionIcon,
+  UpdatesIcon,
+} from "@/app/components/icons";
 
-import onboarding from "@/app/assets/greenIcons/onboarding.svg";
-import subscription from "@/app/assets/greenIcons/unified.svg";
-import updates from "@/app/assets/greenIcons/updates.svg";
 
 export const smartCardData = [
   {
     title: "Better Customer Support",
     description:
       "Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, sscipit porttitor velit. Vestibulum tempus imperdiet sem acporta.",
-    icon: onboarding,
+    Icon: OnboardingIcon,
+    redirectTo: "/support",
   },
   {
     title: "Connecting All Your Teams",
     description:
       "Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, sscipit porttitor velit. Vestibulum tempus imperdiet sem acporta.",
-    icon: subscription,
+    Icon: SubscriptionIcon,
+    redirectTo: "/teams",
   },
   {
     title: "Smart Sales Workflow",
     description:
       "Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, sscipit porttitor velit. Vestibulum tempus imperdiet sem acporta.",
-    icon: updates,
+    Icon: UpdatesIcon,
+    redirectTo: "/workflow",
   },
 ];
 

@@ -1,14 +1,14 @@
-declare module "*.svg" {
-  import React = require("react");
-  export const ReactComponent: React.FunctionComponent<
-    React.SVGProps<SVGSVGElement>
+/// <reference types="vite-plugin-svgr/client" />
+
+declare module "*.svg?react" {
+  import * as React from "react";
+  const ReactComponent: React.FunctionComponent<
+    React.SVGProps<SVGSVGElement> & { title?: string }
   >;
-  const src: string;
-  export default src;
+  export default ReactComponent;
 }
 
-declare module "*.svg?component" {
-  import React = require("react");
-  const ReactComponent: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
-  export default ReactComponent;
+declare module "*.svg" {
+  const src: string;
+  export default src;
 }

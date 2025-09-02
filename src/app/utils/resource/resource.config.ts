@@ -35,53 +35,55 @@ export const registerFields: {
 // ----------------------
 // CARDS Fields Config
 // ----------------------
-import onboarding from "@/app/assets/greenIcons/onboarding.svg?component";
-import subscription from "@/app/assets/greenIcons/subscription.svg";
-import updates from "@/app/assets/greenIcons/updates.svg";
-import mobile from "@/app/assets/greenIcons/mobile-app.svg";
-import terms from "@/app/assets/greenIcons/terms-of-service.svg";
-import privacy from "@/app/assets/greenIcons/privacy-policy.svg";
+import {
+  MobileIcon,
+  OnboardingIcon,
+  PrivacyIcon,
+  SubscriptionIcon,
+  TermsIcon,
+  UpdatesIcon,
+} from "@/app/components/icons";
 
 export const smartCards = [
   {
     title: "Onboarding",
     description:
       "Get started with Chatblix right away. Let us guide you through our onboarding process.",
-    icon: onboarding,
+    icon: OnboardingIcon,
     redirectTo: APP_ROUTES.PUBLIC.ONBOARDING,
   },
   {
     title: "Subscription Plans",
     description:
       "Explore our flexible subscription options to find the perfect plan for your needs. Try out our 14-days free trial to know more.",
-    icon: subscription,
+    icon: SubscriptionIcon,
     redirectTo: APP_ROUTES.PUBLIC.SUBSCRIPTIONS,
   },
   {
     title: "Updates",
     description:
       "Always stay informed with the latest platform enhancements and feature releases of all our products.",
-    icon: updates,
+    icon: UpdatesIcon,
     redirectTo: APP_ROUTES.PUBLIC.UPDATES,
   },
   {
     title: "Mobile Application",
     description:
       "Download our app for seamless access on the go. Stay connected with your team and customers, at all time.",
-    icon: mobile,
+    icon: MobileIcon,
   },
   {
     title: "Terms & Condition",
     description:
       "Learn about our terms of service and our commitment to data security and user privacy.",
-    icon: terms,
+    icon: TermsIcon,
     redirectTo: APP_ROUTES.PUBLIC.TERMSCONDITION,
   },
   {
     title: "Privacy Policy",
     description:
       "Our privacy policy ensures that your personal information is protected and used responsibly.",
-    icon: privacy,
+    icon: PrivacyIcon,
     redirectTo: APP_ROUTES.PUBLIC.POLICY,
   },
 ];
