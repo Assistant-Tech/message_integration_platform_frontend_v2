@@ -1,29 +1,52 @@
-import { Button, Input } from "@/app/components/ui";
+import { useMemo, useState } from "react";
+import { Button } from "@/app/components/ui";
 import { APP_ROUTES } from "@/app/constants/routes";
 import { Heading } from "@/app/features/dashboard/admin/component/ui/";
-import { Plus, Settings2, SlidersHorizontal } from "lucide-react";
-import { useState } from "react";
+import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { ProductTable } from "@/app/features/dashboard/admin/component/";
 import { Product, Status } from "@/app/types/product.types";
+import DataTableToolbar, {
+  FilterConfig,
+  SortOption,
+} from "@/app/features/dashboard/admin/component/ui/Data-toolbar";
+import { ProductTable } from "@/app/features/dashboard/admin/component";
 
 const AllProductsPage = () => {
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("newest");
+  const [statusFilter, setStatusFilter] = useState("");
   const navigate = useNavigate();
 
-  const sortingOptions = [
+  const handleCreateNewProduct = () =>
+    navigate(APP_ROUTES.ADMIN.PRODUCTS_CREATE);
+
+  // Sorting options
+  const sortingOptions: SortOption[] = [
     { label: "Newest", value: "newest" },
     { label: "Oldest", value: "oldest" },
     { label: "Price: Low to High", value: "price-asc" },
     { label: "Price: High to Low", value: "price-desc" },
   ];
 
-  const handleCreateNewProduct = () => {
-    navigate(APP_ROUTES.ADMIN.PRODUCTS_CREATE);
-  };
+  // Filter options
+  const statusOptions: FilterConfig["options"] = [
+    { label: "All", value: "" },
+    { label: "In Progress", value: "In Progress" },
+    { label: "Success", value: "Success" },
+    { label: "Pending", value: "Pending" },
+    { label: "Failed", value: "Failed" },
+  ];
 
-  // MOCK DATASETS:
+  const filters: FilterConfig[] = [
+    {
+      label: "Status",
+      options: statusOptions,
+      value: statusFilter,
+      onChange: (value) => setStatusFilter(String(value)),
+    },
+  ];
+
+  // MOCK PRODUCTS
   const mockProducts: Product[] = [
     {
       name: "Classic T-Shirt",
@@ -82,6 +105,39 @@ const AllProductsPage = () => {
     },
   ];
 
+  // Filter and sort data
+  const filteredData = useMemo(() => {
+    let temp = [...mockProducts];
+
+    // Search
+    if (search) {
+      temp = temp.filter((p) =>
+        p.name.toLowerCase().includes(search.toLowerCase()),
+      );
+    }
+
+    // Status filter
+    if (statusFilter) {
+      temp = temp.filter((p) => p.status === statusFilter);
+    }
+
+    // Sorting
+    switch (sortBy) {
+      case "oldest":
+        temp = temp.reverse();
+        break;
+      case "price-asc":
+        temp = temp.sort((a, b) => a.price - b.price);
+        break;
+      case "price-desc":
+        temp = temp.sort((a, b) => b.price - a.price);
+        break;
+      // case "newest": do nothing
+    }
+
+    return temp;
+  }, [mockProducts, search, statusFilter, sortBy]);
+
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
@@ -98,44 +154,19 @@ const AllProductsPage = () => {
         />
       </div>
 
-      {/* Search + Sort + Filter */}
-      <div className="flex items-center justify-between gap-4">
-        <Input
-          placeholder="Search"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full sm:w-1/2"
-        />
-
-        {/* Sort */}
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <p className="button-semi-bold-16 text-grey-medium w-24">Sort by:</p>
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="text-grey px-3 py-2 border border-grey-light rounded-md body-regular-16 focus:outline-none w-full sm:w-48"
-          >
-            {sortingOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Filter Button */}
-        <Button
-          variant="outlined"
-          label="Filter"
-          className="flex items-center gap-2 text-grey border-grey hover:border-primary"
-          IconLeft={<Settings2 size={24} />}
-        >
-          <SlidersHorizontal className="w-4 h-4" />
-        </Button>
-      </div>
+      {/* Toolbar */}
+      <DataTableToolbar
+        search={search}
+        onSearchChange={setSearch}
+        sortOptions={sortingOptions}
+        sortValue={sortBy}
+        onSortChange={(v) => setSortBy(String(v))}
+        filters={filters}
+        onFilterClick={() => console.log("Open advanced filter modal")}
+      />
 
       {/* Product Table */}
-      <ProductTable data={mockProducts} />
+      <ProductTable data={filteredData} />
     </div>
   );
 };

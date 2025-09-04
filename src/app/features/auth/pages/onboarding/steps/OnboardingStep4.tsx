@@ -271,11 +271,11 @@ const OnboardingStep4: React.FC<OnboardingStep4Props> = ({
       {/* PAN Input */}
       <div>
         <label htmlFor="pan" className="block mb-2 body-bold-16 text-grey">
-          Enter Your PAN
+          Enter Your Registration Number
         </label>
         <Input
           id="pan"
-          placeholder="Enter your PAN (e.g., ABCDE1234F)"
+          placeholder="Enter your Registration Number (e.g., ABCDE-1234F)"
           value={formData.panNumber}
           onChange={(e) => {
             const value = e.target.value.toUpperCase();
@@ -294,7 +294,7 @@ const OnboardingStep4: React.FC<OnboardingStep4Props> = ({
       {/* File Upload */}
       <div>
         <label className="block mb-2 body-bold-16 text-grey">
-          Upload Company's PAN Card
+          Upload Company's Registeration Card
         </label>
 
         {/* Deletion Confirmation Modal */}

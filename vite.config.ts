@@ -2,9 +2,23 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import path from "path";
+import { visualizer } from "rollup-plugin-visualizer";
+import svgr from "vite-plugin-svgr";
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [
+    react(),
+    tailwindcss(),
+    svgr({ svgrOptions: { icon: true } }),
+    process.env.ANALYZE === "true" &&
+      visualizer({
+        filename: "stats.html",
+        template: "treemap",
+        gzipSize: true,
+        brotliSize: true,
+        open: true,
+      }),
+  ].filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -33,7 +47,7 @@ export default defineConfig({
   },
   build: {
     outDir: "dist",
-    sourcemap: false, // Disable sourcemaps for production
+    sourcemap: false,
     minify: "terser",
     terserOptions: {
       compress: {

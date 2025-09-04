@@ -1,3 +1,5 @@
+import { CRM_VIDEO_URL } from "@/app/constants/image-cloudinary";
+
 export interface VideoAuthor {
   name: string;
   role: string;
@@ -34,8 +36,7 @@ export const videos: Video[] = [
     title: "Getting Started with CRM Software - Complete Guide",
     description:
       "Learn the basics of customer relationship management and how to implement effective CRM strategies for your business growth. This comprehensive guide covers everything from setup to advanced features.",
-    thumbnail:
-      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/crm_video_eq1zqd.webp",
+    thumbnail: CRM_VIDEO_URL,
     duration: "15:42",
     category: "CRM Software",
     date: "May 27, 2025",
@@ -53,8 +54,7 @@ export const videos: Video[] = [
     title: "Advanced CRM Analytics Dashboard",
     description:
       "Deep dive into analytics features and reporting capabilities to maximize your customer insights and business intelligence.",
-    thumbnail:
-      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/crm_video_eq1zqd.webp",
+    thumbnail: CRM_VIDEO_URL,
     duration: "22:15",
     category: "CRM Software",
     date: "May 25, 2025",
@@ -72,8 +72,7 @@ export const videos: Video[] = [
     title: "Unified Inbox Setup Tutorial",
     description:
       "Complete walkthrough on setting up and managing your unified communication hub for maximum productivity.",
-    thumbnail:
-      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/crm_video_eq1zqd.webp",
+    thumbnail: CRM_VIDEO_URL,
     duration: "18:30",
     category: "Unified Inbox",
     date: "May 24, 2025",
@@ -91,8 +90,7 @@ export const videos: Video[] = [
     title: "Building Smart Chatbots",
     description:
       "Learn how to create intelligent chatbots that enhance customer experience and automate support workflows.",
-    thumbnail:
-      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/crm_video_eq1zqd.webp",
+    thumbnail: CRM_VIDEO_URL,
     duration: "25:45",
     category: "Chatbot",
     date: "May 23, 2025",
@@ -110,8 +108,7 @@ export const videos: Video[] = [
     title: "Bulk Messaging Best Practices",
     description:
       "Master the art of effective bulk messaging campaigns while maintaining personalization and compliance.",
-    thumbnail:
-      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/crm_video_eq1zqd.webp",
+    thumbnail: CRM_VIDEO_URL,
     duration: "12:20",
     category: "Bulk Messaging",
     date: "May 22, 2025",
@@ -129,8 +126,7 @@ export const videos: Video[] = [
     title: "CRM Integration Strategies",
     description:
       "Explore various integration options and best practices for connecting your CRM with existing business tools.",
-    thumbnail:
-      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/crm_video_eq1zqd.webp",
+    thumbnail: CRM_VIDEO_URL,
     duration: "19:55",
     category: "CRM Software",
     date: "May 21, 2025",
@@ -148,8 +144,7 @@ export const videos: Video[] = [
     title: "Quick Tutorial: Message Templates",
     description:
       "Learn how to create and use message templates to streamline your communication workflow.",
-    thumbnail:
-      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/crm_video_eq1zqd.webp",
+    thumbnail: CRM_VIDEO_URL,
     duration: "8:15",
     category: "Tutorials",
     date: "May 20, 2025",
@@ -167,8 +162,7 @@ export const videos: Video[] = [
     title: "What's New: Latest Product Updates",
     description:
       "Discover the latest features and improvements in our recent product update including new dashboard widgets and automation rules.",
-    thumbnail:
-      "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/crm_video_eq1zqd.webp",
+    thumbnail: CRM_VIDEO_URL,
     duration: "11:30",
     category: "Product Updates",
     date: "May 19, 2025",

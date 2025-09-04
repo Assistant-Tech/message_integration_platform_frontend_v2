@@ -5,6 +5,7 @@ export { default as AnnoucementBanner } from "./Modal/AnnouncementBanner";
 export { default as NewsLetterModalPopUp } from "./Modal/NewsLetterModalPopUp";
 export { default as NewsLetter } from "./Newsletter/NewsLetter";
 export { default as FAQ } from "./FaqComponent/FAQ";
+export { default as GenericDialog } from "../ui/Generic-dialog";
 
 //Navbar Components
 export { default as NavigationItem } from "./Navbar/NavigationItem";

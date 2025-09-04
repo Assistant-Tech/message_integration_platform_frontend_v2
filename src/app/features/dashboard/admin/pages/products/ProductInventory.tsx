@@ -1,56 +1,110 @@
-import { Button, Input } from "@/app/components/ui";
+import { Button } from "@/app/components/ui";
 import { APP_ROUTES } from "@/app/constants/routes";
 import { Heading } from "@/app/features/dashboard/admin/component/ui/";
-import { Plus, Settings2, SlidersHorizontal } from "lucide-react";
-import { useState } from "react";
+import { Plus } from "lucide-react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { InventoryTable } from "@/app/features/dashboard/admin/component/";
 import { Inventory, Size } from "@/app/types/product.types";
+import DataTableToolbar, {
+  FilterConfig,
+  SortOption,
+} from "../../component/ui/Data-toolbar";
 
 const ProductInventory = () => {
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("newest");
+  const [stockFilter, setStockFilter] = useState("");
   const navigate = useNavigate();
 
-  const sortingOptions = [
+  const handleCreateNewOrder = () => {
+    navigate(APP_ROUTES.ADMIN.ORDERS_CREATE);
+  };
+
+  // Sorting options
+  const sortingOptions: SortOption[] = [
     { label: "Newest", value: "newest" },
     { label: "Oldest", value: "oldest" },
     { label: "Price: Low to High", value: "price-asc" },
     { label: "Price: High to Low", value: "price-desc" },
   ];
 
-  const handleCreateNewOrder = () => {
-    navigate(APP_ROUTES.ADMIN.ORDERS_CREATE);
-  };
-
-  // MOCK DATASETS:
-  const inventoryMock: Inventory[] = [
+  // Filter options
+  const filters: FilterConfig[] = [
     {
-      name: {
-        productImage:
-          "https://m.media-amazon.com/images/I/61GfWyQax7L._AC_UL1500_.jpg",
-        productName: "Cotton Plain T-shirt Round Neck",
-        productSubName: "Nike Daily Wear",
-      },
-      color: "Black",
-      size: Size.small,
-      quantity: 2,
-      price: 800,
-      stock: true,
-    },
-    {
-      name: {
-        productImage:
-          "https://m.media-amazon.com/images/I/61GfWyQax7L._AC_UL1500_.jpg",
-        productName: "Sports Shoes",
-      },
-      color: "Black",
-      size: Size.medium,
-      quantity: 2,
-      price: 800,
-      stock: true,
+      label: "Stock",
+      value: stockFilter,
+      onChange: (value: string | number) => setStockFilter(String(value)),
+      options: [
+        { label: "All", value: "" },
+        { label: "In Stock", value: "true" },
+        { label: "Out of Stock", value: "false" },
+      ],
     },
   ];
+
+  // Filter and sort data
+  const filteredData = useMemo(() => {
+    // MOCK DATASETS - moved inside useMemo
+    const inventoryMock: Inventory[] = [
+      {
+        name: {
+          productImage:
+            "https://m.media-amazon.com/images/I/61GfWyQax7L._AC_UL1500_.jpg",
+          productName: "Cotton Plain T-shirt Round Neck",
+          productSubName: "Nike Daily Wear",
+        },
+        color: "Black",
+        size: Size.small,
+        quantity: 2,
+        price: 800,
+        stock: true,
+      },
+      {
+        name: {
+          productImage:
+            "https://m.media-amazon.com/images/I/61GfWyQax7L._AC_UL1500_.jpg",
+          productName: "Sports Shoes",
+        },
+        color: "Black",
+        size: Size.medium,
+        quantity: 2,
+        price: 800,
+        stock: true,
+      },
+    ];
+
+    let temp = [...inventoryMock];
+
+    // Search
+    if (search) {
+      temp = temp.filter((i) =>
+        i.name.productName.toLowerCase().includes(search.toLowerCase()),
+      );
+    }
+
+    // Stock filter
+    if (stockFilter) {
+      const inStock = stockFilter === "true";
+      temp = temp.filter((i) => i.stock === inStock);
+    }
+
+    // Sorting
+    switch (sortBy) {
+      case "oldest":
+        temp = temp.reverse();
+        break;
+      case "price-asc":
+        temp = temp.sort((a, b) => a.price - b.price);
+        break;
+      case "price-desc":
+        temp = temp.sort((a, b) => b.price - a.price);
+        break;
+      // case "newest": do nothing (already newest first)
+    }
+
+    return temp;
+  }, [search, stockFilter, sortBy]);
 
   return (
     <div className="p-6 space-y-6">
@@ -68,44 +122,19 @@ const ProductInventory = () => {
         />
       </div>
 
-      {/* Search + Sort + Filter */}
-      <div className="flex items-center justify-between gap-4">
-        <Input
-          placeholder="Search"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full sm:w-1/2"
-        />
+      {/* Toolbar */}
+      <DataTableToolbar
+        search={search}
+        onSearchChange={setSearch}
+        sortOptions={sortingOptions}
+        sortValue={sortBy}
+        onSortChange={setSortBy}
+        filters={filters}
+        onFilterClick={() => console.log("Open advanced filter modal")}
+      />
 
-        {/* Sort */}
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <p className="button-semi-bold-16 text-grey-medium w-24">Sort by:</p>
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="text-grey px-3 py-2 border border-grey-light rounded-md body-regular-16 focus:outline-none w-full sm:w-48"
-          >
-            {sortingOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Filter Button */}
-        <Button
-          variant="outlined"
-          label="Filter"
-          className="flex items-center gap-2 text-grey border-grey hover:border-primary"
-          IconLeft={<Settings2 size={24} />}
-        >
-          <SlidersHorizontal className="w-4 h-4" />
-        </Button>
-      </div>
-
-      {/* Product Table */}
-      <InventoryTable data={inventoryMock} />
+      {/* Inventory Table */}
+      <InventoryTable data={filteredData} />
     </div>
   );
 };

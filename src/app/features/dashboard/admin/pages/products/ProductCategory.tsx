@@ -1,48 +1,93 @@
-import { Button, Input } from "@/app/components/ui";
+import { Button } from "@/app/components/ui";
 import { Heading } from "@/app/features/dashboard/admin/component/ui/";
-import { Plus, Settings2, SlidersHorizontal } from "lucide-react";
-import { useState } from "react";
+import { Plus } from "lucide-react";
+import { useState, useMemo } from "react";
 import {
   AddCategory,
   CategoryTable,
 } from "@/app/features/dashboard/admin/component/";
 import { Category } from "@/app/types/product.types";
+import DataTableToolbar, {
+  FilterConfig,
+  SortOption,
+} from "@/app/features/dashboard/admin/component/ui/Data-toolbar";
 
 const ProductCategory = () => {
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [statusFilter, setStatusFilter] = useState("");
 
   const [categoryData, setCategoryData] = useState<Category[]>([
-    {
-      name: "Classic T-Shirt",
-      products: 25,
-      visibility: true,
-      action: "",
-    },
-    {
-      name: "Blue Denim",
-      products: 4,
-      visibility: false,
-      action: "",
-    },
+    { name: "Classic T-Shirt", products: 25, visibility: true, action: "" },
+    { name: "Blue Denim", products: 4, visibility: false, action: "" },
   ]);
 
   const handleCategorySave = (newCategories: string[]) => {
     const updated = newCategories.map((cat) => {
-      // If exists, keep as is. If new, add with default values
       const existing = categoryData.find((c) => c.name === cat);
       return (
-        existing || {
-          name: cat,
-          products: 0,
-          visibility: true,
-          action: "",
-        }
+        existing || { name: cat, products: 0, visibility: true, action: "" }
       );
     });
     setCategoryData(updated);
   };
+
+  // Sorting options
+  const sortingOptions: SortOption[] = [
+    { label: "Newest", value: "newest" },
+    { label: "Oldest", value: "oldest" },
+    { label: "Products: Low to High", value: "products-asc" },
+    { label: "Products: High to Low", value: "products-desc" },
+  ];
+
+  // Filter options
+  const filters: FilterConfig[] = [
+    {
+      label: "Visibility",
+      value: statusFilter,
+      onChange: (value) => setStatusFilter(String(value)),
+      options: [
+        { label: "All", value: "" },
+        { label: "Visible", value: "true" },
+        { label: "Hidden", value: "false" },
+      ],
+    },
+  ];
+
+  // Filter and sort data
+  const filteredData = useMemo(() => {
+    let temp = [...categoryData];
+
+    // Search
+    if (search) {
+      temp = temp.filter((c) =>
+        c.name.toLowerCase().includes(search.toLowerCase()),
+      );
+    }
+
+    // Status filter
+    if (statusFilter) {
+      const isVisible = statusFilter === "true";
+      temp = temp.filter((c) => c.visibility === isVisible);
+    }
+
+    // Sorting
+    switch (sortBy) {
+      case "oldest":
+        temp = temp.reverse();
+        break;
+      case "products-asc":
+        temp = temp.sort((a, b) => a.products - b.products);
+        break;
+      case "products-desc":
+        temp = temp.sort((a, b) => b.products - a.products);
+        break;
+      // case "newest": do nothing
+    }
+
+    return temp;
+  }, [categoryData, search, statusFilter, sortBy]);
 
   return (
     <div className="p-6 space-y-6">
@@ -58,6 +103,7 @@ const ProductCategory = () => {
           IconLeft={<Plus size={16} />}
           onClick={() => setShowCategoryModal(true)}
         />
+
         <AddCategory
           isOpen={showCategoryModal}
           onClose={() => setShowCategoryModal(false)}
@@ -65,47 +111,19 @@ const ProductCategory = () => {
         />
       </div>
 
-      {/* Search + Sort + Filter */}
-      <div className="flex items-center justify-between gap-4">
-        <Input
-          placeholder="Search"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full sm:w-1/2"
-        />
-
-        <div className="flex items-center gap-3 w-96 sm:w-auto">
-          <p className="button-semi-bold-16 text-grey-medium w-24">Sort by:</p>
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="text-grey px-3 py-2 border border-grey-light rounded-md body-regular-16 focus:outline-none w-full sm:w-48"
-          >
-            {[
-              { label: "Newest", value: "newest" },
-              { label: "Oldest", value: "oldest" },
-              { label: "Price: Low to High", value: "price-asc" },
-              { label: "Price: High to Low", value: "price-desc" },
-            ].map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <Button
-          variant="outlined"
-          label="Filter"
-          className="flex items-center gap-2 text-grey border-grey hover:border-primary"
-          IconLeft={<Settings2 size={24} />}
-        >
-          <SlidersHorizontal className="w-4 h-4" />
-        </Button>
-      </div>
+      {/* Toolbar */}
+      <DataTableToolbar
+        search={search}
+        onSearchChange={setSearch}
+        sortOptions={sortingOptions}
+        sortValue={sortBy}
+        onSortChange={setSortBy}
+        filters={filters}
+        onFilterClick={() => console.log("Open advanced filter modal")}
+      />
 
       {/* Table */}
-      <CategoryTable data={categoryData} />
+      <CategoryTable data={filteredData} />
     </div>
   );
 };

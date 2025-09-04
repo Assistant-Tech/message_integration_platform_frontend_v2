@@ -3,14 +3,15 @@ import { Button, Logo } from "@/app/components/ui";
 
 import google from "@/app/assets/icons/google.svg";
 import circlefb from "@/app/assets/icons/circlefb.svg";
+import { REGISTER_IMAGE_URL } from "@/app/constants/image-cloudinary";
 
 const RegisterPage = () => {
   return (
-    <div className="flex flex-col md:flex-row h-screen overflow-hidden">
-      {/* Left Section with gradient overlay */}
-      <div className="hidden md:block w-1/2 h-full relative">
+    <div className="flex flex-col lg:flex-row h-screen overflow-hidden">
+      {/* Left Section with gradient overlay (desktop only) */}
+      <div className="hidden lg:block w-1/2 h-full relative">
         <img
-          src="https://res.cloudinary.com/dtoqwn0gx/image/upload/v1755078235/register_tmr4r8.png"
+          src={REGISTER_IMAGE_URL}
           alt="register"
           className="w-full h-full object-cover"
         />
@@ -32,7 +33,7 @@ const RegisterPage = () => {
       </div>
 
       {/* Right Section (Form) */}
-      <div className="w-full md:w-1/2 h-full flex items-center justify-center overflow-y-auto px-4 pt-48 pb-12">
+      <div className="w-full lg:w-1/2 h-full flex items-center justify-center overflow-y-auto px-4 pt-24 lg:pt-48 pb-12">
         <div className="w-full max-w-md">
           <Logo />
 
@@ -48,18 +49,18 @@ const RegisterPage = () => {
           <RegisterForm />
 
           {/* OR */}
-          <div className="flex items-center gap-2 text-gray-400">
+          <div className="flex items-center gap-2 text-gray-400 mt-6">
             <hr className="flex-grow border-gray-300" />
             <span className="text-sm">OR</span>
             <hr className="flex-grow border-gray-300" />
           </div>
 
           {/* Social Logins */}
-          <div className="space-y-2">
+          <div className="space-y-2 mt-4">
             <Button
               label="Sign in with Google"
               variant="outlined"
-              IconLeft={<img src={google} alt="Facebook" className="w-5 h-5" />}
+              IconLeft={<img src={google} alt="Google" className="w-5 h-5" />}
               className="w-full border-grey-light text-grey-medium h5-bold-16"
             />
             <Button
@@ -77,7 +78,7 @@ const RegisterPage = () => {
             Already have an account?{" "}
             <a
               href="/login"
-              className="text-primary h5-regular-16  hover:underline"
+              className="text-primary h5-regular-16 hover:underline"
             >
               Log in
             </a>

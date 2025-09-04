@@ -1,6 +1,6 @@
 import { Input } from "@/app/components/ui";
 import { Heading } from "@/app/features/dashboard/admin/component/ui";
-import { X, PlusCircle, Trash2 } from "lucide-react";
+import { X, PlusCircle } from "lucide-react";
 
 interface AddTagProps {
   isOpen: boolean;

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Search } from "lucide-react";
-import { blogPosts, blogCategories } from "@/app/utils/blog/blog";
+import { blogPosts, blogCategories } from "@/app/utils/blog/blog.config";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 

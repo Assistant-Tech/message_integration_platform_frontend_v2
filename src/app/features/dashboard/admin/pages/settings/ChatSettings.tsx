@@ -4,18 +4,28 @@ import {
   ChatWidget,
   MessageTemplateSettings,
 } from "@/app/features/dashboard/admin/component/";
+import type { ChatSettings as ChatSettingsType } from "@/app/features/dashboard/admin/component/MessageTemplateSettings";
 
 const ChatSettings: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"template" | "widget">("template");
-  const [chatSettings, setChatSettings] = useState<any>({
+
+  const [chatSettings, setChatSettings] = useState<ChatSettingsType>({
     primaryColor: "#10B981",
     backgroundColor: "#f0f0f0",
     companyName: "ChatBot",
     logo: null,
-    messages: {
-      message1: "Welcome to ChatBot! I'm here to help you get started.",
-      message2: "How can I help you today?",
-    },
+    messages: [
+      {
+        heading: "Welcome",
+        shortcut: "ctrl+1",
+        message: "Welcome to ChatBot! I'm here to help you get started.",
+      },
+      {
+        heading: "Help",
+        shortcut: "ctrl+2",
+        message: "How can I help you today?",
+      },
+    ],
     actionButtons: [
       { text: "Chat with agent" },
       { text: "I'd like to book a demo" },

@@ -65,37 +65,43 @@ export const benefits: BenefitProps[] = [
 
 /*
 ─────────────────────────────────────────────────────────────────────────────
- 📦 ▶ CARD data utils
+📦 ▶ CARD data utils
 ─────────────────────────────────────────────────────────────────────────────
 */
+import {
+  OnboardingIcon,
+  SubscriptionIcon,
+  UpdatesIcon,
+} from "@/app/components/icons";
 
-import onboarding from "@/app/assets/greenIcons/onboarding.svg";
-import subscription from "@/app/assets/greenIcons/unified.svg";
-import updates from "@/app/assets/greenIcons/updates.svg";
 
 export const smartCardData = [
   {
     title: "Better Customer Support",
     description:
       "Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, sscipit porttitor velit. Vestibulum tempus imperdiet sem acporta.",
-    icon: onboarding,
+    Icon: OnboardingIcon,
+    redirectTo: "/support",
   },
   {
     title: "Connecting All Your Teams",
     description:
       "Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, sscipit porttitor velit. Vestibulum tempus imperdiet sem acporta.",
-    icon: subscription,
+    Icon: SubscriptionIcon,
+    redirectTo: "/teams",
   },
   {
     title: "Smart Sales Workflow",
     description:
       "Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, sscipit porttitor velit. Vestibulum tempus imperdiet sem acporta.",
-    icon: updates,
+    Icon: UpdatesIcon,
+    redirectTo: "/workflow",
   },
 ];
 
 import { Users, FileText, BarChart3, Globe } from "lucide-react";
 import type { ServiceItem } from "@/app/types/product.types";
+import { PRODUCT_IMAGE_URL } from "@/app/constants/image-cloudinary";
 
 export const services: ServiceItem[] = [
   {
@@ -104,7 +110,7 @@ export const services: ServiceItem[] = [
     title: "Literature",
     description:
       "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+    img: PRODUCT_IMAGE_URL,
   },
   {
     id: 2,
@@ -112,7 +118,7 @@ export const services: ServiceItem[] = [
     title: "CRM",
     description:
       "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+    img: PRODUCT_IMAGE_URL,
   },
   {
     id: 3,
@@ -120,7 +126,7 @@ export const services: ServiceItem[] = [
     title: "Self Sourcing",
     description:
       "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+    img: PRODUCT_IMAGE_URL,
   },
   {
     id: 4,
@@ -128,7 +134,7 @@ export const services: ServiceItem[] = [
     title: "Business",
     description:
       "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+    img: PRODUCT_IMAGE_URL,
   },
   {
     id: 5,
@@ -136,7 +142,7 @@ export const services: ServiceItem[] = [
     title: "Business",
     description:
       "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+    img: PRODUCT_IMAGE_URL,
   },
   {
     id: 6,
@@ -144,7 +150,7 @@ export const services: ServiceItem[] = [
     title: "Business",
     description:
       "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+    img: PRODUCT_IMAGE_URL,
   },
   {
     id: 7,
@@ -152,7 +158,7 @@ export const services: ServiceItem[] = [
     title: "Business",
     description:
       "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+    img: PRODUCT_IMAGE_URL,
   },
   {
     id: 8,
@@ -160,7 +166,7 @@ export const services: ServiceItem[] = [
     title: "Business",
     description:
       "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+    img: PRODUCT_IMAGE_URL,
   },
   {
     id: 9,
@@ -168,6 +174,6 @@ export const services: ServiceItem[] = [
     title: "Business",
     description:
       "Chatblix’s CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company’s workflow, helps with customer retention and simultaneously reduces marketing costs.",
-    img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+    img: PRODUCT_IMAGE_URL,
   },
 ];

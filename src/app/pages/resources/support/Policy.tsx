@@ -6,7 +6,7 @@ import {
   scrollToSection,
   TableOfContentsItem,
   termsContentData,
-} from "@/app/utils/resource/utils";
+} from "@/app/utils/resource/resource.config";
 
 import { useActiveSection } from "@/app/hooks/useActiveSection";
 import { TermsContent } from "@/app/pages/resources/components";
@@ -35,7 +35,7 @@ const Policy: React.FC = () => {
   return (
     <StickyTOCLayout
       breadcrumb={<Breadcrumb items={SupportCrumb} />}
-      title="Assistant Tech's Privacy & Policy"
+      title="Chatblix's Privacy & Policy"
       subtitle="Please read these privacy and policy carefully before using our services."
       tocItems={tocItems}
       activeSection={activeSection}

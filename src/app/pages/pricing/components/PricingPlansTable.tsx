@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { motion } from "framer-motion";
 import { Check, X } from "lucide-react";
 import { plans } from "@/app/utils/pricingTable";
@@ -13,7 +14,7 @@ const featuresList = [
   "API access for custom support",
 ] as const;
 
-const PricingPlansTable = () => {
+const PricingPlansTableComponent = () => {
   return (
     <div className="w-full overflow-x-auto p-4 pb-20">
       <div className="min-w-[600px] sm:min-w-full">
@@ -93,4 +94,5 @@ const PricingPlansTable = () => {
   );
 };
 
+const PricingPlansTable = memo(PricingPlansTableComponent);
 export default PricingPlansTable;

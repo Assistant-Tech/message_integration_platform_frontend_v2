@@ -2,10 +2,10 @@ import { useMemo, useState } from "react";
 import { Box, Flex, RadioGroup } from "@radix-ui/themes";
 import { cn } from "@/app/utils/cn";
 import { usePlans } from "@/app/hooks/usePlans";
-import { usePricingStore } from "@/app/store/pricingStore";
+import { usePricingStore } from "@/app/store/pricing.store";
 import { PricingcardSubscription } from "@/app/features/dashboard/admin/component";
 import { Badge, DynamicToggle } from "@/app/components/ui";
-import { Plan, Duration, APIDuration } from "@/app/types/plan.types";
+import { Plan, Duration, APIDuration, PlanType } from "@/app/types/plan.types";
 import { extractFeatures } from "@/app/utils/helper";
 import CheckoutDialogPop from "@/app/features/dashboard/admin/component/CheckoutDialogPop";
 
@@ -18,7 +18,7 @@ const PricingSubscription = () => {
     isError,
   } = usePlans(duration, currency);
 
-  const [selectedPlan, setSelectedPlan] = useState<any | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<PlanType>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const transformPlan = (plan: Plan) => ({
@@ -45,7 +45,7 @@ const PricingSubscription = () => {
     },
   ];
 
-  const handlePlanSelect = (plan: any) => {
+  const handlePlanSelect = (plan: PlanType) => {
     setSelectedPlan(plan);
     setIsDialogOpen(true);
   };

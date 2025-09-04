@@ -12,6 +12,8 @@ const App = () => {
 
   // Initial auth bootstrap: attempt token refresh then load user profile.
   useEffect(() => {
+    if (isRefreshing) return; // don't re-run while refreshing
+
     let cancelled = false;
     const bootstrap = async () => {
       const {
@@ -22,12 +24,11 @@ const App = () => {
         isAuthenticated,
       } = useAuthStore.getState();
 
-      console.log(isAuthenticated);
-      if (!isAuthenticated || isRefreshing) return;
+      if (!isAuthenticated) return;
+
       try {
         setRefreshing(true);
         const newToken = await refreshAccessToken();
-        console.log(newToken);
         if (newToken) {
           await fetchCurrentUserProfile();
         } else {
@@ -40,10 +41,11 @@ const App = () => {
       }
     };
     bootstrap();
+
     return () => {
       cancelled = true;
     };
-  }, [isRefreshing]);
+  }, []);
 
   return (
     <ErrorBoundary>

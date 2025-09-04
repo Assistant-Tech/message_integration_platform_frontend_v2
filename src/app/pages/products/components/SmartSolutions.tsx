@@ -1,7 +1,7 @@
 import { SmartCard } from "@/app/components/ui";
-import { smartCardData } from "@/app/utils/product/utils";
+import { smartCardData } from "@/app/utils/product/product.config";
 import { Flex } from "@radix-ui/themes";
-import { motion} from "framer-motion"
+import { motion } from "framer-motion";
 
 const SmartSolutions = () => {
   return (

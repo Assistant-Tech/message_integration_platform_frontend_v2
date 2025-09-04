@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import { Loading } from "@/app/components/common";
 import {
@@ -6,8 +6,8 @@ import {
   ProductLayout,
   ResourceLayout,
 } from "@/app/components/layout";
-import DashboardLayout from "@/app/features/dashboard/admin/component/DashboardLayout";
 import { APP_ROUTES } from "@/app/constants/routes";
+import { BannerProvider } from "@/app/context/BannerContext";
 
 /* ------------------ Public Pages ------------------ */
 import {
@@ -30,6 +30,7 @@ import {
   VideosPage,
   CheckoutPage,
 } from "@/app/pages";
+
 import {
   Dashboard,
   ForgetPassword,
@@ -38,40 +39,105 @@ import {
   ResetPassword,
   VerifyEmail,
 } from "@/app/features/auth";
-import CheckEmail from "@/app/features/auth/pages/CheckEmail";
 
-/* ------------------ Admin Pages ------------------ */
-import {
-  AdminDashboardPage,
-  ConversationPage,
-  ChatbotPage,
-  ChannelPage,
-  OrderPage,
-  TagsPage,
-  AnalyticsPage,
-  SettingsPage,
-  ProductPage,
-  CreateOrderPage,
-  AllProductsPage,
-  ProductCategory,
-  ProductVariants,
-  ProductInventory,
-  CreateProductPage,
-} from "@/app/features/dashboard/admin/pages";
+import CheckEmail from "@/app/features/auth/pages/CheckEmail";
 import { OnboardingForm } from "@/app/features/auth/pages/onboarding/steps";
+
+/* ------------------ Guards ------------------ */
 import ProtectedRoute from "@/app/router/guards/ProtectedRoute";
 import OnboardingGuard from "@/app/router/guards/OnboardingGurad";
-import {
-  ChatSettings,
-  CompanySettings,
-  NotificationSettings,
-  ProfileSettings,
-  RoleManagement,
-  SecuritySettings,
-  ShippingSettings,
-  SubscriptionSettings,
-} from "@/app/features/dashboard/admin/pages/settings";
-import { BannerProvider } from "@/app/context/BannerContext";
+
+/* ------------------ Lazy Admin Module ------------------ */
+// Lazy load the entire Admin Dashboard layout & pages
+const DashboardLayout = lazy(
+  () => import("@/app/features/dashboard/admin/component/DashboardLayout"),
+);
+
+const AdminDashboardPage = lazy(
+  () =>
+    import("@/app/features/dashboard/admin/pages/dashboard/AdminDashboardPage"),
+);
+const ConversationPage = lazy(
+  () =>
+    import(
+      "@/app/features/dashboard/admin/pages/conversation/ConversationPage"
+    ),
+);
+const ChatbotPage = lazy(
+  () => import("@/app/features/dashboard/admin/pages/chatbot/ChatbotPage"),
+);
+const ChannelPage = lazy(
+  () => import("@/app/features/dashboard/admin/pages/channels/ChannelPage"),
+);
+const OrderPage = lazy(
+  () => import("@/app/features/dashboard/admin/pages/orders/OrderPage"),
+);
+const CreateOrderPage = lazy(
+  () => import("@/app/features/dashboard/admin/pages/orders/CreateOrderPage"),
+);
+const TagsPage = lazy(
+  () => import("@/app/features/dashboard/admin/pages/tags/TagsPage"),
+);
+const AnalyticsPage = lazy(
+  () => import("@/app/features/dashboard/admin/pages/analytics/AnalyticsPage"),
+);
+const SettingsPage = lazy(
+  () => import("@/app/features/dashboard/admin/pages/settings/SettingsPage"),
+);
+const ProductPage = lazy(
+  () => import("@/app/features/dashboard/admin/pages/products/ProductPage"),
+);
+const AllProductsPage = lazy(
+  () => import("@/app/features/dashboard/admin/pages/products/AllProductsPage"),
+);
+const ProductCategory = lazy(
+  () => import("@/app/features/dashboard/admin/pages/products/ProductCategory"),
+);
+const ProductVariants = lazy(
+  () => import("@/app/features/dashboard/admin/pages/products/ProductVariants"),
+);
+const ProductInventory = lazy(
+  () =>
+    import("@/app/features/dashboard/admin/pages/products/ProductInventory"),
+);
+const CreateProductPage = lazy(
+  () =>
+    import("@/app/features/dashboard/admin/pages/products/CreateProductPage"),
+);
+
+/* ------------------ Lazy Settings Pages ------------------ */
+const ProfileSettings = lazy(
+  () => import("@/app/features/dashboard/admin/pages/settings/ProfileSettings"),
+);
+const CompanySettings = lazy(
+  () => import("@/app/features/dashboard/admin/pages/settings/CompanySettings"),
+);
+const SecuritySettings = lazy(
+  () =>
+    import("@/app/features/dashboard/admin/pages/settings/SecuritySettings"),
+);
+const NotificationSettings = lazy(
+  () =>
+    import(
+      "@/app/features/dashboard/admin/pages/settings/NotificationSettings"
+    ),
+);
+const RoleManagement = lazy(
+  () => import("@/app/features/dashboard/admin/pages/settings/RoleManagement"),
+);
+const ChatSettings = lazy(
+  () => import("@/app/features/dashboard/admin/pages/settings/ChatSettings"),
+);
+const ShippingSettings = lazy(
+  () =>
+    import("@/app/features/dashboard/admin/pages/settings/ShippingSettings"),
+);
+const SubscriptionSettings = lazy(
+  () =>
+    import(
+      "@/app/features/dashboard/admin/pages/settings/SubscriptionSettings"
+    ),
+);
 
 const AppRoutes = () => {
   return (
@@ -134,17 +200,17 @@ const AppRoutes = () => {
             <Route path={APP_ROUTES.PUBLIC.ABOUT} element={<AboutUs />} />
             <Route path={APP_ROUTES.PUBLIC.PRICING} element={<PricingPage />} />
 
-            {/* Checkout Routes */}
+            {/* Checkout */}
             <Route
               path={APP_ROUTES.PUBLIC.CHECKOUT}
               element={<CheckoutPage />}
             />
 
-            {/* Semi-protected routes that are part of the auth flow, but don't need a ProtectedRoute guard */}
+            {/* Auth semi-protected */}
             <Route path="/check-email" element={<CheckEmail />} />
             <Route path="/verify/:token" element={<VerifyEmail />} />
 
-            {/* Error pages are public */}
+            {/* Error Pages */}
             <Route
               path={APP_ROUTES.PUBLIC.UNAUTHORIZED}
               element={<Unauthorized />}
@@ -152,16 +218,15 @@ const AppRoutes = () => {
             <Route path="*" element={<NotFound />} />
           </Route>
 
-          {/* Protected Routes: All routes nested here require authentication */}
+          {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>
-            {/* Onboarding page only parent component implementation*/}
             <Route
               path={APP_ROUTES.PUBLIC.ONBOARDING_FORM}
               element={<OnboardingForm />}
             />
 
             <Route element={<OnboardingGuard />}>
-              {/* Admin Dashboard Routes */}
+              {/* Admin Dashboard */}
               <Route path="/:slug/admin" element={<DashboardLayout />}>
                 <Route index element={<AdminDashboardPage />} />
                 <Route
@@ -190,7 +255,8 @@ const AppRoutes = () => {
                   path={APP_ROUTES.ADMIN.ANALYTICS}
                   element={<AnalyticsPage />}
                 />
-                {/* Settings Routes */}
+
+                {/* Settings */}
                 <Route
                   path={APP_ROUTES.ADMIN.SETTINGS}
                   element={<SettingsPage />}
@@ -228,7 +294,7 @@ const AppRoutes = () => {
                   element={<SubscriptionSettings />}
                 />
 
-                {/* Product Routes */}
+                {/* Products */}
                 <Route
                   path={APP_ROUTES.ADMIN.PRODUCTS}
                   element={<ProductPage />}
@@ -256,10 +322,8 @@ const AppRoutes = () => {
               </Route>
             </Route>
 
-            {/* User Dashboard Routes (if any) */}
-            <Route path="/user" element={<DashboardLayout />}>
-              {/* Future User Routes */}
-            </Route>
+            {/* User Dashboard (future) */}
+            <Route path="/user" element={<DashboardLayout />} />
           </Route>
         </Routes>
       </BannerProvider>

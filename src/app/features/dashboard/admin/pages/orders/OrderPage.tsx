@@ -1,11 +1,14 @@
 import { useState } from "react";
-import { Heading } from "@/app/features/dashboard/admin/component/ui/";
+import {
+  DataTableToolbar,
+  Heading,
+} from "@/app/features/dashboard/admin/component/ui/";
 import {
   OrderStats,
   OrderTable,
 } from "@/app/features/dashboard/admin/component/";
-import { Input, Button } from "@/app/components/ui/";
-import { Plus, Settings2, SlidersHorizontal } from "lucide-react";
+import { Button } from "@/app/components/ui/";
+import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { APP_ROUTES } from "@/app/constants/routes";
 
@@ -15,6 +18,10 @@ const OrderPage = () => {
 
   const handleCreateNewOrder = () => {
     navigate(APP_ROUTES.ADMIN.ORDERS_CREATE);
+  };
+
+  const handleFilterClick = () => {
+    console.log("Filter clicked!");
   };
 
   return (
@@ -31,23 +38,12 @@ const OrderPage = () => {
 
       <OrderStats />
 
-      {/* Search + Filter */}
-      <div className="flex items-center justify-between">
-        <Input
-          placeholder="Search"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-1/2"
-        />
-        <Button
-          variant="outlined"
-          label="Filter"
-          className="flex items-center gap-2 text-grey border-grey hover:border-primary"
-          IconLeft={<Settings2 size={24} />}
-        >
-          <SlidersHorizontal className="w-4 h-4" />
-        </Button>
-      </div>
+      {/* 🔹 Reusable DataTableToolbar */}
+      <DataTableToolbar
+        search={search}
+        onSearchChange={setSearch}
+        onFilterClick={handleFilterClick}
+      />
 
       <OrderTable />
     </div>

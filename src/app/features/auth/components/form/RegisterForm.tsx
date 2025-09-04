@@ -21,7 +21,7 @@ const RegisterForm = () => {
   const [showPasswordChecks, setShowPasswordChecks] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const isAuthenticating = useAuthStore((s) => s.loading);
+  const isAuthenticating = useAuthStore((s) => s.isloading);
   const signUp = useAuthStore((s) => s.signup);
 
   const {

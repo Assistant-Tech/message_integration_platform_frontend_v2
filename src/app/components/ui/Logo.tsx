@@ -1,21 +1,47 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { APP_ROUTES } from "@/app/constants/routes";
+import {
+  LOGO_NORMAL_URL,
+  LOGO_WHITE_URL,
+} from "@/app/constants/image-cloudinary";
 
 interface LogoProps {
   className?: string;
   variant?: "default" | "white";
+  isDashboard?: boolean;
+  tenantSlug?: string;
+  requiresOnboarding?: boolean;
 }
 
-const Logo: React.FC<LogoProps> = ({ className = "", variant = "default" }) => {
-  const logoSrc =
-    variant === "white"
-      ? "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1755418244/white-logo_oxdple.png"
-      : "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1751347733/Chatblix_Logo_xtkjmp.png";
+const Logo: React.FC<LogoProps> = ({
+  className = "",
+  variant = "default",
+  isDashboard = false,
+  tenantSlug,
+  requiresOnboarding,
+}) => {
+  const navigate = useNavigate();
+  const logoSrc = variant === "white" ? LOGO_WHITE_URL : LOGO_NORMAL_URL;
+
+  const getDashboardRoute = () => {
+    if (requiresOnboarding) {
+      return "/onboardingform";
+    }
+    return `/${tenantSlug}/admin/dashboard`;
+  };
+
+  const handleLogoClick = () => {
+    if (isDashboard) {
+      navigate(getDashboardRoute());
+    } else {
+      navigate(APP_ROUTES.PUBLIC.HOME);
+    }
+  };
 
   return (
-    <Link
-      to={APP_ROUTES.PUBLIC.HOME}
-      className={`flex items-center space-x-2 ${className}`}
+    <div
+      onClick={handleLogoClick}
+      className={`flex items-center space-x-2 cursor-pointer ${className}`}
     >
       <figure className="flex justify-center items-center gap-2">
         <img
@@ -24,7 +50,7 @@ const Logo: React.FC<LogoProps> = ({ className = "", variant = "default" }) => {
           alt="ChatBlix Logo"
         />
       </figure>
-    </Link>
+    </div>
   );
 };
 

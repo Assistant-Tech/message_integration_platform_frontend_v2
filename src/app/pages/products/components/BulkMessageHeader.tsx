@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { EmailSignupCTA } from "@/app/pages/products/components/";
 
-import { features } from "@/app/utils/product/utils";
+import { features } from "@/app/utils/product/product.config";
 
 const stats = [
   { value: "95%", label: "Delivery Rate" },

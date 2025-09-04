@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { StepsIndicator } from "@/app/features/auth/pages/onboarding/components";
-import onboardingSteps from "@/app/utils/onboarding/onboarding";
+import onboardingSteps from "@/app/utils/onboarding/onboarding.config";
 
 interface StepSidebarProps {
   currentStep: number;

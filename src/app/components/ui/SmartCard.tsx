@@ -1,6 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion";;
-
+import { motion } from "framer-motion";
 import { cn } from "@/app/utils/cn";
 import { useRedirect } from "@/app/hooks/ui/useRedirect";
 
@@ -13,7 +12,7 @@ interface SmartCardProps {
   title: string;
   description: string;
   redirectTo?: string;
-  icon?: string;
+  Icon?: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
   actions?: Action[];
   className?: string;
 }
@@ -21,7 +20,7 @@ interface SmartCardProps {
 const SmartCard: React.FC<SmartCardProps> = ({
   title,
   description,
-  icon,
+  Icon,
   redirectTo,
   className = "",
 }) => {
@@ -33,23 +32,36 @@ const SmartCard: React.FC<SmartCardProps> = ({
     tap: { scale: 0.98, transition: { duration: 0.1 } },
   };
 
+  const handleClick = () => {
+    if (redirectTo) {
+      redirect(redirectTo);
+    }
+  };
+
   return (
     <motion.div
       variants={cardVariants}
       initial="initial"
       whileHover="hover"
       whileTap="tap"
+      onClick={handleClick}
       className={cn(
-        "bg-white rounded-xl p-4 border border-grey-light transition-all cursor-pointer hover:shadow-md px-8 py-6 h-full flex flex-col justify-between",
+        "bg-white rounded-xl border border-grey-light transition-all cursor-pointer hover:shadow-md px-8 py-6 h-full flex flex-col justify-between max-w-sm",
         className,
       )}
     >
       <div>
-        {icon && (
-          <div className="w-12 h-12 bg-primary-light rounded-md mb-3 flex items-center justify-center text-gray-700">
-            <img src={icon} className="w-8 h-8" />
-          </div>
-        )}
+        {/* Icon container with debugging */}
+        <div className="w-12 h-12 bg-primary-light rounded-md mb-3 flex items-center justify-center">
+          {Icon ? (
+            <Icon className="w-6 h-6 text-primary" aria-hidden="true" />
+          ) : (
+            <div className="w-6 h-6 bg-primary rounded flex items-center justify-center text-white text-xs font-bold">
+              {title.charAt(0)}
+            </div>
+          )}
+        </div>
+
         <h3 className="h5-bold-16 text-base-black mb-2">{title}</h3>
         <p className="body-regular-16 text-grey-medium line-clamp-3">
           {description}
@@ -57,10 +69,7 @@ const SmartCard: React.FC<SmartCardProps> = ({
       </div>
 
       <div className="pt-2">
-        <span
-          onClick={() => redirect(redirectTo)}
-          className="button-semi-bold-16 text-primary underline"
-        >
+        <span className="button-semi-bold-16 text-primary underline">
           Learn more
         </span>
       </div>

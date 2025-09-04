@@ -7,6 +7,7 @@ import {
 } from "@/app/components/common/";
 import logo from "@/app/assets/logo.svg";
 import { Circle } from "lucide-react";
+import { DASHBOARD_IMAGE_URL_MOBILE } from "@/app/constants/image-cloudinary";
 
 const HeroSection: React.FC = () => {
   return (
@@ -57,7 +58,7 @@ const HeroSection: React.FC = () => {
       {/* Mobile/tablet image preview (only for smaller than md) */}
       <div className="relative flex md:hidden z-10 -mt-20 px-4">
         <img
-          src="https://res.cloudinary.com/dtoqwn0gx/image/upload/v1754284164/dash1_nvbxo9.png"
+          src={DASHBOARD_IMAGE_URL_MOBILE}
           srcSet="
             https://res.cloudinary.com/dtoqwn0gx/image/upload/v1754284164/dash1_nvbxo9.png 300w,
           "

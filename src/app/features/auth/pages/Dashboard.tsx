@@ -2,7 +2,7 @@ import { useAuthStore } from "@/app/store/auth.store";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { LogOut } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import { Button } from "@/app/components/ui";
 import api from "@/app/services/api/axios";
 
@@ -10,6 +10,13 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { user, isloading, logout } = useAuthStore();
   console.log("🚀 ~ Dashboard ~ user:", user);
+
+  // Redirect to login only after loading is complete
+  useEffect(() => {
+    if (!isloading && !user) {
+      navigate("/login");
+    }
+  }, [isloading, user, navigate]);
 
   const handleLogout = () => {
     logout();
@@ -21,16 +28,17 @@ const Dashboard = () => {
     try {
       const response = await api.get("test/permission");
       if (response.status === 401) {
-        toast.error("Token Expired! , Refreshing");
+        toast.error("Token Expired! Refreshing...");
+      } else {
+        toast.success(response.data.message || "Token refreshed successfully!");
       }
-      toast.success(response.data.message || "Token refreshed successfully!");
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);
       }
-      throw error;
     }
   };
+
   const userInfo = useMemo(() => {
     if (!user) return null;
 
@@ -53,7 +61,7 @@ const Dashboard = () => {
     );
   }, [user]);
 
-  if (isloading) {
+  if (isloading || !user) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <p className="text-xl font-semibold text-gray-800">
@@ -61,11 +69,6 @@ const Dashboard = () => {
         </p>
       </div>
     );
-  }
-
-  if (!user) {
-    navigate("/login");
-    return null;
   }
 
   return (

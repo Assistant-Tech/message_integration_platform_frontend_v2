@@ -3,17 +3,26 @@ import { Button, Input } from "@/app/components/ui";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 
-type Message = {
+export type Message = {
   heading: string;
   shortcut: string;
   message: string;
 };
 
+export type ChatSettings = {
+  primaryColor: string;
+  backgroundColor: string;
+  companyName: string;
+  logo: string | null;
+  messages: Message[];
+  actionButtons: { text: string }[];
+  borderRadius: number;
+  shadow: boolean;
+};
+
 type MessageTemplateSettingsProps = {
-  chatSettings: {
-    messages: Message[];
-  };
-  setChatSettings: React.Dispatch<React.SetStateAction<any>>;
+  chatSettings: ChatSettings;
+  setChatSettings: React.Dispatch<React.SetStateAction<ChatSettings>>;
 };
 
 const MessageTemplateSettings = ({
@@ -30,14 +39,14 @@ const MessageTemplateSettings = ({
 
   const handleSave = () => {
     if (editingIndex !== null) {
-      setChatSettings((prev: any) => {
+      setChatSettings((prev) => {
         const updated = [...prev.messages];
         updated[editingIndex] = tempMessage;
         return { ...prev, messages: updated };
       });
       setEditingIndex(null);
     } else {
-      setChatSettings((prev: any) => ({
+      setChatSettings((prev) => ({
         ...prev,
         messages: [...(prev.messages || []), tempMessage],
       }));
@@ -48,14 +57,16 @@ const MessageTemplateSettings = ({
 
   const handleEdit = (index: number) => {
     setEditingIndex(index);
-    // setTempMessage(chatSettings.messages[index]);
+    setTempMessage(
+      chatSettings.messages[index] ?? { heading: "", shortcut: "", message: "" }
+    );
     setIsAdding(true);
   };
 
   const handleDelete = (index: number) => {
-    setChatSettings((prev: any) => ({
+    setChatSettings((prev) => ({
       ...prev,
-      messages: prev.messages.filter((_: any, i: number) => i !== index),
+      messages: prev.messages.filter((_, i) => i !== index),
     }));
   };
 
@@ -88,7 +99,7 @@ const MessageTemplateSettings = ({
         <div className="space-y-4">
           <AnimatePresence>
             {Array.isArray(chatSettings.messages) &&
-              chatSettings.messages.map((msg: Message, index: number) => (
+              chatSettings.messages.map((msg, index) => (
                 <motion.div
                   key={index}
                   className="border p-4 rounded-md flex flex-col gap-2"

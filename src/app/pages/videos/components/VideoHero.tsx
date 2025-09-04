@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Search, Play } from "lucide-react";
-import { videos, videoCategories } from "@/app/utils/videos/videos";
+import { videos, videoCategories } from "@/app/utils/videos/videos.config";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { GetStarted } from "@/app/pages/landing/";

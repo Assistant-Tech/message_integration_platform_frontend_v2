@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { ContentSectionProps } from "@/app/utils/resource/utils";
+import { ContentSectionProps } from "@/app/utils/resource/resource.config";
 import { JSX } from "react/jsx-runtime";
 
 const ContentSection: React.FC<ContentSectionProps> = ({

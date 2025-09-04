@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { AnimatedProcessCard } from "@/app/components/animation";
 import { Badge, Button } from "@/app/components/ui";
+import { CREATE_BOT_IMAGE_URL } from "@/app/constants/image-cloudinary";
 
 // Animation Variants
 const containerVariants = {
@@ -63,9 +64,7 @@ const ChatBot: React.FC = () => {
             {/* Image */}
             <figure className="w-full flex justify-center">
               <img
-                src={
-                  "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920901/createbot_butboe.webp"
-                }
+                src={CREATE_BOT_IMAGE_URL}
                 alt="Create Bot"
                 className="w-full h-40 md:h-40 lg:h-40 object-contain"
                 loading="lazy"

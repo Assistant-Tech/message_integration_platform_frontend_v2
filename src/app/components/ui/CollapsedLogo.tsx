@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { APP_ROUTES } from "@/app/constants/routes";
+import { LOGO_FAB_ICON_URL } from "@/app/constants/image-cloudinary";
 
 interface CollapsedLogoProps {
   className?: string;
@@ -13,9 +14,7 @@ const CollapsedLogo: React.FC<CollapsedLogoProps> = ({ className = "" }) => {
     >
       <figure className="flex justify-center items-center gap-2">
         <img
-          src={
-            "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1751347732/fab_c5aoyj.png"
-          }
+          src={LOGO_FAB_ICON_URL}
           className="w-16 md:w-24 lg:w-36"
           alt="ChatBlix Logo"
         />
