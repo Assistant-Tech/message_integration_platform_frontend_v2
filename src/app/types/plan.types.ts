@@ -14,7 +14,7 @@ export interface Plan {
   amount: number;
   interval: APIDuration;
   durationInDays: number;
-  features: Record<string, any>;
+  features: Record<string, string>;
   isActive: boolean;
   isPopular: boolean;
   currency: Currency;
@@ -30,7 +30,7 @@ export type CheckoutFormData = {
 };
 
 export type PlanType = {
-  basePrice: any;
+  basePrice: number;
   discountAmount: number;
   originalAmount: number;
   taxAmount: number;
