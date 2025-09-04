@@ -1,4 +1,3 @@
-import Pricing from "@/app/pages/landing/Pricing";
 import { motion } from "framer-motion";
 import { Calendar, CreditCard, Clock, DollarSign } from "lucide-react";
 
@@ -127,7 +126,6 @@ const YourSubscription = () => {
           </div>
         </motion.div>
       </div>
-      
     </div>
   );
 };

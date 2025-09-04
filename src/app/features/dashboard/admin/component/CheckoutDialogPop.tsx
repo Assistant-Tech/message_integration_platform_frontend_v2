@@ -20,12 +20,15 @@ import {
 interface CheckoutDialogProps {
   open: boolean;
   onClose: () => void;
-  plan: PlanType | null;
+  plan?: PlanType;
 }
 
 const CheckoutDialogPop = ({ open, onClose, plan }: CheckoutDialogProps) => {
   const allowedIntervals = ["MONTHLY", "YEARLY"] as const;
   const allowedCurrencies = ["NPR", "USD"] as const;
+  //log
+  console.log("🚀 ~ CheckoutDialogPop ~ allowedIntervals:", allowedIntervals);
+  console.log("🚀 ~ CheckoutDialogPop ~ allowedCurrencies:", allowedCurrencies);
 
   type IntervalType = (typeof allowedIntervals)[number];
   type CurrencyType = (typeof allowedCurrencies)[number];

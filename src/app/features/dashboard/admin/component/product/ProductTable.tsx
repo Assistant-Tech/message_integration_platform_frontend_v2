@@ -1,8 +1,8 @@
 import { Product, ProductTableProps, Status } from "@/app/types/product.types";
 import { ColumnDef } from "@tanstack/react-table";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import GenericTable from "../table/GenericTable";
-import { Check } from "lucide-react";
+import { VisibilityCell } from "@/app/features/dashboard/admin/component/ui";
 
 const ProductTable: React.FC<ProductTableProps> = ({ data }) => {
   const columns = useMemo<ColumnDef<Product>[]>(
@@ -14,19 +14,16 @@ const ProductTable: React.FC<ProductTableProps> = ({ data }) => {
           const row = info.row.original;
           return (
             <div className="flex items-center gap-3">
-              {/* Checkbox */}
               <input
                 type="checkbox"
                 className="accent-primary w-4 h-4"
                 onChange={() => console.log(`Checked: ${row.name}`)}
               />
-              {/* Image */}
               <img
                 src={row.image}
                 alt={row.name}
                 className="w-10 h-10 rounded-md object-cover"
               />
-              {/* Name */}
               <span className="font-medium">{row.name}</span>
             </div>
           );
@@ -50,35 +47,12 @@ const ProductTable: React.FC<ProductTableProps> = ({ data }) => {
       {
         accessorKey: "visibility",
         header: "Visibility",
-        cell: (info) => {
-          const initial = info.getValue<boolean>();
-          const [enabled, setEnabled] = useState(initial);
-
-          return (
-            <label className="inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                className="sr-only peer"
-                checked={enabled}
-                onChange={() => setEnabled((prev) => !prev)}
-              />
-              <div className="w-5 h-5 rounded border border-gray-300 peer-checked:bg-primary peer-checked:border-primary grid place-items-center">
-                {enabled && (
-                  <Check className="w-3 h-3 text-white" strokeWidth={3} />
-                )}
-              </div>
-            </label>
-          );
-        },
+        cell: (info) => <VisibilityCell value={info.getValue<boolean>()} />,
       },
       {
         accessorKey: "status",
         header: "Status",
         cell: (info) => {
-          // pending = "Pending",
-          // success = "Success",
-          // failed = "Failed",
-          // inprogress = "In Progress",
           const value = info.getValue() as Status;
 
           const getStatusStyle = (status: Status) => {
@@ -97,13 +71,13 @@ const ProductTable: React.FC<ProductTableProps> = ({ data }) => {
           };
 
           return (
-            <div>
-              <span
-                className={`capitalize px-3 py-1 rounded-lg text-sm ${getStatusStyle(value)}`}
-              >
-                {value}
-              </span>
-            </div>
+            <span
+              className={`capitalize px-3 py-1 rounded-lg text-sm ${getStatusStyle(
+                value,
+              )}`}
+            >
+              {value}
+            </span>
           );
         },
       },
@@ -127,6 +101,7 @@ const ProductTable: React.FC<ProductTableProps> = ({ data }) => {
     ],
     [],
   );
+
   return <GenericTable columns={columns} data={data} />;
 };
 

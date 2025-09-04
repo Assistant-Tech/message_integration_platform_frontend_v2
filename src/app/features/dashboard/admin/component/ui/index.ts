@@ -5,3 +5,4 @@ export { default as ModalMessageBox } from "./ModalMessageBox";
 export { default as Switch } from "./Switch";
 export { default as RadioButton } from "./RadioButton";
 export { default as DataTableToolbar } from "./Data-toolbar";
+export { default as VisibilityCell } from "./VisibilityCell";

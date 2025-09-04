@@ -27,6 +27,7 @@ const ChatSettings: React.FC = () => {
   });
 
   const [isEditing, setIsEditing] = useState(false);
+  console.log("🚀 ~ ChatSettings ~ isEditing:", isEditing);
 
   // Predefined colors
   const predefinedColors = [

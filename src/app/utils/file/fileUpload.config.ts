@@ -13,7 +13,11 @@ export const simulateFileUpload = (
       if (progress >= 100) {
         clearInterval(interval);
         onProgress(100, "completed");
-        Math.random() > 0.3 ? resolve() : reject(new Error("Failed"));
+        if (Math.random() > 0.3) {
+          resolve();
+        } else {
+          reject(new Error("Failed"));
+        }
       } else {
         onProgress(progress, "uploading", getTimeLeft(progress));
       }

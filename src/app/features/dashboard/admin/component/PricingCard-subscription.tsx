@@ -12,7 +12,7 @@ interface PricingCardProps {
     features?: string[];
   };
   duration: "monthly" | "yearly";
-  onSelect?: () => void; // new
+  onSelect?: () => void;
 }
 
 const PricingcardSubscription = ({
@@ -28,10 +28,14 @@ const PricingcardSubscription = ({
       .replace(/\b\w/g, (char) => char.toUpperCase());
   };
 
-  const displayFeatures = Array.isArray(plan.features) ? plan.features : [];
-  const displayPrice =
+  const displayFeatures: string[] = Array.isArray(plan.features)
+    ? plan.features
+    : [];
+
+  const displayPrice: string =
     plan.price || `${plan.currency === "NPR" ? "रु" : "$"}${plan.amount}`;
-  const buttonText =
+
+  const buttonText: string =
     plan.buttonText || (plan.amount === 0 ? "Contact Us" : "Choose Plan");
 
   return (
@@ -98,7 +102,7 @@ const PricingcardSubscription = ({
             )}
             label={buttonText}
             variant="primary"
-            onClick={onSelect} // ✅ open dialog
+            onClick={onSelect}
           />
         </div>
       </div>

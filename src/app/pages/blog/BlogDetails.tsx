@@ -1,14 +1,13 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useParams } from "react-router-dom";
-import { Clock, Calendar, ArrowRight } from "lucide-react";
+import { Clock, Calendar } from "lucide-react";
 import {
   getBlogPostById,
   getTableOfContents,
   getRelatedPosts,
 } from "@/app/utils/blog/blog.config";
 import { Badge } from "@/app/components/ui";
-import Button from "@/app/components/ui/Button";
 
 const BlogDetailPage: React.FC = () => {
   const fadeUpVariant = {

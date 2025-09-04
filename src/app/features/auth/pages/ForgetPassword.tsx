@@ -1,6 +1,7 @@
 import { Button, Input, Logo } from "@/app/components/ui";
 import { APP_ROUTES } from "@/app/constants/routes";
 import { forgetPassword } from "@/app/services/auth.services";
+import { AxiosError } from "axios";
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -23,11 +24,17 @@ const ForgetPassword = () => {
         res.message || "A password reset link has been sent to your email.",
       );
       setEmail("");
-    } catch (error: any) {
-      const backendMessage =
-        error?.response?.data?.message ||
-        error?.message ||
-        "Failed to send reset link.";
+    } catch (error: unknown) {
+      let backendMessage = "Failed to send reset link.";
+
+      if (error && typeof error === "object") {
+        const axiosErr = error as AxiosError<{ message?: string }>;
+        backendMessage =
+          axiosErr.response?.data?.message ??
+          axiosErr.message ??
+          backendMessage;
+      }
+
       toast.error(backendMessage);
     } finally {
       setLoading(false);

@@ -34,6 +34,7 @@ const VerifyEmail = () => {
         }, 3000);
       } catch (error) {
         toast.error("Email verification failed.");
+        console.log("error", error);
         navigate("/register");
       } finally {
         setLoading(false);

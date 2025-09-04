@@ -43,37 +43,37 @@ const ProductInventory = () => {
     },
   ];
 
-  // MOCK DATASETS
-  const inventoryMock: Inventory[] = [
-    {
-      name: {
-        productImage:
-          "https://m.media-amazon.com/images/I/61GfWyQax7L._AC_UL1500_.jpg",
-        productName: "Cotton Plain T-shirt Round Neck",
-        productSubName: "Nike Daily Wear",
-      },
-      color: "Black",
-      size: Size.small,
-      quantity: 2,
-      price: 800,
-      stock: true,
-    },
-    {
-      name: {
-        productImage:
-          "https://m.media-amazon.com/images/I/61GfWyQax7L._AC_UL1500_.jpg",
-        productName: "Sports Shoes",
-      },
-      color: "Black",
-      size: Size.medium,
-      quantity: 2,
-      price: 800,
-      stock: true,
-    },
-  ];
-
   // Filter and sort data
   const filteredData = useMemo(() => {
+    // MOCK DATASETS - moved inside useMemo
+    const inventoryMock: Inventory[] = [
+      {
+        name: {
+          productImage:
+            "https://m.media-amazon.com/images/I/61GfWyQax7L._AC_UL1500_.jpg",
+          productName: "Cotton Plain T-shirt Round Neck",
+          productSubName: "Nike Daily Wear",
+        },
+        color: "Black",
+        size: Size.small,
+        quantity: 2,
+        price: 800,
+        stock: true,
+      },
+      {
+        name: {
+          productImage:
+            "https://m.media-amazon.com/images/I/61GfWyQax7L._AC_UL1500_.jpg",
+          productName: "Sports Shoes",
+        },
+        color: "Black",
+        size: Size.medium,
+        quantity: 2,
+        price: 800,
+        stock: true,
+      },
+    ];
+
     let temp = [...inventoryMock];
 
     // Search
@@ -91,9 +91,6 @@ const ProductInventory = () => {
 
     // Sorting
     switch (sortBy) {
-      case "newest":
-        temp = temp; // assume newest first
-        break;
       case "oldest":
         temp = temp.reverse();
         break;
@@ -103,10 +100,11 @@ const ProductInventory = () => {
       case "price-desc":
         temp = temp.sort((a, b) => b.price - a.price);
         break;
+      // case "newest": do nothing (already newest first)
     }
 
     return temp;
-  }, [inventoryMock, search, stockFilter, sortBy]);
+  }, [search, stockFilter, sortBy]);
 
   return (
     <div className="p-6 space-y-6">

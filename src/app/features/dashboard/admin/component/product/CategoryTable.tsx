@@ -1,8 +1,8 @@
 import { Category, CategoryTableProps } from "@/app/types/product.types";
 import { ColumnDef } from "@tanstack/react-table";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import GenericTable from "../table/GenericTable";
-import { Check } from "lucide-react";
+import { VisibilityCell } from "@/app/features/dashboard/admin/component/ui";
 
 const CategoryTable: React.FC<CategoryTableProps> = ({ data }) => {
   const columns = useMemo<ColumnDef<Category>[]>(
@@ -15,31 +15,12 @@ const CategoryTable: React.FC<CategoryTableProps> = ({ data }) => {
       {
         accessorKey: "products",
         header: "Products",
-        cell: (info) => <span>${info.getValue() as number}</span>,
+        cell: (info) => <span>{info.getValue() as number}</span>,
       },
       {
         accessorKey: "visibility",
         header: "Visibility",
-        cell: (info) => {
-          const initial = info.getValue<boolean>();
-          const [enabled, setEnabled] = useState(initial);
-
-          return (
-            <label className="inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                className="sr-only peer"
-                checked={enabled}
-                onChange={() => setEnabled((prev) => !prev)}
-              />
-              <div className="w-5 h-5 rounded border border-gray-300 peer-checked:bg-primary peer-checked:border-primary grid place-items-center">
-                {enabled && (
-                  <Check className="w-3 h-3 text-white" strokeWidth={3} />
-                )}
-              </div>
-            </label>
-          );
-        },
+        cell: (info) => <VisibilityCell value={info.getValue<boolean>()} />,
       },
       {
         accessorKey: "action",
@@ -51,6 +32,7 @@ const CategoryTable: React.FC<CategoryTableProps> = ({ data }) => {
     ],
     [],
   );
+
   return <GenericTable columns={columns} data={data} />;
 };
 

@@ -1,8 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-const ANNOUNCEMENT_BANNER_KEY =
-  import.meta.env.VITE_ANNOUNCEMENT_BANNER_KEY ||
-  "announcement_banner_dismissed";
+const ANNOUNCEMENT_BANNER_KEY = "announcement_banner_dismissed";
 
 interface BannerContextType {
   bannerVisible: boolean;

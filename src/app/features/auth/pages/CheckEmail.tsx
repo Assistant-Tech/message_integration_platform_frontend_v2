@@ -26,8 +26,8 @@ const CheckEmail = () => {
         res.data?.message ||
           `Verification email resent to ${resendEmail}! Please check your inbox.`,
       );
-    } catch (error: any) {
-      const parsedError: any = handleApiError(error);
+    } catch (error: string | unknown) {
+      const parsedError = handleApiError(error);
       let errorMessage = "Failed to resend email.";
 
       if (
@@ -43,7 +43,7 @@ const CheckEmail = () => {
           : undefined;
         const firstFieldError =
           parsedError.fieldErrors && typeof parsedError.fieldErrors === "object"
-            ? (Object.values(parsedError.fieldErrors)[0] as any)?.[0]
+            ? (Object.values(parsedError.fieldErrors)[0] as unknown as string)?.[0]
             : undefined;
 
         errorMessage = firstFormError || firstFieldError || errorMessage;

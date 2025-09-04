@@ -11,7 +11,7 @@ interface PricingCardProps {
     subtitle?: string;
     price?: string;
     buttonText?: string;
-    features?: Record<string, any> | string[];
+    features?: Record<string, string> | string[];
   };
   duration: "monthly" | "yearly";
 }

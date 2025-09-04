@@ -76,18 +76,16 @@ const ProductVariants = () => {
 
     // Sorting
     switch (sortBy) {
-      case "newest":
-        temp = temp; // assume newest first
-        break;
       case "oldest":
-        temp = temp.reverse();
+        temp = [...temp].reverse(); // safe copy
         break;
       case "name-asc":
-        temp = temp.sort((a, b) => a.name.localeCompare(b.name));
+        temp = [...temp].sort((a, b) => a.name.localeCompare(b.name));
         break;
       case "name-desc":
-        temp = temp.sort((a, b) => b.name.localeCompare(a.name));
+        temp = [...temp].sort((a, b) => b.name.localeCompare(a.name));
         break;
+      // case "newest": do nothing (already newest first)
     }
 
     return temp;

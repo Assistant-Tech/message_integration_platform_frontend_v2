@@ -5,8 +5,7 @@
 */
 export type Currency = "USD" | "NPR";
 export type APIDuration = "MONTHLY" | "YEARLY";
-
-export type Duration = "monthly" | "yearly"; //UI
+export type Duration = "monthly" | "yearly";
 
 export interface Plan {
   id: string;
@@ -21,7 +20,6 @@ export interface Plan {
   currency: Currency;
 }
 
-// Types
 export type CheckoutFormData = {
   fullName: string;
   country: string;
@@ -45,5 +43,5 @@ export type PlanType = {
   interval: string;
   currency: string;
   isPopular: boolean;
-  features: Record<string, any>;
+  features: Record<string, string | number | boolean>;
 };

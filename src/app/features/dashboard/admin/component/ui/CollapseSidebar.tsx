@@ -39,7 +39,7 @@ const CollapsibleSidebar = () => {
           {/* Sidebar Header */}
           <div className="p-4 border-primary-dark relative">
             <div className="flex items-center justify-center px-2 space-x-3 pt-2">
-              {isCollapsed ? <CollapsedLogo /> : <Logo variant="white" />}
+              {isCollapsed ? <CollapsedLogo /> : <Logo variant="white" isDashboard />}
             </div>
 
             {/* Collapse Toggle */}

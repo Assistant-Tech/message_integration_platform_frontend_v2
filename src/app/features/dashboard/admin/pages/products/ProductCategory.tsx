@@ -41,7 +41,7 @@ const ProductCategory = () => {
     { label: "Products: High to Low", value: "products-desc" },
   ];
 
-  // Filter options (example: visibility)
+  // Filter options
   const filters: FilterConfig[] = [
     {
       label: "Visibility",
@@ -74,9 +74,6 @@ const ProductCategory = () => {
 
     // Sorting
     switch (sortBy) {
-      case "newest":
-        temp = temp; // assume newest first
-        break;
       case "oldest":
         temp = temp.reverse();
         break;
@@ -86,6 +83,7 @@ const ProductCategory = () => {
       case "products-desc":
         temp = temp.sort((a, b) => b.products - a.products);
         break;
+      // case "newest": do nothing
     }
 
     return temp;

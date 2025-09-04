@@ -4,8 +4,9 @@ import {
   Name,
 } from "@/app/types/product.types";
 import { ColumnDef } from "@tanstack/react-table";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import GenericTable from "../table/GenericTable";
+import VisibilityCell from "@/app/features/dashboard/admin/component/ui/VisibilityCell";
 
 const InventoryTable: React.FC<InventoryTableProps> = ({ data }) => {
   const columns = useMemo<ColumnDef<Inventory>[]>(
@@ -58,38 +59,10 @@ const InventoryTable: React.FC<InventoryTableProps> = ({ data }) => {
           <span>Rs. {(info.getValue() as number).toFixed(2)}</span>
         ),
       },
-
-      // Update global state or other ways and connect backend for real time upate in the datasets
       {
         accessorKey: "stock",
         header: "Stock",
-        cell: (info) => {
-          const initial = info.getValue<boolean>();
-          const [enabled, setEnabled] = useState(initial);
-
-          return (
-            <label className="inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                className="sr-only peer"
-                checked={enabled}
-                onChange={() => setEnabled((prev) => !prev)}
-              />
-              <div
-                className={`w-11 h-6 rounded-full transition-colors duration-300 ${
-                  enabled ? "bg-primary" : "bg-grey-light"
-                }`}
-              >
-                <div
-                  className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
-                    enabled ? "translate-x-5" : "translate-x-1"
-                  }`}
-                  style={{ transform: "translateY(10%)" }}
-                />
-              </div>
-            </label>
-          );
-        },
+        cell: (info) => <VisibilityCell value={info.getValue<boolean>()} />,
       },
       {
         accessorKey: "action",

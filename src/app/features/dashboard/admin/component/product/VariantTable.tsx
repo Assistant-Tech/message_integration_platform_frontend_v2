@@ -1,8 +1,9 @@
 import { Variant, VariantTableProps } from "@/app/types/product.types";
 import { ColumnDef } from "@tanstack/react-table";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import GenericTable from "../table/GenericTable";
-import { Check, Edit2, Trash2 } from "lucide-react";
+import { Edit2, Trash2 } from "lucide-react";
+import { VisibilityCell } from "@/app/features/dashboard/admin/component/ui";
 
 const VariantTable: React.FC<VariantTableProps> = ({ data }) => {
   const columns = useMemo<ColumnDef<Variant>[]>(
@@ -15,26 +16,7 @@ const VariantTable: React.FC<VariantTableProps> = ({ data }) => {
       {
         accessorKey: "visibility",
         header: "Visibility",
-        cell: (info) => {
-          const initial = info.getValue<boolean>();
-          const [enabled, setEnabled] = useState(initial);
-
-          return (
-            <label className="inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                className="sr-only peer"
-                checked={enabled}
-                onChange={() => setEnabled((prev) => !prev)}
-              />
-              <div className="w-5 h-5 rounded border border-gray-300 peer-checked:bg-primary peer-checked:border-primary grid place-items-center">
-                {enabled && (
-                  <Check className="w-3 h-3 text-white" strokeWidth={3} />
-                )}
-              </div>
-            </label>
-          );
-        },
+        cell: (info) => <VisibilityCell value={info.getValue<boolean>()} />, 
       },
       {
         accessorKey: "action",

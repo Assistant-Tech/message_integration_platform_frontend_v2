@@ -42,7 +42,7 @@ const AllProductsPage = () => {
       label: "Status",
       options: statusOptions,
       value: statusFilter,
-      onChange: (value) => setStatusFilter(String(value)), // wrap to string
+      onChange: (value) => setStatusFilter(String(value)),
     },
   ];
 
@@ -123,9 +123,6 @@ const AllProductsPage = () => {
 
     // Sorting
     switch (sortBy) {
-      case "newest":
-        temp = temp; // assume newest first
-        break;
       case "oldest":
         temp = temp.reverse();
         break;
@@ -135,6 +132,7 @@ const AllProductsPage = () => {
       case "price-desc":
         temp = temp.sort((a, b) => b.price - a.price);
         break;
+      // case "newest": do nothing
     }
 
     return temp;
@@ -162,11 +160,8 @@ const AllProductsPage = () => {
         onSearchChange={setSearch}
         sortOptions={sortingOptions}
         sortValue={sortBy}
-        onSortChange={(v) => setSortBy(String(v))} // wrap setter
-        filters={filters.map((f) => ({
-          ...f,
-          onChange: (v) => f.onChange(String(v)), // wrap setter
-        }))}
+        onSortChange={(v) => setSortBy(String(v))}
+        filters={filters}
         onFilterClick={() => console.log("Open advanced filter modal")}
       />
 
