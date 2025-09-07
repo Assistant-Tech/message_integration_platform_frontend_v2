@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import {
+  InviteMemberPayload,
   LoginActivityMeta,
   MemberLoginActivity,
 } from "@/app/types/tenant.types";
@@ -11,6 +12,11 @@ interface TenantState {
   members: MemberLoginActivity[];
   meta: LoginActivityMeta | null;
   fetchLoginActivity: (page?: number, limit?: number) => Promise<void>;
+
+  inviteLoading: boolean;
+  inviteError: string | null;
+  inviteSuccess: string | null;
+  inviteMember: (payload: InviteMemberPayload) => Promise<void>;
 }
 
 export const useTenantStore = create<TenantState>((set) => ({
@@ -18,6 +24,10 @@ export const useTenantStore = create<TenantState>((set) => ({
   error: null,
   members: [],
   meta: null,
+
+  inviteLoading: false,
+  inviteError: null,
+  inviteSuccess: null,
 
   fetchLoginActivity: async (page = 1, limit = 10) => {
     set({ loading: true });
@@ -30,6 +40,22 @@ export const useTenantStore = create<TenantState>((set) => ({
       });
     } catch (error: any) {
       set({ error: error.message, loading: false });
+    }
+  },
+
+  inviteMember: async (payload) => {
+    set({ inviteLoading: true, inviteError: null, inviteSuccess: null });
+    try {
+      const res = await tenantServices.inviteMember(payload);
+      set({
+        inviteSuccess: res.message,
+        inviteLoading: false,
+      });
+    } catch (err: any) {
+      set({
+        inviteError: err.message || "Failed to invite member",
+        inviteLoading: false,
+      });
     }
   },
 }));

@@ -10,7 +10,9 @@ import {
 } from "@tanstack/react-table";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Plus, Filter, Edit, Trash2, X } from "lucide-react";
-import { Input } from "@/app/components/ui";
+import { Button, Input } from "@/app/components/ui";
+import { useTenantStore } from "@/app/store/tenant.store";
+import { toast } from "sonner";
 
 interface User {
   id: number;
@@ -41,60 +43,17 @@ const staticData: User[] = [
     dateJoined: "06/17/2025",
     status: "Pending",
   },
-  {
-    id: 3,
-    name: "John Smith",
-    email: "johns@gmail.com",
-    phoneNumber: "9842000000",
-    role: "Member",
-    dateJoined: "06/18/2025",
-    status: "Active",
-  },
-  {
-    id: 4,
-    name: "Emily White",
-    email: "emilyw@gmail.com",
-    phoneNumber: "9843000000",
-    role: "Member",
-    dateJoined: "06/18/2025",
-    status: "Active",
-  },
-  {
-    id: 5,
-    name: "Michael Brown",
-    email: "mikeb@gmail.com",
-    phoneNumber: "9844000000",
-    role: "Member",
-    dateJoined: "06/19/2025",
-    status: "Active",
-  },
-  {
-    id: 6,
-    name: "Jessica Miller",
-    email: "jessicam@gmail.com",
-    phoneNumber: "9846000000",
-    role: "Member",
-    dateJoined: "06/19/2025",
-    status: "Pending",
-  },
-  {
-    id: 7,
-    name: "David Garcia",
-    email: "davidg@gmail.com",
-    phoneNumber: "9847000000",
-    role: "Admin",
-    dateJoined: "06/20/2025",
-    status: "Active",
-  },
 ];
 
 const columnHelper = createColumnHelper<User>();
 
 const RoleManagement = () => {
+  const { inviteMember, inviteLoading } = useTenantStore();
   const [data, setData] = useState(staticData);
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState<SortingState>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [newUser, setNewUser] = useState({
     name: "",
     email: "",
@@ -144,7 +103,7 @@ const RoleManagement = () => {
                   ? "bg-green-100 text-green-800"
                   : status === "Pending"
                     ? "bg-yellow-100 text-yellow-800"
-                    : "bg-base-white text-gray-800"
+                    : "bg-gray-100 text-gray-800"
               }`}
             >
               {status}
@@ -158,13 +117,13 @@ const RoleManagement = () => {
         cell: (info) => (
           <div className="flex gap-2">
             <button
-              className="p-1 hover:bg-base-white rounded transition-colors"
+              className="p-1 hover:bg-gray-50 rounded transition-colors"
               onClick={() => handleEdit(info.row.original)}
             >
               <Edit size={16} className="text-grey-medium" />
             </button>
             <button
-              className="p-1 hover:bg-base-white rounded transition-colors"
+              className="p-1 hover:bg-gray-50 rounded transition-colors"
               onClick={() => handleDelete(info.row.original.id)}
             >
               <Trash2 size={16} className="text-grey-medium" />
@@ -212,7 +171,19 @@ const RoleManagement = () => {
       setData([...data, user]);
       setNewUser({ name: "", email: "", role: "" });
       setIsAddModalOpen(false);
+      toast.success(`${user.name} added successfully`);
     }
+  };
+
+  const handleInvite = async () => {
+    if (!newUser.email) {
+      toast.error("Please enter an email before inviting.");
+      return;
+    }
+    await inviteMember({ email: newUser.email, role: newUser.role });
+    toast.success("Invitation sent to " + newUser.email);
+    setNewUser({ name: "", email: "", role: "" });
+    setIsAddModalOpen(false);
   };
 
   const containerVariants = {
@@ -231,7 +202,7 @@ const RoleManagement = () => {
 
   return (
     <motion.div
-      className="p-6 bg-base-white min-h-screen"
+      className="p-6 bg-gray-50 min-h-screen"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -243,13 +214,21 @@ const RoleManagement = () => {
             <h1 className="text-2xl font-bold text-grey">Settings</h1>
             <p className="text-primary font-medium">Role Management</p>
           </div>
-          <button
-            onClick={() => setIsAddModalOpen(true)}
-            className="bg-primary hover:bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-          >
-            <Plus size={20} />
-            Add Users
-          </button>
+          <div className="flex justify-center items-center gap-3">
+            <Button
+              label="Add Users"
+              onClick={() => setIsAddModalOpen(true)}
+              variant="primary"
+              IconLeft={<Plus size={20} />}
+            />
+
+            <Button
+              label="Invite Member"
+              onClick={() => setIsInviteModalOpen(true)}
+              variant="information"
+              IconLeft={<Plus size={16} />}
+            />
+          </div>
         </div>
 
         {/* Search and Filter Bar */}
@@ -270,12 +249,12 @@ const RoleManagement = () => {
           <div className="flex items-center gap-4">
             <span className="text-grey-medium">Sort By:</span>
             <select className="border border-grey-light rounded-lg px-3 py-2 text-grey-medium">
-              <option>Date . new to old</option>
-              <option>Date . old to new</option>
-              <option>Name . A to Z</option>
-              <option>Name . Z to A</option>
+              <option>Date • New to Old</option>
+              <option>Date • Old to New</option>
+              <option>Name • A to Z</option>
+              <option>Name • Z to A</option>
             </select>
-            <button className="border border-grey-light rounded-lg px-4 py-2 flex items-center gap-2 text-grey-medium hover:bg-base-white transition-colors">
+            <button className="border border-grey-light rounded-lg px-4 py-2 flex items-center gap-2 text-grey-medium hover:bg-gray-50 transition-colors">
               <Filter size={16} />
               Filter
             </button>
@@ -287,13 +266,13 @@ const RoleManagement = () => {
       <div className="bg-white rounded-lg border border-grey-light overflow-hidden my-2">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-base-white border-b border-grey-light">
+            <thead className="bg-gray-50 border-b border-grey-light">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
                     <th
                       key={header.id}
-                      className="px-6 py-4 text-left text-sm font-semibold text-grey tracking-wider cursor-pointer hover:bg-base-white"
+                      className="px-6 py-4 text-left text-sm font-semibold text-grey tracking-wider cursor-pointer hover:bg-gray-50"
                       onClick={header.column.getToggleSortingHandler()}
                     >
                       <div className="flex items-center gap-2">
@@ -313,11 +292,11 @@ const RoleManagement = () => {
                 </tr>
               ))}
             </thead>
-            <tbody className="divide-y divide-base-white">
+            <tbody className="divide-y divide-gray-100">
               {table.getRowModel().rows.map((row, index) => (
                 <motion.tr
                   key={row.id}
-                  className="hover:bg-base-white transition-colors duration-200"
+                  className="hover:bg-gray-50 transition-colors duration-200"
                   variants={rowVariants}
                   custom={index}
                 >
@@ -341,7 +320,7 @@ const RoleManagement = () => {
         {/* Empty state */}
         {table.getRowModel().rows.length === 0 && (
           <div className="px-6 py-12 text-center">
-            <p className="text-base-white0 text-sm">No users found</p>
+            <p className="text-gray-500 text-sm">No users found</p>
           </div>
         )}
       </div>
@@ -385,7 +364,6 @@ const RoleManagement = () => {
                     onChange={(e) =>
                       setNewUser({ ...newUser, name: e.target.value })
                     }
-                    className="w-full px-3 py-2 border border-grey-light rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                   />
                 </div>
                 <div>
@@ -399,11 +377,10 @@ const RoleManagement = () => {
                     onChange={(e) =>
                       setNewUser({ ...newUser, email: e.target.value })
                     }
-                    className="w-full px-3 py-2 border border-grey-light rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label className="block body-regular-16 text-grey-medium mb-2">
+                  <label className="block text-sm font-medium text-grey-medium mb-2">
                     Role
                   </label>
                   <select
@@ -411,7 +388,7 @@ const RoleManagement = () => {
                     onChange={(e) =>
                       setNewUser({ ...newUser, role: e.target.value })
                     }
-                    className="w-full px-3 py-2 border border-grey-light block body-regular-16 text-grey-medium mb-2 rounded-lg"
+                    className="w-full px-3 py-2 border border-grey-light rounded-lg"
                   >
                     <option value="">Select Role</option>
                     <option value="Admin">Admin</option>
@@ -421,27 +398,80 @@ const RoleManagement = () => {
                 </div>
               </div>
 
-              <button
-                onClick={() => setNewUser({ name: "", email: "", role: "" })}
-                className="text-primary flex items-center gap-2 mb-6"
-              >
-                <Plus size={16} />
-                Add New User
-              </button>
-
-              <div className="flex justify-end gap-3">
-                <button
+              {/* Modal Footer Buttons */}
+              <div className="flex justify-end gap-3 mt-6">
+                <Button
+                  label="Cancel"
                   onClick={() => setIsAddModalOpen(false)}
-                  className="px-6 py-2 bg-grey-metext-grey-medium text-white rounded-lg hover:bg-grey-metext-grey-medium transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
+                  variant="secondary"
+                />
+                <Button
+                  label="Add User"
                   onClick={handleAddUser}
-                  className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary transition-colors"
+                  variant="primary"
+                  IconLeft={<Plus size={16} />}
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {/* Invite Modal */}
+      <AnimatePresence>
+        {isInviteModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+            onClick={() => setIsInviteModalOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white rounded-lg p-6 w-full max-w-md mx-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-grey">
+                  Invite Member
+                </h2>
+                <button
+                  onClick={() => setIsInviteModalOpen(false)}
+                  className="text-grey-medium hover:text-grey-medium"
                 >
-                  Add
+                  <X size={24} />
                 </button>
+              </div>
+
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-grey-medium mb-2">
+                  Email
+                </label>
+                <Input
+                  type="email"
+                  placeholder="Enter email address"
+                  value={newUser.email}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, email: e.target.value })
+                  }
+                />
+              </div>
+
+              <div className="flex justify-end gap-3 mt-6">
+                <Button
+                  label="Cancel"
+                  onClick={() => setIsInviteModalOpen(false)}
+                  variant="secondary"
+                />
+                <Button
+                  label={inviteLoading ? "Inviting..." : "Invite"}
+                  onClick={handleInvite}
+                  variant="primary"
+                  IconLeft={<Plus size={16} />}
+                  disabled={inviteLoading}
+                />
               </div>
             </motion.div>
           </motion.div>

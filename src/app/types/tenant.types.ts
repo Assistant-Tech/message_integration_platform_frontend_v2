@@ -34,3 +34,15 @@ export interface LoginActivityResponse {
   success: boolean;
   timestamp: string;
 }
+
+
+export interface InviteMemberPayload {
+  email: string;
+  role?: string;
+}
+
+export interface InviteMemberResponse {
+  message: string;
+  success: boolean;
+  timestamp: string;
+}
