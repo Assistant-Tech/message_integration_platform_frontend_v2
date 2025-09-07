@@ -117,7 +117,7 @@ export const useAuthStore = create<AuthState>()(
         set({ isloading: true });
         try {
           const res = await login(email, password);
-          const { accessToken, requiresOnboarding, csrfToken } = res;
+          const { accessToken, requiresOnboarding, csrfToken } = res.data;
           set({
             accessToken,
             requiresOnboarding,
@@ -141,12 +141,13 @@ export const useAuthStore = create<AuthState>()(
       refreshAccessToken: async () => {
         try {
           set({ isRefreshing: true });
-          const accessToken = await refreshAccessToken(get().csrfToken);
+          const accessToken = await refreshAccessToken();
           set({
             accessToken,
             isRefreshing: false,
             isAuthenticated: !!accessToken,
           });
+          console.log("🚀 ~ accessToken:", accessToken);
           return accessToken;
         } catch {
           set({

@@ -109,14 +109,12 @@ export const login = async (email: string, password: string) => {
 /**
  * Handles the access token refresh API call.
  */
-export const refreshAccessToken = async (csrfToken: string | null) => {
+export const refreshAccessToken = async () => {
   try {
-    const res = await api.get("/auth/refresh", {
-      headers: {
-        "X-CSRF-Token": csrfToken,
-      },
-    });
-    return res.data.accessToken;
+    const res = await api.get("/auth/refresh");
+    const data = res.data.accessToken;
+    console.log("🚀 ~ refreshAccessToken ~ data:", data);
+    return data;
   } catch (error) {
     throw handleApiError(error);
   }

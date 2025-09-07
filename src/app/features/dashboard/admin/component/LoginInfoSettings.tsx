@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -7,8 +7,9 @@ import {
   getPaginationRowModel,
 } from "@tanstack/react-table";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTenantStore } from "@/app/store/tenant.store";
 
-// 1. Define the type for a single data row.
+// Define the row type for the table
 interface LoginInfo {
   id: number;
   name: string;
@@ -18,83 +19,33 @@ interface LoginInfo {
   lastLogin: string;
 }
 
-const staticData: LoginInfo[] = [
-  {
-    id: 1,
-    name: "Jane Doe",
-    location: "Nepal",
-    ipAddress: "192.168.1.101",
-    device: "Windows",
-    lastLogin: "30 minutes ago",
-  },
-  {
-    id: 2,
-    name: "Stephanie Nicol",
-    location: "Nepal",
-    ipAddress: "192.168.1.102",
-    device: "Windows",
-    lastLogin: "June 25, 2025 10:27 AM",
-  },
-  {
-    id: 3,
-    name: "Stephanie Nicol",
-    location: "Nepal",
-    ipAddress: "192.168.1.103",
-    device: "Redmi Note 14 Pro",
-    lastLogin: "1 day ago",
-  },
-  {
-    id: 4,
-    name: "Ricky Smith",
-    location: "Nepal",
-    ipAddress: "192.168.1.104",
-    device: "iPhone 13",
-    lastLogin: "25/06/2025",
-  },
-  {
-    id: 5,
-    name: "John Smith",
-    location: "Nepal",
-    ipAddress: "192.168.1.105",
-    device: "MacBook Pro",
-    lastLogin: "2 hours ago",
-  },
-  {
-    id: 6,
-    name: "Emily White",
-    location: "Nepal",
-    ipAddress: "192.168.1.106",
-    device: "iPad Air",
-    lastLogin: "4 hours ago",
-  },
-  {
-    id: 7,
-    name: "Michael Brown",
-    location: "Nepal",
-    ipAddress: "192.168.1.107",
-    device: "Dell XPS",
-    lastLogin: "Yesterday",
-  },
-  {
-    id: 8,
-    name: "Jessica Lee",
-    location: "Nepal",
-    ipAddress: "192.168.1.108",
-    device: "Samsung Galaxy",
-    lastLogin: "2 days ago",
-  },
-];
-
-// 2. Pass the data type to createColumnHelper.
+// Column helper
 const columnHelper = createColumnHelper<LoginInfo>();
 
 const LoginInfoTable = () => {
-  const [data] = useState(staticData);
+  const { members, loading, meta, fetchLoginActivity } = useTenantStore();
+
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 5,
   });
 
+  // Fetch data when pagination changes
+  useEffect(() => {
+    fetchLoginActivity(pagination.pageIndex + 1, pagination.pageSize);
+  }, [pagination.pageIndex, pagination.pageSize, fetchLoginActivity]);
+
+  // Transform API data → table rows
+  const data: LoginInfo[] = members.map((m, idx) => ({
+    id: idx + 1,
+    name: m.name,
+    location: m.sessions[0]?.location ?? "Unknown",
+    ipAddress: m.sessions[0]?.ip ?? "-",
+    device: m.sessions[0]?.device ?? "-",
+    lastLogin: new Date(m.lastLoginAt).toLocaleString(),
+  }));
+
+  // Define columns
   const columns = useMemo(
     () => [
       columnHelper.accessor("name", {
@@ -133,15 +84,16 @@ const LoginInfoTable = () => {
     [],
   );
 
-  // 3. Pass the data type to useReactTable.
+  // React Table setup
   const table = useReactTable({
     data,
     columns,
-    pageCount: Math.ceil(data.length / pagination.pageSize),
+    pageCount: meta ? Math.ceil(meta.total / pagination.pageSize) : -1,
     state: {
       pagination,
     },
     onPaginationChange: setPagination,
+    manualPagination: true, // ✅ we control pagination via API
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
@@ -161,10 +113,14 @@ const LoginInfoTable = () => {
   };
 
   const currentPage = table.getState().pagination.pageIndex + 1;
-  const totalPages = table.getPageCount();
+  const totalPages = meta ? Math.ceil(meta.total / pagination.pageSize) : 1;
   const canNextPage = table.getCanNextPage();
   const canPreviousPage = table.getCanPreviousPage();
   const hasMultiplePages = totalPages > 1;
+
+  if (loading) {
+    return <p className="p-4 text-gray-600">Loading...</p>;
+  }
 
   return (
     <AnimatePresence mode="wait">
@@ -249,18 +205,17 @@ const LoginInfoTable = () => {
                 <p className="text-sm text-gray-700">
                   Showing{" "}
                   <span className="font-medium">
-                    {table.getRowModel().rows.length * currentPage -
-                      table.getRowModel().rows.length +
-                      1}
+                    {(currentPage - 1) * pagination.pageSize + 1}
                   </span>{" "}
                   to{" "}
                   <span className="font-medium">
                     {Math.min(
-                      table.getRowModel().rows.length * currentPage,
-                      data.length,
+                      currentPage * pagination.pageSize,
+                      meta?.total || 0,
                     )}
                   </span>{" "}
-                  of <span className="font-medium">{data.length}</span> results
+                  of <span className="font-medium">{meta?.total || 0}</span>{" "}
+                  results
                 </p>
               </div>
               <div>
