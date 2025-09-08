@@ -46,3 +46,50 @@ export interface InviteMemberResponse {
   success: boolean;
   timestamp: string;
 }
+
+export interface tenantUsers{
+  id: number,
+  email: string,
+  name: string,
+  status: "ONLINE" | "OFFLINE",
+  joinedAt: string
+}
+
+/**
+ * Interface representing the core User details.
+ */
+interface User {
+    id: string;
+    email: string;
+    name: string;
+    status: 'ONLINE' | 'OFFLINE' | string; // Use a union type if known, otherwise string
+    joinedAt: string; // ISO 8601 string
+}
+
+/**
+ * Interface representing the Role details assigned to the user.
+ */
+interface Role {
+    id: string;
+    name: string;
+    type: 'TENANT_ADMIN' | 'STANDARD_USER' | string; // Use a union type if known
+    description: string;
+}
+
+/**
+ * Interface representing a single Tenant User entry, which combines the user and role.
+ */
+interface TenantUserData {
+    user: User;
+    role: Role;
+}
+
+/**
+ * The root interface for the entire API response payload.
+ */
+export interface TenantUserResponse {
+    message: string;
+    data: TenantUserData[];
+    success: boolean;
+    timestamp: string; 
+}

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -9,7 +9,7 @@ import {
   SortingState,
 } from "@tanstack/react-table";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Plus, Filter, Edit, Trash2, X } from "lucide-react";
+import { Search, Plus, Edit, Trash2, X, RefreshCw } from "lucide-react";
 import { Button, Input } from "@/app/components/ui";
 import { useTenantStore } from "@/app/store/tenant.store";
 import { toast } from "sonner";
@@ -24,6 +24,7 @@ interface User {
   status: "Active" | "Pending" | "Inactive";
 }
 
+// Keep static data as fallback
 const staticData: User[] = [
   {
     id: 1,
@@ -48,17 +49,115 @@ const staticData: User[] = [
 const columnHelper = createColumnHelper<User>();
 
 const RoleManagement = () => {
-  const { inviteMember, inviteLoading } = useTenantStore();
+  const {
+    inviteMember,
+    inviteLoading,
+    tenantUsers,
+    loading,
+    error,
+    fetchLoginActivity,
+  } = useTenantStore();
+
   const [data, setData] = useState(staticData);
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState<SortingState>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+  const [useRemoteData, setUseRemoteData] = useState(false);
   const [newUser, setNewUser] = useState({
     name: "",
     email: "",
     role: "",
   });
+
+  // 🔹 New filters
+  const [statusFilter, setStatusFilter] = useState<string>("");
+  const [roleFilter, setRoleFilter] = useState<string>("");
+  const [timeRangeFilter, setTimeRangeFilter] = useState<string>("");
+
+  // Fetch tenant users on component mount
+  useEffect(() => {
+    const loadTenantUsers = async () => {
+      try {
+        await fetchLoginActivity();
+        setUseRemoteData(true);
+      } catch (err) {
+        console.error("Failed to fetch tenant users:", err);
+        toast.error("Failed to load tenant users. Using local data.");
+        setUseRemoteData(false);
+      }
+    };
+    loadTenantUsers();
+  }, [fetchLoginActivity]);
+
+  // Transform tenant users data to match User interface
+  const transformedTenantUsers = useMemo(() => {
+    if (!tenantUsers || tenantUsers.length === 0) return [];
+
+    return tenantUsers.map((user: any, index: number) => ({
+      id: user.id || index + 1000,
+      name:
+        user.name ||
+        user.fullName ||
+        `${user.firstName} ${user.lastName}`.trim() ||
+        "N/A",
+      email: user.email || "N/A",
+      phoneNumber: user.phoneNumber || user.phone || "N/A",
+      role: user.role || user.userRole || "Member",
+      dateJoined:
+        user.dateJoined || user.createdAt
+          ? new Date(user.dateJoined || user.createdAt).toLocaleDateString(
+              "en-US",
+            )
+          : new Date().toLocaleDateString("en-US"),
+      status:
+        user.status ||
+        ((user.isActive ? "Active" : "Inactive") as
+          | "Active"
+          | "Pending"
+          | "Inactive"),
+    }));
+  }, [tenantUsers]);
+
+  // 🔹 Apply filters (status, role, time range)
+  const filteredData = useMemo(() => {
+    let users =
+      useRemoteData && transformedTenantUsers.length > 0
+        ? transformedTenantUsers
+        : data;
+
+    if (statusFilter) {
+      users = users.filter((u) => u.status === statusFilter);
+    }
+    if (roleFilter) {
+      users = users.filter((u) => u.role === roleFilter);
+    }
+    if (timeRangeFilter) {
+      const now = new Date();
+      users = users.filter((u) => {
+        const joinedDate = new Date(u.dateJoined);
+        if (timeRangeFilter === "last7days") {
+          return (
+            now.getTime() - joinedDate.getTime() <= 7 * 24 * 60 * 60 * 1000
+          );
+        }
+        if (timeRangeFilter === "last30days") {
+          return (
+            now.getTime() - joinedDate.getTime() <= 30 * 24 * 60 * 60 * 1000
+          );
+        }
+        return true; // "all"
+      });
+    }
+    return users;
+  }, [
+    data,
+    transformedTenantUsers,
+    useRemoteData,
+    statusFilter,
+    roleFilter,
+    timeRangeFilter,
+  ]);
 
   const columns = useMemo(
     () => [
@@ -136,15 +235,12 @@ const RoleManagement = () => {
   );
 
   const table = useReactTable({
-    data,
+    data: filteredData,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    state: {
-      globalFilter,
-      sorting,
-    },
+    state: { globalFilter, sorting },
     onGlobalFilterChange: setGlobalFilter,
     onSortingChange: setSorting,
   });
@@ -154,6 +250,10 @@ const RoleManagement = () => {
   };
 
   const handleDelete = (userId: number) => {
+    if (useRemoteData) {
+      toast.error("Cannot delete remote users from this interface");
+      return;
+    }
     setData(data.filter((user) => user.id !== userId));
   };
 
@@ -168,6 +268,9 @@ const RoleManagement = () => {
         dateJoined: new Date().toLocaleDateString("en-US"),
         status: "Pending",
       };
+      if (useRemoteData) {
+        toast.info("User added locally. Refresh to see remote data.");
+      }
       setData([...data, user]);
       setNewUser({ name: "", email: "", role: "" });
       setIsAddModalOpen(false);
@@ -180,10 +283,24 @@ const RoleManagement = () => {
       toast.error("Please enter an email before inviting.");
       return;
     }
-    await inviteMember({ email: newUser.email, role: newUser.role });
-    toast.success("Invitation sent to " + newUser.email);
-    setNewUser({ name: "", email: "", role: "" });
-    setIsAddModalOpen(false);
+    try {
+      await inviteMember({ email: newUser.email, role: newUser.role });
+      toast.success("Invitation sent to " + newUser.email);
+      await fetchLoginActivity();
+      setNewUser({ name: "", email: "", role: "" });
+      setIsInviteModalOpen(false);
+    } catch (error) {
+      toast.error("Failed to send invitation");
+    }
+  };
+
+  const handleRefreshData = async () => {
+    try {
+      await fetchLoginActivity();
+      toast.success("Data refreshed successfully");
+    } catch (error) {
+      toast.error("Failed to refresh data");
+    }
   };
 
   const containerVariants = {
@@ -212,16 +329,32 @@ const RoleManagement = () => {
         <div className="flex items-center justify-between mb-2">
           <div>
             <h1 className="text-2xl font-bold text-grey">Settings</h1>
-            <p className="text-primary font-medium">Role Management</p>
+            <div className="flex items-center gap-2">
+              <p className="text-primary font-medium">Role Management</p>
+              <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                API Data ({filteredData.length} users)
+              </span>
+            </div>
           </div>
           <div className="flex justify-center items-center gap-3">
+            <Button
+              label="Refresh"
+              onClick={handleRefreshData}
+              variant="secondary"
+              IconLeft={
+                <RefreshCw
+                  size={16}
+                  className={loading ? "animate-spin" : ""}
+                />
+              }
+              disabled={loading}
+            />
             <Button
               label="Add Users"
               onClick={() => setIsAddModalOpen(true)}
               variant="primary"
               IconLeft={<Plus size={20} />}
             />
-
             <Button
               label="Invite Member"
               onClick={() => setIsInviteModalOpen(true)}
@@ -231,12 +364,20 @@ const RoleManagement = () => {
           </div>
         </div>
 
+        {/* Error display */}
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-red-800 text-sm">Error: {error}</p>
+          </div>
+        )}
+
         {/* Search and Filter Bar */}
-        <div className="flex items-center justify-between gap-4 mt-4">
+        <div className="flex flex-wrap items-center gap-4 mt-4">
+          {/* Search */}
           <div className="relative flex-1 max-w-md">
             <Search
               size={20}
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-grey-medium"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-grey-medium"
             />
             <Input
               type="text"
@@ -246,24 +387,55 @@ const RoleManagement = () => {
               className="w-full pl-10 pr-4 py-2 text-grey border border-grey-light rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
-          <div className="flex items-center gap-4">
-            <span className="text-grey-medium">Sort By:</span>
-            <select className="border border-grey-light rounded-lg px-3 py-2 text-grey-medium">
-              <option>Date • New to Old</option>
-              <option>Date • Old to New</option>
-              <option>Name • A to Z</option>
-              <option>Name • Z to A</option>
-            </select>
-            <button className="border border-grey-light rounded-lg px-4 py-2 flex items-center gap-2 text-grey-medium hover:bg-gray-50 transition-colors">
-              <Filter size={16} />
-              Filter
-            </button>
-          </div>
+
+          {/* Status filter */}
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="border border-grey-light rounded-lg px-3 py-2 text-grey-medium"
+          >
+            <option value="">All Status</option>
+            <option value="Active">Active</option>
+            <option value="Pending">Pending</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+
+          {/* Role filter */}
+          <select
+            value={roleFilter}
+            onChange={(e) => setRoleFilter(e.target.value)}
+            className="border border-grey-light rounded-lg px-3 py-2 text-grey-medium"
+          >
+            <option value="">All Roles</option>
+            <option value="Admin">Admin</option>
+            <option value="Member">Member</option>
+            <option value="Moderator">Moderator</option>
+          </select>
+
+          {/* Time range filter */}
+          <select
+            value={timeRangeFilter}
+            onChange={(e) => setTimeRangeFilter(e.target.value)}
+            className="border border-grey-light rounded-lg px-3 py-2 text-grey-medium"
+          >
+            <option value="">All Time</option>
+            <option value="last7days">Last 7 Days</option>
+            <option value="last30days">Last 30 Days</option>
+          </select>
         </div>
       </div>
 
       {/* Table */}
       <div className="bg-white rounded-lg border border-grey-light overflow-hidden my-2">
+        {loading && (
+          <div className="p-6 text-center">
+            <div className="inline-flex items-center gap-2 text-grey-medium">
+              <RefreshCw size={16} className="animate-spin" />
+              Loading tenant users...
+            </div>
+          </div>
+        )}
+
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-grey-light">
@@ -318,7 +490,7 @@ const RoleManagement = () => {
         </div>
 
         {/* Empty state */}
-        {table.getRowModel().rows.length === 0 && (
+        {!loading && table.getRowModel().rows.length === 0 && (
           <div className="px-6 py-12 text-center">
             <p className="text-gray-500 text-sm">No users found</p>
           </div>
@@ -351,7 +523,6 @@ const RoleManagement = () => {
                   <X size={24} />
                 </button>
               </div>
-
               <div className="grid grid-cols-3 gap-4 mb-6">
                 <div>
                   <label className="block text-sm font-medium text-grey-medium mb-2">
@@ -397,7 +568,6 @@ const RoleManagement = () => {
                   </select>
                 </div>
               </div>
-
               {/* Modal Footer Buttons */}
               <div className="flex justify-end gap-3 mt-6">
                 <Button
@@ -416,6 +586,7 @@ const RoleManagement = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
       {/* Invite Modal */}
       <AnimatePresence>
         {isInviteModalOpen && (
@@ -444,8 +615,7 @@ const RoleManagement = () => {
                   <X size={24} />
                 </button>
               </div>
-
-              <div className="mb-6">
+              <div className="mb-4">
                 <label className="block text-sm font-medium text-grey-medium mb-2">
                   Email
                 </label>
@@ -458,7 +628,23 @@ const RoleManagement = () => {
                   }
                 />
               </div>
-
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-grey-medium mb-2">
+                  Role
+                </label>
+                <select
+                  value={newUser.role}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, role: e.target.value })
+                  }
+                  className="w-full px-3 py-2 border border-grey-light rounded-lg"
+                >
+                  <option value="">Select Role</option>
+                  <option value="Admin">Admin</option>
+                  <option value="Member">Member</option>
+                  <option value="Moderator">Moderator</option>
+                </select>
+              </div>
               <div className="flex justify-end gap-3 mt-6">
                 <Button
                   label="Cancel"

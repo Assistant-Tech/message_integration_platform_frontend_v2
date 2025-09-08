@@ -10,6 +10,7 @@ interface TenantState {
   loading: boolean;
   error: string | null;
   members: MemberLoginActivity[];
+  tenantUsers: any[];
   meta: LoginActivityMeta | null;
   fetchLoginActivity: (page?: number, limit?: number) => Promise<void>;
 
@@ -23,6 +24,7 @@ export const useTenantStore = create<TenantState>((set) => ({
   loading: false,
   error: null,
   members: [],
+  tenantUsers: [],
   meta: null,
 
   inviteLoading: false,
@@ -36,6 +38,19 @@ export const useTenantStore = create<TenantState>((set) => ({
       set({
         members: res.data,
         meta: res.meta,
+        loading: false,
+      });
+    } catch (error: any) {
+      set({ error: error.message, loading: false });
+    }
+  },
+
+  fetchTenantUsers: async () => {
+    set({ loading: true }); // Start loading
+    try {
+      const res = await tenantServices.getTenantUsers(); // New service method to fetch tenant users
+      set({
+        tenantUsers: res.data, // Set fetched tenant users
         loading: false,
       });
     } catch (error: any) {
