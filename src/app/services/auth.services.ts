@@ -118,10 +118,10 @@ export const login = async (email: string, password: string) => {
 /**
  * Handles the access token refresh API call.
  */
-export const refreshAccessToken = async () => {
+export const refreshAccessTokenAPI = async () => {
   try {
     const res = await api.get("/auth/refresh");
-    const data = res.data.accessToken;
+    const data = res.data?.data?.accessToken ?? null;
     console.log("🚀 ~ refreshAccessToken ~ data:", data);
     return data;
   } catch (error) {

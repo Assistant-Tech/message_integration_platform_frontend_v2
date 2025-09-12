@@ -8,13 +8,9 @@ import { useAuthStore } from "@/app/store/auth.store";
 import ErrorBoundary from "@/app/ErrorBoundary";
 
 const App = () => {
-  const isRefreshing = useAuthStore((s) => s.isRefreshing);
-
-  // Initial auth bootstrap: attempt token refresh then load user profile.
   useEffect(() => {
-    if (isRefreshing) return; // don't re-run while refreshing
-
     let cancelled = false;
+
     const bootstrap = async () => {
       const {
         refreshAccessToken,
@@ -40,12 +36,13 @@ const App = () => {
         if (!cancelled) setRefreshing(false);
       }
     };
+
     bootstrap();
 
     return () => {
       cancelled = true;
     };
-  }, [isRefreshing]);
+  }, []);
 
   return (
     <ErrorBoundary>

@@ -7,7 +7,7 @@ import {
   verifyEmail,
   onboarding,
   login,
-  refreshAccessToken,
+  refreshAccessTokenAPI,
   logout,
 } from "@/app/services/auth.services";
 
@@ -142,7 +142,7 @@ export const useAuthStore = create<AuthState>()(
       refreshAccessToken: async () => {
         try {
           set({ isRefreshing: true });
-          const accessToken = await refreshAccessToken();
+          const accessToken = await refreshAccessTokenAPI();
           set({
             accessToken,
             isRefreshing: false,
