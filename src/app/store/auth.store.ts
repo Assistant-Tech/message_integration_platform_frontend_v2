@@ -28,6 +28,7 @@ interface AuthState {
     name: string,
     email: string,
     password: string,
+    invitationToken?: string,
   ) => Promise<{ message: string; email: string }>;
   verifyEmail: (token: string) => Promise<{ message: string }>;
   onboarding: (data: FormData) => Promise<{ slug: string }>;
@@ -71,10 +72,10 @@ export const useAuthStore = create<AuthState>()(
           isAuthenticated: false,
         });
       },
-      signup: async (name, email, password) => {
+      signup: async (name, email, password, invitationToken?: string) => {
         set({ isloading: true });
         try {
-          const res = await signup(name, email, password);
+          const res = await signup(name, email, password, invitationToken);
           set({
             user: res.user,
             requiresOnboarding: res.requiresOnboarding,

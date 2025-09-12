@@ -1,7 +1,6 @@
 // ----------------------
 // Regist Schema & Types
 // ----------------------
-
 import { z } from "zod";
 
 export const registerSchema = z
@@ -17,6 +16,7 @@ export const registerSchema = z
       .regex(/[@$!%*?&]/, "Must include a special character."),
     confirmPassword: z.string(),
     rememberMe: z.boolean().optional(),
+    invitationToken: z.string().optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     path: ["confirmPassword"],

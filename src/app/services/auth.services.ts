@@ -57,9 +57,18 @@ export const forgetPassword = async (email: string) => {
 /**
  * Handles the user signup API call.
  */
-export const signup = async (name: string, email: string, password: string) => {
+export const signup = async (
+  name: string,
+  email: string,
+  password: string,
+  invitationToken?: string,
+) => {
   try {
-    const res = await api.post("/auth/signup", { name, email, password });
+    const url = invitationToken
+      ? `/auth/signup?invitation_token=${invitationToken}`
+      : "/auth/signup";
+
+    const res = await api.post(url, { name, email, password });
     return res.data;
   } catch (error) {
     throw handleApiError(error);

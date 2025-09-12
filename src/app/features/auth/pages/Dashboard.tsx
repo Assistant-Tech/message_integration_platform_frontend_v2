@@ -3,8 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { LogOut } from "lucide-react";
 import { useMemo, useEffect } from "react";
-import { Button } from "@/app/components/ui";
-import { useTenantStore } from "@/app/store/tenant.store";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -23,8 +21,6 @@ const Dashboard = () => {
     toast.success("Logged out successfully!");
     navigate("/login");
   };
-
-
 
   // const handleAutoTokenRefresh = async () => {
   //   try {
@@ -80,7 +76,6 @@ const Dashboard = () => {
         onClick={handleAutoTokenRefresh}
         variant="information"
       /> */}
-
 
       <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-8 transition-all duration-300 transform hover:scale-105">
         <div className="flex items-center justify-between mb-8">

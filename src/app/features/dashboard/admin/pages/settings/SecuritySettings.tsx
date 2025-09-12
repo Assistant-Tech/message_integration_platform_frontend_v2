@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import MfaSettings from "../../component/MfaSettings";
-import LoginInfoSettings from "../../component/LoginInfoSettings";
+import {
+  MemberInfoSettings,
+  MfaSettings,
+  LoginInfoSettings,
+} from "@/app/features/dashboard/admin/component";
 
 const SecuritySettings = () => {
-  const [activeTab, setActiveTab] = useState<"multifactor" | "loginInfo">(
-    "multifactor",
-  );
+  const [activeTab, setActiveTab] = useState<
+    "multifactor" | "loginInfo" | "memberInfo"
+  >("multifactor");
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -65,10 +68,26 @@ const SecuritySettings = () => {
         >
           Login Info
         </button>
+        <button
+          className={`w-1/2 px-6 py-3 text-sm font-medium transition-colors ${
+            activeTab === "memberInfo"
+              ? "text-primary border-b-2 border-primary bg-primary-light"
+              : "text-grey-medium hover:text-grey"
+          }`}
+          onClick={() => setActiveTab("memberInfo")}
+        >
+          Member Login Info
+        </button>
       </motion.div>
 
       {/* Tab Content */}
-      {activeTab === "multifactor" ? <MfaSettings /> : <LoginInfoSettings />}
+      {activeTab === "multifactor" ? (
+        <MfaSettings />
+      ) : activeTab === "loginInfo" ? (
+        <LoginInfoSettings />
+      ) : (
+        <MemberInfoSettings />
+      )}
     </motion.section>
   );
 };

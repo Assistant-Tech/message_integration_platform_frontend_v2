@@ -16,6 +16,7 @@ export interface User {
   isVerified: boolean;
   userStatus?: boolean;
   roleType?: boolean;
+  roleId?: string;
   preferences: {
     theme: string;
     notifications: boolean;

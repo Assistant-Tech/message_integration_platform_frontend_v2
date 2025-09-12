@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import {
   registerSchema,
@@ -15,11 +15,16 @@ import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 import { useAuthStore } from "@/app/store/auth.store";
 import { handleApiError } from "@/app/utils/handlerApiError";
+import { APP_ROUTES } from "@/app/constants/routes";
 
 const RegisterForm = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [showPasswordChecks, setShowPasswordChecks] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const params = new URLSearchParams(location.search);
+  const invitationToken = params.get("accept-invitation");
 
   const isAuthenticating = useAuthStore((s) => s.isloading);
   const signUp = useAuthStore((s) => s.signup);
@@ -46,10 +51,21 @@ const RegisterForm = () => {
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      const res = await signUp(data.name, data.email, data.password);
+      const res = await signUp(
+        data.name,
+        data.email,
+        data.password,
+        invitationToken || "",
+      );
+
       toast.success(res?.message || "Registration Successful!");
       reset();
-      navigate("/check-email", { state: { email: data.email } });
+
+      if (invitationToken) {
+        navigate(APP_ROUTES.USER.DASHBOARD);
+      } else {
+        navigate("/check-email", { state: { email: data.email } });
+      }
     } catch (error) {
       const parsedError = handleApiError(error);
       toast.error(

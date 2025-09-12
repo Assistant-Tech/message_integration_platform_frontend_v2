@@ -13,40 +13,21 @@ import { Search, Plus, Edit, Trash2, X, RefreshCw } from "lucide-react";
 import { Button, Input } from "@/app/components/ui";
 import { useTenantStore } from "@/app/store/tenant.store";
 import { toast } from "sonner";
+import { useAuthStore } from "@/app/store/auth.store";
 
-interface User {
-  id: number;
+// Table row shape
+interface TenantUserRow {
+  id: string; // backend userId (UUID or string)
   name: string;
   email: string;
   phoneNumber: string;
   role: string;
+  roleId: string; // UUID from backend role
   dateJoined: string;
   status: "Active" | "Pending" | "Inactive";
 }
 
-// Keep static data as fallback
-const staticData: User[] = [
-  {
-    id: 1,
-    name: "Jane Doe",
-    email: "janedoe@gmail.com",
-    phoneNumber: "9841000000",
-    role: "Admin",
-    dateJoined: "06/17/2025",
-    status: "Active",
-  },
-  {
-    id: 2,
-    name: "Sarah Davis",
-    email: "sarahd@gmail.com",
-    phoneNumber: "9845000000",
-    role: "Member",
-    dateJoined: "06/17/2025",
-    status: "Pending",
-  },
-];
-
-const columnHelper = createColumnHelper<User>();
+const columnHelper = createColumnHelper<TenantUserRow>();
 
 const RoleManagement = () => {
   const {
@@ -56,46 +37,53 @@ const RoleManagement = () => {
     loading,
     error,
     fetchLoginActivity,
+    updateTenantRole,
+    createTenantRole,
+    roleLoading,
+    roleError,
+    roleSuccess,
   } = useTenantStore();
 
-  const [data, setData] = useState(staticData);
+  const { user } = useAuthStore();
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
-  const [useRemoteData, setUseRemoteData] = useState(false);
+  const [isCreateRoleModalOpen, setIsCreateRoleModalOpen] = useState(false);
+
+  const resources = ["conversations", "messages", "reports", "users"];
+  const actions = ["read", "update", "delete", "write"];
+
+  const [newRole, setNewRole] = useState({
+    name: "",
+    description: "",
+    permissions: [] as string[],
+  });
+
   const [newUser, setNewUser] = useState({
     name: "",
     email: "",
     role: "",
   });
 
-  // 🔹 New filters
+  // 🔹 Filters
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [roleFilter, setRoleFilter] = useState<string>("");
   const [timeRangeFilter, setTimeRangeFilter] = useState<string>("");
 
   // Fetch tenant users on component mount
   useEffect(() => {
-    const loadTenantUsers = async () => {
-      try {
-        await fetchLoginActivity();
-        setUseRemoteData(true);
-      } catch (err) {
-        console.error("Failed to fetch tenant users:", err);
-        toast.error("Failed to load tenant users. Using local data.");
-        setUseRemoteData(false);
-      }
-    };
-    loadTenantUsers();
+    fetchLoginActivity().catch((err) => {
+      console.error("Failed to fetch tenant users:", err);
+      toast.error("Failed to load tenant users.");
+    });
   }, [fetchLoginActivity]);
 
-  // Transform tenant users data to match User interface
-  const transformedTenantUsers = useMemo(() => {
+  // Transform tenant users data to table shape
+  const transformedTenantUsers: TenantUserRow[] = useMemo(() => {
     if (!tenantUsers || tenantUsers.length === 0) return [];
 
-    return tenantUsers.map((user: any, index: number) => ({
-      id: user.id || index + 1000,
+    return tenantUsers.map((user: any) => ({
+      id: user.id,
       name:
         user.name ||
         user.fullName ||
@@ -103,7 +91,8 @@ const RoleManagement = () => {
         "N/A",
       email: user.email || "N/A",
       phoneNumber: user.phoneNumber || user.phone || "N/A",
-      role: user.role || user.userRole || "Member",
+      role: user.role?.name || user.userRole || "Member",
+      roleId: user.role?.id, // 🔹 capture UUID here
       dateJoined:
         user.dateJoined || user.createdAt
           ? new Date(user.dateJoined || user.createdAt).toLocaleDateString(
@@ -119,12 +108,9 @@ const RoleManagement = () => {
     }));
   }, [tenantUsers]);
 
-  // 🔹 Apply filters (status, role, time range)
+  // 🔹 Apply filters
   const filteredData = useMemo(() => {
-    let users =
-      useRemoteData && transformedTenantUsers.length > 0
-        ? transformedTenantUsers
-        : data;
+    let users = transformedTenantUsers;
 
     if (statusFilter) {
       users = users.filter((u) => u.status === statusFilter);
@@ -146,19 +132,78 @@ const RoleManagement = () => {
             now.getTime() - joinedDate.getTime() <= 30 * 24 * 60 * 60 * 1000
           );
         }
-        return true; // "all"
+        return true;
       });
     }
     return users;
-  }, [
-    data,
-    transformedTenantUsers,
-    useRemoteData,
-    statusFilter,
-    roleFilter,
-    timeRangeFilter,
-  ]);
+  }, [transformedTenantUsers, statusFilter, roleFilter, timeRangeFilter]);
 
+  // 🔹 Update Role API call
+  const handleEdit = async (user: TenantUserRow) => {
+    if (!user.roleId) {
+      toast.error("This user does not have a valid role ID");
+      return;
+    }
+    try {
+      await updateTenantRole(user.roleId, {
+        addPermissions: ["reports:export"],
+        removePermissions: ["messages:update"],
+      });
+      toast.success(`Role updated for ${user.name}`);
+      await fetchLoginActivity();
+    } catch (err) {
+      toast.error("Failed to update role");
+      console.error(err);
+    }
+  };
+
+  // 🔹 Create Role
+  const handleCreateRole = async () => {
+    if (!newRole.name || !newRole.description) {
+      toast.error("Please fill in role name and description");
+      return;
+    }
+    try {
+      await createTenantRole({
+        name: newRole.name,
+        description: newRole.description,
+        permissions: newRole.permissions,
+      });
+      toast.success("Role created successfully");
+      setNewRole({ name: "", description: "", permissions: [] });
+      setIsCreateRoleModalOpen(false);
+    } catch {
+      toast.error("Failed to create role");
+    }
+  };
+
+  // 🔹 Invite Member
+  const handleInvite = async () => {
+    if (!newUser.email) {
+      toast.error("Please enter an email before inviting.");
+      return;
+    }
+    try {
+      await inviteMember({ email: newUser.email, role: newUser.role });
+      toast.success("Invitation sent to " + newUser.email);
+      await fetchLoginActivity();
+      setNewUser({ name: "", email: "", role: "" });
+      setIsInviteModalOpen(false);
+    } catch (error) {
+      toast.error("Failed to send invitation");
+    }
+  };
+
+  const handleRefreshData = async () => {
+    try {
+      await fetchLoginActivity();
+      toast.success("Data refreshed successfully");
+    } catch (error) {
+      toast.error("Failed to refresh data");
+    }
+  };
+
+  // 🔹 Table columns
   const columns = useMemo(
     () => [
       columnHelper.accessor("name", {
@@ -223,7 +268,9 @@ const RoleManagement = () => {
             </button>
             <button
               className="p-1 hover:bg-gray-50 rounded transition-colors"
-              onClick={() => handleDelete(info.row.original.id)}
+              onClick={() =>
+                toast.error("Deleting users is not supported from this view")
+              }
             >
               <Trash2 size={16} className="text-grey-medium" />
             </button>
@@ -244,64 +291,6 @@ const RoleManagement = () => {
     onGlobalFilterChange: setGlobalFilter,
     onSortingChange: setSorting,
   });
-
-  const handleEdit = (user: User) => {
-    console.log("Edit user:", user);
-  };
-
-  const handleDelete = (userId: number) => {
-    if (useRemoteData) {
-      toast.error("Cannot delete remote users from this interface");
-      return;
-    }
-    setData(data.filter((user) => user.id !== userId));
-  };
-
-  const handleAddUser = () => {
-    if (newUser.name && newUser.email && newUser.role) {
-      const user: User = {
-        id: Date.now(),
-        name: newUser.name,
-        email: newUser.email,
-        phoneNumber: "N/A",
-        role: newUser.role,
-        dateJoined: new Date().toLocaleDateString("en-US"),
-        status: "Pending",
-      };
-      if (useRemoteData) {
-        toast.info("User added locally. Refresh to see remote data.");
-      }
-      setData([...data, user]);
-      setNewUser({ name: "", email: "", role: "" });
-      setIsAddModalOpen(false);
-      toast.success(`${user.name} added successfully`);
-    }
-  };
-
-  const handleInvite = async () => {
-    if (!newUser.email) {
-      toast.error("Please enter an email before inviting.");
-      return;
-    }
-    try {
-      await inviteMember({ email: newUser.email, role: newUser.role });
-      toast.success("Invitation sent to " + newUser.email);
-      await fetchLoginActivity();
-      setNewUser({ name: "", email: "", role: "" });
-      setIsInviteModalOpen(false);
-    } catch (error) {
-      toast.error("Failed to send invitation");
-    }
-  };
-
-  const handleRefreshData = async () => {
-    try {
-      await fetchLoginActivity();
-      toast.success("Data refreshed successfully");
-    } catch (error) {
-      toast.error("Failed to refresh data");
-    }
-  };
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -350,10 +339,10 @@ const RoleManagement = () => {
               disabled={loading}
             />
             <Button
-              label="Add Users"
-              onClick={() => setIsAddModalOpen(true)}
+              label="Create Role"
+              onClick={() => setIsCreateRoleModalOpen(true)}
               variant="primary"
-              IconLeft={<Plus size={20} />}
+              IconLeft={<Plus size={16} />}
             />
             <Button
               label="Invite Member"
@@ -363,17 +352,13 @@ const RoleManagement = () => {
             />
           </div>
         </div>
-
-        {/* Error display */}
         {error && (
           <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
             <p className="text-red-800 text-sm">Error: {error}</p>
           </div>
         )}
-
-        {/* Search and Filter Bar */}
+        {/* Filters + Search */}
         <div className="flex flex-wrap items-center gap-4 mt-4">
-          {/* Search */}
           <div className="relative flex-1 max-w-md">
             <Search
               size={20}
@@ -387,8 +372,6 @@ const RoleManagement = () => {
               className="w-full pl-10 pr-4 py-2 text-grey border border-grey-light rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
-
-          {/* Status filter */}
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
@@ -399,8 +382,6 @@ const RoleManagement = () => {
             <option value="Pending">Pending</option>
             <option value="Inactive">Inactive</option>
           </select>
-
-          {/* Role filter */}
           <select
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
@@ -411,8 +392,6 @@ const RoleManagement = () => {
             <option value="Member">Member</option>
             <option value="Moderator">Moderator</option>
           </select>
-
-          {/* Time range filter */}
           <select
             value={timeRangeFilter}
             onChange={(e) => setTimeRangeFilter(e.target.value)}
@@ -435,7 +414,6 @@ const RoleManagement = () => {
             </div>
           </div>
         )}
-
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-grey-light">
@@ -488,8 +466,6 @@ const RoleManagement = () => {
             </tbody>
           </table>
         </div>
-
-        {/* Empty state */}
         {!loading && table.getRowModel().rows.length === 0 && (
           <div className="px-6 py-12 text-center">
             <p className="text-gray-500 text-sm">No users found</p>
@@ -497,89 +473,115 @@ const RoleManagement = () => {
         )}
       </div>
 
-      {/* Add User Modal */}
+      {/* Create Role Modal */}
       <AnimatePresence>
-        {isAddModalOpen && (
+        {isCreateRoleModalOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/40 bg-opacity-50 flex items-center justify-center z-50"
-            onClick={() => setIsAddModalOpen(false)}
+            className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+            onClick={() => setIsCreateRoleModalOpen(false)}
           >
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white rounded-lg p-6 w-full max-w-2xl mx-4"
+              className="bg-white rounded-lg p-6 w-full max-w-md mx-4"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-grey">Add Users</h2>
+                <h2 className="text-xl font-semibold text-grey">Create Role</h2>
                 <button
-                  onClick={() => setIsAddModalOpen(false)}
+                  onClick={() => setIsCreateRoleModalOpen(false)}
                   className="text-grey-medium hover:text-grey-medium"
                 >
                   <X size={24} />
                 </button>
               </div>
-              <div className="grid grid-cols-3 gap-4 mb-6">
-                <div>
-                  <label className="block text-sm font-medium text-grey-medium mb-2">
-                    Name
-                  </label>
-                  <Input
-                    type="text"
-                    placeholder="Enter full name"
-                    value={newUser.name}
-                    onChange={(e) =>
-                      setNewUser({ ...newUser, name: e.target.value })
-                    }
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-grey-medium mb-2">
-                    Email
-                  </label>
-                  <Input
-                    type="email"
-                    placeholder="Enter email address"
-                    value={newUser.email}
-                    onChange={(e) =>
-                      setNewUser({ ...newUser, email: e.target.value })
-                    }
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-grey-medium mb-2">
-                    Role
-                  </label>
-                  <select
-                    value={newUser.role}
-                    onChange={(e) =>
-                      setNewUser({ ...newUser, role: e.target.value })
-                    }
-                    className="w-full px-3 py-2 border border-grey-light rounded-lg"
-                  >
-                    <option value="">Select Role</option>
-                    <option value="Admin">Admin</option>
-                    <option value="Member">Member</option>
-                    <option value="Moderator">Moderator</option>
-                  </select>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-grey-medium mb-2">
+                  Role Name
+                </label>
+                <Input
+                  type="text"
+                  placeholder="Enter role name"
+                  value={newRole.name}
+                  onChange={(e) =>
+                    setNewRole({ ...newRole, name: e.target.value })
+                  }
+                />
+              </div>
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-grey-medium mb-2">
+                  Permissions
+                </label>
+                <div className="space-y-4">
+                  {resources.map((res) => (
+                    <div key={res}>
+                      <p className="font-medium text-grey">{res}</p>
+                      <div className="flex flex-wrap gap-3 mt-2">
+                        {actions.map((act) => {
+                          const value = `${res}:${act}`;
+                          const isChecked = newRole.permissions.includes(value);
+                          return (
+                            <label
+                              key={value}
+                              className="flex items-center gap-2"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={isChecked}
+                                onChange={() => {
+                                  setNewRole((prev) => {
+                                    if (isChecked) {
+                                      return {
+                                        ...prev,
+                                        permissions: prev.permissions.filter(
+                                          (p) => p !== value,
+                                        ),
+                                      };
+                                    } else {
+                                      return {
+                                        ...prev,
+                                        permissions: [
+                                          ...prev.permissions,
+                                          value,
+                                        ],
+                                      };
+                                    }
+                                  });
+                                }}
+                              />
+                              <span className="text-sm text-grey-medium">
+                                {act}
+                              </span>
+                            </label>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-              {/* Modal Footer Buttons */}
-              <div className="flex justify-end gap-3 mt-6">
+              {roleError && (
+                <p className="text-red-600 text-sm mb-3">{roleError}</p>
+              )}
+              {roleSuccess && (
+                <p className="text-green-600 text-sm mb-3">{roleSuccess}</p>
+              )}
+              <div className="flex justify-end gap-3">
                 <Button
                   label="Cancel"
-                  onClick={() => setIsAddModalOpen(false)}
+                  onClick={() => setIsCreateRoleModalOpen(false)}
                   variant="secondary"
                 />
                 <Button
-                  label="Add User"
-                  onClick={handleAddUser}
+                  label={roleLoading ? "Creating..." : "Create Role"}
+                  onClick={handleCreateRole}
                   variant="primary"
                   IconLeft={<Plus size={16} />}
+                  disabled={roleLoading}
                 />
               </div>
             </motion.div>

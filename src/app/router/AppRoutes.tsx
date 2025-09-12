@@ -32,6 +32,7 @@ import {
 } from "@/app/pages";
 
 import {
+  Accept_Invitation,
   Dashboard,
   ForgetPassword,
   LoginPage,
@@ -152,6 +153,10 @@ const AppRoutes = () => {
             <Route
               path={APP_ROUTES.PUBLIC.REGISTER}
               element={<RegisterPage />}
+            />
+            <Route
+              path={APP_ROUTES.PUBLIC.ACCEPT_INVITATION}
+              element={<Accept_Invitation />}
             />
             <Route
               path={APP_ROUTES.PUBLIC.FORGOT_PASSWORD}
@@ -323,7 +328,10 @@ const AppRoutes = () => {
             </Route>
 
             {/* User Dashboard (future) */}
-            <Route path="/user" element={<DashboardLayout />} />
+            <Route
+              path={APP_ROUTES.USER.DASHBOARD}
+              element={<DashboardLayout />}
+            />
           </Route>
         </Routes>
       </BannerProvider>
