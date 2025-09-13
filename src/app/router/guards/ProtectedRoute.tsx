@@ -2,6 +2,8 @@ import { Loading } from "@/app/components/common";
 import { useAuthStore } from "@/app/store/auth.store";
 import { Navigate, Outlet } from "react-router-dom";
 
+
+//role based routing
 const ProtectedRoute = () => {
   const isRefreshing = useAuthStore((s) => s.isRefreshing);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);

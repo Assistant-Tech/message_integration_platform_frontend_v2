@@ -135,7 +135,7 @@ export const useTenantStore = create<TenantState>((set) => ({
     }
   },
 
-  // Create tenant role
+  // Create tenant roleF
   createTenantRole: async (payload) => {
     set({
       roleLoading: true,
@@ -146,7 +146,7 @@ export const useTenantStore = create<TenantState>((set) => ({
     try {
       const res = await tenantServices.createTenantRoles(payload);
       set((state) => ({
-        createdRole: res.data,
+        createdRole: res.data, // ✅ res.data is the role object
         roles: [...state.roles, res.data],
         roleSuccess: res.message || "Role successfully created",
         roleLoading: false,

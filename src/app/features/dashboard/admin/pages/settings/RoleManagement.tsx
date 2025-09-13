@@ -103,12 +103,14 @@ const RoleManagement = () => {
       return;
     }
     try {
-      await createTenantRole(newRole);
+      await createTenantRole({
+        ...newRole,
+        permissions: newRole.permissions || [], // ✅ ensure array
+      });
       toast.success("Role created successfully");
       setIsCreateRoleModalOpen(false);
       setNewRole({ name: "", description: "", permissions: [] });
       await fetchTenantRoles();
-      await fetchTenantUsers();
     } catch {
       toast.error("Failed to create role");
     }
@@ -383,7 +385,9 @@ const RoleManagement = () => {
                   <X size={20} />
                 </button>
               </div>
+
               <div className="space-y-4">
+                {/* Role Name */}
                 <Input
                   type="text"
                   placeholder="Role Name"
@@ -392,6 +396,8 @@ const RoleManagement = () => {
                     setNewRole({ ...newRole, name: e.target.value })
                   }
                 />
+
+                {/* Role Description */}
                 <Input
                   type="text"
                   placeholder="Description"
@@ -400,7 +406,39 @@ const RoleManagement = () => {
                     setNewRole({ ...newRole, description: e.target.value })
                   }
                 />
+
+                {/* Permissions Selection */}
+                <div className="space-y-2">
+                  <h4 className="font-medium text-sm">Permissions</h4>
+                  {[
+                    "conversations:read",
+                    "messages:read",
+                    "messages:update",
+                    "reports:read",
+                  ].map((perm) => (
+                    <label
+                      key={perm}
+                      className="flex items-center gap-2 text-sm"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={newRole.permissions.includes(perm)}
+                        onChange={() => {
+                          setNewRole((prev) => ({
+                            ...prev,
+                            permissions: prev.permissions.includes(perm)
+                              ? prev.permissions.filter((p) => p !== perm)
+                              : [...prev.permissions, perm],
+                          }));
+                        }}
+                      />
+                      {perm}
+                    </label>
+                  ))}
+                </div>
               </div>
+
+              {/* Footer */}
               <div className="flex justify-end gap-2 mt-6">
                 <Button
                   label="Cancel"

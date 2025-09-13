@@ -53,13 +53,13 @@ export const tenantServices = {
   /**
    * Create tenant role.
    */
+  // tenant.services.ts
   async createTenantRoles(
     payload: CreateTenantRolePayload,
   ): Promise<TenantCreateResponse> {
     const res = await api.post<TenantCreateResponse>("/tenant/roles", payload);
-    return res.data;
+    return res.data; // correct
   },
-
   /**
    * Update tenant role (add/remove permissions).
    */
