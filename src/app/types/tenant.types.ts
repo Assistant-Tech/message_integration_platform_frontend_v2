@@ -114,3 +114,29 @@ export interface CreateTenantRolePayload {
   description: string;
   permissions: string[];
 }
+
+export interface UpdateTenantRolePayload {
+  name?: string;
+  description?: string;
+  permissions?: string[];
+  addPermissions?: string[];
+  removePermissions?: string[];
+}
+
+export interface AssignRoleResponse {
+  message: string;
+  data?: {
+    memberId: string;
+    roleId: string;
+    roleName: string;
+  };
+}
+
+export interface AssignRolePayload {
+  roleId: string;
+}
+
+export interface TenantRolesResponse {
+  data: TenantRole[];
+  message?: string;
+}

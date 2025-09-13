@@ -7,21 +7,16 @@ const ProtectedRoute = () => {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const user = useAuthStore((s) => s.user);
 
-  // While refreshing, don't decide yet → show loader
-  if (isRefreshing) {
-    return <Loading />;
-  }
+  // 1. Show loader while refreshing token
+  if (isRefreshing) return <Loading />;
 
-  // If refresh finished and still not authenticated → redirect
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
+  // 2. Redirect to login if not authenticated
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
 
-  // Optional: if you require user profile
-  if (!user) {
-    return <Loading />;
-  }
+  // 4. Wait until user profile is loaded
+  if (!user) return <Loading />;
 
+  // 5. Everything ok → render child routes
   return <Outlet />;
 };
 

@@ -93,7 +93,7 @@ export const APP_ROUTES = {
 
   // User routes
   USER: {
-    DASHBOARD: "dashboard",
+    DASHBOARD: "/user/dashboard",
   },
 };
 

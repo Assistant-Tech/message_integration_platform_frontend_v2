@@ -122,7 +122,7 @@ export const refreshAccessTokenAPI = async () => {
   try {
     const res = await api.get("/auth/refresh");
     const data = res.data?.data?.accessToken ?? null;
-    console.log("🚀 ~ refreshAccessToken ~ data:", data);
+    // console.log("🚀 ~ refreshAccessToken ~ data:", data);
     return data;
   } catch (error) {
     throw handleApiError(error);

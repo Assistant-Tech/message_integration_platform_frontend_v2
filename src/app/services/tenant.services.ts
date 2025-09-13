@@ -62,4 +62,12 @@ export const tenantServices = {
     );
     return res.data;
   },
+  /**
+   * Assign tenant role (add/remove permissions).
+   */
+  async assignRole(userId: string, payload: { roleId: string }) {
+    console.log("🚀 ~ assignRole ~ payload:", payload)
+    const res = await api.patch(`/tenant/${userId}/assign-role`, payload);
+    return res.data;
+  },
 };

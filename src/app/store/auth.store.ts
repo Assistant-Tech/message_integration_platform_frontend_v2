@@ -17,6 +17,8 @@ interface AuthState {
   csrfToken: string | null;
   onboardingToken: string | null;
   requiresOnboarding: boolean;
+  tenantSlug: string | null;
+  setTenantSlug: (slug: string) => void;
   isAuthenticated: boolean;
   isVerified: boolean;
   isloading: boolean;
@@ -54,6 +56,8 @@ export const useAuthStore = create<AuthState>()(
       csrfToken: null,
       onboardingToken: null,
       requiresOnboarding: false,
+      tenantSlug: null,
+      setTenantSlug: (slug) => set({ tenantSlug: slug }),
       isVerified: false,
       isloading: false,
       isRefreshing: false,
@@ -118,27 +122,34 @@ export const useAuthStore = create<AuthState>()(
         set({ isloading: true });
         try {
           const res = await login(email, password);
-          const { accessToken, requiresOnboarding, csrfToken } = res.data;
+          const { accessToken, requiresOnboarding, csrfToken, tenantSlug } =
+            res.data;
+
+          // Update auth state
           set({
             accessToken,
             requiresOnboarding,
             csrfToken,
             isAuthenticated: true,
+            tenantSlug,
           });
+
           await get().fetchCurrentUserProfile();
-          const tenantSlug = res.tenantSlug;
+
           if (!tenantSlug) {
             console.warn("⚠️ No tenantSlug found after login");
           }
+
           return {
             message: res.message || "Login successful!",
             requiresOnboarding,
-            tenantSlug: tenantSlug,
+            tenantSlug,
           };
         } finally {
           set({ isloading: false });
         }
       },
+
       refreshAccessToken: async () => {
         try {
           set({ isRefreshing: true });
@@ -148,7 +159,7 @@ export const useAuthStore = create<AuthState>()(
             isRefreshing: false,
             isAuthenticated: !!accessToken,
           });
-          console.log("🚀 ~ accessToken:", accessToken);
+          // console.log("🚀 ~ accessToken:", accessToken);
           return accessToken;
         } catch {
           set({

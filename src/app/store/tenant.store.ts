@@ -14,9 +14,8 @@ interface TenantState {
   members: MemberLoginActivity[];
   tenantUsers: any[];
   meta: LoginActivityMeta | null;
-  fetchLoginActivity: (page?: number, limit?: number) => Promise<void>;
 
-  // Invite Memebers
+  // Invite Members
   inviteLoading: boolean;
   inviteError: string | null;
   inviteSuccess: string | null;
@@ -29,11 +28,11 @@ interface TenantState {
   roleSuccess: string | null;
   createdRole: TenantRole | null;
   createTenantRole: (payload: CreateTenantRolePayload) => Promise<void>;
-
   updateTenantRole: (
     roleId: string | number,
     payload: { addPermissions?: string[]; removePermissions?: string[] },
   ) => Promise<void>;
+  assignRole: (userId: string, roleId: string) => Promise<void>;
 }
 
 export const useTenantStore = create<TenantState>((set) => ({
@@ -52,6 +51,7 @@ export const useTenantStore = create<TenantState>((set) => ({
   roleSuccess: null,
   createdRole: null,
 
+  // Fetch login activity
   fetchLoginActivity: async (page = 1, limit = 10) => {
     set({ loading: true });
     try {
@@ -66,6 +66,7 @@ export const useTenantStore = create<TenantState>((set) => ({
     }
   },
 
+  // Fetch tenant users
   fetchTenantUsers: async () => {
     set({ loading: true });
     try {
@@ -79,6 +80,7 @@ export const useTenantStore = create<TenantState>((set) => ({
     }
   },
 
+  // Invite member
   inviteMember: async (payload) => {
     set({ inviteLoading: true, inviteError: null, inviteSuccess: null });
     try {
@@ -95,6 +97,7 @@ export const useTenantStore = create<TenantState>((set) => ({
     }
   },
 
+  // Create tenant role
   createTenantRole: async (payload) => {
     set({
       roleLoading: true,
@@ -106,7 +109,7 @@ export const useTenantStore = create<TenantState>((set) => ({
       const res = await tenantServices.createTenantRoles(payload);
       set({
         createdRole: res.data,
-        roleSuccess: res.message,
+        roleSuccess: res.message || "Role successfully created",
         roleLoading: false,
       });
     } catch (err: any) {
@@ -116,7 +119,13 @@ export const useTenantStore = create<TenantState>((set) => ({
       });
     }
   },
-  updateTenantRole: async (roleId, payload) => {
+
+  // Update tenant role
+  // Update the role permissions in the backend
+  updateTenantRole: async (
+    roleId: string | number,
+    payload: { addPermissions?: string[]; removePermissions?: string[] },
+  ) => {
     set({ roleLoading: true, roleError: null, roleSuccess: null });
     try {
       const res = await tenantServices.updateTenantRole(roleId, payload);
@@ -128,6 +137,23 @@ export const useTenantStore = create<TenantState>((set) => ({
     } catch (err: any) {
       set({
         roleError: err.message || "Failed to update role",
+        roleLoading: false,
+      });
+    }
+  },
+
+  //assign role
+  assignRole: async (userId: string, roleId: string) => {
+    set({ roleLoading: true, roleError: null, roleSuccess: null });
+    try {
+      const res = await tenantServices.assignRole(userId, { roleId });
+      set({
+        roleSuccess: res.message || "Role assigned successfully",
+        roleLoading: false,
+      });
+    } catch (err: any) {
+      set({
+        roleError: err.message || "Failed to assign role",
         roleLoading: false,
       });
     }
