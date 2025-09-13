@@ -1,97 +1,105 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Edit, Building2 } from "lucide-react";
 import { Input, Button } from "@/app/components/ui";
 import { toast } from "sonner";
-import api from "@/app/services/api/axios";
+import { useTenantStore } from "@/app/store/tenant.store";
+import { TenantDetailsResponse } from "@/app/types/tenant.types";
 
 const CompanySettings: React.FC = () => {
   const [isEditing, setIsEditing] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
 
-  // 🔹 Static initial tenant state (sample data)
-  const [companyData, setCompanyData] = useState({
-    organizationName: "Seamans Furniture",
-    email: "seamansfurniture@gmail.com",
-    contactNumber: "+977-9800000000",
-    website: "https://seamansfurniture.com",
-    industry: "Furniture",
-    description: "Leading furniture company in Nepal.",
-    settings: { timezone: "Asia/Kathmandu", locale: "en-NP" },
-    country: "Nepal",
-    state: "Bagmati",
-    city: "Kathmandu",
-    pan: "123456789",
-    panCardPhoto: null as string | null,
-  });
+  // 🔹 Store hooks
+  const {
+    tenantDetails,
+    loading,
+    updateLoading,
+    getTenantDetails,
+    updateTenantDetails,
+  } = useTenantStore();
+
+  // 🔹 Local editable state
+  const [companyData, setCompanyData] = useState<
+    TenantDetailsResponse["data"] | null
+  >(null);
+
+  // Fetch tenant details on mount
+  useEffect(() => {
+    getTenantDetails().catch(() => {
+      toast.error("Failed to fetch tenant details");
+    });
+  }, [getTenantDetails]);
+
+  // Sync store → local state
+  useEffect(() => {
+    if (tenantDetails) {
+      setCompanyData(tenantDetails);
+    }
+  }, [tenantDetails]);
 
   // 🔹 Handle input changes
-  const handleInputChange = (field: string, value: string) => {
-    setCompanyData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+  const handleInputChange = (
+    field: keyof TenantDetailsResponse["data"],
+    value: string,
+  ) => {
+    setCompanyData((prev) => (prev ? { ...prev, [field]: value } : prev));
   };
 
-  // 🔹 Handle settings update (nested)
+  // 🔹 Handle nested settings update
   const handleSettingsChange = (
     field: "timezone" | "locale",
     value: string,
   ) => {
-    setCompanyData((prev) => ({
-      ...prev,
-      settings: { ...prev.settings, [field]: value },
-    }));
+    setCompanyData((prev) =>
+      prev ? { ...prev, settings: { ...prev.settings, [field]: value } } : prev,
+    );
   };
 
-  // 🔹 Save updates via PATCH
+  // 🔹 Save updates via store
   const handleSave = async () => {
+    if (!companyData) return;
     try {
-      setLoading(true);
-      const payload = {
+      await updateTenantDetails({
         organizationName: companyData.organizationName,
         website: companyData.website,
         contactNumber: companyData.contactNumber,
         industry: companyData.industry,
         description: companyData.description,
         settings: companyData.settings,
-      };
-
-      const { data } = await api.patch(`/tenant/details`, payload, {
-        withCredentials: true,
+        address: companyData.address,
+        panCardNumber: companyData.panCardNumber,
+        panCardImageUri: companyData.panCardImageUri,
       });
-
-      if (data.success) {
-        setCompanyData((prev) => ({
-          ...prev,
-          ...data.data,
-        }));
-        toast.success("Tenant details updated successfully!");
-        setIsEditing(null);
-      } else {
-        toast.error("Failed to update tenant details.");
-      }
+      toast.success("Tenant details updated successfully!");
+      setIsEditing(null);
     } catch (err: any) {
-      toast.error(err.response?.data?.message || "Update failed");
-    } finally {
-      setLoading(false);
+      toast.error("Failed to update tenant details");
     }
   };
 
-  // 🔹 Handle PAN upload (local only for now)
+  // 🔹 Handle PAN upload
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        setCompanyData((prev) => ({
-          ...prev,
-          panCardPhoto: e.target?.result as string,
-        }));
+        setCompanyData((prev) =>
+          prev
+            ? { ...prev, panCardImageUri: e.target?.result as string }
+            : prev,
+        );
       };
       reader.readAsDataURL(file);
     }
   };
+
+  if (loading || !companyData) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <p>Loading company details...</p>
+      </div>
+    );
+  }
 
   return (
     <motion.section
@@ -120,7 +128,7 @@ const CompanySettings: React.FC = () => {
         </div>
       </motion.div>
 
-      {/* General Information Section */}
+      {/* General Information */}
       <motion.div className="bg-white rounded-lg border border-grey-light mb-6">
         <div className="flex justify-between items-center px-6 py-4 border-b border-grey-light">
           <h2 className="text-lg font-semibold text-grey">
@@ -147,46 +155,46 @@ const CompanySettings: React.FC = () => {
               />
               <Input
                 placeholder="Website"
-                value={companyData.website}
+                value={companyData.website || ""}
                 onChange={(e) => handleInputChange("website", e.target.value)}
               />
               <Input
                 placeholder="Contact Number"
-                value={companyData.contactNumber}
+                value={companyData.contactNumber || ""}
                 onChange={(e) =>
                   handleInputChange("contactNumber", e.target.value)
                 }
               />
               <Input
                 placeholder="Industry"
-                value={companyData.industry}
+                value={companyData.industry || ""}
                 onChange={(e) => handleInputChange("industry", e.target.value)}
               />
               <Input
                 placeholder="Description"
-                value={companyData.description}
+                value={companyData.description || ""}
                 onChange={(e) =>
                   handleInputChange("description", e.target.value)
                 }
               />
               <Input
                 placeholder="Timezone"
-                value={companyData.settings.timezone}
+                value={companyData.settings?.timezone || ""}
                 onChange={(e) =>
                   handleSettingsChange("timezone", e.target.value)
                 }
               />
               <Input
                 placeholder="Locale"
-                value={companyData.settings.locale}
+                value={companyData.settings?.locale || ""}
                 onChange={(e) => handleSettingsChange("locale", e.target.value)}
               />
 
               <div className="flex gap-3 pt-4">
                 <Button
-                  label={loading ? "Saving..." : "Save Changes"}
+                  label={updateLoading ? "Saving..." : "Save Changes"}
                   variant="primary"
-                  disabled={loading}
+                  disabled={updateLoading}
                   onClick={handleSave}
                 />
                 <Button
@@ -220,18 +228,18 @@ const CompanySettings: React.FC = () => {
               </p>
               <p>
                 <span className="font-medium">Timezone:</span>{" "}
-                {companyData.settings.timezone}
+                {companyData.settings?.timezone}
               </p>
               <p>
                 <span className="font-medium">Locale:</span>{" "}
-                {companyData.settings.locale}
+                {companyData.settings?.locale}
               </p>
             </div>
           )}
         </div>
       </motion.div>
 
-      {/* Company Location Section */}
+      {/* Location */}
       <motion.div className="bg-white rounded-lg border border-grey-light mb-6">
         <div className="flex justify-between items-center px-6 py-4 border-b border-grey-light">
           <h2 className="text-lg font-semibold text-grey">Company Location</h2>
@@ -248,25 +256,15 @@ const CompanySettings: React.FC = () => {
           {isEditing === "location" ? (
             <>
               <Input
-                placeholder="Country"
-                value={companyData.country}
-                onChange={(e) => handleInputChange("country", e.target.value)}
-              />
-              <Input
-                placeholder="State/Province"
-                value={companyData.state}
-                onChange={(e) => handleInputChange("state", e.target.value)}
-              />
-              <Input
-                placeholder="City"
-                value={companyData.city}
-                onChange={(e) => handleInputChange("city", e.target.value)}
+                placeholder="Address"
+                value={companyData.address || ""}
+                onChange={(e) => handleInputChange("address", e.target.value)}
               />
               <div className="flex gap-3 pt-4">
                 <Button
                   label="Save Changes"
                   variant="primary"
-                  onClick={() => setIsEditing(null)}
+                  onClick={handleSave}
                 />
                 <Button
                   label="Cancel"
@@ -278,22 +276,15 @@ const CompanySettings: React.FC = () => {
           ) : (
             <div className="space-y-2">
               <p>
-                <span className="font-medium">Country:</span>{" "}
-                {companyData.country}
-              </p>
-              <p>
-                <span className="font-medium">State/Province:</span>{" "}
-                {companyData.state}
-              </p>
-              <p>
-                <span className="font-medium">City:</span> {companyData.city}
+                <span className="font-medium">Address:</span>{" "}
+                {companyData.address}
               </p>
             </div>
           )}
         </div>
       </motion.div>
 
-      {/* Legal Documentation Section */}
+      {/* Legal */}
       <motion.div className="bg-white rounded-lg border border-grey-light">
         <div className="flex justify-between items-center px-6 py-4 border-b border-grey-light">
           <h2 className="text-lg font-semibold text-grey">
@@ -313,8 +304,10 @@ const CompanySettings: React.FC = () => {
             <>
               <Input
                 placeholder="PAN"
-                value={companyData.pan}
-                onChange={(e) => handleInputChange("pan", e.target.value)}
+                value={companyData.panCardNumber || ""}
+                onChange={(e) =>
+                  handleInputChange("panCardNumber", e.target.value)
+                }
               />
               <div className="space-y-2">
                 <label className="block body-regular-16 text-grey">
@@ -332,14 +325,14 @@ const CompanySettings: React.FC = () => {
                     <Button label="Upload Photo" variant="outlined" />
                   </label>
                 </div>
-                {companyData.panCardPhoto && (
+                {companyData.panCardImageUri && (
                   <motion.div
                     className="mt-4"
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                   >
                     <img
-                      src={companyData.panCardPhoto}
+                      src={companyData.panCardImageUri}
                       alt="PAN Card"
                       className="w-64 h-40 object-cover rounded-lg border border-grey-light"
                     />
@@ -350,7 +343,7 @@ const CompanySettings: React.FC = () => {
                 <Button
                   label="Save Changes"
                   variant="primary"
-                  onClick={() => setIsEditing(null)}
+                  onClick={handleSave}
                 />
                 <Button
                   label="Cancel"
@@ -362,16 +355,17 @@ const CompanySettings: React.FC = () => {
           ) : (
             <div className="space-y-2">
               <p>
-                <span className="font-medium">PAN:</span> {companyData.pan}
+                <span className="font-medium">PAN:</span>{" "}
+                {companyData.panCardNumber || "N/A"}
               </p>
               <div className="space-y-2">
                 <span className="body-regular-16 text-grey-medium">
                   PAN Card Photo
                 </span>
                 <motion.div className="w-64 h-40 bg-grey-light rounded-lg flex items-center justify-center border border-grey-light">
-                  {companyData.panCardPhoto ? (
+                  {companyData.panCardImageUri ? (
                     <img
-                      src={companyData.panCardPhoto}
+                      src={companyData.panCardImageUri}
                       alt="PAN Card"
                       className="w-full h-full object-cover rounded-lg"
                     />

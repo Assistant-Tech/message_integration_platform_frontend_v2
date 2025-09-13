@@ -15,7 +15,7 @@ import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 import { useAuthStore } from "@/app/store/auth.store";
 import { handleApiError } from "@/app/utils/handlerApiError";
-import { APP_ROUTES } from "@/app/constants/routes";
+// import { APP_ROUTES } from "@/app/constants/routes";
 
 const RegisterForm = () => {
   const navigate = useNavigate();
@@ -62,7 +62,9 @@ const RegisterForm = () => {
       reset();
 
       if (invitationToken) {
-        navigate(APP_ROUTES.USER.DASHBOARD);
+        // pachi implementation
+        // navigate(APP_ROUTES.USER.DASHBOARD)
+        navigate("/check-email", { state: { email: data.email } });
       } else {
         navigate("/check-email", { state: { email: data.email } });
       }

@@ -34,7 +34,7 @@ const AcceptInvitation = () => {
       console.log("Invitation accepted:", res);
 
       // redirect to dashboard
-      navigate("/dashboard");
+      navigate("/login");
     } catch (err: any) {
       setError(err.message || "Something went wrong");
     }

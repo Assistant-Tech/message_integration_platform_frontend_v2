@@ -5,6 +5,8 @@ import {
   LoginActivityResponse,
   TenantCreateResponse,
   TenantUserResponse,
+  TenantDetailsResponse,
+  TenantDetails,
 } from "@/app/types/tenant.types";
 import api from "@/app/services/api/axios";
 
@@ -41,7 +43,15 @@ export const tenantServices = {
   },
 
   /**
-   * Create tenant roles.
+   * Get Tenant Roles.
+   */
+  async getTenantRoles(): Promise<any> {
+    const res = await api.get("/tenant/roles");
+    return res.data;
+  },
+
+  /**
+   * Create tenant role.
    */
   async createTenantRoles(
     payload: CreateTenantRolePayload,
@@ -49,6 +59,7 @@ export const tenantServices = {
     const res = await api.post<TenantCreateResponse>("/tenant/roles", payload);
     return res.data;
   },
+
   /**
    * Update tenant role (add/remove permissions).
    */
@@ -62,12 +73,33 @@ export const tenantServices = {
     );
     return res.data;
   },
+
   /**
-   * Assign tenant role (add/remove permissions).
+   * Assign tenant role.
    */
   async assignRole(userId: string, payload: { roleId: string }) {
-    console.log("🚀 ~ assignRole ~ payload:", payload)
     const res = await api.patch(`/tenant/${userId}/assign-role`, payload);
+    return res.data;
+  },
+
+  /**
+   * Get tenant details.
+   */
+  async getTenantDetails(): Promise<TenantDetailsResponse> {
+    const res = await api.get("/tenant/details");
+    return res.data;
+  },
+
+  /**
+   * Update tenant details.
+   */
+  async updateTenantDetails(
+    payload: Partial<TenantDetails>,
+  ): Promise<TenantDetailsResponse> {
+    const res = await api.patch<TenantDetailsResponse>(
+      "/tenant/details",
+      payload,
+    );
     return res.data;
   },
 };

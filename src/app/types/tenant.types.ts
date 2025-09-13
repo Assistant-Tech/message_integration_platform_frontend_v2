@@ -140,3 +140,34 @@ export interface TenantRolesResponse {
   data: TenantRole[];
   message?: string;
 }
+
+export interface TenantSettings {
+  timezone?: string;
+  locale?: string;
+}
+
+export interface TenantDetails {
+  id: string;
+  organizationName: string;
+  industry?: string;
+  website?: string;
+  email?: string;
+  contactNumber?: string;
+  description?: string;
+  country?: string;
+  city?: string;
+  address?: string;
+  logoUrl?: string | null;
+  panCardNumber?: string;
+  panCardImageUri?: string | null;
+  settings?: TenantSettings;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TenantDetailsResponse {
+  message: string;
+  data: TenantDetails;
+  success: boolean;
+  timestamp: string;
+}

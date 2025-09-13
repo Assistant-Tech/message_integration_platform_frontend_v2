@@ -27,13 +27,15 @@ interface TenantUserRow {
 const RoleManagement = () => {
   const {
     tenantUsers,
+    roles,
     loading,
+    roleLoading,
+    inviteLoading,
     fetchTenantUsers,
+    fetchTenantRoles,
     assignRole,
     inviteMember,
-    inviteLoading,
     createTenantRole,
-    roleLoading,
     updateTenantRole,
   } = useTenantStore();
 
@@ -55,42 +57,19 @@ const RoleManagement = () => {
     permissions: [] as string[],
   });
 
-  // 🔹 Define available roles statically (you can also fetch these from an API)
+  // Available roles from API
   const availableRoles = useMemo(
-    () => [
-      { id: "member-role-id", name: "Member" },
-      { id: "tenant-admin-role-id", name: "Tenant Admin" },
-      { id: "admin-role-id", name: "Admin" },
-    ],
-    [],
+    () => roles.map((r) => ({ id: r.id, name: r.name })),
+    [roles],
   );
 
-  // 🔹 Get actual role IDs from existing users for mapping
-  const existingRoleMap = useMemo(() => {
-    const map = new Map();
-    tenantUsers.forEach((user) => {
-      map.set(user.role.name, user.role.id);
-    });
-    return map;
-  }, [tenantUsers]);
-
-  // 🔹 Helper function to get role ID by name
-  const getRoleIdByName = (roleName: string) => {
-    // First try to get from existing users (real IDs)
-    const realRoleId = existingRoleMap.get(roleName);
-    if (realRoleId) return realRoleId;
-
-    // Fallback to static roles (you'll need to replace with actual IDs)
-    const staticRole = availableRoles.find((r) => r.name === roleName);
-    return staticRole?.id || "";
-  };
-
-  // 🔹 Fetch users on mount
+  // Fetch users + roles on mount
   useEffect(() => {
     fetchTenantUsers().catch(() => toast.error("Failed to load tenant users"));
-  }, [fetchTenantUsers]);
+    fetchTenantRoles().catch(() => toast.error("Failed to load tenant roles"));
+  }, [fetchTenantUsers, fetchTenantRoles]);
 
-  // 🔹 Refresh users
+  // Refresh users
   const handleRefresh = async () => {
     try {
       await fetchTenantUsers();
@@ -100,21 +79,14 @@ const RoleManagement = () => {
     }
   };
 
-  // 🔹 Invite Member
+  // Invite Member
   const handleInvite = async () => {
     if (!newUser.email || !newUser.role) {
       toast.error("Email and role are required");
       return;
     }
     try {
-      // Convert role name to role ID for the invite
-      const roleId = getRoleIdByName(newUser.role);
-      if (!roleId) {
-        toast.error("Invalid role selected");
-        return;
-      }
-
-      await inviteMember({ email: newUser.email, role: roleId });
+      await inviteMember({ email: newUser.email, role: newUser.role });
       toast.success(`Invitation sent to ${newUser.email}`);
       setIsInviteModalOpen(false);
       setNewUser({ email: "", role: "" });
@@ -124,27 +96,25 @@ const RoleManagement = () => {
     }
   };
 
-  // 🔹 Create Role
+  // Create Role
   const handleCreateRole = async () => {
     if (!newRole.name || !newRole.description) {
       toast.error("Name and description are required");
       return;
     }
     try {
-      await createTenantRole({
-        ...newRole,
-        permissions: newRole.permissions.length > 0 ? newRole.permissions : [],
-      });
+      await createTenantRole(newRole);
       toast.success("Role created successfully");
       setIsCreateRoleModalOpen(false);
       setNewRole({ name: "", description: "", permissions: [] });
-      await fetchTenantUsers(); // Refresh to get updated roles
+      await fetchTenantRoles();
+      await fetchTenantUsers();
     } catch {
       toast.error("Failed to create role");
     }
   };
 
-  // 🔹 Handle Edit Role
+  // Edit Role
   const handleEditRole = (roleId: string, roleData: any) => {
     setEditRole({
       id: roleId,
@@ -155,18 +125,18 @@ const RoleManagement = () => {
     setIsEditRoleModalOpen(true);
   };
 
-  // 🔹 Handle Update Role
+  // Update Role
   const handleUpdateRole = async () => {
     if (!editRole.name || !editRole.description) {
       toast.error("Name and description are required");
       return;
     }
 
-    const addPermissions = editRole.permissions.filter((perm) =>
-      perm.startsWith("addPermissions:"),
+    const addPermissions = editRole.permissions.filter((p) =>
+      p.startsWith("addPermissions:"),
     );
-    const removePermissions = editRole.permissions.filter((perm) =>
-      perm.startsWith("removePermissions:"),
+    const removePermissions = editRole.permissions.filter((p) =>
+      p.startsWith("removePermissions:"),
     );
 
     if (addPermissions.length === 0 && removePermissions.length === 0) {
@@ -174,39 +144,38 @@ const RoleManagement = () => {
       return;
     }
 
-    const payload = {
-      addPermissions,
-      removePermissions,
-    };
-
     try {
-      await updateTenantRole(editRole.id, payload);
+      await updateTenantRole(editRole.id, {
+        addPermissions,
+        removePermissions,
+      });
       setIsEditRoleModalOpen(false);
       setEditRole({ id: "", name: "", description: "", permissions: [] });
+      await fetchTenantRoles();
       await fetchTenantUsers();
       toast.success("Role updated successfully");
-    } catch (err) {
+    } catch {
       toast.error("Failed to update role");
     }
   };
 
-  // 🔹 Columns
+  // Table columns
   const columns = useMemo<ColumnDef<TenantUserRow>[]>(
     () => [
       {
         accessorKey: "user.name",
         header: "Name",
-        cell: (info) => info.getValue() as string,
+        cell: (info) => (info.getValue() as string) || "-",
       },
       {
         accessorKey: "user.email",
         header: "Email",
-        cell: (info) => info.getValue() as string,
+        cell: (info) => (info.getValue() as string) || "-",
       },
       {
         accessorKey: "role.name",
         header: "Role",
-        cell: (info) => info.getValue() as string,
+        cell: (info) => (info.getValue() as string) || "-",
       },
       {
         accessorKey: "user.status",
@@ -242,66 +211,48 @@ const RoleManagement = () => {
         cell: ({ row }) => {
           const { id: userId } = row.original.user;
           const currentRoleId = row.original.role.id;
-          const currentRoleName = row.original.role.name;
+
           return (
-            <div className="flex space-x-2">
-              <select
-                value={currentRoleName}
-                onChange={async (e) => {
-                  const selectedRoleName = e.target.value;
-
-                  if (selectedRoleName !== currentRoleName) {
-                    const selectedRole = availableRoles.find(
-                      (role) => role.name === selectedRoleName,
-                    );
-
-                    if (!selectedRole) {
-                      toast.error("Invalid role selected");
-                      return;
-                    }
-
-                    try {
-                      // Call the API with the correct roleId
-                      await assignRole(userId, currentRoleId);
-                      toast.success(
-                        `Role assigned to ${row.original.user.name}`,
-                      );
-                      await fetchTenantUsers();
-                    } catch {
-                      toast.error("Failed to assign role");
-                    }
+            <select
+              value={currentRoleId}
+              onChange={async (e) => {
+                const selectedRoleId = e.target.value;
+                if (selectedRoleId !== currentRoleId) {
+                  try {
+                    await assignRole(userId, selectedRoleId);
+                    toast.success(`Role updated for ${row.original.user.name}`);
+                    await fetchTenantUsers();
+                  } catch {
+                    toast.error("Failed to assign role");
                   }
-                }}
-              >
-                {availableRoles.map((role) => (
-                  <option key={role.id} value={role.name}>
-                    {role.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+                }
+              }}
+            >
+              {availableRoles.map((role) => (
+                <option key={role.id} value={role.id}>
+                  {role.name}
+                </option>
+              ))}
+            </select>
           );
         },
       },
-
       {
         id: "actions",
         header: "Actions",
         cell: ({ row }) => {
           const roleId = row.original.role.id;
           return (
-            <div className="flex space-x-2">
-              <Button
-                label="Edit"
-                variant="secondary"
-                onClick={() => handleEditRole(roleId, row.original.role)}
-              />
-            </div>
+            <Button
+              label="Edit"
+              variant="secondary"
+              onClick={() => handleEditRole(roleId, row.original.role)}
+            />
           );
         },
       },
     ],
-    [availableRoles],
+    [availableRoles, assignRole, fetchTenantUsers],
   );
 
   return (
@@ -337,14 +288,14 @@ const RoleManagement = () => {
         </div>
       </div>
 
-      {/* Generic Table */}
+      {/* Table */}
       <GenericTable
         data={tenantUsers}
         columns={columns}
         emptyMessage={loading ? "Loading users..." : "No users found"}
       />
 
-      {/* Invite Modal */}
+      {/* 🔹 Invite Modal */}
       <AnimatePresence>
         {isInviteModalOpen && (
           <motion.div
@@ -409,7 +360,7 @@ const RoleManagement = () => {
         )}
       </AnimatePresence>
 
-      {/* Create Role Modal */}
+      {/* 🔹 Create Role Modal */}
       <AnimatePresence>
         {isCreateRoleModalOpen && (
           <motion.div
@@ -468,7 +419,7 @@ const RoleManagement = () => {
         )}
       </AnimatePresence>
 
-      {/* Edit Role Modal */}
+      {/* 🔹 Edit Role Modal */}
       <AnimatePresence>
         {isEditRoleModalOpen && (
           <motion.div
@@ -495,14 +446,12 @@ const RoleManagement = () => {
                         "addPermissions:reports:export",
                       )}
                       onChange={() => {
-                        const permission = "addPermissions:reports:export";
+                        const perm = "addPermissions:reports:export";
                         setEditRole({
                           ...editRole,
-                          permissions: editRole.permissions.includes(permission)
-                            ? editRole.permissions.filter(
-                                (perm) => perm !== permission,
-                              )
-                            : [...editRole.permissions, permission],
+                          permissions: editRole.permissions.includes(perm)
+                            ? editRole.permissions.filter((p) => p !== perm)
+                            : [...editRole.permissions, perm],
                         });
                       }}
                     />
@@ -515,14 +464,12 @@ const RoleManagement = () => {
                         "removePermissions:messages:update",
                       )}
                       onChange={() => {
-                        const permission = "removePermissions:messages:update";
+                        const perm = "removePermissions:messages:update";
                         setEditRole({
                           ...editRole,
-                          permissions: editRole.permissions.includes(permission)
-                            ? editRole.permissions.filter(
-                                (perm) => perm !== permission,
-                              )
-                            : [...editRole.permissions, permission],
+                          permissions: editRole.permissions.includes(perm)
+                            ? editRole.permissions.filter((p) => p !== perm)
+                            : [...editRole.permissions, perm],
                         });
                       }}
                     />
