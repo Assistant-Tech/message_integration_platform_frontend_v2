@@ -9,6 +9,7 @@ export interface Session {
 }
 
 export interface MemberLoginActivity {
+  [x: string]: any;
   userId: string;
   memberId: string;
   email: string;

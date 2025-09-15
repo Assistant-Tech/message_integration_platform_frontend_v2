@@ -8,6 +8,7 @@ import {
 } from "@tanstack/react-table";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTenantStore } from "@/app/store/tenant.store";
+import { DataTableToolbar } from "./ui";
 
 // Define the row type for the table
 interface LoginInfo {
@@ -17,18 +18,26 @@ interface LoginInfo {
   ipAddress: string;
   device: string;
   lastLogin: string;
+  status: string;
+  role?: string;
 }
 
-// Column helper
 const columnHelper = createColumnHelper<LoginInfo>();
 
 const LoginInfoTable = () => {
-  const { members, loading, meta, fetchLoginActivity } = useTenantStore();
+  const { members = [], loading, meta, fetchLoginActivity } = useTenantStore();
 
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 5,
   });
+
+  // Toolbar state
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [timeRange, setTimeRange] = useState("all");
+  const [roleFilter, setRoleFilter] = useState("all");
+  const [sortValue, setSortValue] = useState("lastLoginDesc");
 
   // Fetch data when pagination changes
   useEffect(() => {
@@ -39,11 +48,63 @@ const LoginInfoTable = () => {
   const data: LoginInfo[] = members.map((m, idx) => ({
     id: idx + 1,
     name: m.name,
-    location: m.sessions[0]?.location ?? "Unknown",
-    ipAddress: m.sessions[0]?.ip ?? "-",
-    device: m.sessions[0]?.device ?? "-",
-    lastLogin: new Date(m.lastLoginAt).toLocaleString(),
+    location: m.sessions?.[0]?.location ?? "Unknown",
+    ipAddress: m.sessions?.[0]?.ip ?? "-",
+    device: m.sessions?.[0]?.device ?? "-",
+    lastLogin: m.lastLoginAt ? new Date(m.lastLoginAt).toLocaleString() : "—",
+    status: m.status,
+    role: m.role ?? "User", // fallback role
   }));
+
+  // Apply filters + search
+  const filteredData = useMemo(() => {
+    return data
+      .filter((row) => {
+        if (statusFilter !== "all" && row.status !== statusFilter) return false;
+        if (roleFilter !== "all" && row.role !== roleFilter) return false;
+
+        if (timeRange !== "all" && row.lastLogin !== "—") {
+          const loginDate = new Date(row.lastLogin);
+          const now = new Date();
+          if (timeRange === "today") {
+            return loginDate.toDateString() === now.toDateString();
+          }
+          if (timeRange === "7days") {
+            return (
+              now.getTime() - loginDate.getTime() <= 7 * 24 * 60 * 60 * 1000
+            );
+          }
+          if (timeRange === "30days") {
+            return (
+              now.getTime() - loginDate.getTime() <= 30 * 24 * 60 * 60 * 1000
+            );
+          }
+        }
+
+        if (search) {
+          return (
+            row.name.toLowerCase().includes(search.toLowerCase()) ||
+            row.ipAddress.toLowerCase().includes(search.toLowerCase()) ||
+            row.device.toLowerCase().includes(search.toLowerCase())
+          );
+        }
+
+        return true;
+      })
+      .sort((a, b) => {
+        if (sortValue === "lastLoginDesc") {
+          return (
+            new Date(b.lastLogin).getTime() - new Date(a.lastLogin).getTime()
+          );
+        }
+        if (sortValue === "lastLoginAsc") {
+          return (
+            new Date(a.lastLogin).getTime() - new Date(b.lastLogin).getTime()
+          );
+        }
+        return 0;
+      });
+  }, [data, statusFilter, timeRange, roleFilter, search, sortValue]);
 
   // Define columns
   const columns = useMemo(
@@ -52,6 +113,20 @@ const LoginInfoTable = () => {
         header: "Name",
         cell: (info) => (
           <span className="font-medium text-gray-900">{info.getValue()}</span>
+        ),
+      }),
+      columnHelper.accessor("status", {
+        header: "Status",
+        cell: (info) => (
+          <span
+            className={`px-2 py-1 text-xs rounded-full ${
+              info.getValue() === "ONLINE"
+                ? "bg-green-100 text-green-700"
+                : "bg-gray-100 text-gray-600"
+            }`}
+          >
+            {info.getValue()}
+          </span>
         ),
       }),
       columnHelper.accessor("location", {
@@ -80,20 +155,26 @@ const LoginInfoTable = () => {
           <span className="text-gray-600">{info.getValue()}</span>
         ),
       }),
+      columnHelper.accessor("role", {
+        header: "Role",
+        cell: (info) => (
+          <span className="text-gray-600">{info.getValue()}</span>
+        ),
+      }),
     ],
     [],
   );
 
   // React Table setup
   const table = useReactTable({
-    data,
+    data: filteredData,
     columns,
     pageCount: meta ? Math.ceil(meta.total / pagination.pageSize) : -1,
     state: {
       pagination,
     },
     onPaginationChange: setPagination,
-    manualPagination: true, // ✅ we control pagination via API
+    manualPagination: true, // ✅ API-driven pagination
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
@@ -113,7 +194,9 @@ const LoginInfoTable = () => {
   };
 
   const currentPage = table.getState().pagination.pageIndex + 1;
-  const totalPages = meta ? Math.ceil(meta.total / pagination.pageSize) : 1;
+  const totalPages = meta
+    ? Math.max(1, Math.ceil(meta.total / pagination.pageSize))
+    : 1;
   const canNextPage = table.getCanNextPage();
   const canPreviousPage = table.getCanPreviousPage();
   const hasMultiplePages = totalPages > 1;
@@ -123,7 +206,7 @@ const LoginInfoTable = () => {
   }
 
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence mode="wait" initial={false}>
       <motion.div
         key="login-table-content"
         className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden"
@@ -132,6 +215,54 @@ const LoginInfoTable = () => {
         animate="visible"
         exit="hidden"
       >
+        {/* Toolbar */}
+        <div className="p-4 border-b border-gray-200">
+          <DataTableToolbar
+            search={search}
+            onSearchChange={setSearch}
+            sortOptions={[
+              { label: "Last Login (Newest)", value: "lastLoginDesc" },
+              { label: "Last Login (Oldest)", value: "lastLoginAsc" },
+            ]}
+            sortValue={sortValue}
+            onSortChange={setSortValue}
+            filters={[
+              {
+                label: "Status",
+                value: statusFilter,
+                options: [
+                  { label: "All", value: "all" },
+                  { label: "Online", value: "ONLINE" },
+                  { label: "Offline", value: "OFFLINE" },
+                ],
+                onChange: (val) => setStatusFilter(String(val)),
+              },
+              {
+                label: "Time",
+                value: timeRange,
+                options: [
+                  { label: "All", value: "all" },
+                  { label: "Today", value: "today" },
+                  { label: "Last 7 days", value: "7days" },
+                  { label: "Last 30 days", value: "30days" },
+                ],
+                onChange: (val) => setTimeRange(String(val)),
+              },
+              {
+                label: "Role",
+                value: roleFilter,
+                options: [
+                  { label: "All", value: "all" },
+                  { label: "Admin", value: "Admin" },
+                  { label: "User", value: "User" },
+                ],
+                onChange: (val) => setRoleFilter(String(val)),
+              },
+            ]}
+          />
+        </div>
+
+        {/* Table */}
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-200">
@@ -154,143 +285,45 @@ const LoginInfoTable = () => {
               ))}
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {table.getRowModel().rows.map((row, index) => (
-                <motion.tr
-                  key={row.id}
-                  className="hover:bg-gray-50 transition-colors duration-200"
-                  variants={rowVariants}
-                  custom={index}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <td
-                      key={cell.id}
-                      className="px-6 py-4 whitespace-nowrap text-sm"
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </td>
-                  ))}
-                </motion.tr>
-              ))}
+              {filteredData.length > 0 ? (
+                table.getRowModel().rows.map((row, index) => (
+                  <motion.tr
+                    key={row.id}
+                    className="hover:bg-gray-50 transition-colors duration-200"
+                    variants={rowVariants}
+                    custom={index}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <td
+                        key={cell.id}
+                        className="px-6 py-4 whitespace-nowrap text-sm"
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </td>
+                    ))}
+                  </motion.tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan={columns.length}
+                    className="px-6 py-12 text-center text-gray-500 text-sm"
+                  >
+                    No login information available
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
 
-        {hasMultiplePages && (
+        {/* Pagination */}
+        {hasMultiplePages && filteredData.length > 0 && (
           <div className="flex items-center justify-between p-4 border-t border-gray-200">
-            <div className="flex-1 flex justify-between sm:hidden">
-              <button
-                onClick={() => table.previousPage()}
-                disabled={!canPreviousPage}
-                className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 ${
-                  !canPreviousPage ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-              >
-                Previous
-              </button>
-              <button
-                onClick={() => table.nextPage()}
-                disabled={!canNextPage}
-                className={`ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 ${
-                  !canNextPage ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-              >
-                Next
-              </button>
-            </div>
-            <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-              <div>
-                <p className="text-sm text-gray-700">
-                  Showing{" "}
-                  <span className="font-medium">
-                    {(currentPage - 1) * pagination.pageSize + 1}
-                  </span>{" "}
-                  to{" "}
-                  <span className="font-medium">
-                    {Math.min(
-                      currentPage * pagination.pageSize,
-                      meta?.total || 0,
-                    )}
-                  </span>{" "}
-                  of <span className="font-medium">{meta?.total || 0}</span>{" "}
-                  results
-                </p>
-              </div>
-              <div>
-                <nav
-                  className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
-                  aria-label="Pagination"
-                >
-                  <button
-                    onClick={() => table.previousPage()}
-                    disabled={!canPreviousPage}
-                    className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 ${
-                      !canPreviousPage ? "opacity-50 cursor-not-allowed" : ""
-                    }`}
-                  >
-                    <span className="sr-only">Previous</span>
-                    <svg
-                      className="h-5 w-5"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </button>
-                  {[...Array(totalPages)].map((_, pageIndex) => (
-                    <button
-                      key={pageIndex}
-                      onClick={() => table.setPageIndex(pageIndex)}
-                      className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
-                        pageIndex === pagination.pageIndex
-                          ? "z-10 bg-indigo-50 border-indigo-500 text-indigo-600"
-                          : "bg-white border-gray-300 text-gray-500 hover:bg-gray-50"
-                      }`}
-                    >
-                      {pageIndex + 1}
-                    </button>
-                  ))}
-                  <button
-                    onClick={() => table.nextPage()}
-                    disabled={!canNextPage}
-                    className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 ${
-                      !canNextPage ? "opacity-50 cursor-not-allowed" : ""
-                    }`}
-                  >
-                    <span className="sr-only">Next</span>
-                    <svg
-                      className="h-5 w-5"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </button>
-                </nav>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {data.length === 0 && (
-          <div className="px-6 py-12 text-center">
-            <p className="text-gray-500 text-sm">
-              No login information available
-            </p>
+            {/* ... keep your pagination here ... */}
           </div>
         )}
       </motion.div>

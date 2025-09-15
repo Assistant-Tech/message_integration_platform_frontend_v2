@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { User } from "@/app/types/auth.types";
+import { User, LoginSuccessResponse } from "@/app/types/auth.types";
 import {
   fetchCurrentUser,
   signup,
@@ -62,9 +62,11 @@ export const useAuthStore = create<AuthState>()(
       isloading: false,
       isRefreshing: false,
       isAuthenticated: false,
+
       setRefreshing: (refreshing) => set({ isRefreshing: refreshing }),
       setAccessToken: (accessToken) => set({ accessToken }),
       setUser: (user) => set({ user }),
+
       resetAuth: () => {
         set({
           user: null,
@@ -74,9 +76,11 @@ export const useAuthStore = create<AuthState>()(
           requiresOnboarding: false,
           isVerified: false,
           isAuthenticated: false,
+          tenantSlug: null,
         });
       },
-      signup: async (name, email, password, invitationToken?: string) => {
+
+      signup: async (name, email, password, invitationToken) => {
         set({ isloading: true });
         try {
           const res = await signup(name, email, password, invitationToken);
@@ -90,6 +94,7 @@ export const useAuthStore = create<AuthState>()(
           set({ isloading: false });
         }
       },
+
       verifyEmail: async (token) => {
         set({ isloading: true });
         try {
@@ -103,29 +108,28 @@ export const useAuthStore = create<AuthState>()(
           set({ isloading: false });
         }
       },
+
       onboarding: async (data) => {
         set({ isloading: true });
         try {
           const res = await onboarding(data);
           const onboardingData = res.data || {};
           set({ requiresOnboarding: false });
-          // Refresh user so tenant appears on the profile
           await get().fetchCurrentUserProfile();
-          // Prefer store user’s tenant slug; fall back to API's onboarding slug
           const slug = get().user?.tenant?.slug ?? onboardingData.slug ?? "";
           return { slug };
         } finally {
           set({ isloading: false });
         }
       },
+
       login: async (email, password) => {
         set({ isloading: true });
         try {
-          const res = await login(email, password);
+          const res: LoginSuccessResponse = await login(email, password);
           const { accessToken, requiresOnboarding, csrfToken, tenantSlug } =
             res.data;
 
-          // Update auth state
           set({
             accessToken,
             requiresOnboarding,
@@ -136,12 +140,8 @@ export const useAuthStore = create<AuthState>()(
 
           await get().fetchCurrentUserProfile();
 
-          if (!tenantSlug) {
-            console.warn("⚠️ No tenantSlug found after login");
-          }
-
           return {
-            message: res.message || "Login successful!",
+            message: res.message,
             requiresOnboarding,
             tenantSlug,
           };
@@ -159,7 +159,6 @@ export const useAuthStore = create<AuthState>()(
             isRefreshing: false,
             isAuthenticated: !!accessToken,
           });
-          // console.log("🚀 ~ accessToken:", accessToken);
           return accessToken;
         } catch {
           set({
@@ -175,11 +174,20 @@ export const useAuthStore = create<AuthState>()(
         set({ isloading: true });
         try {
           const res = await fetchCurrentUser();
-          set({ user: res.data });
+          const user = res?.data ?? res;
+          set({
+            user,
+            tenantSlug: user?.tenant?.slug ?? get().tenantSlug ?? null,
+          });
+        } catch (error) {
+          console.error("Failed to fetch user profile:", error);
+          set({ user: null, tenantSlug: null, isAuthenticated: false });
+          throw error;
         } finally {
           set({ isloading: false });
         }
       },
+
       logout: async () => {
         set({ isloading: true });
         try {
@@ -198,6 +206,7 @@ export const useAuthStore = create<AuthState>()(
       partialize: (state) => ({
         csrfToken: state.csrfToken,
         isAuthenticated: state.isAuthenticated,
+        tenantSlug: state.tenantSlug,
       }),
     },
   ),

@@ -9,7 +9,6 @@ const Dashboard = () => {
   const { user, isloading, logout } = useAuthStore();
   console.log("🚀 ~ Dashboard ~ user:", user);
 
-  // Redirect to login only after loading is complete
   useEffect(() => {
     if (!isloading && !user) {
       navigate("/login");
@@ -21,21 +20,6 @@ const Dashboard = () => {
     toast.success("Logged out successfully!");
     navigate("/login");
   };
-
-  // const handleAutoTokenRefresh = async () => {
-  //   try {
-  //     const response = await api.get("test/permission");
-  //     if (response.status === 401) {
-  //       toast.error("Token Expired! Refreshing...");
-  //     } else {
-  //       toast.success(response.data.message || "Token refreshed successfully!");
-  //     }
-  //   } catch (error) {
-  //     if (error instanceof Error) {
-  //       toast.error(error.message);
-  //     }
-  //   }
-  // };
 
   const userInfo = useMemo(() => {
     if (!user) return null;
