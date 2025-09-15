@@ -10,15 +10,12 @@ const ProtectedRoute = ({ allowedRoles }: { allowedRoles?: string[] }) => {
   const user = useAuthStore((s) => s.user);
   const tenantSlug = useAuthStore((s) => s.tenantSlug);
   const accessToken = useAuthStore((s) => s.accessToken);
-
-  // store actions
   const fetchCurrentUserProfile = useAuthStore(
     (s) => s.fetchCurrentUserProfile,
   );
   const refreshAccessToken = useAuthStore((s) => s.refreshAccessToken);
   const resetAuth = useAuthStore((s) => s.resetAuth);
 
-  // 🚀 On reload: refresh token + fetch profile
   useEffect(() => {
     const initAuth = async () => {
       if (!isAuthenticated) {

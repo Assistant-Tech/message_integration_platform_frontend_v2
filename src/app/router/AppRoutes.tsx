@@ -33,7 +33,6 @@ import {
 
 import {
   Accept_Invitation,
-  Dashboard,
   ForgetPassword,
   LoginPage,
   RegisterPage,
@@ -48,6 +47,11 @@ import { OnboardingForm } from "@/app/features/auth/pages/onboarding/steps";
 import ProtectedRoute from "@/app/router/guards/ProtectedRoute";
 import OnboardingGuard from "@/app/router/guards/OnboardingGurad";
 import RoleBasedRoute from "@/app/router/guards/RoleBasedRoutes";
+
+/* ------------------ Lazy User Module ------------------ */
+const UserDashboardPage = lazy(
+  () => import("@/app/features/dashboard/user/pages/dashboard/UserDashboard"),
+);
 
 /* ------------------ Lazy Admin Module ------------------ */
 const DashboardLayout = lazy(
@@ -239,7 +243,7 @@ const AppRoutes = () => {
                   <Route index element={<AdminDashboardPage />} />
                   <Route
                     path={APP_ROUTES.ADMIN.DASHBOARD}
-                    element={<Dashboard />}
+                    element={<AdminDashboardPage />}
                   />
                   <Route
                     path={APP_ROUTES.ADMIN.CONVERSATION}
@@ -335,7 +339,7 @@ const AppRoutes = () => {
 
               {/* Tenant User Dashboard (default for non-admin roles) */}
               <Route path="/:slug/dashboard" element={<DashboardLayout />}>
-                <Route index element={<Dashboard />} />
+                <Route index element={<UserDashboardPage />} />
                 <Route
                   path={"settings/profile"}
                   element={<ProfileSettings />}

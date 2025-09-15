@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { LogOut } from "lucide-react";
 import { useMemo, useEffect } from "react";
 
-const Dashboard = () => {
+const UserDashboard = () => {
   const navigate = useNavigate();
   const { user, isloading, logout } = useAuthStore();
   console.log("🚀 ~ Dashboard ~ user:", user);
@@ -90,4 +90,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default UserDashboard;
