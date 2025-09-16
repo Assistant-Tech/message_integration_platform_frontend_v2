@@ -122,7 +122,6 @@ export const useAuthStore = create<AuthState>()(
           set({ isloading: false });
         }
       },
-
       login: async (email, password) => {
         set({ isloading: true });
         try {
@@ -137,7 +136,6 @@ export const useAuthStore = create<AuthState>()(
             isAuthenticated: true,
             tenantSlug,
           });
-
           await get().fetchCurrentUserProfile();
 
           return {
@@ -149,7 +147,6 @@ export const useAuthStore = create<AuthState>()(
           set({ isloading: false });
         }
       },
-
       refreshAccessToken: async () => {
         try {
           set({ isRefreshing: true });

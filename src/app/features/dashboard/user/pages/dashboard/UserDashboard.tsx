@@ -3,12 +3,21 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { LogOut } from "lucide-react";
 import { useMemo, useEffect } from "react";
+<<<<<<< HEAD:src/app/features/dashboard/user/pages/dashboard/UserDashboard.tsx
+=======
+import { Button } from "@/app/components/ui";
+import api from "@/app/services/api/axios";
+>>>>>>> facc89e6709e8f3ec30765853da2c71d76bcf731:src/app/features/auth/pages/Dashboard.tsx
 
 const UserDashboard = () => {
   const navigate = useNavigate();
   const { user, isloading, logout } = useAuthStore();
   console.log("🚀 ~ Dashboard ~ user:", user);
 
+<<<<<<< HEAD:src/app/features/dashboard/user/pages/dashboard/UserDashboard.tsx
+=======
+  // Redirect to login only after loading is complete
+>>>>>>> facc89e6709e8f3ec30765853da2c71d76bcf731:src/app/features/auth/pages/Dashboard.tsx
   useEffect(() => {
     if (!isloading && !user) {
       navigate("/login");
@@ -21,6 +30,24 @@ const UserDashboard = () => {
     navigate("/login");
   };
 
+<<<<<<< HEAD:src/app/features/dashboard/user/pages/dashboard/UserDashboard.tsx
+=======
+  const handleAutoTokenRefresh = async () => {
+    try {
+      const response = await api.get("test/permission");
+      if (response.status === 401) {
+        toast.error("Token Expired! Refreshing...");
+      } else {
+        toast.success(response.data.message || "Token refreshed successfully!");
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
+    }
+  };
+
+>>>>>>> facc89e6709e8f3ec30765853da2c71d76bcf731:src/app/features/auth/pages/Dashboard.tsx
   const userInfo = useMemo(() => {
     if (!user) return null;
 
