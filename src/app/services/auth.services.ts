@@ -57,9 +57,18 @@ export const forgetPassword = async (email: string) => {
 /**
  * Handles the user signup API call.
  */
-export const signup = async (name: string, email: string, password: string) => {
+export const signup = async (
+  name: string,
+  email: string,
+  password: string,
+  invitationToken?: string,
+) => {
   try {
-    const res = await api.post("/auth/signup", { name, email, password });
+    const url = invitationToken
+      ? `/auth/signup?invitation_token=${invitationToken}`
+      : "/auth/signup";
+
+    const res = await api.post(url, { name, email, password });
     return res.data;
   } catch (error) {
     throw handleApiError(error);
@@ -109,14 +118,12 @@ export const login = async (email: string, password: string) => {
 /**
  * Handles the access token refresh API call.
  */
-export const refreshAccessToken = async (csrfToken: string | null) => {
+export const refreshAccessTokenAPI = async () => {
   try {
-    const res = await api.get("/auth/refresh", {
-      headers: {
-        "X-CSRF-Token": csrfToken,
-      },
-    });
-    return res.data.accessToken;
+    const res = await api.get("/auth/refresh");
+    const data = res.data?.data?.accessToken ?? null;
+    // console.log("🚀 ~ refreshAccessToken ~ data:", data);
+    return data;
   } catch (error) {
     throw handleApiError(error);
   }

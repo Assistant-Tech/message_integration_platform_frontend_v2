@@ -15,11 +15,12 @@ import {
 } from "@/app/components/common/Tooltip";
 import { sidebarItems } from "@/app/utils/admin/sidebar.config";
 import { CollapsedLogo, Logo } from "@/app/components/ui";
+import { useAuthStore } from "@/app/store/auth.store";
 
 const CollapsibleSidebar = () => {
-  // Use useParams to get the dynamic slug from the URL.
   const { slug } = useParams();
   const location = useLocation();
+  const user = useAuthStore((s) => s.user);
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedMenu, setExpandedMenu] = useState<string | null>(null);
@@ -27,6 +28,10 @@ const CollapsibleSidebar = () => {
   const toggleMenu = (label: string) => {
     setExpandedMenu((prev) => (prev === label ? null : label));
   };
+
+  const filteredItems = sidebarItems.filter((item) =>
+    item.roles?.includes(user?.roleType ?? ""),
+  );
 
   return (
     <TooltipProvider delayDuration={100}>
@@ -39,7 +44,11 @@ const CollapsibleSidebar = () => {
           {/* Sidebar Header */}
           <div className="p-4 border-primary-dark relative">
             <div className="flex items-center justify-center px-2 space-x-3 pt-2">
-              {isCollapsed ? <CollapsedLogo /> : <Logo variant="white" isDashboard />}
+              {isCollapsed ? (
+                <CollapsedLogo />
+              ) : (
+                <Logo variant="white" isDashboard />
+              )}
             </div>
 
             {/* Collapse Toggle */}
@@ -60,13 +69,9 @@ const CollapsibleSidebar = () => {
           {/* Sidebar Navigation */}
           <nav className="flex-1 p-4 overflow-y-auto [&::-webkit-scrollbar-thumb]:bg-primary [&::-webkit-scrollbar-track]:bg-primary-dark">
             <ul className="space-y-2">
-              {sidebarItems.map((item, index) => {
+              {filteredItems.map((item, index) => {
                 const Icon = item.icon;
-
-                // Construct the correct URL with the dynamic slug
                 const finalHref = `/${slug}/admin/${item.href}`;
-
-                // Check for active state based on the new, correct URL
                 const isActive = location.pathname.startsWith(finalHref);
                 const isExpanded = expandedMenu === item.label;
 
@@ -104,7 +109,6 @@ const CollapsibleSidebar = () => {
                     {isCollapsed ? (
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          {/* Use the dynamically constructed URL */}
                           <Link to={finalHref}>{linkContent}</Link>
                         </TooltipTrigger>
                         <TooltipContent
@@ -119,33 +123,34 @@ const CollapsibleSidebar = () => {
                         {item.hasSubmenu ? (
                           <div>{linkContent}</div>
                         ) : (
-                          // Use the dynamically constructed URL
                           <Link to={finalHref}>{linkContent}</Link>
                         )}
 
-                        {/* Submenu */}
                         {item.hasSubmenu && item.submenu && isExpanded && (
                           <ul className="pl-10 mt-1 space-y-1">
-                            {item.submenu.map((sub, subIndex) => {
-                              // Construct the submenu URL with the dynamic slug
-                              const subFinalHref = `/${slug}/admin/${sub.href}`;
-                              const subActive =
-                                location.pathname === subFinalHref;
-                              return (
-                                <li key={subIndex}>
-                                  <Link
-                                    to={subFinalHref}
-                                    className={`block py-1.5 px-2 rounded-md body-bold-16 ${
-                                      subActive
-                                        ? "text-white"
-                                        : "text-grey-light hover:text-white"
-                                    }`}
-                                  >
-                                    {sub.label}
-                                  </Link>
-                                </li>
-                              );
-                            })}
+                            {item.submenu
+                              .filter((sub) =>
+                                sub.roles?.includes(user?.roleType ?? ""),
+                              )
+                              .map((sub, subIndex) => {
+                                const subFinalHref = `/${slug}/admin/${sub.href}`;
+                                const subActive =
+                                  location.pathname === subFinalHref;
+                                return (
+                                  <li key={subIndex}>
+                                    <Link
+                                      to={subFinalHref}
+                                      className={`block py-1.5 px-2 rounded-md body-bold-16 ${
+                                        subActive
+                                          ? "text-white"
+                                          : "text-grey-light hover:text-white"
+                                      }`}
+                                    >
+                                      {sub.label}
+                                    </Link>
+                                  </li>
+                                );
+                              })}
                           </ul>
                         )}
                       </>

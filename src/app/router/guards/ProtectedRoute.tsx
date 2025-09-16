@@ -1,25 +1,71 @@
 import { Loading } from "@/app/components/common";
 import { useAuthStore } from "@/app/store/auth.store";
-import { Navigate, Outlet, useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { APP_ROUTES } from "@/app/constants/routes";
 
-const ProtectedRoute = () => {
+const ProtectedRoute = ({ allowedRoles }: { allowedRoles?: string[] }) => {
   const isRefreshing = useAuthStore((s) => s.isRefreshing);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const user = useAuthStore((s) => s.user);
-  const { slug } = useParams();
+  const tenantSlug = useAuthStore((s) => s.tenantSlug);
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const fetchCurrentUserProfile = useAuthStore(
+    (s) => s.fetchCurrentUserProfile,
+  );
+  const refreshAccessToken = useAuthStore((s) => s.refreshAccessToken);
+  const resetAuth = useAuthStore((s) => s.resetAuth);
 
-  if (isRefreshing && !user) {
-    return <Loading />;
+  const location = useLocation();
+
+  useEffect(() => {
+    const initAuth = async () => {
+      if (!isAuthenticated) return;
+
+      try {
+        if (!accessToken) {
+          const newToken = await refreshAccessToken();
+          if (!newToken) {
+            resetAuth();
+            return;
+          }
+        }
+
+        if (!user) {
+          await fetchCurrentUserProfile();
+        }
+      } catch (err) {
+        console.error("[ProtectedRoute] Auth init failed:", err);
+        resetAuth();
+      }
+    };
+
+    initAuth();
+  }, [
+    isAuthenticated,
+    accessToken,
+    user,
+    refreshAccessToken,
+    fetchCurrentUserProfile,
+    resetAuth,
+  ]);
+
+  if (isRefreshing) return <Loading />;
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+
+  if (!user || !tenantSlug) return <Loading />;
+
+  const userRole = user.roleType;
+  if (allowedRoles && !allowedRoles.includes(userRole)) {
+    return <Navigate to={APP_ROUTES.PUBLIC.UNAUTHORIZED} replace />;
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" />;
+  const [, firstSegment, ...rest] = location.pathname.split("/");
+
+  if (firstSegment !== tenantSlug) {
+    return <Navigate to={`/${tenantSlug}/${rest.join("/")}`} replace />;
   }
 
-  // for the undefined slug like [[/undefined/admin/dashboard]]
-  if (!slug) {
-    return <Navigate to="/login" replace />;
-  }
   return <Outlet />;
 };
 

@@ -6,7 +6,7 @@ import { useMemo, useEffect } from "react";
 import { Button } from "@/app/components/ui";
 import api from "@/app/services/api/axios";
 
-const Dashboard = () => {
+const UserDashboard = () => {
   const navigate = useNavigate();
   const { user, isloading, logout } = useAuthStore();
   console.log("🚀 ~ Dashboard ~ user:", user);
@@ -73,11 +73,12 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
-      <Button
+      {/* <Button
         label="Auto Token Refresh"
         onClick={handleAutoTokenRefresh}
         variant="information"
-      />
+      /> */}
+
       <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-8 transition-all duration-300 transform hover:scale-105">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
@@ -107,4 +108,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default UserDashboard;

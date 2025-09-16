@@ -1,453 +1,538 @@
-import { useState, useMemo } from "react";
-import {
-  useReactTable,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getSortedRowModel,
-  flexRender,
-  createColumnHelper,
-  SortingState,
-} from "@tanstack/react-table";
+import { useEffect, useMemo, useState } from "react";
+import { useTenantStore } from "@/app/store/tenant.store";
+import { ColumnDef } from "@tanstack/react-table";
+import { RefreshCw, Plus, X } from "lucide-react";
+import { Button, Input } from "@/app/components/ui";
+import { GenericTable } from "@/app/features/dashboard/admin/component/table/GenericTable";
+import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Plus, Filter, Edit, Trash2, X } from "lucide-react";
-import { Input } from "@/app/components/ui";
 
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  phoneNumber: string;
-  role: string;
-  dateJoined: string;
-  status: "Active" | "Pending" | "Inactive";
+// Table row shape based on API
+interface TenantUserRow {
+  user: {
+    id: string;
+    email: string;
+    name: string;
+    status: string;
+    joinedAt: string;
+  };
+  role: {
+    id: string;
+    name: string;
+    type: string;
+    description: string;
+  };
 }
 
-const staticData: User[] = [
-  {
-    id: 1,
-    name: "Jane Doe",
-    email: "janedoe@gmail.com",
-    phoneNumber: "9841000000",
-    role: "Admin",
-    dateJoined: "06/17/2025",
-    status: "Active",
-  },
-  {
-    id: 2,
-    name: "Sarah Davis",
-    email: "sarahd@gmail.com",
-    phoneNumber: "9845000000",
-    role: "Member",
-    dateJoined: "06/17/2025",
-    status: "Pending",
-  },
-  {
-    id: 3,
-    name: "John Smith",
-    email: "johns@gmail.com",
-    phoneNumber: "9842000000",
-    role: "Member",
-    dateJoined: "06/18/2025",
-    status: "Active",
-  },
-  {
-    id: 4,
-    name: "Emily White",
-    email: "emilyw@gmail.com",
-    phoneNumber: "9843000000",
-    role: "Member",
-    dateJoined: "06/18/2025",
-    status: "Active",
-  },
-  {
-    id: 5,
-    name: "Michael Brown",
-    email: "mikeb@gmail.com",
-    phoneNumber: "9844000000",
-    role: "Member",
-    dateJoined: "06/19/2025",
-    status: "Active",
-  },
-  {
-    id: 6,
-    name: "Jessica Miller",
-    email: "jessicam@gmail.com",
-    phoneNumber: "9846000000",
-    role: "Member",
-    dateJoined: "06/19/2025",
-    status: "Pending",
-  },
-  {
-    id: 7,
-    name: "David Garcia",
-    email: "davidg@gmail.com",
-    phoneNumber: "9847000000",
-    role: "Admin",
-    dateJoined: "06/20/2025",
-    status: "Active",
-  },
-];
-
-const columnHelper = createColumnHelper<User>();
-
 const RoleManagement = () => {
-  const [data, setData] = useState(staticData);
-  const [globalFilter, setGlobalFilter] = useState("");
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [newUser, setNewUser] = useState({
+  const {
+    tenantUsers,
+    roles,
+    loading,
+    roleLoading,
+    inviteLoading,
+    fetchTenantUsers,
+    fetchTenantRoles,
+    assignRole,
+    inviteMember,
+    createTenantRole,
+    updateTenantRole,
+  } = useTenantStore();
+
+  // 🔹 State
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+  const [isCreateRoleModalOpen, setIsCreateRoleModalOpen] = useState(false);
+  const [newUser, setNewUser] = useState({ email: "", role: "" });
+  const [newRole, setNewRole] = useState({
     name: "",
-    email: "",
-    role: "",
+    description: "",
+    permissions: [] as string[],
   });
 
-  const columns = useMemo(
+  const [isEditRoleModalOpen, setIsEditRoleModalOpen] = useState(false);
+  const [editRole, setEditRole] = useState({
+    id: "",
+    name: "",
+    description: "",
+    permissions: [] as string[],
+  });
+
+  // Available roles from API
+  const availableRoles = useMemo(
+    () => roles.map((r) => ({ id: r.id, name: r.name })),
+    [roles],
+  );
+
+  // Fetch users + roles on mount
+  useEffect(() => {
+    fetchTenantUsers().catch(() => toast.error("Failed to load tenant users"));
+    fetchTenantRoles().catch(() => toast.error("Failed to load tenant roles"));
+  }, [fetchTenantUsers, fetchTenantRoles]);
+
+  // Refresh users
+  const handleRefresh = async () => {
+    try {
+      await fetchTenantUsers();
+      toast.success("Users refreshed successfully");
+    } catch {
+      toast.error("Failed to refresh users");
+    }
+  };
+
+  // Invite Member
+  const handleInvite = async () => {
+    if (!newUser.email || !newUser.role) {
+      toast.error("Email and role are required");
+      return;
+    }
+    try {
+      await inviteMember({ email: newUser.email, role: newUser.role });
+      toast.success(`Invitation sent to ${newUser.email}`);
+      setIsInviteModalOpen(false);
+      setNewUser({ email: "", role: "" });
+      await fetchTenantUsers();
+    } catch {
+      toast.error("Failed to invite member");
+    }
+  };
+
+  // Create Role
+  const handleCreateRole = async () => {
+    if (!newRole.name || !newRole.description) {
+      toast.error("Name and description are required");
+      return;
+    }
+    try {
+      await createTenantRole({
+        ...newRole,
+        permissions: newRole.permissions || [], // ✅ ensure array
+      });
+      toast.success("Role created successfully");
+      setIsCreateRoleModalOpen(false);
+      setNewRole({ name: "", description: "", permissions: [] });
+      await fetchTenantRoles();
+    } catch {
+      toast.error("Failed to create role");
+    }
+  };
+
+  // Edit Role
+  const handleEditRole = (roleId: string, roleData: any) => {
+    setEditRole({
+      id: roleId,
+      name: roleData.name,
+      description: roleData.description,
+      permissions: roleData.permissions || [],
+    });
+    setIsEditRoleModalOpen(true);
+  };
+
+  // Update Role
+  const handleUpdateRole = async () => {
+    if (!editRole.name || !editRole.description) {
+      toast.error("Name and description are required");
+      return;
+    }
+
+    const addPermissions = editRole.permissions.filter((p) =>
+      p.startsWith("addPermissions:"),
+    );
+    const removePermissions = editRole.permissions.filter((p) =>
+      p.startsWith("removePermissions:"),
+    );
+
+    if (addPermissions.length === 0 && removePermissions.length === 0) {
+      toast.error("At least one permission must be added or removed.");
+      return;
+    }
+
+    try {
+      await updateTenantRole(editRole.id, {
+        addPermissions,
+        removePermissions,
+      });
+      setIsEditRoleModalOpen(false);
+      setEditRole({ id: "", name: "", description: "", permissions: [] });
+      await fetchTenantRoles();
+      await fetchTenantUsers();
+      toast.success("Role updated successfully");
+    } catch {
+      toast.error("Failed to update role");
+    }
+  };
+
+  // Table columns
+  const columns = useMemo<ColumnDef<TenantUserRow>[]>(
     () => [
-      columnHelper.accessor("name", {
+      {
+        accessorKey: "user.name",
         header: "Name",
-        cell: (info) => (
-          <span className="font-medium text-grey">{info.getValue()}</span>
-        ),
-      }),
-      columnHelper.accessor("email", {
+        cell: (info) => (info.getValue() as string) || "-",
+      },
+      {
+        accessorKey: "user.email",
         header: "Email",
-        cell: (info) => (
-          <span className="text-grey-medium">{info.getValue()}</span>
-        ),
-      }),
-      columnHelper.accessor("phoneNumber", {
-        header: "Phone Number",
-        cell: (info) => (
-          <span className="text-grey-medium">{info.getValue()}</span>
-        ),
-      }),
-      columnHelper.accessor("role", {
+        cell: (info) => (info.getValue() as string) || "-",
+      },
+      {
+        accessorKey: "role.name",
         header: "Role",
-        cell: (info) => (
-          <span className="text-grey-medium">{info.getValue()}</span>
-        ),
-      }),
-      columnHelper.accessor("dateJoined", {
-        header: "Date Joined",
-        cell: (info) => (
-          <span className="text-grey-medium">{info.getValue()}</span>
-        ),
-      }),
-      columnHelper.accessor("status", {
+        cell: (info) => (info.getValue() as string) || "-",
+      },
+      {
+        accessorKey: "user.status",
         header: "Status",
         cell: (info) => {
-          const status = info.getValue();
+          const status = info.getValue() as string;
           return (
             <span
-              className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
-                status === "Active"
-                  ? "bg-green-100 text-green-800"
-                  : status === "Pending"
-                    ? "bg-yellow-100 text-yellow-800"
-                    : "bg-base-white text-gray-800"
+              className={`px-2 py-1 rounded text-xs ${
+                status === "ONLINE"
+                  ? "bg-green-100 text-green-700"
+                  : "bg-gray-100 text-gray-600"
               }`}
             >
               {status}
             </span>
           );
         },
-      }),
-      columnHelper.display({
+      },
+      {
+        accessorKey: "user.joinedAt",
+        header: "Joined",
+        cell: (info) =>
+          new Date(String(info.getValue())).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          }),
+      },
+      {
+        id: "assignRole",
+        header: "Assign Role",
+        cell: ({ row }) => {
+          const { id: userId } = row.original.user;
+          const currentRoleId = row.original.role.id;
+
+          return (
+            <select
+              value={currentRoleId}
+              onChange={async (e) => {
+                const selectedRoleId = e.target.value;
+                if (selectedRoleId !== currentRoleId) {
+                  try {
+                    await assignRole(userId, selectedRoleId);
+                    toast.success(`Role updated for ${row.original.user.name}`);
+                    await fetchTenantUsers();
+                  } catch {
+                    toast.error("Failed to assign role");
+                  }
+                }
+              }}
+            >
+              {availableRoles.map((role) => (
+                <option key={role.id} value={role.id}>
+                  {role.name}
+                </option>
+              ))}
+            </select>
+          );
+        },
+      },
+      {
         id: "actions",
-        header: "Action",
-        cell: (info) => (
-          <div className="flex gap-2">
-            <button
-              className="p-1 hover:bg-base-white rounded transition-colors"
-              onClick={() => handleEdit(info.row.original)}
-            >
-              <Edit size={16} className="text-grey-medium" />
-            </button>
-            <button
-              className="p-1 hover:bg-base-white rounded transition-colors"
-              onClick={() => handleDelete(info.row.original.id)}
-            >
-              <Trash2 size={16} className="text-grey-medium" />
-            </button>
-          </div>
-        ),
-      }),
+        header: "Actions",
+        cell: ({ row }) => {
+          const roleId = row.original.role.id;
+          return (
+            <Button
+              label="Edit"
+              variant="secondary"
+              onClick={() => handleEditRole(roleId, row.original.role)}
+            />
+          );
+        },
+      },
     ],
-    [],
+    [availableRoles, assignRole, fetchTenantUsers],
   );
 
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    state: {
-      globalFilter,
-      sorting,
-    },
-    onGlobalFilterChange: setGlobalFilter,
-    onSortingChange: setSorting,
-  });
-
-  const handleEdit = (user: User) => {
-    console.log("Edit user:", user);
-  };
-
-  const handleDelete = (userId: number) => {
-    setData(data.filter((user) => user.id !== userId));
-  };
-
-  const handleAddUser = () => {
-    if (newUser.name && newUser.email && newUser.role) {
-      const user: User = {
-        id: Date.now(),
-        name: newUser.name,
-        email: newUser.email,
-        phoneNumber: "N/A",
-        role: newUser.role,
-        dateJoined: new Date().toLocaleDateString("en-US"),
-        status: "Pending",
-      };
-      setData([...data, user]);
-      setNewUser({ name: "", email: "", role: "" });
-      setIsAddModalOpen(false);
-    }
-  };
-
-  const containerVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, staggerChildren: 0.05 },
-    },
-  };
-
-  const rowVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
-  };
-
   return (
-    <motion.div
-      className="p-6 bg-base-white min-h-screen"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-    >
+    <div className="p-6">
       {/* Header */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <div>
-            <h1 className="text-2xl font-bold text-grey">Settings</h1>
-            <p className="text-primary font-medium">Role Management</p>
-          </div>
-          <button
-            onClick={() => setIsAddModalOpen(true)}
-            className="bg-primary hover:bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-          >
-            <Plus size={20} />
-            Add Users
-          </button>
+      <div className="flex justify-between items-center mb-4">
+        <div>
+          <h2 className="text-xl font-bold">Role Management</h2>
+          <p className="text-sm text-gray-500">
+            Manage tenant users and their roles
+          </p>
         </div>
-
-        {/* Search and Filter Bar */}
-        <div className="flex items-center justify-between gap-4 mt-4">
-          <div className="relative flex-1 max-w-md">
-            <Search
-              size={20}
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-grey-medium"
-            />
-            <Input
-              type="text"
-              placeholder="Search"
-              value={globalFilter ?? ""}
-              onChange={(e) => setGlobalFilter(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 text-grey border border-grey-light rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-            />
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="text-grey-medium">Sort By:</span>
-            <select className="border border-grey-light rounded-lg px-3 py-2 text-grey-medium">
-              <option>Date . new to old</option>
-              <option>Date . old to new</option>
-              <option>Name . A to Z</option>
-              <option>Name . Z to A</option>
-            </select>
-            <button className="border border-grey-light rounded-lg px-4 py-2 flex items-center gap-2 text-grey-medium hover:bg-base-white transition-colors">
-              <Filter size={16} />
-              Filter
-            </button>
-          </div>
+        <div className="flex items-center gap-2">
+          <Button
+            label="Refresh"
+            variant="secondary"
+            onClick={handleRefresh}
+            disabled={loading}
+            IconLeft={<RefreshCw className={loading ? "animate-spin" : ""} />}
+          />
+          <Button
+            label="Create Role"
+            variant="primary"
+            onClick={() => setIsCreateRoleModalOpen(true)}
+            IconLeft={<Plus size={16} />}
+          />
+          <Button
+            label="Invite Member"
+            variant="information"
+            onClick={() => setIsInviteModalOpen(true)}
+            IconLeft={<Plus size={16} />}
+          />
         </div>
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-lg border border-grey-light overflow-hidden my-2">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-base-white border-b border-grey-light">
-              {table.getHeaderGroups().map((headerGroup) => (
-                <tr key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <th
-                      key={header.id}
-                      className="px-6 py-4 text-left text-sm font-semibold text-grey tracking-wider cursor-pointer hover:bg-base-white"
-                      onClick={header.column.getToggleSortingHandler()}
-                    >
-                      <div className="flex items-center gap-2">
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
-                        {{
-                          asc: " ↑",
-                          desc: " ↓",
-                        }[header.column.getIsSorted() as string] ?? null}
-                      </div>
-                    </th>
-                  ))}
-                </tr>
-              ))}
-            </thead>
-            <tbody className="divide-y divide-base-white">
-              {table.getRowModel().rows.map((row, index) => (
-                <motion.tr
-                  key={row.id}
-                  className="hover:bg-base-white transition-colors duration-200"
-                  variants={rowVariants}
-                  custom={index}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <td
-                      key={cell.id}
-                      className="px-6 py-4 whitespace-nowrap text-sm"
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </td>
-                  ))}
-                </motion.tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      <GenericTable
+        data={tenantUsers}
+        columns={columns}
+        emptyMessage={loading ? "Loading users..." : "No users found"}
+      />
 
-        {/* Empty state */}
-        {table.getRowModel().rows.length === 0 && (
-          <div className="px-6 py-12 text-center">
-            <p className="text-base-white0 text-sm">No users found</p>
-          </div>
-        )}
-      </div>
-
-      {/* Add User Modal */}
+      {/* 🔹 Invite Modal */}
       <AnimatePresence>
-        {isAddModalOpen && (
+        {isInviteModalOpen && (
           <motion.div
+            className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/40 bg-opacity-50 flex items-center justify-center z-50"
-            onClick={() => setIsAddModalOpen(false)}
+            onClick={() => setIsInviteModalOpen(false)}
           >
             <motion.div
+              className="bg-white rounded-lg p-6 w-full max-w-md mx-4"
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white rounded-lg p-6 w-full max-w-2xl mx-4"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-grey">Add Users</h2>
-                <button
-                  onClick={() => setIsAddModalOpen(false)}
-                  className="text-grey-medium hover:text-grey-medium"
-                >
-                  <X size={24} />
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold">Invite Member</h3>
+                <button onClick={() => setIsInviteModalOpen(false)}>
+                  <X size={20} />
                 </button>
               </div>
-
-              <div className="grid grid-cols-3 gap-4 mb-6">
-                <div>
-                  <label className="block text-sm font-medium text-grey-medium mb-2">
-                    Name
-                  </label>
-                  <Input
-                    type="text"
-                    placeholder="Enter full name"
-                    value={newUser.name}
-                    onChange={(e) =>
-                      setNewUser({ ...newUser, name: e.target.value })
-                    }
-                    className="w-full px-3 py-2 border border-grey-light rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-grey-medium mb-2">
-                    Email
-                  </label>
-                  <Input
-                    type="email"
-                    placeholder="Enter email address"
-                    value={newUser.email}
-                    onChange={(e) =>
-                      setNewUser({ ...newUser, email: e.target.value })
-                    }
-                    className="w-full px-3 py-2 border border-grey-light rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label className="block body-regular-16 text-grey-medium mb-2">
-                    Role
-                  </label>
-                  <select
-                    value={newUser.role}
-                    onChange={(e) =>
-                      setNewUser({ ...newUser, role: e.target.value })
-                    }
-                    className="w-full px-3 py-2 border border-grey-light block body-regular-16 text-grey-medium mb-2 rounded-lg"
-                  >
-                    <option value="">Select Role</option>
-                    <option value="Admin">Admin</option>
-                    <option value="Member">Member</option>
-                    <option value="Moderator">Moderator</option>
-                  </select>
-                </div>
+              <div className="space-y-4">
+                <Input
+                  type="email"
+                  placeholder="Enter email"
+                  value={newUser.email}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, email: e.target.value })
+                  }
+                />
+                <select
+                  className="w-full border px-3 py-2 rounded"
+                  value={newUser.role}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, role: e.target.value })
+                  }
+                >
+                  <option value="">Select Role</option>
+                  {availableRoles.map((role) => (
+                    <option key={role.id} value={role.id}>
+                      {role.name}
+                    </option>
+                  ))}
+                </select>
               </div>
-
-              <button
-                onClick={() => setNewUser({ name: "", email: "", role: "" })}
-                className="text-primary flex items-center gap-2 mb-6"
-              >
-                <Plus size={16} />
-                Add New User
-              </button>
-
-              <div className="flex justify-end gap-3">
-                <button
-                  onClick={() => setIsAddModalOpen(false)}
-                  className="px-6 py-2 bg-grey-metext-grey-medium text-white rounded-lg hover:bg-grey-metext-grey-medium transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleAddUser}
-                  className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary transition-colors"
-                >
-                  Add
-                </button>
+              <div className="flex justify-end gap-2 mt-6">
+                <Button
+                  label="Cancel"
+                  variant="secondary"
+                  onClick={() => setIsInviteModalOpen(false)}
+                />
+                <Button
+                  label={inviteLoading ? "Inviting..." : "Invite"}
+                  variant="primary"
+                  onClick={handleInvite}
+                  disabled={inviteLoading}
+                />
               </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
+
+      {/* 🔹 Create Role Modal */}
+      <AnimatePresence>
+        {isCreateRoleModalOpen && (
+          <motion.div
+            className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsCreateRoleModalOpen(false)}
+          >
+            <motion.div
+              className="bg-white rounded-lg p-6 w-full max-w-md mx-4"
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold">Create Role</h3>
+                <button onClick={() => setIsCreateRoleModalOpen(false)}>
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                {/* Role Name */}
+                <Input
+                  type="text"
+                  placeholder="Role Name"
+                  value={newRole.name}
+                  onChange={(e) =>
+                    setNewRole({ ...newRole, name: e.target.value })
+                  }
+                />
+
+                {/* Role Description */}
+                <Input
+                  type="text"
+                  placeholder="Description"
+                  value={newRole.description}
+                  onChange={(e) =>
+                    setNewRole({ ...newRole, description: e.target.value })
+                  }
+                />
+
+                {/* Permissions Selection */}
+                <div className="space-y-2">
+                  <h4 className="font-medium text-sm">Permissions</h4>
+                  {[
+                    "conversations:read",
+                    "messages:read",
+                    "messages:update",
+                    "reports:read",
+                  ].map((perm) => (
+                    <label
+                      key={perm}
+                      className="flex items-center gap-2 text-sm"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={newRole.permissions.includes(perm)}
+                        onChange={() => {
+                          setNewRole((prev) => ({
+                            ...prev,
+                            permissions: prev.permissions.includes(perm)
+                              ? prev.permissions.filter((p) => p !== perm)
+                              : [...prev.permissions, perm],
+                          }));
+                        }}
+                      />
+                      {perm}
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="flex justify-end gap-2 mt-6">
+                <Button
+                  label="Cancel"
+                  variant="secondary"
+                  onClick={() => setIsCreateRoleModalOpen(false)}
+                />
+                <Button
+                  label={roleLoading ? "Creating..." : "Create Role"}
+                  variant="primary"
+                  onClick={handleCreateRole}
+                  disabled={roleLoading}
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 🔹 Edit Role Modal */}
+      <AnimatePresence>
+        {isEditRoleModalOpen && (
+          <motion.div
+            className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsEditRoleModalOpen(false)}
+          >
+            <motion.div
+              className="bg-white rounded-lg p-6 w-full max-w-md mx-4"
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div>
+                <h3 className="text-lg font-semibold">Edit Role</h3>
+                <div className="space-y-2 flex flex-col">
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={editRole.permissions.includes(
+                        "addPermissions:reports:export",
+                      )}
+                      onChange={() => {
+                        const perm = "addPermissions:reports:export";
+                        setEditRole({
+                          ...editRole,
+                          permissions: editRole.permissions.includes(perm)
+                            ? editRole.permissions.filter((p) => p !== perm)
+                            : [...editRole.permissions, perm],
+                        });
+                      }}
+                    />
+                    Add Report Export Permission
+                  </label>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={editRole.permissions.includes(
+                        "removePermissions:messages:update",
+                      )}
+                      onChange={() => {
+                        const perm = "removePermissions:messages:update";
+                        setEditRole({
+                          ...editRole,
+                          permissions: editRole.permissions.includes(perm)
+                            ? editRole.permissions.filter((p) => p !== perm)
+                            : [...editRole.permissions, perm],
+                        });
+                      }}
+                    />
+                    Remove Message Update Permission
+                  </label>
+                </div>
+                <div className="flex justify-end gap-2 mt-6">
+                  <Button
+                    label="Cancel"
+                    variant="secondary"
+                    onClick={() => setIsEditRoleModalOpen(false)}
+                  />
+                  <Button
+                    label={roleLoading ? "Updating..." : "Update Role"}
+                    variant="primary"
+                    onClick={handleUpdateRole}
+                    disabled={roleLoading}
+                  />
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 };
 
