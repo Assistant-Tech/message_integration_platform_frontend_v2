@@ -38,7 +38,7 @@ export const sidebarItems: SidebarItem[] = [
     label: "Conversation",
     icon: MessageSquare,
     href: APP_ROUTES.ADMIN.CONVERSATION,
-    roles: ["TENANT_ADMIN"],
+    roles: ["TENANT_ADMIN", "MEMBER"],
   },
   {
     label: "Channels",

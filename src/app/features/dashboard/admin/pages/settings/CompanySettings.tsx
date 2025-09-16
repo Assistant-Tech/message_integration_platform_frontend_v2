@@ -188,18 +188,18 @@ const CompanySettings: React.FC = () => {
                 onChange={(e) => handleSettingsChange("locale", e.target.value)}
               />
 
-              <div className="flex gap-3 pt-4">
+              <div className="w-full flex justify-end gap-3 pt-4">
+                <Button
+                  label="Cancel"
+                  variant="none"
+                  className="bg-black text-white px-8 py-3"
+                  onClick={() => setIsEditing(null)}
+                />
                 <Button
                   label={updateLoading ? "Saving..." : "Save Changes"}
                   variant="primary"
                   disabled={updateLoading}
                   onClick={handleSave}
-                />
-
-                <Button
-                  label="Cancel"
-                  variant="outlined"
-                  onClick={() => setIsEditing(null)}
                 />
               </div>
             </div>
@@ -281,18 +281,18 @@ const CompanySettings: React.FC = () => {
                 onChange={(e) => handleInputChange("address", e.target.value)}
               />
 
-              <div className="flex gap-3 pt-4">
+              <div className="w-full flex justify-end gap-3 pt-4">
+                <Button
+                  label="Cancel"
+                  variant="none"
+                  className="bg-black text-white px-8 py-3"
+                  onClick={() => setIsEditing(null)}
+                />
                 <Button
                   label={updateLoading ? "Saving..." : "Save Changes"}
                   variant="primary"
                   disabled={updateLoading}
                   onClick={handleSave}
-                />
-
-                <Button
-                  label="Cancel"
-                  variant="outlined"
-                  onClick={() => setIsEditing(null)}
                 />
               </div>
             </>
@@ -394,18 +394,18 @@ const CompanySettings: React.FC = () => {
                 )}
               </div>
 
-              <div className="flex gap-3 pt-4">
+              <div className="w-full flex justify-end gap-3 pt-4">
+                <Button
+                  label="Cancel"
+                  variant="none"
+                  className="bg-black text-white px-8 py-3"
+                  onClick={() => setIsEditing(null)}
+                />
                 <Button
                   label={updateLoading ? "Saving..." : "Save Changes"}
                   variant="primary"
                   disabled={updateLoading}
                   onClick={handleSave}
-                />
-
-                <Button
-                  label="Cancel"
-                  variant="outlined"
-                  onClick={() => setIsEditing(null)}
                 />
               </div>
             </div>

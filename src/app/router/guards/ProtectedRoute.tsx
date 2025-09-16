@@ -1,7 +1,7 @@
 import { Loading } from "@/app/components/common";
 import { useAuthStore } from "@/app/store/auth.store";
 import { useEffect } from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { APP_ROUTES } from "@/app/constants/routes";
 
 const ProtectedRoute = ({ allowedRoles }: { allowedRoles?: string[] }) => {
@@ -16,31 +16,23 @@ const ProtectedRoute = ({ allowedRoles }: { allowedRoles?: string[] }) => {
   const refreshAccessToken = useAuthStore((s) => s.refreshAccessToken);
   const resetAuth = useAuthStore((s) => s.resetAuth);
 
+  const location = useLocation();
+
   useEffect(() => {
     const initAuth = async () => {
-      if (!isAuthenticated) {
-        console.log("[ProtectedRoute] Not authenticated → skipping init");
-        return;
-      }
+      if (!isAuthenticated) return;
 
       try {
         if (!accessToken) {
-          console.log("[ProtectedRoute] No accessToken → calling refresh...");
           const newToken = await refreshAccessToken();
-
           if (!newToken) {
-            console.warn("[ProtectedRoute] Refresh failed → resetting auth");
             resetAuth();
             return;
           }
-
-          console.log("[ProtectedRoute] Refresh success");
         }
 
         if (!user) {
-          console.log("[ProtectedRoute] User missing → fetching profile...");
           await fetchCurrentUserProfile();
-          console.log("[ProtectedRoute] Profile fetched successfully");
         }
       } catch (err) {
         console.error("[ProtectedRoute] Auth init failed:", err);
@@ -58,21 +50,22 @@ const ProtectedRoute = ({ allowedRoles }: { allowedRoles?: string[] }) => {
     resetAuth,
   ]);
 
-  // ------------------- Render -------------------
   if (isRefreshing) return <Loading />;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
-  if (!user || !tenantSlug) {
-    console.log("[ProtectedRoute] Still waiting → user or tenantSlug missing");
-    return <Loading />;
-  }
+
+  if (!user || !tenantSlug) return <Loading />;
 
   const userRole = user.roleType;
   if (allowedRoles && !allowedRoles.includes(userRole)) {
-    console.log("[ProtectedRoute] Unauthorized role:", userRole);
     return <Navigate to={APP_ROUTES.PUBLIC.UNAUTHORIZED} replace />;
   }
 
-  console.log("[ProtectedRoute] Access granted → rendering Outlet");
+  const [, firstSegment, ...rest] = location.pathname.split("/");
+
+  if (firstSegment !== tenantSlug) {
+    return <Navigate to={`/${tenantSlug}/${rest.join("/")}`} replace />;
+  }
+
   return <Outlet />;
 };
 
