@@ -66,11 +66,14 @@ const LoginForm = () => {
         navigate(`/${tenantSlug}/admin/dashboard`);
       }
 
+<<<<<<< HEAD
       navigate(
         res.requiresOnboarding
           ? "/onboardingform"
           : `/${res.tenantSlug}/admin/dashboard`,
       );
+=======
+>>>>>>> 33d6893374a6f61ab532b62320d4b44b28f2e1d5
       reset();
     } catch (error) {
       const parsedError = handleApiError(error);
