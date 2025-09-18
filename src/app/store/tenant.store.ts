@@ -1,4 +1,3 @@
-// app/store/tenant.store.ts
 import { create } from "zustand";
 import {
   InviteMemberPayload,

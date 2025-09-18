@@ -19,7 +19,7 @@ const CompanySettings: React.FC = () => {
 
   const [companyData, setCompanyData] = useState<
     TenantDetailsResponse["data"] | null
-  >(null); // fetch details
+  >(null);
 
   useEffect(() => {
     getTenantDetails().catch(() =>
@@ -121,7 +121,7 @@ const CompanySettings: React.FC = () => {
       </motion.div>
       {/* General Information */}
       <motion.div className="bg-white rounded-lg border border-gray-200 mb-6">
-        <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200">
+        <div className="flex justify-between items-center px-6 py-4 border-b border-grey-light bg-base-white">
           <h2 className="text-lg font-semibold text-gray-700">
             General Information
           </h2>
@@ -258,7 +258,7 @@ const CompanySettings: React.FC = () => {
       </motion.div>
       {/* Location */}
       <motion.div className="bg-white rounded-lg border border-gray-200 mb-6">
-        <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200">
+        <div className="flex justify-between items-center px-6 py-4 border-b border-grey-light bg-base-white">
           <h2 className="text-lg font-semibold text-gray-700">
             Company Location
           </h2>
@@ -335,7 +335,7 @@ const CompanySettings: React.FC = () => {
 
       {/* Legal */}
       <motion.div className="bg-white rounded-lg border border-gray-200">
-        <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200">
+        <div className="flex justify-between items-center px-6 py-4 border-b border-grey-light bg-base-white">
           <h2 className="text-lg font-semibold text-gray-700">
             Legal Documentation
           </h2>
