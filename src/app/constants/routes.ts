@@ -4,6 +4,7 @@ export const APP_ROUTES = {
     HOME: "/",
     LOGIN: "/login",
     REGISTER: "/register",
+    ACCEPT_INVITATION: "/accept-invitation/:token",
     ABOUT: "/aboutus",
     CONTACT: "/contact",
     UNAUTHORIZED: "/unauthorized",
@@ -12,7 +13,7 @@ export const APP_ROUTES = {
     SLUG: (slug: string) => `/${slug}`,
     DEMO: "/demo",
     FORGOT_PASSWORD: "/forgot-password",
-    RESET_PASSWORD: "/reset-password",
+    RESET_PASSWORD: "/reset-password/:userId/:token",
 
     // Onboarding [[/onboarding]]
     ONBOARDING_FORM: "/onboardingform",
@@ -55,7 +56,7 @@ export const APP_ROUTES = {
   // Auth routes (migrated from PUBLIC)
   AUTH: {
     VERIFY_EMAIL: "/verify/:token",
-    CHECK_EMAIL: "/auth/check-email",
+    CHECK_EMAIL: "/check-email",
     LOGIN_OTP: "/auth/login-otp",
   },
 
@@ -92,9 +93,9 @@ export const APP_ROUTES = {
 
   // User routes
   USER: {
-    DASHBOARD: "dashboard",
+    DASHBOARD: "/user/dashboard",
   },
-} as const;
+};
 
 export type RouteKeys = keyof typeof APP_ROUTES;
 export type RouteValues = (typeof APP_ROUTES)[RouteKeys];

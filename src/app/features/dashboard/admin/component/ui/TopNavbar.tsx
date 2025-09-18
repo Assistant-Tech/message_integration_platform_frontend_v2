@@ -2,8 +2,9 @@ import { Input } from "@/app/components/ui";
 import { Bell, ChevronDown, HelpCircle, Search } from "lucide-react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useAuthStore } from "@/app/store/auth.store";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { APP_ROUTES } from "@/app/constants/routes";
 
 const TopNavbar = () => {
   const { logout } = useAuthStore();
@@ -58,9 +59,11 @@ const TopNavbar = () => {
             align="end"
             className="z-50 w-40 bg-white rounded "
           >
-            <DropdownMenu.Item className="px-4 py-2 text-sm cursor-pointer border-none">
-              Profile
-            </DropdownMenu.Item>
+            <Link to={APP_ROUTES.ADMIN.SETTINGS_PROFILE}>
+              <DropdownMenu.Item className="px-4 py-2 text-sm cursor-pointer border-none">
+                Profile
+              </DropdownMenu.Item>
+            </Link>
             <DropdownMenu.Item
               className="px-4 py-2 text-sm cursor-pointer border-none"
               onClick={handleLogout}

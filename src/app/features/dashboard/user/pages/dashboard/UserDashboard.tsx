@@ -3,15 +3,21 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { LogOut } from "lucide-react";
 import { useMemo, useEffect } from "react";
+<<<<<<< HEAD:src/app/features/dashboard/user/pages/dashboard/UserDashboard.tsx
+=======
 import { Button } from "@/app/components/ui";
 import api from "@/app/services/api/axios";
+>>>>>>> facc89e6709e8f3ec30765853da2c71d76bcf731:src/app/features/auth/pages/Dashboard.tsx
 
-const Dashboard = () => {
+const UserDashboard = () => {
   const navigate = useNavigate();
   const { user, isloading, logout } = useAuthStore();
   console.log("🚀 ~ Dashboard ~ user:", user);
 
+<<<<<<< HEAD:src/app/features/dashboard/user/pages/dashboard/UserDashboard.tsx
+=======
   // Redirect to login only after loading is complete
+>>>>>>> facc89e6709e8f3ec30765853da2c71d76bcf731:src/app/features/auth/pages/Dashboard.tsx
   useEffect(() => {
     if (!isloading && !user) {
       navigate("/login");
@@ -24,6 +30,8 @@ const Dashboard = () => {
     navigate("/login");
   };
 
+<<<<<<< HEAD:src/app/features/dashboard/user/pages/dashboard/UserDashboard.tsx
+=======
   const handleAutoTokenRefresh = async () => {
     try {
       const response = await api.get("test/permission");
@@ -39,6 +47,7 @@ const Dashboard = () => {
     }
   };
 
+>>>>>>> facc89e6709e8f3ec30765853da2c71d76bcf731:src/app/features/auth/pages/Dashboard.tsx
   const userInfo = useMemo(() => {
     if (!user) return null;
 
@@ -73,11 +82,12 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
-      <Button
+      {/* <Button
         label="Auto Token Refresh"
         onClick={handleAutoTokenRefresh}
         variant="information"
-      />
+      /> */}
+
       <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-8 transition-all duration-300 transform hover:scale-105">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
@@ -107,4 +117,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default UserDashboard;

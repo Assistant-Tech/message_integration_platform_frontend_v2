@@ -41,3 +41,7 @@ export { default as YourSubscription } from "./YourSubscription";
 export { default as PurchaseHistory } from "./PurchaseHistory";
 export { default as PricingSubscription } from "./Pricing-subscription";
 export { default as PricingcardSubscription } from "./PricingCard-subscription";
+
+export { default as MemberInfoSettings } from "./MemberInfoSettings";
+export { default as LoginInfoSettings } from "./LoginInfoSettings";
+export { default as MfaSettings } from "./MfaSettings";

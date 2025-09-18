@@ -56,15 +56,16 @@ const LoginForm = () => {
       const res = await login(data.email, data.password);
       toast.success(res.message);
 
+      useAuthStore.getState().setTenantSlug(res.tenantSlug);
+
       if (res.requiresOnboarding) {
         toast.info("Please complete your onboarding.");
+        navigate("/onboardingform");
+      } else {
+        const tenantSlug = res.tenantSlug;
+        navigate(`/${tenantSlug}/admin/dashboard`);
       }
 
-      navigate(
-        res.requiresOnboarding
-          ? "/onboardingform"
-          : `/${res.tenantSlug}/admin/dashboard`,
-      );
       reset();
     } catch (error) {
       const parsedError = handleApiError(error);

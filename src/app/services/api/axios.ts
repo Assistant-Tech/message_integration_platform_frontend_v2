@@ -4,10 +4,6 @@ import axios, {
   AxiosResponse,
 } from "axios";
 
-// NOTE: We intentionally avoid importing the auth store at the top-level to prevent
-// a circular dependency (store -> api -> store). Instead we'll lazy-load it inside
-// the interceptors when needed.
-
 interface RetriableAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
 }
@@ -16,7 +12,7 @@ const api = axios.create({
   baseURL:
     import.meta.env.VITE_API_URL_TEST ||
     ("http://localhost:3000/api/v1" as string),
-  withCredentials: true,
+  withCredentials: true, // ✅ ensures refresh cookie / csrf cookie are sent
   headers: {
     "Content-Type": "application/json",
   },
@@ -24,16 +20,27 @@ const api = axios.create({
 
 // ---------------------------------------------------------------------------
 // REQUEST INTERCEPTOR
-// Adds Authorization header when access token exists.
+// Adds Authorization + CSRF headers when available
 // ---------------------------------------------------------------------------
 api.interceptors.request.use(async (config) => {
   try {
     const mod = await import("@/app/store/auth.store");
-    const { accessToken } = mod.useAuthStore.getState();
-    if (accessToken) {
-      config.headers = config.headers || {};
-      if (!config.headers.Authorization) {
-        config.headers.Authorization = `Bearer ${accessToken}`;
+    const { accessToken, csrfToken } = mod.useAuthStore.getState();
+
+    config.headers = config.headers || {};
+
+    // ✅ Access token
+    if (accessToken && !config.headers.Authorization) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+
+    // ✅ CSRF token: Prefer store, fallback to cookie
+    if (csrfToken) {
+      config.headers["X-CSRF-Token"] = csrfToken;
+    } else {
+      const cookieMatch = document.cookie.match(/csrf_token=([^;]+)/);
+      if (cookieMatch) {
+        config.headers["X-CSRF-Token"] = cookieMatch[1];
       }
     }
   } catch {
@@ -49,9 +56,7 @@ let isRefreshing = false;
 let refreshPromise: Promise<string | null> | null = null;
 
 type PendingRequest = {
-  // We resolve with an AxiosResponse for the retried request
   resolve: (value: AxiosResponse) => void;
-  // Reject can be unknown
   reject: (reason?: unknown) => void;
   config: RetriableAxiosRequestConfig;
 };

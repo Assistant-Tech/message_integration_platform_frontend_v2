@@ -23,16 +23,16 @@ import {
   PricingPage,
   FAQPage,
   Product,
-  Unauthorized,
   NotFound,
   BlogPage,
   BlogDetailPage,
   VideosPage,
   CheckoutPage,
+  Forbidden,
 } from "@/app/pages";
 
 import {
-  Dashboard,
+  Accept_Invitation,
   ForgetPassword,
   LoginPage,
   RegisterPage,
@@ -144,7 +144,7 @@ const AppRoutes = () => {
     <Suspense fallback={<Loading />}>
       <BannerProvider>
         <Routes>
-          {/* Public Layout: Routes accessible to all users */}
+          {/* ---------------- Public Layout ---------------- */}
           <Route path="/" element={<PublicLayout />}>
             <Route index element={<Landing />} />
             <Route path={APP_ROUTES.PUBLIC.DEMO} element={<Demo />} />
@@ -152,6 +152,10 @@ const AppRoutes = () => {
             <Route
               path={APP_ROUTES.PUBLIC.REGISTER}
               element={<RegisterPage />}
+            />
+            <Route
+              path={APP_ROUTES.PUBLIC.ACCEPT_INVITATION}
+              element={<Accept_Invitation />}
             />
             <Route
               path={APP_ROUTES.PUBLIC.FORGOT_PASSWORD}
@@ -211,11 +215,15 @@ const AppRoutes = () => {
             <Route path="/verify/:token" element={<VerifyEmail />} />
 
             {/* Error Pages */}
+
             <Route
               path={APP_ROUTES.PUBLIC.UNAUTHORIZED}
-              element={<Unauthorized />}
+              element={<NotFound />}
             />
-            <Route path="*" element={<NotFound />} />
+            <Route
+              path={APP_ROUTES.PUBLIC.UNAUTHORIZED}
+              element={<Forbidden />}
+            />
           </Route>
 
           {/* Protected Routes */}
@@ -231,7 +239,7 @@ const AppRoutes = () => {
                 <Route index element={<AdminDashboardPage />} />
                 <Route
                   path={APP_ROUTES.ADMIN.DASHBOARD}
-                  element={<Dashboard />}
+                  element={<AdminDashboardPage />}
                 />
                 <Route
                   path={APP_ROUTES.ADMIN.CONVERSATION}
