@@ -190,8 +190,4 @@ const ResetPassword = () => {
   );
 };
 
-<<<<<<< HEAD
 export default ResetPassword;
-=======
-export default ResetPassword;
->>>>>>> 33d6893374a6f61ab532b62320d4b44b28f2e1d5

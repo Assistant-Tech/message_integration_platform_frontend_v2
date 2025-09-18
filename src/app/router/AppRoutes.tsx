@@ -46,7 +46,6 @@ import { OnboardingForm } from "@/app/features/auth/pages/onboarding/steps";
 /* ------------------ Guards ------------------ */
 import ProtectedRoute from "@/app/router/guards/ProtectedRoute";
 import OnboardingGuard from "@/app/router/guards/OnboardingGurad";
-<<<<<<< HEAD
 import RoleBasedRoute from "@/app/router/guards/RoleBasedRoutes";
 
 /* ------------------ Lazy User Module ------------------ */
@@ -55,11 +54,6 @@ const UserDashboardPage = lazy(
 );
 
 /* ------------------ Lazy Admin Module ------------------ */
-=======
-
-/* ------------------ Lazy Admin Module ------------------ */
-// Lazy load the entire Admin Dashboard layout & pages
->>>>>>> 33d6893374a6f61ab532b62320d4b44b28f2e1d5
 const DashboardLayout = lazy(
   () => import("@/app/features/dashboard/admin/component/DashboardLayout"),
 );
@@ -226,26 +220,14 @@ const AppRoutes = () => {
             <Route path="/verify/:token" element={<VerifyEmail />} />
 
             {/* Error Pages */}
-<<<<<<< HEAD
             <Route path="*" element={<NotFound />} />
-=======
-
-            <Route
-              path={APP_ROUTES.PUBLIC.UNAUTHORIZED}
-              element={<NotFound />}
-            />
->>>>>>> 33d6893374a6f61ab532b62320d4b44b28f2e1d5
             <Route
               path={APP_ROUTES.PUBLIC.UNAUTHORIZED}
               element={<Forbidden />}
             />
           </Route>
 
-<<<<<<< HEAD
           {/* ---------------- Protected Routes ---------------- */}
-=======
-          {/* Protected Routes */}
->>>>>>> 33d6893374a6f61ab532b62320d4b44b28f2e1d5
           <Route element={<ProtectedRoute />}>
             <Route
               path={APP_ROUTES.PUBLIC.ONBOARDING_FORM}
@@ -253,7 +235,6 @@ const AppRoutes = () => {
             />
 
             <Route element={<OnboardingGuard />}>
-<<<<<<< HEAD
               {/* Admin Dashboard (TENANT_ADMIN only) */}
               <Route
                 element={<RoleBasedRoute allowedRoles={["TENANT_ADMIN"]} />}
@@ -365,106 +346,6 @@ const AppRoutes = () => {
                 />
               </Route>
             </Route>
-=======
-              {/* Admin Dashboard */}
-              <Route path="/:slug/admin" element={<DashboardLayout />}>
-                <Route index element={<AdminDashboardPage />} />
-                <Route
-                  path={APP_ROUTES.ADMIN.DASHBOARD}
-                  element={<AdminDashboardPage />}
-                />
-                <Route
-                  path={APP_ROUTES.ADMIN.CONVERSATION}
-                  element={<ConversationPage />}
-                />
-                <Route
-                  path={APP_ROUTES.ADMIN.CHATBOT}
-                  element={<ChatbotPage />}
-                />
-                <Route
-                  path={APP_ROUTES.ADMIN.CHANNEL}
-                  element={<ChannelPage />}
-                />
-                <Route path={APP_ROUTES.ADMIN.ORDERS} element={<OrderPage />} />
-                <Route
-                  path={APP_ROUTES.ADMIN.ORDERS_CREATE}
-                  element={<CreateOrderPage />}
-                />
-                <Route path={APP_ROUTES.ADMIN.TAGS} element={<TagsPage />} />
-                <Route
-                  path={APP_ROUTES.ADMIN.ANALYTICS}
-                  element={<AnalyticsPage />}
-                />
-
-                {/* Settings */}
-                <Route
-                  path={APP_ROUTES.ADMIN.SETTINGS}
-                  element={<SettingsPage />}
-                />
-                <Route
-                  path={APP_ROUTES.ADMIN.SETTINGS_PROFILE}
-                  element={<ProfileSettings />}
-                />
-                <Route
-                  path={APP_ROUTES.ADMIN.SETTINGS_COMPANY}
-                  element={<CompanySettings />}
-                />
-                <Route
-                  path={APP_ROUTES.ADMIN.SETTINGS_SECURITY}
-                  element={<SecuritySettings />}
-                />
-                <Route
-                  path={APP_ROUTES.ADMIN.SETTINGS_NOTIFICATIONS}
-                  element={<NotificationSettings />}
-                />
-                <Route
-                  path={APP_ROUTES.ADMIN.SETTINGS_ROLE_MANAGEMENT}
-                  element={<RoleManagement />}
-                />
-                <Route
-                  path={APP_ROUTES.ADMIN.SETTINGS_CHAT_SETTINGS}
-                  element={<ChatSettings />}
-                />
-                <Route
-                  path={APP_ROUTES.ADMIN.SETTINGS_SHIPPING}
-                  element={<ShippingSettings />}
-                />
-                <Route
-                  path={APP_ROUTES.ADMIN.SETTINGS_SUBSCRIPTION}
-                  element={<SubscriptionSettings />}
-                />
-
-                {/* Products */}
-                <Route
-                  path={APP_ROUTES.ADMIN.PRODUCTS}
-                  element={<ProductPage />}
-                />
-                <Route
-                  path={APP_ROUTES.ADMIN.PRODUCTS_ALL}
-                  element={<AllProductsPage />}
-                />
-                <Route
-                  path={APP_ROUTES.ADMIN.PRODUCTS_CATEGORY}
-                  element={<ProductCategory />}
-                />
-                <Route
-                  path={APP_ROUTES.ADMIN.PRODUCTS_VARIANTS}
-                  element={<ProductVariants />}
-                />
-                <Route
-                  path={APP_ROUTES.ADMIN.PRODUCTS_INVENTORY}
-                  element={<ProductInventory />}
-                />
-                <Route
-                  path={APP_ROUTES.ADMIN.PRODUCTS_CREATE}
-                  element={<CreateProductPage />}
-                />
-              </Route>
-            </Route>
-
-            {/* User Dashboard (future) */}
-            <Route path="/user" element={<DashboardLayout />} />
->>>>>>> 33d6893374a6f61ab532b62320d4b44b28f2e1d5
           </Route>
         </Routes>
       </BannerProvider>
