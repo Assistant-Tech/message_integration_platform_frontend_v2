@@ -19,11 +19,13 @@ import { handleApiError } from "@/app/utils/handlerApiError";
 import { useState } from "react";
 
 const LoginForm = () => {
-  const { login } = useAuthStore();
+  const { login, mfalogin } = useAuthStore();
   const navigate = useNavigate();
 
   const [showPasswordChecks, setShowPasswordChecks] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [mfaStep, setMfaStep] = useState(false);
+  const [mfaToken, setMfaToken] = useState<string | null>(null);
 
   const {
     register,
@@ -33,6 +35,14 @@ const LoginForm = () => {
     formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
+    mode: "onSubmit",
+  });
+
+  const {
+    register: registerMfa,
+    handleSubmit: handleSubmitMfa,
+    formState: { errors: mfaErrors },
+  } = useForm<{ totp: string }>({
     mode: "onSubmit",
   });
 
@@ -54,167 +64,205 @@ const LoginForm = () => {
   const onSubmit = async (data: LoginFormData) => {
     try {
       const res = await login(data.email, data.password);
-      toast.success(res.message);
 
-      useAuthStore.getState().setTenantSlug(res.tenantSlug);
-
-      if (res.requiresOnboarding) {
-        toast.info("Please complete your onboarding.");
-        navigate("/onboardingform");
-      } else {
-        const tenantSlug = res.tenantSlug;
-        navigate(`/${tenantSlug}/admin/dashboard`);
+      if ("data" in res && "mfaRequired" in res.data) {
+        setMfaStep(true);
+        setMfaToken(res.data.mfaToken);
+        toast.info(
+          "Multi-factor authentication required. Please enter your code.",
+        );
+        return;
       }
 
-      navigate(
-        res.requiresOnboarding
-          ? "/onboardingform"
-          : `/${res.tenantSlug}/admin/dashboard`,
-      );
-      reset();
+      if ("data" in res && "accessToken" in res.data) {
+        toast.success(res.message);
+        useAuthStore.getState().setTenantSlug(res.data.tenantSlug);
+
+        if (res.data.requiresOnboarding) {
+          navigate("/onboardingform");
+        } else {
+          navigate(`/${res.data.tenantSlug}/admin/dashboard`);
+        }
+
+        reset();
+      }
     } catch (error) {
       const parsedError = handleApiError(error);
-      if ("message" in parsedError) {
-        const errorMessage = parsedError.message;
+      if ("message" in parsedError) toast.error(parsedError.message);
+    }
+  };
 
-        if (errorMessage === "Email not verified. Please check your inbox.") {
-          toast.error(errorMessage);
-          navigate("/check-email", { state: { email: data.email } });
-        } else {
-          console.log("Login error:", errorMessage);
-          toast.error(errorMessage);
-        }
+  const onSubmitMfa = async ({ totp }: { totp: string }) => {
+    if (!mfaToken) return;
+
+    try {
+      const res = await mfalogin(mfaToken, totp);
+      // console.log("🚀 ~ onSubmitMfa ~ res:", res);
+
+      if ("data" in res && "accessToken" in res.data && "tenantSlug" in res.data) {
+        const { accessToken, tenantSlug } = res.data;
+
+        useAuthStore.getState().setAccessToken(accessToken);
+        useAuthStore.getState().setTenantSlug(tenantSlug);
+        toast.success(res.message);
+        navigate(`/${tenantSlug}/admin/dashboard`);
+      } else {
+        toast.error("Unexpected response from server during MFA login.");
       }
+    } catch (error) {
+      const parsedError = handleApiError(error);
+      if ("message" in parsedError) toast.error(parsedError.message);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-      <div className="text-start pt-4">
-        <h2 className="text-grey-medium">Welcome Back,</h2>
-        <p className="mt-1 font-bold text-3xl">Log in to your account</p>
-      </div>
+    <>
+      {!mfaStep ? (
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <div className="text-start pt-4">
+            <h2 className="text-grey-medium">Welcome Back,</h2>
+            <p className="mt-1 font-bold text-3xl">Log in to your account</p>
+          </div>
 
-      <Input
-        label="Email / Phone Number"
-        placeholder="Enter your email or phone number"
-        {...register("email")}
-        error={errors.email?.message}
-      />
-
-      {/* Password input */}
-      <div className="relative">
-        <Input
-          label="Password"
-          placeholder="Enter your password"
-          {...register("password")}
-          error={errors.password?.message}
-          type={showPassword ? "text" : "password"}
-          onFocus={() => setShowPasswordChecks(true)}
-          onBlur={() => {
-            if (!password) setShowPasswordChecks(false);
-          }}
-        />
-
-        <button
-          type="button"
-          onClick={() => setShowPassword(!showPassword)}
-          className="absolute top-[38px] right-3"
-        >
-          {showPassword ? <EyeIcon /> : <EyeOffIcon />}
-        </button>
-
-        <AnimatePresence>
-          {showPasswordChecks && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="mt-3 space-y-1"
-            >
-              <CheckItem
-                label="At least 6 characters"
-                condition={passwordChecks.minLength}
-              />
-              <CheckItem
-                label="No more than 64 characters"
-                condition={passwordChecks.maxLength}
-              />
-              <CheckItem
-                label="Contains a letter"
-                condition={passwordChecks.hasLetter}
-              />
-              <CheckItem
-                label="Contains a number"
-                condition={passwordChecks.hasNumber}
-              />
-              <CheckItem
-                label="Has special character (@$!%*?&)"
-                condition={passwordChecks.hasSpecialChar}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* Remember me + Forgot password */}
-      <div className="flex items-center justify-between text-sm">
-        <label className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            className="accent-primary"
-            {...register("rememberMe")}
+          <Input
+            label="Email / Phone Number"
+            placeholder="Enter your email or phone number"
+            {...register("email")}
+            error={errors.email?.message}
           />
-          Remember Me
-        </label>
-        <button
-          type="button"
-          onClick={handleForgotpassword}
-          className="text-grey-medium hover:underline"
-        >
-          Forgot Password?
-        </button>
-      </div>
 
-      <Button label="Sign In" type="submit" className="w-full" />
+          {/* Password input */}
+          <div className="relative">
+            <Input
+              label="Password"
+              placeholder="Enter your password"
+              {...register("password")}
+              error={errors.password?.message}
+              type={showPassword ? "text" : "password"}
+              onFocus={() => setShowPasswordChecks(true)}
+              onBlur={() => {
+                if (!password) setShowPasswordChecks(false);
+              }}
+            />
 
-      {/* Divider */}
-      <div className="flex items-center gap-2 text-grey-medium">
-        <hr className="flex-grow border-grey-light" />
-        <span className="text-sm">OR</span>
-        <hr className="flex-grow border-grey-light" />
-      </div>
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute top-[38px] right-3"
+            >
+              {showPassword ? <EyeIcon /> : <EyeOffIcon />}
+            </button>
 
-      {/* Google / Facebook sign-in */}
-      <div className="space-y-2">
-        <Button
-          label="Sign in with Google"
-          variant="outlined"
-          IconLeft={<img src={google} alt="Google" className="w-5 h-5" />}
-          className="w-full"
-        />
-        <Button
-          label="Sign in with Facebook"
-          variant="outlined"
-          IconLeft={<img src={fb} alt="Facebook" className="w-5 h-5" />}
-          className="w-full"
-        />
-      </div>
+            <AnimatePresence>
+              {showPasswordChecks && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="mt-3 space-y-1"
+                >
+                  <CheckItem
+                    label="At least 6 characters"
+                    condition={passwordChecks.minLength}
+                  />
+                  <CheckItem
+                    label="No more than 64 characters"
+                    condition={passwordChecks.maxLength}
+                  />
+                  <CheckItem
+                    label="Contains a letter"
+                    condition={passwordChecks.hasLetter}
+                  />
+                  <CheckItem
+                    label="Contains a number"
+                    condition={passwordChecks.hasNumber}
+                  />
+                  <CheckItem
+                    label="Has special character (@$!%*?&)"
+                    condition={passwordChecks.hasSpecialChar}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
-      <Agreement />
+          {/* Remember me + Forgot password */}
+          <div className="flex items-center justify-between text-sm">
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                className="accent-primary"
+                {...register("rememberMe")}
+              />
+              Remember Me
+            </label>
+            <button
+              type="button"
+              onClick={handleForgotpassword}
+              className="text-grey-medium hover:underline"
+            >
+              Forgot Password?
+            </button>
+          </div>
 
-      <p className="text-center text-grey-medium mt-4">
-        Don't have an account?{" "}
-        <a href="/register" className="text-primary hover:underline">
-          Register
-        </a>
-      </p>
+          <Button label="Sign In" type="submit" className="w-full" />
 
-      <p className="text-center text-xs text-grey-medium mt-4">
-        © 2025 Chatblix. All Rights Reserved
-      </p>
-    </form>
+          {/* Divider */}
+          <div className="flex items-center gap-2 text-grey-medium">
+            <hr className="flex-grow border-grey-light" />
+            <span className="text-sm">OR</span>
+            <hr className="flex-grow border-grey-light" />
+          </div>
+
+          {/* Google / Facebook sign-in */}
+          <div className="space-y-2">
+            <Button
+              label="Sign in with Google"
+              variant="outlined"
+              IconLeft={<img src={google} alt="Google" className="w-5 h-5" />}
+              className="w-full"
+            />
+            <Button
+              label="Sign in with Facebook"
+              variant="outlined"
+              IconLeft={<img src={fb} alt="Facebook" className="w-5 h-5" />}
+              className="w-full"
+            />
+          </div>
+
+          <Agreement />
+
+          <p className="text-center text-grey-medium mt-4">
+            Don't have an account?{" "}
+            <a href="/register" className="text-primary hover:underline">
+              Register
+            </a>
+          </p>
+
+          <p className="text-center text-xs text-grey-medium mt-4">
+            © 2025 Chatblix. All Rights Reserved
+          </p>
+        </form>
+      ) : (
+        <form onSubmit={handleSubmitMfa(onSubmitMfa)} className="space-y-5">
+          {/* ---- MFA UI ---- */}
+          <h2 className="text-grey-medium">Two-Factor Authentication</h2>
+          <p className="text-sm text-grey-medium">
+            Please enter the 6-digit code from your authenticator app.
+          </p>
+
+          <Input
+            label="Authentication Code"
+            placeholder="Enter code"
+            {...registerMfa("totp", { required: "Code is required" })}
+            error={mfaErrors.totp?.message}
+          />
+
+          <Button label="Verify" type="submit" className="w-full" />
+        </form>
+      )}
+    </>
   );
 };
 

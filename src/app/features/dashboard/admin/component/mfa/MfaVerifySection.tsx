@@ -1,14 +1,45 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/app/components/ui";
 import { useMfaStore } from "@/app/store/mfa.store";
 
-const MfaVerifySection = ({ onSuccess }: { onSuccess: () => void }) => {
+const MfaVerifySection = ({
+  onSuccess,
+  onCancel,
+}: {
+  onSuccess: () => void;
+  onCancel?: () => void;
+}) => {
   const { verifyMfa } = useMfaStore();
-  const [code, setCode] = useState("");
+  const [otp, setOtp] = useState(Array(6).fill(""));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
+
+  const handleChange = (index: number, value: string) => {
+    if (!/^\d*$/.test(value)) return; // only numbers
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+
+    // move focus to next input
+    if (value && index < 5) {
+      inputsRef.current[index + 1]?.focus();
+    }
+  };
+
+  const handleCancel = () => {
+    if (onCancel) onCancel();
+  };
+  const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      const prevInput = inputsRef.current[index - 1];
+      prevInput?.focus();
+    }
+  };
+
   const handleVerify = async () => {
+    const code = otp.join("");
     setLoading(true);
     setError("");
     const res = await verifyMfa(code);
@@ -23,25 +54,55 @@ const MfaVerifySection = ({ onSuccess }: { onSuccess: () => void }) => {
 
   return (
     <div className="mt-6 w-full">
-      <label className="block text-sm font-medium text-gray-700 mb-2">
-        Enter 6-digit code
-      </label>
-      <input
-        type="text"
-        maxLength={6}
-        value={code}
-        onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-        className="w-full border rounded-lg px-3 py-2 text-center tracking-widest text-lg"
-        placeholder="123456"
-      />
-      {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-      <Button
-        label={loading ? "Verifying..." : "Verify & Enable"}
-        variant="primary"
-        onClick={handleVerify}
-        disabled={loading || code.length !== 6}
-        className="mt-4 w-full"
-      />
+      <div className="flex justify-center items-center">
+        <div className="flex gap-[10px]">
+          {otp.slice(0, 3).map((digit, index) => (
+            <input
+              key={index}
+              type="text"
+              inputMode="numeric"
+              maxLength={1}
+              value={digit}
+              onChange={(e) => handleChange(index, e.target.value)}
+              onKeyDown={(e) => handleKeyDown(index, e)}
+              ref={(el: any) => (inputsRef.current[index] = el)}
+              className="w-12 h-12 h3-medium-32 text-grey border bg-base-white border-primary rounded-[10px] text-center text-lg focus:outline-none focus:border-primary-dark focus:ring-0 focus:ring-primary shadow-[0_2px_4px_0_rgba(0,0,0,0.25)_inset]"
+            />
+          ))}
+        </div>
+        <span className="mx-2 h1-bold-48 text-grey">-</span>
+        <div className="flex gap-[10px]">
+          {otp.slice(3, 6).map((digit, index) => (
+            <input
+              key={index + 3}
+              type="text"
+              inputMode="numeric"
+              maxLength={1}
+              value={digit}
+              onChange={(e) => handleChange(index + 3, e.target.value)}
+              onKeyDown={(e) => handleKeyDown(index + 3, e)}
+              ref={(el: any) => (inputsRef.current[index + 3] = el)}
+              className="w-12 h-12 h3-medium-32 text-grey border bg-base-white border-primary rounded-[10px] text-center text-lg focus:outline-none focus:border-primary-dark focus:ring-0 focus:ring-primary shadow-[0_2px_4px_0_rgba(0,0,0,0.25)_inset]"
+            />
+          ))}
+        </div>
+      </div>
+      {error && <p className="text-danger h5-semi-bold-16 mt-2">{error}</p>}
+      <div className="flex items-center gap-4">
+        <Button
+          label={loading ? "Verifying..." : "Verify"}
+          variant="primary"
+          onClick={handleVerify}
+          disabled={loading || otp.some((d) => d === "")}
+          className="mt-4 w-full"
+        />
+        <Button
+          label={"Cancel"}
+          variant="danger"
+          onClick={handleCancel}
+          className="mt-4 w-full"
+        />
+      </div>
     </div>
   );
 };

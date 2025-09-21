@@ -114,6 +114,17 @@ export const login = async (email: string, password: string) => {
     throw handleApiError(error);
   }
 };
+/**
+ * Handles the user Login mfa API call.
+ */
+export const mfalogin = async (mfaToken: string, totp: string) => {
+  try {
+    const res = await api.post("/auth/login/mfa/", { mfaToken, totp });
+    return res.data;
+  } catch (error) {
+    throw handleApiError(error);
+  }
+};
 
 /**
  * Handles the access token refresh API call.

@@ -45,8 +45,8 @@ export interface SignupSuccessResponse {
 }
 
 export interface LoginSuccessResponse {
-  success: boolean;
   message: string;
+  success: true;
   data: {
     accessToken: string;
     accessTokenExpiresIn: number;
@@ -56,6 +56,20 @@ export interface LoginSuccessResponse {
   };
   timestamp: string;
 }
+
+export interface MFARequiredResponse {
+  message: string;
+  success: true;
+  data: {
+    mfaRequired: true;
+    mfaToken: string;
+    methods: string[];
+    expiresIn: number;
+  };
+  timestamp: string;
+}
+
+export type LoginResponse = LoginSuccessResponse | MFARequiredResponse;
 
 export interface VerifyEmailResponse {
   success: boolean;

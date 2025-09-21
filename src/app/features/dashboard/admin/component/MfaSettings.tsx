@@ -1,14 +1,18 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Edit, MessageSquare, Shield, Smartphone, X } from "lucide-react";
+import { Edit, MessageSquare, Shield, Smartphone } from "lucide-react";
+import * as Dialog from "@radix-ui/react-dialog";
 import { Button } from "@/app/components/ui";
 import { RadioButton, Switch } from "./ui";
 import { useMfaStore } from "@/app/store/mfa.store";
 import MfaVerifySection from "./mfa/MfaVerifySection";
 import RecoveryCodesModal from "./mfa/RecoveryCodesModal";
 import { toast } from "sonner";
+import { formatSecret } from "@/app/utils/helper";
 
-const MfaSettings = () => {
+const MfaSettings: React.FC = () => {
+  const { mfaData, enabled, requestMfa, disableMfa } = useMfaStore();
+
   const [mfaSettings, setMfaSettings] = useState([
     {
       id: 1,
@@ -21,11 +25,11 @@ const MfaSettings = () => {
     },
   ]);
 
-  const [showRecoveryCodes, setShowRecoveryCodes] = useState<boolean>(false);
+  const [showRecoveryCodes, setShowRecoveryCodes] = useState(false);
   const [editingSection, setEditingSection] = useState<number | null>(null);
-  const { mfaData, enabled, requestMfa, disableMfa } = useMfaStore();
   const [isCopying, setIsCopying] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [verifiedSuccess, setVerifiedSuccess] = useState(false);
 
   const handleEdit = (id: number) => {
     setEditingSection(id);
@@ -39,7 +43,7 @@ const MfaSettings = () => {
 
   const toggleAuthMethod = (
     id: number,
-    method: keyof (typeof mfaSettings)[0]["authMethods"],
+    method: "sms" | "email" | "authenticator",
   ) => {
     setMfaSettings((prev) => {
       const updatedSettings = prev.map((s) => {
@@ -52,10 +56,8 @@ const MfaSettings = () => {
           };
 
           if (method === "authenticator") {
-            if (!mfaData) {
-              requestMfa();
-            }
-            setDrawerOpen(true);
+            if (!mfaData) requestMfa();
+            setModalOpen(true);
           }
 
           return { ...s, authMethods: newAuthMethods };
@@ -84,6 +86,15 @@ const MfaSettings = () => {
     }
   };
 
+  // new handler for dialog open/close
+  const handleDialogChange = (open: boolean) => {
+    setModalOpen(open);
+    if (!open && verifiedSuccess) {
+      setShowRecoveryCodes(true);
+      setVerifiedSuccess(false); // reset
+    }
+  };
+
   return (
     <>
       <AnimatePresence mode="wait">
@@ -101,7 +112,6 @@ const MfaSettings = () => {
               layout
               transition={{ duration: 0.3 }}
             >
-              {/* Header */}
               <div className="flex items-center justify-between px-6 py-4 border rounded-t-lg border-grey-light bg-base-white">
                 <h3 className="body-bold-16 text-grey">{setting.title}</h3>
                 {editingSection !== setting.id && (
@@ -115,7 +125,6 @@ const MfaSettings = () => {
                 )}
               </div>
 
-              {/* Switch */}
               <div className="px-6 py-4">
                 <div className="flex items-center justify-between mb-2">
                   <span className="body-bold-16 text-grey-medium">
@@ -134,7 +143,6 @@ const MfaSettings = () => {
                 </p>
               </div>
 
-              {/* Auth Methods */}
               {(setting.enabled || editingSection === setting.id) &&
                 setting.hasAuthMethods && (
                   <motion.div
@@ -144,7 +152,7 @@ const MfaSettings = () => {
                     exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <h4 className="text-sm font-medium text-gray-700 mb-4">
+                    <h4 className="text-sm font-medium text-grey mb-4">
                       Choose an authentication method:
                     </h4>
                     <div className="space-y-3">
@@ -153,18 +161,16 @@ const MfaSettings = () => {
                           selected={setting.authMethods.sms}
                           onChange={() => toggleAuthMethod(setting.id, "sms")}
                         />
-                        <MessageSquare size={16} className="text-gray-500" />
-                        <span className="text-sm text-gray-700">SMS Code</span>
+                        <MessageSquare size={16} className="text-grey-medium" />
+                        <span className="text-sm text-grey">SMS Code</span>
                       </div>
                       <div className="flex items-center gap-3">
                         <RadioButton
                           selected={setting.authMethods.email}
                           onChange={() => toggleAuthMethod(setting.id, "email")}
                         />
-                        <Shield size={16} className="text-gray-500" />
-                        <span className="text-sm text-gray-700">
-                          Email Code
-                        </span>
+                        <Shield size={16} className="text-grey-medium" />
+                        <span className="text-sm text-grey">Email Code</span>
                       </div>
                       <div className="flex items-center gap-3">
                         <RadioButton
@@ -173,8 +179,8 @@ const MfaSettings = () => {
                             toggleAuthMethod(setting.id, "authenticator")
                           }
                         />
-                        <Smartphone size={16} className="text-gray-500" />
-                        <span className="text-sm text-gray-700">
+                        <Smartphone size={16} className="text-grey-medium" />
+                        <span className="text-sm text-grey">
                           Authenticator App
                         </span>
                       </div>
@@ -182,10 +188,8 @@ const MfaSettings = () => {
                   </motion.div>
                 )}
 
-              {/* Save/Cancel */}
               {editingSection === setting.id && (
                 <div className="w-full flex justify-end gap-3 pt-4 py-4 px-4">
-                  {/* Disable MFA */}
                   {enabled && (
                     <Button
                       label="Disable MFA"
@@ -207,115 +211,122 @@ const MfaSettings = () => {
         </motion.div>
       </AnimatePresence>
 
-      {/* Drawer for Authenticator */}
-      <AnimatePresence>
-        {drawerOpen && (
-          <motion.div
-            className="fixed inset-0 z-50 flex"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            {/* Background overlay */}
-            <div
-              className="flex-1 bg-black/40"
-              onClick={() => setDrawerOpen(false)}
-            />
-
-            {/* Drawer content */}
+      <Dialog.Root open={modalOpen} onOpenChange={handleDialogChange}>
+        <Dialog.Portal>
+          <Dialog.Overlay asChild>
             <motion.div
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ duration: 0.3 }}
-              className="w-2xl bg-white shadow-lg p-6 relative overflow-y-auto"
+              className="fixed inset-0 bg-black/40 z-40"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            />
+          </Dialog.Overlay>
+          <Dialog.Content asChild>
+            <motion.div
+              className="fixed inset-0 z-50 flex items-center justify-center px-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.2 }}
             >
-              <button
-                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
-                onClick={() => setDrawerOpen(false)}
-              >
-                <X size={20} />
-              </button>
+              <div className="w-full max-w-xl bg-white rounded-lg shadow-lg p-6 relative">
+                <Dialog.Title className="h5-bold-16 text-grey">
+                  Multi-Factor Authentication Setup
+                </Dialog.Title>
+                <Dialog.Close asChild>
+                  <button
+                    aria-label="Close"
+                    className="absolute top-4 right-4 text-grey-medium hover:text-grey"
+                  >
+                    ✕
+                  </button>
+                </Dialog.Close>
 
-              <h5 className="h5-bold-16 text-grey">
-                Multi-Factor Authentication Setup
-              </h5>
-
-              {mfaData ? (
-                <div className="flex flex-col items-start mt-6">
-                  {/* steps 1 & 2 */}
-                  <article className="pb-6">
-                    <h1 className="body-semi-bold-16 text-grey mb-2 text-start">
-                      Step 1: Get an Authenticator
-                    </h1>
-                    <p className="body-medium-16 text-grey-medium">
-                      Download Google Authenticator, Authy, or Microsoft
-                      Authenticator.
-                    </p>
-                  </article>
-                  <article className="pb-6">
-                    <h1 className="body-semi-bold-16 text-grey mb-2 text-start">
-                      Step 2: Scan the QR Code
-                    </h1>
-                    <p className="body-medium-16 text-grey-medium">
-                      Scan this QR code with your authenticator app or enter the
-                      key manually.
-                    </p>
-                  </article>
-
-                  <div className="w-full flex justify-between items-center p-10">
-                    <figure>
-                      <img
-                        src={mfaData.qrCodeDataURL}
-                        alt="MFA QR Code"
-                        className="w-48 h-48 border border-gray-300 rounded-lg p-2"
-                      />
-                    </figure>
-
-                    <div className="flex flex-col items-center">
-                      <p className="body-regular-14 text-grey-medium mt-4">
-                        Or enter this code manually:
+                {mfaData ? (
+                  <div className="flex flex-col items-start mt-6">
+                    <article className="pb-4">
+                      <h1 className="body-bold-16 text-base-black mb-2 text-start">
+                        Step 1: Get an Authenticator
+                      </h1>
+                      <p className="body-medium-16 text-grey">
+                        App Download the Google Authenticator app from the
+                        Google Play Store (for Android) or the Apple App Store
+                        (for iOS). You can also use other apps like Microsoft
+                        Authenticator or Authy.
                       </p>
-                      <div className="bg-gray-100 p-3 mt-2 rounded-lg break-all text-center">
-                        <code className="font-mono text-sm text-gray-800">
-                          {mfaData.secret}
-                        </code>
+                    </article>
+                    <article className="pb-px">
+                      <h1 className="body-bold-16 text-base-black mb-2 text-start">
+                        Step 2: Scan the QR Code
+                      </h1>
+                      <p className="body-medium-16 text-grey">
+                        On your computer, a QR code will be displayed. Open your
+                        authenticator app, tap the + icon, and select "Scan a QR
+                        code." Use your phone's camera to scan the code shown on
+                        the screen or copy the key and paste it in the
+                        authenticator app.
+                      </p>
+                    </article>
+
+                    <div className="w-full flex flex-col md:flex-row justify-between items-center px-8 py-6 md:py-4 gap-6">
+                      <figure>
+                        <img
+                          src={mfaData.qrCodeDataURL}
+                          alt="MFA QR Code"
+                          className="w-48 h-48 border border-[#5C5C5C] rounded-2xl p-2"
+                        />
+                      </figure>
+                      <div className="flex flex-col items-center">
+                        <div className="p-3 mt-2 rounded-lg text-center">
+                          <code className="body-semi-bold-16 text-grey whitespace-pre-wrap">
+                            {formatSecret(mfaData.secret)
+                              .split(" ")
+                              .reduce<string[]>((lines, group, i) => {
+                                const lineIndex = Math.floor(i / 4);
+                                if (!lines[lineIndex]) lines[lineIndex] = group;
+                                else lines[lineIndex] += " " + group;
+                                return lines;
+                              }, [])
+                              .join("\n")}
+                          </code>
+                        </div>
+                        <Button
+                          label={isCopying ? "Copied!" : "Copy Code"}
+                          variant="none"
+                          onClick={handleCopy}
+                          className={`mt-4 ${isCopying ? "bg-primary text-white px-4" : ""}`}
+                        />
                       </div>
-                      <Button
-                        label={isCopying ? "Copied!" : "Copy Code"}
-                        variant="primary"
-                        onClick={handleCopy}
-                        className={`mt-4 ${
-                          isCopying ? "bg-primary text-white" : ""
-                        }`}
-                      />
                     </div>
+
+                    <article className="pb-4 w-full">
+                      <h1 className="body-bold-16 text-base-black mb-2 text-start">
+                        Step 3: Enter the Verification Code
+                      </h1>
+                      <p className="body-medium-16 text-grey mb-4">
+                        Your app will now generate a temporary 6-digit code.
+                        Enter this code into the field provided on your computer
+                        to complete the setup.
+                      </p>
+                      <MfaVerifySection
+                        onSuccess={() => {
+                          setVerifiedSuccess(true);
+                          setModalOpen(false);
+                        }}
+                        onCancel={() => setModalOpen(false)}
+                      />
+                    </article>
                   </div>
-
-                  {/* Step 3: verify */}
-                  <article className="pb-6 w-full">
-                    <h1 className="body-semi-bold-16 text-grey mb-2 text-start">
-                      Step 3: Enter the Verification Code
-                    </h1>
-                    <p className="body-medium-16 text-grey-medium mb-4">
-                      Enter the 6-digit code from your authenticator app to
-                      complete setup.
-                    </p>
-
-                    <MfaVerifySection
-                      onSuccess={() => setShowRecoveryCodes(true)}
-                    />
-                  </article>
-                </div>
-              ) : (
-                <p className="text-sm text-gray-500 mt-6 text-center">
-                  Generating QR code...
-                </p>
-              )}
+                ) : (
+                  <p className="text-sm text-grey-medium mt-6 text-center">
+                    Generating QR code...
+                  </p>
+                )}
+              </div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
 
       {/* Recovery Codes Modal */}
       {showRecoveryCodes && (
