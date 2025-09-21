@@ -38,13 +38,29 @@ const LoginForm = () => {
     mode: "onSubmit",
   });
 
-  const {
-    register: registerMfa,
-    handleSubmit: handleSubmitMfa,
-    formState: { errors: mfaErrors },
-  } = useForm<{ totp: string }>({
-    mode: "onSubmit",
-  });
+  const [code, setCode] = useState<string[]>(Array(6).fill(""));
+
+  const handleChange = (index: number, value: string) => {
+    if (!/^[0-9]?$/.test(value)) return;
+    const newCode = [...code];
+    newCode[index] = value;
+    setCode(newCode);
+
+    if (value && index < 5) {
+      const nextInput = document.getElementById(`otp-${index + 1}`);
+      nextInput?.focus();
+    }
+  };
+
+  const handleKeyDown = (
+    index: number,
+    e: React.KeyboardEvent<HTMLInputElement>,
+  ) => {
+    if (e.key === "Backspace" && !code[index] && index > 0) {
+      const prevInput = document.getElementById(`otp-${index - 1}`);
+      prevInput?.focus();
+    }
+  };
 
   const password = watch("password") || "";
   const passwordChecks = {
@@ -92,16 +108,19 @@ const LoginForm = () => {
     }
   };
 
-  const onSubmitMfa = async ({ totp }: { totp: string }) => {
+  const onSubmitMfa = async () => {
     if (!mfaToken) return;
 
+    const totp = code.join("");
     try {
       const res = await mfalogin(mfaToken, totp);
-      // console.log("🚀 ~ onSubmitMfa ~ res:", res);
 
-      if ("data" in res && "accessToken" in res.data && "tenantSlug" in res.data) {
+      if (
+        "data" in res &&
+        "accessToken" in res.data &&
+        "tenantSlug" in res.data
+      ) {
         const { accessToken, tenantSlug } = res.data;
-
         useAuthStore.getState().setAccessToken(accessToken);
         useAuthStore.getState().setTenantSlug(tenantSlug);
         toast.success(res.message);
@@ -245,19 +264,35 @@ const LoginForm = () => {
           </p>
         </form>
       ) : (
-        <form onSubmit={handleSubmitMfa(onSubmitMfa)} className="space-y-5">
-          {/* ---- MFA UI ---- */}
-          <h2 className="text-grey-medium">Two-Factor Authentication</h2>
-          <p className="text-sm text-grey-medium">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSubmitMfa();
+          }}
+          className="space-y-5"
+        >
+          <h2 className="h3-bold-32 text-grey pt-10">
+            Two-Factor Authentication
+          </h2>
+          <p className="h5-medium-16 text-grey-medium">
             Please enter the 6-digit code from your authenticator app.
           </p>
 
-          <Input
-            label="Authentication Code"
-            placeholder="Enter code"
-            {...registerMfa("totp", { required: "Code is required" })}
-            error={mfaErrors.totp?.message}
-          />
+          <div className="flex justify-center gap-2 py-4">
+            {code.map((digit, i) => (
+              <input
+                key={i}
+                id={`otp-${i}`}
+                type="text"
+                inputMode="numeric"
+                maxLength={1}
+                value={digit}
+                onChange={(e) => handleChange(i, e.target.value)}
+                onKeyDown={(e) => handleKeyDown(i, e)}
+                className="w-14 h-14 text-center h5-bold-16 border-2 border-grey-light rounded-lg focus:outline-none focus:border-primary"
+              />
+            ))}
+          </div>
 
           <Button label="Verify" type="submit" className="w-full" />
         </form>
