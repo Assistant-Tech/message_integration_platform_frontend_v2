@@ -16,7 +16,7 @@ import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useAuthStore } from "@/app/store/auth.store";
 import { handleApiError } from "@/app/utils/handlerApiError";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const LoginForm = () => {
   const { login, mfalogin } = useAuthStore();
@@ -39,6 +39,26 @@ const LoginForm = () => {
   });
 
   const [code, setCode] = useState<string[]>(Array(6).fill(""));
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  // Handle paste event for 6-digit OTP
+  useEffect(() => {
+    const handlePaste = (event: ClipboardEvent) => {
+      const pasteData = event.clipboardData?.getData("text") ?? "";
+      if (pasteData.length === 6 && /^\d+$/.test(pasteData)) {
+        const newCode = pasteData.split("");
+        setCode(newCode);
+        inputRefs.current[5]?.focus();
+      }
+    };
+
+    const container = document.getElementById("mfa-form-container");
+    container?.addEventListener("paste", handlePaste);
+
+    return () => {
+      container?.removeEventListener("paste", handlePaste);
+    };
+  }, []);
 
   const handleChange = (index: number, value: string) => {
     if (!/^[0-9]?$/.test(value)) return;
@@ -47,8 +67,7 @@ const LoginForm = () => {
     setCode(newCode);
 
     if (value && index < 5) {
-      const nextInput = document.getElementById(`otp-${index + 1}`);
-      nextInput?.focus();
+      inputRefs.current[index + 1]?.focus();
     }
   };
 
@@ -57,8 +76,7 @@ const LoginForm = () => {
     e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.key === "Backspace" && !code[index] && index > 0) {
-      const prevInput = document.getElementById(`otp-${index - 1}`);
-      prevInput?.focus();
+      inputRefs.current[index - 1]?.focus();
     }
   };
 
@@ -265,6 +283,7 @@ const LoginForm = () => {
         </form>
       ) : (
         <form
+          id="mfa-form-container"
           onSubmit={(e) => {
             e.preventDefault();
             onSubmitMfa();
@@ -289,6 +308,7 @@ const LoginForm = () => {
                 value={digit}
                 onChange={(e) => handleChange(i, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(i, e)}
+                ref={(el: any) => (inputRefs.current[i] = el)}
                 className="w-14 h-14 text-center h5-bold-16 border-2 border-grey-light rounded-lg focus:outline-none focus:border-primary"
               />
             ))}

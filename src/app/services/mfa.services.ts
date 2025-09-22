@@ -6,6 +6,12 @@ import {
 } from "@/app/types/mfa.types";
 
 export const MfaServices = {
+  //get the status of mfa enable and details or not!
+  async getStatus() {
+    const res = await api.get("/mfa/status");
+    return res.data;
+  },
+
   // request QR + secret
   async requestMFA(): Promise<MfaEnrollResponse> {
     const res = await api.get("/mfa/request");

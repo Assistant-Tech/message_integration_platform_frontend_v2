@@ -3,14 +3,16 @@ import { Button } from "@/app/components/ui";
 import { Download } from "lucide-react";
 
 interface RecoveryPhrasesModalProps {
+  codes: string[];
   onClose: () => void;
 }
 
 const RecoveryPhrasesModal: React.FC<RecoveryPhrasesModalProps> = ({
+  codes,
   onClose,
 }) => {
   const [phraseInputs, setPhraseInputs] = useState<string[]>(
-    Array(12).fill(""),
+    codes.length ? codes : Array(12).fill(""),
   );
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
 
