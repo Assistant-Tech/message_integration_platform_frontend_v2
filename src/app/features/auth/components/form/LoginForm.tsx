@@ -17,15 +17,20 @@ import { useAuthStore } from "@/app/store/auth.store";
 import { handleApiError } from "@/app/utils/handlerApiError";
 
 import { useEffect, useRef, useState } from "react";
+import { useMfaStore } from "@/app/store/mfa.store";
+import RecoveryPhrasesModal from "@/app/features/dashboard/admin/component/mfa/RecoveryCodesModal";
 
 const LoginForm = () => {
   const { login, mfalogin } = useAuthStore();
+  const { regenerateBackupCodes } = useMfaStore();
   const navigate = useNavigate();
 
   const [showPasswordChecks, setShowPasswordChecks] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [mfaStep, setMfaStep] = useState(false);
   const [mfaToken, setMfaToken] = useState<string | null>(null);
+  const [useBackup, setUseBackup] = useState<boolean>(false);
+  const [backupCode, setBackupCode] = useState("");
 
   const {
     register,
@@ -40,8 +45,9 @@ const LoginForm = () => {
 
   const [code, setCode] = useState<string[]>(Array(6).fill(""));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [newCodes, setNewCodes] = useState<string[] | null>(null);
+  const [showModal, setShowModal] = useState(false);
 
-  // Handle paste event for 6-digit OTP
   useEffect(() => {
     const handlePaste = (event: ClipboardEvent) => {
       const pasteData = event.clipboardData?.getData("text") ?? "";
@@ -129,9 +135,22 @@ const LoginForm = () => {
   const onSubmitMfa = async () => {
     if (!mfaToken) return;
 
-    const totp = code.join("");
     try {
-      const res = await mfalogin(mfaToken, totp);
+      let res;
+
+      if (useBackup) {
+        const recoveryPhrase = backupCode.trim().split(/\s+/);
+
+        if (recoveryPhrase.length !== 12) {
+          toast.error("Recovery phrase must contain exactly 12 words.");
+          return;
+        }
+
+        res = await mfalogin(mfaToken, undefined, recoveryPhrase);
+      } else {
+        const totp = code.join("");
+        res = await mfalogin(mfaToken, totp, undefined);
+      }
 
       if (
         "data" in res &&
@@ -142,6 +161,18 @@ const LoginForm = () => {
         useAuthStore.getState().setAccessToken(accessToken);
         useAuthStore.getState().setTenantSlug(tenantSlug);
         toast.success(res.message);
+
+        if (useBackup) {
+          try {
+            const regenRes = await regenerateBackupCodes();
+            setNewCodes(regenRes?.data?.recoveryPhrases ?? null);
+            setShowModal(true);
+          } catch (error) {
+            const parsedError = handleApiError(error);
+            if ("message" in parsedError) toast.error(parsedError.message);
+          }
+        }
+
         navigate(`/${tenantSlug}/admin/dashboard`);
       } else {
         toast.error("Unexpected response from server during MFA login.");
@@ -150,6 +181,10 @@ const LoginForm = () => {
       const parsedError = handleApiError(error);
       if ("message" in parsedError) toast.error(parsedError.message);
     }
+  };
+
+  const handleUseBackupCode = () => {
+    setUseBackup(true);
   };
 
   return (
@@ -216,7 +251,7 @@ const LoginForm = () => {
                     condition={passwordChecks.hasNumber}
                   />
                   <CheckItem
-                    label="Has special character (@$!%*?&)"
+                    label="Has special character (@$!%*?&) "
                     condition={passwordChecks.hasSpecialChar}
                   />
                 </motion.div>
@@ -224,26 +259,13 @@ const LoginForm = () => {
             </AnimatePresence>
           </div>
 
-          {/* Remember me + Forgot password */}
-          <div className="flex items-center justify-between text-sm">
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                className="accent-primary"
-                {...register("rememberMe")}
-              />
-              Remember Me
-            </label>
-            <button
-              type="button"
-              onClick={handleForgotpassword}
-              className="text-grey-medium hover:underline"
-            >
-              Forgot Password?
-            </button>
-          </div>
-
           <Button label="Sign In" type="submit" className="w-full" />
+          <button
+            className="h5-medium-16 text-primary hover:underline cursor-pointer"
+            onClick={handleForgotpassword}
+          >
+            Forgot Password?
+          </button>
 
           {/* Divider */}
           <div className="flex items-center gap-2 text-grey-medium">
@@ -297,24 +319,69 @@ const LoginForm = () => {
             Please enter the 6-digit code from your authenticator app.
           </p>
 
-          <div className="flex justify-center gap-2 py-4">
-            {code.map((digit, i) => (
-              <input
-                key={i}
-                id={`otp-${i}`}
-                type="text"
-                inputMode="numeric"
-                maxLength={1}
-                value={digit}
-                onChange={(e) => handleChange(i, e.target.value)}
-                onKeyDown={(e) => handleKeyDown(i, e)}
-                ref={(el: any) => (inputRefs.current[i] = el)}
-                className="w-14 h-14 text-center h5-bold-16 border-2 border-grey-light rounded-lg focus:outline-none focus:border-primary"
+          {/* MFA Code Input */}
+          {useBackup ? (
+            <div className="flex flex-col items-start gap-2">
+              <label htmlFor="backup-codes">Backup Code</label>
+              <Input
+                placeholder="Enter the backup code"
+                value={backupCode}
+                onChange={(e) => setBackupCode(e.target.value)}
+                className="mb-4"
               />
-            ))}
-          </div>
+            </div>
+          ) : (
+            <div className="flex justify-center gap-2 py-4">
+              {code.map((digit, i) => (
+                <input
+                  key={i}
+                  id={`otp-${i}`}
+                  type="tel"
+                  inputMode="numeric"
+                  maxLength={1}
+                  value={digit}
+                  onChange={(e) => handleChange(i, e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(i, e)}
+                  ref={(el: any) => (inputRefs.current[i] = el)}
+                  className="w-14 h-14 text-center h5-bold-16 border-2 border-grey-light rounded-lg focus:outline-none focus:border-primary"
+                />
+              ))}
+            </div>
+          )}
 
           <Button label="Verify" type="submit" className="w-full" />
+
+          <div className="flex justify-center gap-2 py-4">
+            {!useBackup && (
+              <Button
+                label="Use Backup Code"
+                variant="none"
+                className="px-4 py-3 cursor-pointer text-information"
+                onClick={handleUseBackupCode}
+              />
+            )}
+            {/* Show a button to return to TOTP input */}
+            {useBackup && (
+              <div className="text-center">
+                <Button
+                  label="Back to Authenticator App"
+                  variant="none"
+                  className="py-2 text-information"
+                  onClick={() => setUseBackup(false)}
+                />
+              </div>
+            )}
+
+            {showModal && newCodes && (
+              <RecoveryPhrasesModal
+                codes={newCodes}
+                onClose={() => {
+                  setShowModal(false);
+                  setNewCodes(null);
+                }}
+              />
+            )}
+          </div>
         </form>
       )}
     </>

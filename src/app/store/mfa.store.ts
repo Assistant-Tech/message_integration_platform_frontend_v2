@@ -4,7 +4,10 @@ import {
   MfaData,
   MfaDisableResponse,
   MfaVerifyResponse,
+  ResponseRegeneration,
 } from "@/app/types/mfa.types";
+import { handleApiError } from "../utils/handlerApiError";
+import { toast } from "sonner";
 
 interface MfaState {
   mfaData: MfaData | null;
@@ -17,6 +20,7 @@ interface MfaState {
   setMfaData: (data: MfaData) => void;
   clearMfaData: () => void;
 
+  regenerateBackupCodes: () => Promise<ResponseRegeneration | null>;
   fetchStatus: () => Promise<void>;
   requestMfa: () => Promise<void>;
   verifyMfa: (token: string) => Promise<MfaVerifyResponse | null>;
@@ -34,6 +38,17 @@ export const useMfaStore = create<MfaState>((set) => ({
   setMfaData: (data) => set({ mfaData: data }),
   clearMfaData: () =>
     set({ mfaData: null, recoveryPhrases: [], enabled: false, method: null }),
+
+  regenerateBackupCodes: async () => {
+    try {
+      const res = await MfaServices.regenerateBackupCodes();
+      toast.success(res.message);
+      return res.data;
+    } catch (error) {
+      const parsedError = handleApiError(error);
+      if ("message" in parsedError) toast.error(parsedError.message);
+    }
+  },
 
   fetchStatus: async () => {
     set({ loading: true, error: null });
@@ -59,7 +74,6 @@ export const useMfaStore = create<MfaState>((set) => ({
         set({ error: response.message, loading: false });
       }
     } catch (error) {
-      console.error("🚀 ~ requestMfa error:", error);
       set({ error: "Failed to request MFA", mfaData: null, loading: false });
     }
   },
@@ -76,6 +90,7 @@ export const useMfaStore = create<MfaState>((set) => ({
           mfaData: null,
           loading: false,
         });
+        toast.success("Verified Successfully");
         return response;
       } else {
         set({ error: response.message, loading: false });
@@ -104,7 +119,6 @@ export const useMfaStore = create<MfaState>((set) => ({
       set({ error: response.message, loading: false });
       return null;
     } catch (error) {
-      console.error("🚀 ~ disableMfa error:", error);
       set({ error: "Failed to disable MFA", loading: false });
       return null;
     }

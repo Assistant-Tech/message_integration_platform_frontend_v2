@@ -41,7 +41,11 @@ interface AuthState {
   verifyEmail: (token: string) => Promise<{ message: string }>;
   onboarding: (data: FormData) => Promise<{ slug: string }>;
   login: (email: string, password: string) => Promise<LoginResponse>;
-  mfalogin: (mfaToken: string, totp: string) => Promise<LoginResponse>;
+  mfalogin: (
+    mfaToken: string,
+    totp?: string,
+    recoveryPhrase?: string[],
+  ) => Promise<LoginResponse>;
   refreshAccessToken: () => Promise<string | null>;
   fetchCurrentUserProfile: () => Promise<void>;
   logout: () => void;
@@ -180,10 +184,14 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      mfalogin: async (mfaToken, totp) => {
+      mfalogin: async (mfaToken, totp, recoveryPhrase) => {
         set({ isloading: true });
         try {
-          const res: LoginSuccessResponse = await mfalogin(mfaToken, totp);
+          const res: LoginSuccessResponse = await mfalogin(
+            mfaToken,
+            totp,
+            recoveryPhrase,
+          );
 
           const { accessToken, requiresOnboarding, csrfToken, tenantSlug } =
             res.data;

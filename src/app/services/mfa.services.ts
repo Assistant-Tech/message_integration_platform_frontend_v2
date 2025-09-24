@@ -4,8 +4,19 @@ import {
   MfaEnrollResponse,
   MfaVerifyResponse,
 } from "@/app/types/mfa.types";
+import { handleApiError } from "../utils/handlerApiError";
 
 export const MfaServices = {
+  // Regenerate mfa backup codes
+  async regenerateBackupCodes() {
+    try {
+      const res = await api.post("/mfa/regenerate/recover");
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
   //get the status of mfa enable and details or not!
   async getStatus() {
     const res = await api.get("/mfa/status");

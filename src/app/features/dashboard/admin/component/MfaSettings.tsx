@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Edit, MessageSquare, Shield, Smartphone } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Button } from "@/app/components/ui";
-import { RadioButton, Switch } from "./ui";
+import { Switch } from "./ui";
 import { useMfaStore } from "@/app/store/mfa.store";
 import MfaVerifySection from "./mfa/MfaVerifySection";
 import RecoveryCodesModal from "./mfa/RecoveryCodesModal";
 import { toast } from "sonner";
 import { formatSecret } from "@/app/utils/helper";
+
 
 const MfaSettings: React.FC = () => {
   const {
@@ -25,19 +26,43 @@ const MfaSettings: React.FC = () => {
   const [editingSection, setEditingSection] = useState<number | null>(null);
   const [isCopying, setIsCopying] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const [confirmDisableOpen, setConfirmDisableOpen] = useState(false); // 👈 confirmation dialog state
+  const [confirmDisableOpen, setConfirmDisableOpen] = useState(false);
+
+  // Refs for focus management
+  const lastFocusedElementRef = useRef<HTMLElement | null>(null);
+  const methodOptionRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   useEffect(() => {
     fetchStatus();
   }, [fetchStatus]);
 
-  const handleCopy = () => {
+  // save last focused element before opening modal, and restore focus after close
+  useEffect(() => {
+    if (modalOpen || confirmDisableOpen) {
+      lastFocusedElementRef.current =
+        document.activeElement as HTMLElement | null;
+    }
+  }, [modalOpen, confirmDisableOpen]);
+
+  const restoreFocus = useCallback(() => {
+    try {
+      lastFocusedElementRef.current?.focus();
+    } catch (e) {
+      // no-op
+    }
+  }, []);
+
+  // copy secret with accessible feedback
+  const handleCopy = async () => {
     if (mfaData?.secret) {
-      navigator.clipboard.writeText(mfaData.secret).then(() => {
+      try {
+        await navigator.clipboard.writeText(mfaData.secret);
         toast.success("Secret copied to clipboard ✅");
         setIsCopying(true);
         setTimeout(() => setIsCopying(false), 2000);
-      });
+      } catch (err) {
+        toast.error("Copy failed");
+      }
     }
   };
 
@@ -52,12 +77,37 @@ const MfaSettings: React.FC = () => {
     }
   };
 
+  // toggle method programmatically — keeps state in store
   const toggleAuthMethod = (
     selectedMethod: "sms" | "email" | "authenticator",
   ) => {
     if (selectedMethod === "authenticator") {
       if (!mfaData) requestMfa();
       setModalOpen(true);
+    } else {
+      // If the store exposes a setter for method, call it here. We assume toggleAuthMethod will cause
+      // the store's method to change via some action — if not, adapt as needed.
+      // For keyboard navigation we still call this to trigger any side-effects.
+      // setMethod?.(selectedMethod) // <-- uncomment if available
+    }
+  };
+
+  // Accessible keyboard navigation for the method list
+  const handleMethodKeyDown = (e: React.KeyboardEvent, index: number) => {
+    const options = ["sms", "email", "authenticator"]; // order must match rendered buttons
+    if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+      e.preventDefault();
+      const next = (index + 1) % options.length;
+      methodOptionRefs.current[next]?.focus();
+      // call the action if desired (we don't auto-select on arrow to match typical radio behaviour)
+    } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+      e.preventDefault();
+      const prev = (index - 1 + options.length) % options.length;
+      methodOptionRefs.current[prev]?.focus();
+    } else if (e.key === " " || e.key === "Enter") {
+      e.preventDefault();
+      const selected = options[index] as "sms" | "email" | "authenticator";
+      toggleAuthMethod(selected);
     }
   };
 
@@ -88,6 +138,7 @@ const MfaSettings: React.FC = () => {
                   onClick={() => setEditingSection(1)}
                   IconLeft={<Edit size={16} />}
                   disabled={editingSection !== null}
+                  aria-label="Edit multi-factor authentication settings"
                 />
               )}
             </div>
@@ -102,12 +153,17 @@ const MfaSettings: React.FC = () => {
                   enabled={enabled}
                   onChange={() => {
                     if (enabled) {
-                      setConfirmDisableOpen(true); // 👈 ask confirmation first
+                      setConfirmDisableOpen(true);
                     } else {
                       setEditingSection(1);
                     }
                   }}
                   disabled={editingSection !== null && editingSection !== 1}
+                  aria-label={
+                    enabled
+                      ? "Disable multi-factor authentication"
+                      : "Enable multi-factor authentication"
+                  }
                 />
               </div>
               <p className="body-regular-16 text-grey-medium">
@@ -128,34 +184,70 @@ const MfaSettings: React.FC = () => {
                 <h4 className="text-sm font-medium text-grey mb-4">
                   Choose an authentication method:
                 </h4>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <RadioButton
-                      selected={method === "sms"}
-                      onChange={() => toggleAuthMethod("sms")}
-                      disabled={enabled}
-                    />
-                    <MessageSquare size={16} className="text-grey-medium" />
-                    <span className="text-sm text-grey">SMS Code</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <RadioButton
-                      selected={method === "email"}
-                      onChange={() => toggleAuthMethod("email")}
-                      disabled={enabled}
-                    />
-                    <Shield size={16} className="text-grey-medium" />
-                    <span className="text-sm text-grey">Email Code</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <RadioButton
-                      selected={method === "authenticator"}
-                      onChange={() => toggleAuthMethod("authenticator")}
-                      disabled={enabled && method !== "authenticator"}
-                    />
-                    <Smartphone size={16} className="text-grey-medium" />
-                    <span className="text-sm text-grey">Authenticator App</span>
-                  </div>
+
+                <div
+                  role="radiogroup"
+                  aria-label="Authentication methods"
+                  className="space-y-3"
+                >
+                  {(
+                    [
+                      { id: "sms", label: "SMS Code", Icon: MessageSquare },
+                      { id: "email", label: "Email Code", Icon: Shield },
+                      {
+                        id: "authenticator",
+                        label: "Authenticator App",
+                        Icon: Smartphone,
+                      },
+                    ] as const
+                  ).map((opt, idx) => {
+                    const isSelected = method === (opt.id as typeof opt.id);
+                    const disabledForOption =
+                      enabled && opt.id !== "authenticator";
+
+                    return (
+                      <div key={opt.id} className="flex items-center gap-3">
+                        <button
+                          ref={(el: any) =>
+                            (methodOptionRefs.current[idx] = el)
+                          }
+                          role="radio"
+                          aria-checked={isSelected}
+                          tabIndex={0}
+                          aria-disabled={disabledForOption}
+                          onKeyDown={(e) => handleMethodKeyDown(e, idx)}
+                          onClick={() => {
+                            if (!disabledForOption)
+                              toggleAuthMethod(opt.id as any);
+                          }}
+                          className={`flex items-center gap-3 focus:ring-primary focus:ring-2 focus:ring-offset-2 rounded px-2 py-1 ${
+                            disabledForOption
+                              ? "opacity-50 cursor-not-allowed"
+                              : ""
+                          }`}
+                        >
+                          {/* Radio circle */}
+                          <span
+                            className={`h-4 w-4 rounded-full border flex items-center justify-center ${
+                              isSelected
+                                ? "border-primary bg-primary"
+                                : "border-gray-400"
+                            }`}
+                          >
+                            {isSelected && (
+                              <span className="h-2 w-2 rounded-full bg-white" />
+                            )}
+                          </span>
+
+                          {/* Existing icon + label */}
+                          <span aria-hidden>
+                            <opt.Icon size={16} className="text-grey-medium" />
+                          </span>
+                          <span className="text-sm text-grey">{opt.label}</span>
+                        </button>
+                      </div>
+                    );
+                  })}
                 </div>
               </motion.div>
             )}
@@ -167,7 +259,9 @@ const MfaSettings: React.FC = () => {
                   <Button
                     label="Disable MFA"
                     variant="danger"
-                    onClick={() => setConfirmDisableOpen(true)} // 👈 confirm here too
+                    onClick={() => setConfirmDisableOpen(true)}
+                    aria-haspopup="dialog"
+                    aria-controls="confirm-disable-dialog"
                   />
                 )}
                 <Button
@@ -175,11 +269,13 @@ const MfaSettings: React.FC = () => {
                   variant="none"
                   className="bg-black text-white px-8 py-3"
                   onClick={() => setEditingSection(null)}
+                  aria-label="Cancel editing multi-factor authentication settings"
                 />
                 <Button
                   label="Save Changes"
                   variant="primary"
                   onClick={() => setEditingSection(null)}
+                  aria-label="Save changes to multi-factor authentication settings"
                 />
               </div>
             )}
@@ -187,8 +283,19 @@ const MfaSettings: React.FC = () => {
         </motion.div>
       </AnimatePresence>
 
+      {/* Live region for errors and important status (polite) */}
+      <div aria-live="polite" aria-atomic="true" className="sr-only">
+        {error}
+      </div>
+
       {/* MFA setup dialog */}
-      <Dialog.Root open={modalOpen} onOpenChange={setModalOpen}>
+      <Dialog.Root
+        open={modalOpen}
+        onOpenChange={(open) => {
+          setModalOpen(open);
+          if (!open) restoreFocus();
+        }}
+      >
         <Dialog.Portal>
           <Dialog.Overlay asChild>
             <motion.div
@@ -205,15 +312,23 @@ const MfaSettings: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
               transition={{ duration: 0.2 }}
+              aria-modal="true"
+              role="dialog"
             >
-              <div className="w-full max-w-xl bg-white rounded-lg shadow-lg p-6 relative">
-                <Dialog.Title className="h5-bold-16 text-grey">
+              <div
+                className="w-full max-w-xl bg-white rounded-lg shadow-lg p-6 relative"
+                aria-labelledby="mfa-setup-title"
+              >
+                <Dialog.Title
+                  id="mfa-setup-title"
+                  className="h5-bold-16 text-grey"
+                >
                   Multi-Factor Authentication Setup
                 </Dialog.Title>
                 <Dialog.Close asChild>
                   <button
-                    aria-label="Close"
-                    className="absolute top-4 right-4 text-grey-medium hover:text-grey"
+                    aria-label="Close multi-factor authentication setup"
+                    className="absolute top-4 right-4 text-grey-medium hover:text-grey focus:outline-none focus:ring-2 rounded"
                   >
                     ✕
                   </button>
@@ -223,9 +338,9 @@ const MfaSettings: React.FC = () => {
                   <div className="flex flex-col items-start mt-6">
                     {/* Step 1 */}
                     <article className="pb-4">
-                      <h1 className="body-bold-16 text-base-black mb-2 text-start">
+                      <h2 className="body-bold-16 text-base-black mb-2 text-start">
                         Step 1: Get an Authenticator
-                      </h1>
+                      </h2>
                       <p className="body-medium-16 text-grey">
                         Download Google Authenticator, Microsoft Authenticator
                         or Authy.
@@ -234,9 +349,9 @@ const MfaSettings: React.FC = () => {
 
                     {/* Step 2 */}
                     <article className="pb-px">
-                      <h1 className="body-bold-16 text-base-black mb-2 text-start">
+                      <h2 className="body-bold-16 text-base-black mb-2 text-start">
                         Step 2: Scan the QR Code
-                      </h1>
+                      </h2>
                       <p className="body-medium-16 text-grey">
                         Scan the QR code below with your app or copy the key
                         manually.
@@ -269,18 +384,17 @@ const MfaSettings: React.FC = () => {
                           label={isCopying ? "Copied!" : "Copy Code"}
                           variant="none"
                           onClick={handleCopy}
-                          className={`mt-4 ${
-                            isCopying ? "bg-primary text-white px-4" : ""
-                          }`}
+                          className={`mt-4 ${isCopying ? "bg-primary text-white px-4" : ""}`}
+                          aria-live="polite"
                         />
                       </div>
                     </div>
 
                     {/* Step 3 */}
                     <article className="pb-4 w-full">
-                      <h1 className="body-bold-16 text-base-black mb-2 text-start">
+                      <h2 className="body-bold-16 text-base-black mb-2 text-start">
                         Step 3: Enter the Verification Code
-                      </h1>
+                      </h2>
                       <p className="body-medium-16 text-grey mb-4">
                         Enter the 6-digit code generated by your authenticator
                         app.
@@ -290,14 +404,21 @@ const MfaSettings: React.FC = () => {
                           fetchStatus();
                           setModalOpen(false);
                           setShowRecoveryCodes(true);
+                          restoreFocus();
                         }}
-                        onCancel={() => setModalOpen(false)}
+                        onCancel={() => {
+                          setModalOpen(false);
+                          restoreFocus();
+                        }}
                       />
                     </article>
                   </div>
                 ) : (
                   error && (
-                    <p className="body-medium-16 text-danger my-12 text-center">
+                    <p
+                      className="body-medium-16 text-danger my-12 text-center"
+                      role="status"
+                    >
                       {error}
                     </p>
                   )
@@ -311,7 +432,10 @@ const MfaSettings: React.FC = () => {
       {/* Confirmation Dialog for Disable MFA */}
       <Dialog.Root
         open={confirmDisableOpen}
-        onOpenChange={setConfirmDisableOpen}
+        onOpenChange={(open) => {
+          setConfirmDisableOpen(open);
+          if (!open) restoreFocus();
+        }}
       >
         <Dialog.Portal>
           <Dialog.Overlay asChild>
@@ -329,9 +453,18 @@ const MfaSettings: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
               transition={{ duration: 0.2 }}
+              aria-modal="true"
+              role="dialog"
             >
-              <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6 relative">
-                <Dialog.Title className="h5-bold-16 text-grey">
+              <div
+                id="confirm-disable-dialog"
+                className="w-full max-w-md bg-white rounded-lg shadow-lg p-6 relative"
+                aria-labelledby="confirm-disable-title"
+              >
+                <Dialog.Title
+                  id="confirm-disable-title"
+                  className="h5-bold-16 text-grey"
+                >
                   Disable MFA
                 </Dialog.Title>
                 <p className="body-medium-16 text-grey mt-4">
@@ -344,6 +477,7 @@ const MfaSettings: React.FC = () => {
                     variant="danger"
                     onClick={() => setConfirmDisableOpen(false)}
                     className="w-full"
+                    aria-label="Cancel disabling multi-factor authentication"
                   />
                   <Button
                     label="Yes, Disable"
@@ -351,8 +485,10 @@ const MfaSettings: React.FC = () => {
                     onClick={async () => {
                       await handleDisable();
                       setConfirmDisableOpen(false);
+                      restoreFocus();
                     }}
                     className="w-full"
+                    aria-label="Confirm disable multi-factor authentication"
                   />
                 </div>
               </div>
@@ -368,6 +504,7 @@ const MfaSettings: React.FC = () => {
           onClose={() => {
             toast.success("Recovery codes downloaded ✅");
             setShowRecoveryCodes(false);
+            restoreFocus();
           }}
         />
       )}

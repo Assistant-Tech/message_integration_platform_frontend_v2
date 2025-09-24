@@ -25,3 +25,12 @@ export interface MfaDisableResponse {
   success: boolean;
   timestamp: string;
 }
+
+export interface ResponseRegeneration {
+  message: string;
+  success: boolean;
+  data: {
+    recoveryPhrases: string[];
+  };
+  timestamp: string;
+}
