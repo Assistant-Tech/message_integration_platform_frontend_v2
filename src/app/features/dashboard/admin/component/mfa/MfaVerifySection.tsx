@@ -19,7 +19,7 @@ const MfaVerifySection = ({
   const handleChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return; // only numbers
     const newOtp = [...otp];
-    newOtp[index] = value;
+    newOtp[index] = value.slice(-1); // always take last typed digit
     setOtp(newOtp);
 
     // move focus to next input
@@ -28,13 +28,27 @@ const MfaVerifySection = ({
     }
   };
 
-  const handleCancel = () => {
-    if (onCancel) onCancel();
-  };
   const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
-      const prevInput = inputsRef.current[index - 1];
-      prevInput?.focus();
+      inputsRef.current[index - 1]?.focus();
+    }
+  };
+
+  const handlePaste = (index: number, e: React.ClipboardEvent) => {
+    e.preventDefault();
+    const pasted = e.clipboardData.getData("text").trim();
+    if (/^\d+$/.test(pasted)) {
+      const chars = pasted.split("").slice(0, 6);
+      const newOtp = [...otp];
+      chars.forEach((char, idx) => {
+        if (index + idx < newOtp.length) {
+          newOtp[index + idx] = char;
+        }
+      });
+      setOtp(newOtp);
+      // focus last filled input
+      const lastIndex = Math.min(index + chars.length - 1, 5);
+      inputsRef.current[lastIndex]?.focus();
     }
   };
 
@@ -65,6 +79,7 @@ const MfaVerifySection = ({
               value={digit}
               onChange={(e) => handleChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
+              onPaste={(e) => handlePaste(index, e)}
               ref={(el: any) => (inputsRef.current[index] = el)}
               className="w-12 h-12 h3-medium-32 text-grey border bg-base-white border-primary rounded-[10px] text-center text-lg focus:outline-none focus:border-primary-dark focus:ring-0 focus:ring-primary shadow-[0_2px_4px_0_rgba(0,0,0,0.25)_inset]"
             />
@@ -81,6 +96,7 @@ const MfaVerifySection = ({
               value={digit}
               onChange={(e) => handleChange(index + 3, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index + 3, e)}
+              onPaste={(e) => handlePaste(index + 3, e)}
               ref={(el: any) => (inputsRef.current[index + 3] = el)}
               className="w-12 h-12 h3-medium-32 text-grey border bg-base-white border-primary rounded-[10px] text-center text-lg focus:outline-none focus:border-primary-dark focus:ring-0 focus:ring-primary shadow-[0_2px_4px_0_rgba(0,0,0,0.25)_inset]"
             />
@@ -97,9 +113,9 @@ const MfaVerifySection = ({
           className="mt-4 w-full"
         />
         <Button
-          label={"Cancel"}
+          label="Cancel"
           variant="danger"
-          onClick={handleCancel}
+          onClick={onCancel}
           className="mt-4 w-full"
         />
       </div>

@@ -10,10 +10,10 @@ export const MfaServices = {
   // Regenerate mfa backup codes
   async regenerateBackupCodes() {
     try {
-      const res = await api.post("/mfa/regenerate/recover");
+      const res = await api.post("/mfa/recovery/regenerate");
       return res.data;
     } catch (error) {
-      throw handleApiError(error);
+      throw handleApiError(error);  
     }
   },
 
@@ -37,7 +37,9 @@ export const MfaServices = {
 
   // disable MFA
   async disableMFA(): Promise<MfaDisableResponse> {
-    const res = await api.delete("/mfa/disable");
+    const res = await api.delete("/mfa/disable", {
+      data: { password: "Pa$$w0rd!" },
+    });
     return res.data;
   },
 };

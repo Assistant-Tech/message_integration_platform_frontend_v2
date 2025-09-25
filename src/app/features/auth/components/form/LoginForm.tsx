@@ -48,24 +48,6 @@ const LoginForm = () => {
   const [newCodes, setNewCodes] = useState<string[] | null>(null);
   const [showModal, setShowModal] = useState(false);
 
-  useEffect(() => {
-    const handlePaste = (event: ClipboardEvent) => {
-      const pasteData = event.clipboardData?.getData("text") ?? "";
-      if (pasteData.length === 6 && /^\d+$/.test(pasteData)) {
-        const newCode = pasteData.split("");
-        setCode(newCode);
-        inputRefs.current[5]?.focus();
-      }
-    };
-
-    const container = document.getElementById("mfa-form-container");
-    container?.addEventListener("paste", handlePaste);
-
-    return () => {
-      container?.removeEventListener("paste", handlePaste);
-    };
-  }, []);
-
   const handleChange = (index: number, value: string) => {
     if (!/^[0-9]?$/.test(value)) return;
     const newCode = [...code];
@@ -342,6 +324,30 @@ const LoginForm = () => {
                   value={digit}
                   onChange={(e) => handleChange(i, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(i, e)}
+                  onPaste={(e) => {
+                    e.preventDefault();
+                    const pasted = e.clipboardData.getData("text").trim();
+
+                    if (/^\d+$/.test(pasted)) {
+                      const chars = pasted.split("");
+                      const newCode = [...code];
+
+                      chars.forEach((char, idx) => {
+                        if (i + idx < newCode.length) {
+                          newCode[i + idx] = char;
+                        }
+                      });
+
+                      setCode(newCode);
+
+                      // Focus the last filled input
+                      const lastIndex = Math.min(
+                        i + chars.length - 1,
+                        newCode.length - 1,
+                      );
+                      inputRefs.current[lastIndex]?.focus();
+                    }
+                  }}
                   ref={(el: any) => (inputRefs.current[i] = el)}
                   className="w-14 h-14 text-center h5-bold-16 border-2 border-grey-light rounded-lg focus:outline-none focus:border-primary"
                 />

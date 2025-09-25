@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Button } from "@/app/components/ui";
-import { Download } from "lucide-react";
+import { Download, AlertTriangle } from "lucide-react"; // Import AlertTriangle icon
 
 interface RecoveryPhrasesModalProps {
   codes: string[];
@@ -17,14 +17,12 @@ const RecoveryPhrasesModal: React.FC<RecoveryPhrasesModalProps> = ({
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
-    // Focus first input on mount
     if (inputsRef.current[0]) {
       inputsRef.current[0].focus();
     }
   }, []);
 
   const handleChange = (index: number, value: string) => {
-    // Only allow letters and move to next input
     const sanitizedValue = value.replace(/[^a-zA-Z]/g, "").toLowerCase();
 
     if (sanitizedValue.length <= 1) {
@@ -32,7 +30,6 @@ const RecoveryPhrasesModal: React.FC<RecoveryPhrasesModalProps> = ({
       newInputs[index] = sanitizedValue;
       setPhraseInputs(newInputs);
 
-      // Move to next input if value entered
       if (sanitizedValue && index < 11) {
         inputsRef.current[index + 1]?.focus();
       }
@@ -41,7 +38,6 @@ const RecoveryPhrasesModal: React.FC<RecoveryPhrasesModalProps> = ({
 
   const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
     if (e.key === "Backspace" && !phraseInputs[index] && index > 0) {
-      // Move to previous input on backspace if current is empty
       inputsRef.current[index - 1]?.focus();
     } else if (e.key === "ArrowLeft" && index > 0) {
       inputsRef.current[index - 1]?.focus();
@@ -79,6 +75,23 @@ const RecoveryPhrasesModal: React.FC<RecoveryPhrasesModalProps> = ({
         <h2 className="h4-bold-24 text-base-black mb-4 text-center">
           Your 12 words recovery phrases
         </h2>
+
+        {/* --- PROMINENT WARNING SECTION --- */}
+        <div className="flex items-start p-3 mb-4 rounded-lg bg-red-100 border border-red-400">
+          <div className="ml-3">
+            <div className="flex gap-2 items-center">
+              <AlertTriangle className="w-5 h-5 text-danger flex-shrink-0" />
+              <h3 className="body-bold-16 text-danger">
+                Important Warning
+              </h3>
+            </div>
+            <p className="body-regular-16 text-danger">
+              **These recovery phrases will NOT be displayed again.** Make sure
+              you copy them or download them immediately.
+            </p>
+          </div>
+        </div>
+        {/* ---------------------------------- */}
 
         <p className="body-regular-16 text-grey mb-2 ">
           This is the only way to recover your account if you lose access to
