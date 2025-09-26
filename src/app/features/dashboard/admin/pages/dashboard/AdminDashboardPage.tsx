@@ -1,46 +1,31 @@
 import { useAuthStore } from "@/app/store/auth.store";
+import { useMfaStore } from "@/app/store/mfa.store";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { LogOut } from "lucide-react";
-import { useMemo, useEffect } from "react";
+import { useEffect, useState } from "react";
+import RecoveryPhrasesModal from "@/app/features/dashboard/admin/component/mfa/RecoveryCodesModal";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user, isloading, logout } = useAuthStore();
+  const { recoveryPhrases } = useMfaStore();
+  const [showRecoveryModal, setShowRecoveryModal] = useState(false);
 
   useEffect(() => {
     if (!isloading && !user) {
       navigate("/login");
     }
-  }, [isloading, user, navigate]);
+    if (recoveryPhrases.length) {
+      setShowRecoveryModal(true);
+    }
+  }, [isloading, user, recoveryPhrases, navigate]);
 
   const handleLogout = () => {
     logout();
     toast.success("Logged out successfully!");
     navigate("/login");
   };
-
-  const userInfo = useMemo(() => {
-    if (!user) return null;
-
-    return (
-      <div className="bg-blue-50 rounded-xl p-6 mb-8 border border-blue-200">
-        <h2 className="text-lg font-medium text-primary">User Information</h2>
-        <p className="mt-2 text-grey-dark font-mono text-sm sm:text-base">
-          <span className="font-semibold text-grey-medium">User ID:</span>{" "}
-          {user.id}
-        </p>
-        <p className="mt-2 text-grey-dark font-mono text-sm sm:text-base">
-          <span className="font-semibold text-grey-medium">Email:</span>{" "}
-          {user.email || "No email found"}
-        </p>
-        <p className="mt-2 text-grey-dark font-mono text-sm sm:text-base">
-          <span className="font-semibold text-grey-medium">Verification:</span>{" "}
-          {user.isVerified ? "Verified" : "Not Verified"}
-        </p>
-      </div>
-    );
-  }, [user]);
 
   if (isloading || !user) {
     return (
@@ -54,12 +39,6 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
-      {/* <Button
-        label="Auto Token Refresh"
-        onClick={handleAutoTokenRefresh}
-        variant="information"
-      /> */}
-
       <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-8 transition-all duration-300 transform hover:scale-105">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
@@ -75,16 +54,39 @@ const Dashboard = () => {
           </button>
         </div>
 
-        {userInfo}
+        <div className="bg-blue-50 rounded-xl p-6 mb-8 border border-blue-200">
+          <h2 className="text-lg font-medium text-primary">User Information</h2>
+          <p className="mt-2 text-grey-dark font-mono text-sm sm:text-base">
+            <span className="font-semibold text-grey-medium">User ID:</span>{" "}
+            {user.id}
+          </p>
+          <p className="mt-2 text-grey-dark font-mono text-sm sm:text-base">
+            <span className="font-semibold text-grey-medium">Email:</span>{" "}
+            {user.email || "No email found"}
+          </p>
+          <p className="mt-2 text-grey-dark font-mono text-sm sm:text-base">
+            <span className="font-semibold text-grey-medium">
+              Verification:
+            </span>{" "}
+            {user.isVerified ? "Verified" : "Not Verified"}
+          </p>
+        </div>
 
         <div className="text-gray-600">
           <p className="text-lg leading-relaxed">
             This is your personal dashboard. From here, you can manage your
             account, update your profile, and access various features of the
-            application. We're glad to have you here!
+            application.
           </p>
         </div>
       </div>
+
+      {showRecoveryModal && (
+        <RecoveryPhrasesModal
+          codes={recoveryPhrases}
+          onClose={() => setShowRecoveryModal(false)}
+        />
+      )}
     </div>
   );
 };

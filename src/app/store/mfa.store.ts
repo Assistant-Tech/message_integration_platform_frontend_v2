@@ -2,7 +2,6 @@ import { create } from "zustand";
 import { MfaServices } from "@/app/services/mfa.services";
 import {
   MfaData,
-  MfaDisableResponse,
   MfaVerifyResponse,
   ResponseRegeneration,
 } from "@/app/types/mfa.types";
@@ -20,11 +19,11 @@ interface MfaState {
   setMfaData: (data: MfaData) => void;
   clearMfaData: () => void;
 
-  regenerateBackupCodes: () => Promise<ResponseRegeneration | null>;
+  regenerateBackupCodes: () => Promise<ResponseRegeneration>;
   fetchStatus: () => Promise<void>;
   requestMfa: () => Promise<void>;
   verifyMfa: (token: string) => Promise<MfaVerifyResponse | null>;
-  disableMfa: () => Promise<MfaDisableResponse | null>;
+  disableMfa: (password: string) => Promise<any>;
 }
 
 export const useMfaStore = create<MfaState>((set) => ({
@@ -40,13 +39,31 @@ export const useMfaStore = create<MfaState>((set) => ({
     set({ mfaData: null, recoveryPhrases: [], enabled: false, method: null }),
 
   regenerateBackupCodes: async () => {
+    set({ loading: true, error: null });
     try {
-      const res = await MfaServices.regenerateBackupCodes();
-      toast.success(res.message);
-      return res.data;
+      const res: ResponseRegeneration =
+        await MfaServices.regenerateBackupCodes();
+      if (res.success && res.data?.recoveryPhrases) {
+        set({ recoveryPhrases: res.data.recoveryPhrases, loading: false });
+        toast.success("Recovery codes regenerated ✅");
+        return res;
+      }
+      set({ loading: false });
+      return {
+        success: false,
+        message: res.message || "Failed to regenerate codes",
+        data: { recoveryPhrases: [] },
+        timestamp: res.timestamp || new Date().toISOString(),
+      };
     } catch (error) {
       const parsedError = handleApiError(error);
-      if ("message" in parsedError) toast.error(parsedError.message);
+      set({ loading: false });
+      return {
+        success: false,
+        message: parsedError.message || "Something went wrong",
+        data: { recoveryPhrases: [] },
+        timestamp: new Date().toISOString(),
+      };
     }
   },
 
@@ -102,10 +119,10 @@ export const useMfaStore = create<MfaState>((set) => ({
     }
   },
 
-  disableMfa: async () => {
+  disableMfa: async (password: string) => {
     set({ loading: true, error: null });
     try {
-      const response = await MfaServices.disableMFA();
+      const response = await MfaServices.disableMFA(password);
       if (response.success) {
         set({
           enabled: false,

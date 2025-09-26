@@ -2,14 +2,15 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Edit, MessageSquare, Shield, Smartphone } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { Button } from "@/app/components/ui";
+import { Button, Input } from "@/app/components/ui";
 import { Switch } from "./ui";
 import { useMfaStore } from "@/app/store/mfa.store";
 import MfaVerifySection from "./mfa/MfaVerifySection";
 import RecoveryCodesModal from "./mfa/RecoveryCodesModal";
 import { toast } from "sonner";
 import { formatSecret } from "@/app/utils/helper";
-
+import { mapMfaErrorMessage } from "@/app/utils/mfaerrors";
+import RecoveryPhrasesModal from "./mfa/RecoveryCodesModal";
 
 const MfaSettings: React.FC = () => {
   const {
@@ -27,6 +28,7 @@ const MfaSettings: React.FC = () => {
   const [isCopying, setIsCopying] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [confirmDisableOpen, setConfirmDisableOpen] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
 
   // Refs for focus management
   const lastFocusedElementRef = useRef<HTMLElement | null>(null);
@@ -63,17 +65,6 @@ const MfaSettings: React.FC = () => {
       } catch (err) {
         toast.error("Copy failed");
       }
-    }
-  };
-
-  const handleDisable = async () => {
-    const res = await disableMfa();
-    if (res) {
-      toast.success(res.message);
-      fetchStatus();
-      setEditingSection(null);
-    } else {
-      toast.error("Cannot disable currently!!");
     }
   };
 
@@ -282,12 +273,10 @@ const MfaSettings: React.FC = () => {
           </motion.div>
         </motion.div>
       </AnimatePresence>
-
       {/* Live region for errors and important status (polite) */}
       <div aria-live="polite" aria-atomic="true" className="sr-only">
         {error}
       </div>
-
       {/* MFA setup dialog */}
       <Dialog.Root
         open={modalOpen}
@@ -419,7 +408,7 @@ const MfaSettings: React.FC = () => {
                       className="body-medium-16 text-danger my-12 text-center"
                       role="status"
                     >
-                      {error}
+                      {mapMfaErrorMessage(error)}
                     </p>
                   )
                 )}
@@ -428,7 +417,6 @@ const MfaSettings: React.FC = () => {
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>
-
       {/* Confirmation Dialog for Disable MFA */}
       <Dialog.Root
         open={confirmDisableOpen}
@@ -468,9 +456,18 @@ const MfaSettings: React.FC = () => {
                   Disable MFA
                 </Dialog.Title>
                 <p className="body-medium-16 text-grey mt-4">
-                  Are you sure you want to disable Multi-Factor Authentication
-                  on your account?
+                  To disable MFA, please confirm your account password:
                 </p>
+
+                {/* Password input */}
+                <Input
+                  type="password"
+                  placeholder="Enter your password"
+                  className="w-full border rounded px-3 py-2 mt-4"
+                  value={passwordInput}
+                  onChange={(e) => setPasswordInput(e.target.value)}
+                />
+
                 <div className="flex justify-end gap-3 mt-6 w-full">
                   <Button
                     label="Cancel"
@@ -483,7 +480,18 @@ const MfaSettings: React.FC = () => {
                     label="Yes, Disable"
                     variant="primary"
                     onClick={async () => {
-                      await handleDisable();
+                      if (!passwordInput) {
+                        toast.error("Password is required");
+                        return;
+                      }
+                      const res = await disableMfa(passwordInput);
+                      if (res) {
+                        toast.success(res.message);
+                        fetchStatus();
+                      } else {
+                        toast.error("Failed to disable MFA");
+                      }
+                      setPasswordInput("");
                       setConfirmDisableOpen(false);
                       restoreFocus();
                     }}
@@ -496,7 +504,6 @@ const MfaSettings: React.FC = () => {
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>
-
       {/* Recovery Codes Modal */}
       {showRecoveryCodes && (
         <RecoveryCodesModal
@@ -506,6 +513,69 @@ const MfaSettings: React.FC = () => {
             setShowRecoveryCodes(false);
             restoreFocus();
           }}
+        />
+      )}
+
+      {/* Recovery Codes Section */}
+      {enabled && (
+        <motion.div
+          className="w-5xl bg-white rounded-lg border border-grey-light mt-6 p-6"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="body-bold-16 text-grey">Recovery Codes</h3>
+            <Button
+              label="Regenerate"
+              variant="primary"
+              onClick={async () => {
+                const res = await useMfaStore
+                  .getState()
+                  .regenerateBackupCodes();
+                if (res?.success) {
+                  toast.success("New recovery codes generated ✅");
+                  setShowRecoveryCodes(true);
+                } else {
+                  toast.error(res?.message || "Failed to regenerate codes");
+                }
+              }}
+            />
+          </div>
+
+          <p className="body-regular-16 text-grey mb-4">
+            Use these one-time recovery codes if you lose access to your
+            authenticator app. Each code can only be used once. You can download
+            them below.
+          </p>
+
+          <div className="flex justify-end mt-4">
+            <Button
+              label="Download Codes"
+              variant="none"
+              onClick={() => {
+                const blob = new Blob(
+                  [useMfaStore.getState().recoveryPhrases.join("\n")],
+                  { type: "text/plain" },
+                );
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "recovery-codes.txt";
+                a.click();
+                URL.revokeObjectURL(url);
+                toast.success("Recovery codes downloaded ✅");
+              }}
+              disabled={useMfaStore.getState().recoveryPhrases.length === 0}
+              aria-label="Download recovery codes as a text file"
+            />
+          </div>
+        </motion.div>
+      )}
+      {showRecoveryCodes && (
+        <RecoveryPhrasesModal
+          codes={useMfaStore.getState().recoveryPhrases}
+          onClose={() => setShowRecoveryCodes(false)}
         />
       )}
     </>

@@ -13,7 +13,7 @@ export const MfaServices = {
       const res = await api.post("/mfa/recovery/regenerate");
       return res.data;
     } catch (error) {
-      throw handleApiError(error);  
+      throw handleApiError(error);
     }
   },
 
@@ -36,9 +36,9 @@ export const MfaServices = {
   },
 
   // disable MFA
-  async disableMFA(): Promise<MfaDisableResponse> {
+  async disableMFA(password: string): Promise<MfaDisableResponse> {
     const res = await api.delete("/mfa/disable", {
-      data: { password: "Pa$$w0rd!" },
+      data: { password },
     });
     return res.data;
   },

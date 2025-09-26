@@ -56,13 +56,42 @@ const MfaVerifySection = ({
     const code = otp.join("");
     setLoading(true);
     setError("");
-    const res = await verifyMfa(code);
-    setLoading(false);
 
-    if (res && res.success) {
-      onSuccess();
-    } else {
-      setError(res?.message || "Verification failed");
+    try {
+      const res = await verifyMfa(code);
+
+      if (res?.success) {
+        onSuccess();
+        return;
+      }
+
+      // Map backend message to user-friendly error
+      let errorMessage = "Verification failed";
+
+      if (res?.message) {
+        const msg = res.message.toLowerCase();
+
+        if (msg.includes("invalid")) {
+          errorMessage = "Invalid verification code.";
+        } else if (msg.includes("expired")) {
+          errorMessage = "Session expired. Please log in again.";
+        } else if (
+          msg.includes("Failed to request MFA") ||
+          msg.includes("failed")
+        ) {
+          errorMessage = "MFA is already enabled.";
+        } else if (msg.includes("request")) {
+          errorMessage = "Failed to request MFA.";
+        } else {
+          errorMessage = res.message;
+        }
+      }
+
+      setError(errorMessage);
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
