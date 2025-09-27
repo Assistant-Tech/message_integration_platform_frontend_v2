@@ -16,7 +16,7 @@ import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useAuthStore } from "@/app/store/auth.store";
 import { handleApiError } from "@/app/utils/handlerApiError";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useMfaStore } from "@/app/store/mfa.store";
 import RecoveryPhrasesModal from "@/app/features/dashboard/admin/component/mfa/RecoveryCodesModal";
 

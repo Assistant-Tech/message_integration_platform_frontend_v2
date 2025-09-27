@@ -21,6 +21,7 @@ const MfaSettings: React.FC = () => {
     requestMfa,
     disableMfa,
     fetchStatus,
+    regenerateBackupCodes,
   } = useMfaStore();
 
   const [showRecoveryCodes, setShowRecoveryCodes] = useState(false);
@@ -29,6 +30,7 @@ const MfaSettings: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [confirmDisableOpen, setConfirmDisableOpen] = useState(false);
   const [passwordInput, setPasswordInput] = useState("");
+  const [newCodes, setNewCodes] = useState<string[] | null>(null);
 
   // Refs for focus management
   const lastFocusedElementRef = useRef<HTMLElement | null>(null);
@@ -530,14 +532,17 @@ const MfaSettings: React.FC = () => {
               label="Regenerate"
               variant="primary"
               onClick={async () => {
-                const res = await useMfaStore
-                  .getState()
-                  .regenerateBackupCodes();
-                if (res?.success) {
-                  toast.success("New recovery codes generated ✅");
-                  setShowRecoveryCodes(true);
-                } else {
-                  toast.error(res?.message || "Failed to regenerate codes");
+                try {
+                  const res = await regenerateBackupCodes();
+                  if (res?.data?.recoveryPhrases) {
+                    toast.success("New recovery codes generated ✅");
+                    setShowRecoveryCodes(true);
+                    setNewCodes(res.data.recoveryPhrases);
+                  } else {
+                    toast.error(res?.message || "Failed to regenerate codes");
+                  }
+                } catch (err) {
+                  toast.error("Failed to regenerate codes");
                 }
               }}
             />
@@ -554,10 +559,11 @@ const MfaSettings: React.FC = () => {
               label="Download Codes"
               variant="none"
               onClick={() => {
-                const blob = new Blob(
-                  [useMfaStore.getState().recoveryPhrases.join("\n")],
-                  { type: "text/plain" },
-                );
+                const codesToDownload =
+                  newCodes ?? useMfaStore.getState().recoveryPhrases;
+                const blob = new Blob([codesToDownload.join("\n")], {
+                  type: "text/plain",
+                });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement("a");
                 a.href = url;
@@ -566,15 +572,20 @@ const MfaSettings: React.FC = () => {
                 URL.revokeObjectURL(url);
                 toast.success("Recovery codes downloaded ✅");
               }}
-              disabled={useMfaStore.getState().recoveryPhrases.length === 0}
+              disabled={
+                (newCodes ?? useMfaStore.getState().recoveryPhrases).length ===
+                0
+              }
               aria-label="Download recovery codes as a text file"
             />
           </div>
         </motion.div>
       )}
-      {showRecoveryCodes && (
+
+      {/* Recovery Codes Modal */}
+      {showRecoveryCodes && newCodes && (
         <RecoveryPhrasesModal
-          codes={useMfaStore.getState().recoveryPhrases}
+          codes={newCodes}
           onClose={() => setShowRecoveryCodes(false)}
         />
       )}

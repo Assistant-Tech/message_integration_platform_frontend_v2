@@ -209,7 +209,7 @@ const LoginInfoTable = () => {
     <AnimatePresence mode="wait" initial={false}>
       <motion.div
         key="login-table-content"
-        className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden"
+        className="bg-white rounded-lg border border-grey-light overflow-hidden"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
