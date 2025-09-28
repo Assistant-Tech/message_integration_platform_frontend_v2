@@ -114,6 +114,42 @@ export const login = async (email: string, password: string) => {
     throw handleApiError(error);
   }
 };
+/**
+ * Handles the user Login mfa API call.
+ */
+export const mfalogin = async (
+  mfaToken: string,
+  totp?: string,
+  recoveryPhrase?: string[],
+) => {
+  try {
+    const payload: Record<string, unknown> = { mfaToken };
+
+    if (totp) {
+      payload.totp = totp;
+    }
+
+    if (recoveryPhrase) {
+      payload.recoveryPhrase = recoveryPhrase;
+    }
+
+    const res = await api.post("/auth/login/mfa/", payload);
+    return res.data;
+  } catch (error) {
+    throw handleApiError(error);
+  }
+};
+/**
+ * Handles regeneration of the backup code
+ */
+export const regenerateRecovery = async () => {
+  try {
+    const res = await api.get("/mfa/recovery/regenerate");
+    return res.data;
+  } catch (error) {
+    throw handleApiError(error);
+  }
+};
 
 /**
  * Handles the access token refresh API call.

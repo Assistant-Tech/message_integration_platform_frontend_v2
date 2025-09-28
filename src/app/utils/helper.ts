@@ -1,3 +1,5 @@
+import { LoginResponse, MFARequiredResponse } from "@/app/types/auth.types";
+
 /**
  * Extracts and formats features from a plan's features object into a readable array
  */
@@ -32,4 +34,15 @@ export const extractFeatures = (features: Record<string, any>): string[] => {
   });
 
   return featuresList;
+};
+/**
+ * Format secret code into suitable double liner
+ */
+export const formatSecret = (secret: string) => {
+  return (
+    secret
+      .toUpperCase()
+      .match(/.{1,4}/g)
+      ?.join(" ") ?? ""
+  );
 };

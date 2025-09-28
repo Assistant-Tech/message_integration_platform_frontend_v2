@@ -1,6 +1,11 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { User, LoginSuccessResponse } from "@/app/types/auth.types";
+import {
+  LoginResponse,
+  LoginSuccessResponse,
+  MFARequiredResponse,
+  User,
+} from "@/app/types/auth.types";
 import {
   fetchCurrentUser,
   signup,
@@ -9,6 +14,7 @@ import {
   login,
   refreshAccessTokenAPI,
   logout,
+  mfalogin,
 } from "@/app/services/auth.services";
 
 interface AuthState {
@@ -34,14 +40,12 @@ interface AuthState {
   ) => Promise<{ message: string; email: string }>;
   verifyEmail: (token: string) => Promise<{ message: string }>;
   onboarding: (data: FormData) => Promise<{ slug: string }>;
-  login: (
-    email: string,
-    password: string,
-  ) => Promise<{
-    message: string;
-    requiresOnboarding: boolean;
-    tenantSlug: string;
-  }>;
+  login: (email: string, password: string) => Promise<LoginResponse>;
+  mfalogin: (
+    mfaToken: string,
+    totp?: string,
+    recoveryPhrase?: string[],
+  ) => Promise<LoginResponse>;
   refreshAccessToken: () => Promise<string | null>;
   fetchCurrentUserProfile: () => Promise<void>;
   logout: () => void;
@@ -122,10 +126,73 @@ export const useAuthStore = create<AuthState>()(
           set({ isloading: false });
         }
       },
+
       login: async (email, password) => {
         set({ isloading: true });
         try {
-          const res: LoginSuccessResponse = await login(email, password);
+          const res: LoginSuccessResponse | MFARequiredResponse = await login(
+            email,
+            password,
+          );
+
+          if ("mfaRequired" in res.data) {
+            return {
+              message: res.message,
+              success: true,
+              data: {
+                mfaRequired: true,
+                mfaToken: res.data.mfaToken,
+                methods: res.data.methods,
+                expiresIn: res.data.expiresIn,
+              },
+              timestamp: res.timestamp,
+            } satisfies MFARequiredResponse;
+          }
+
+          const {
+            accessToken,
+            requiresOnboarding,
+            csrfToken,
+            tenantSlug,
+            accessTokenExpiresIn,
+          } = res.data;
+
+          set({
+            accessToken,
+            requiresOnboarding,
+            csrfToken,
+            isAuthenticated: true,
+            tenantSlug,
+          });
+
+          await get().fetchCurrentUserProfile();
+
+          return {
+            message: res.message,
+            success: true,
+            data: {
+              accessToken,
+              accessTokenExpiresIn,
+              csrfToken,
+              requiresOnboarding,
+              tenantSlug,
+            },
+            timestamp: res.timestamp,
+          } satisfies LoginSuccessResponse;
+        } finally {
+          set({ isloading: false });
+        }
+      },
+
+      mfalogin: async (mfaToken, totp, recoveryPhrase) => {
+        set({ isloading: true });
+        try {
+          const res: LoginSuccessResponse = await mfalogin(
+            mfaToken,
+            totp,
+            recoveryPhrase,
+          );
+
           const { accessToken, requiresOnboarding, csrfToken, tenantSlug } =
             res.data;
 
@@ -136,17 +203,20 @@ export const useAuthStore = create<AuthState>()(
             isAuthenticated: true,
             tenantSlug,
           });
+
           await get().fetchCurrentUserProfile();
 
           return {
             message: res.message,
-            requiresOnboarding,
-            tenantSlug,
-          };
+            success: true,
+            data: res.data,
+            timestamp: res.timestamp,
+          } satisfies LoginSuccessResponse;
         } finally {
           set({ isloading: false });
         }
       },
+
       refreshAccessToken: async () => {
         try {
           set({ isRefreshing: true });

@@ -76,7 +76,7 @@ const ProfileSettings = () => {
 
       {/* Personal Details */}
       <motion.div className="bg-white rounded-lg border border-gray-200 mb-6">
-        <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200">
+        <div className="flex justify-between items-center px-6 py-4 border-b border-grey-light bg-base-white">
           <h2 className="text-lg font-semibold text-gray-700">
             Personal Details
           </h2>
@@ -162,7 +162,7 @@ const ProfileSettings = () => {
 
       {/* Change Password */}
       <motion.div className="bg-white rounded-lg border border-gray-200">
-        <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200">
+        <div className="flex justify-between items-center px-6 py-4 border-b border-grey-light bg-base-white">
           <h2 className="text-lg font-semibold text-gray-700">
             Change Password
           </h2>
