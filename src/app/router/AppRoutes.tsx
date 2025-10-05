@@ -236,8 +236,8 @@ const AppRoutes = () => {
             path={APP_ROUTES.PUBLIC.PAYMENT_CALLBACK}
             element={<PaymentCallbackPage />}
           /> */}
-          
-          <Route path="/payment/callback" element={<PaymentVerify />} />
+
+          <Route path="/payments/verify" element={<PaymentVerify />} />
           <Route path="/:slug/success" element={<PaymentSuccessPage />} />
 
           <Route
