@@ -6,35 +6,39 @@ import { usePlans } from "@/app/hooks/usePlans";
 import { usePricingStore } from "@/app/store/pricing.store";
 import { PricingCard } from "@/app/components/common";
 import { Badge, Button, DynamicToggle } from "@/app/components/ui";
-import { Plan, Duration, APIDuration } from "@/app/types/plan.types";
+import { Plan, Duration, APIDuration, Currency } from "@/app/types/plan.types";
 import { extractFeatures } from "@/app/utils/helper";
 import { Check } from "lucide-react";
 import Ribbon from "../aboutus/components/Ribbon";
 
 const Pricing = () => {
   const { currency, duration, setCurrency, setDuration } = usePricingStore();
+  const { data, isLoading, isError } = usePlans(duration, currency);
 
-  const {
-    data: fetchedPlans = [],
-    isLoading,
-    isError,
-  } = usePlans(duration, currency);
+  /** 🔧 Title formatter: `basic_plan` → `Basic Plan` */
+  const formatTitle = (title: string) =>
+    title
+      .replace(/_/g, " ")
+      .toLowerCase()
+      .replace(/\b\w/g, (c) => c.toUpperCase());
 
-  const transformPlan = (plan: Plan) => ({
-    ...plan,
-    title: plan.name,
-    subtitle: plan.description,
-    price: `${plan.currency === "NPR" ? "रु" : "$"}${plan.amount}`,
-    buttonText: plan.amount === 0 ? "Contact Us" : "Choose Plan",
-    features: extractFeatures(plan.features),
-  });
+  const transformPlan = (plan: Plan) => {
+    const displayAmount = (plan.totalAmount || 0) / 100; // paisa → rupees/dollars
+
+    return {
+      ...plan,
+      title: formatTitle(plan.name),
+      subtitle: plan.description,
+      price: `${plan.currency === "NPR" ? "रु" : "$"}${displayAmount}`,
+      buttonText: displayAmount === 0 ? "Contact Us" : "Choose Plan",
+      features: extractFeatures(plan.features),
+    };
+  };
 
   const plans = useMemo(() => {
-    if (!fetchedPlans || !Array.isArray(fetchedPlans)) {
-      return [];
-    }
-    return fetchedPlans.map(transformPlan);
-  }, [fetchedPlans]);
+    if (!Array.isArray(data)) return [];
+    return data.map(transformPlan);
+  }, [data]);
 
   const pricingOptions = [
     {
@@ -61,6 +65,7 @@ const Pricing = () => {
           </p>
         </article>
 
+        {/* 🔄 Duration Toggle */}
         <div className="pt-6">
           <DynamicToggle
             options={pricingOptions}
@@ -69,9 +74,10 @@ const Pricing = () => {
           />
         </div>
 
+        {/* 💱 Currency Toggle */}
         <RadioGroup.Root
           value={currency}
-          onValueChange={(val) => setCurrency(val as any)}
+          onValueChange={(val) => setCurrency(val as Currency)}
           color="teal"
           className="w-full pb-4 md:pb-8"
         >
@@ -80,12 +86,13 @@ const Pricing = () => {
               <Flex key={cur} direction="row" align="center" gap="2">
                 <RadioGroup.Item value={cur} id={cur.toLowerCase()} />
                 <label
+                  htmlFor={cur.toLowerCase()}
                   className={cn(
                     currency === cur ? "text-primary" : "text-base-black",
                     "body-regular-16 cursor-pointer",
                   )}
                 >
-                  {cur === "NPR" ? "NPL (रु)" : "USD ($)"}
+                  {cur === "NPR" ? "NPR (रु)" : "USD ($)"}
                 </label>
               </Flex>
             ))}
@@ -93,6 +100,7 @@ const Pricing = () => {
         </RadioGroup.Root>
       </Flex>
 
+      {/* 📝 Plans List */}
       <div className="w-full">
         {isLoading ? (
           <div className="text-center py-10">Loading plans...</div>
@@ -102,8 +110,9 @@ const Pricing = () => {
           </div>
         ) : (
           <>
+            {/* 💻 Desktop Grid */}
             <div className="hidden md:grid grid-cols-1 lg:grid-cols-3 gap-12">
-              {plans.map((plan: any) => (
+              {plans.map((plan) => (
                 <PricingCard
                   key={plan.id}
                   plan={plan}
@@ -112,15 +121,16 @@ const Pricing = () => {
               ))}
             </div>
 
+            {/* 📱 Mobile Carousel */}
             <div className="md:hidden px-4 overflow-hidden">
               <motion.div
                 className="flex gap-4"
                 drag="x"
-                dragConstraints={{ left: -500, right: 0 }}
+                dragConstraints={{ left: -plans.length * 280, right: 0 }}
                 dragElastic={0.2}
                 style={{ WebkitOverflowScrolling: "touch" }}
               >
-                {plans.map((plan: any) => (
+                {plans.map((plan) => (
                   <motion.div
                     key={plan.id}
                     className={cn(
@@ -139,10 +149,7 @@ const Pricing = () => {
                           plan.isPopular ? "text-white" : "text-grey",
                         )}
                       >
-                        {plan.title
-                          .replace(/_/g, " ")
-                          .toLowerCase()
-                          .replace(/\b\w/g, (c: string) => c.toUpperCase())}
+                        {plan.title}
                       </h2>
                       <p
                         className={cn(
@@ -181,26 +188,19 @@ const Pricing = () => {
                         plan.isPopular ? "text-white/90" : "text-grey",
                       )}
                     >
-                      {plan.features
-                        ?.filter(
-                          (value: string, index: number, self: string[]) =>
-                            self.indexOf(value) === index,
-                        )
-                        .map((feature: string, i: number) => (
-                          <li key={i} className="flex items-start gap-2">
-                            <span
-                              className={cn(
-                                "font-bold",
-                                plan.isPopular
-                                  ? "text-white"
-                                  : "text-grey-medium",
-                              )}
-                            >
-                              <Check size={20} />
-                            </span>
-                            <span>{feature}</span>
-                          </li>
-                        ))}
+                      {plan.features?.map((feature, i) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <Check
+                            size={20}
+                            className={cn(
+                              plan.isPopular
+                                ? "text-white"
+                                : "text-grey-medium",
+                            )}
+                          />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
                     </ul>
 
                     <a

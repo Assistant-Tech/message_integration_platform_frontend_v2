@@ -14,52 +14,40 @@ export const APP_ROUTES = {
     DEMO: "/demo",
     FORGOT_PASSWORD: "/forgot-password",
     RESET_PASSWORD: "/reset-password/:userId/:token",
-
-    // Onboarding [[/onboarding]]
+    PAYMENT_CALLBACK: "/payment/callback",
+    // Onboarding
     ONBOARDING_FORM: "/onboardingform",
-    // Steps 1,2,3,4,5
     ONBOARDING_FORM_STEP_1: "step-1",
     ONBOARDING_FORM_STEP_2: "step-2",
     ONBOARDING_FORM_STEP_3: "step-3",
     ONBOARDING_FORM_STEP_4: "step-4",
     ONBOARDING_FORM_STEP_5: "step-5",
-
-    //Checkout Page
-    CHECKOUT: "/checkout/:planId",
-
-    // For the ["/product"]
+    // Products
     PRODUCTS_OVERVIEW: "/products",
     CRM: "/products/crm",
     CHATBOT: "/products/chatbot",
     UNIFIED_MESSAGE: "/products/unified-message",
     BULK_MESSAGING: "/products/bulk-message",
-
-    // For the ["/resources"]
+    // Resources
     RESOURCES_OVERVIEW: "/resources",
     SUPPORT: "/resources/support",
     BLOG: "/resources/blogs",
     BLOG_ID: "/resources/blogs/:id",
     VIDEOS: "/resources/videos",
     FAQ: "/resources/faq",
-
-    // ["resources/faq"]
     FAQ_CRM: "/resources/faq/crm",
-
-    // ["resources/support"]
     ONBOARDING: "/resources/support/onboarding",
     SUBSCRIPTIONS: "/resources/subscription",
     TERMSCONDITION: "/resources/support/terms&condition",
     POLICY: "/resources/support/policy",
     UPDATES: "/resources/support/updates",
   },
-
-  // Auth routes (migrated from PUBLIC)
+  // Auth routes
   AUTH: {
     VERIFY_EMAIL: "/verify/:token",
     CHECK_EMAIL: "/check-email",
     LOGIN_OTP: "/auth/login-otp",
   },
-
   // Admin routes
   ADMIN: {
     DASHBOARD: "dashboard",
@@ -70,8 +58,7 @@ export const APP_ROUTES = {
     ANALYTICS: "analytics",
     ORDERS: "orders",
     ORDERS_CREATE: "orders/createOrder",
-
-    // Sub Settings
+    // Settings
     SETTINGS: "settings",
     SETTINGS_PROFILE: "settings/profile",
     SETTINGS_COMPANY: "settings/company",
@@ -81,8 +68,8 @@ export const APP_ROUTES = {
     SETTINGS_CHAT_SETTINGS: "settings/chat_settings",
     SETTINGS_SHIPPING: "settings/shipping",
     SETTINGS_SUBSCRIPTION: "settings/subscription",
-
-    // Sub Products
+    SETTINGS_SUBSCRIPTION_BILLING: "settings/subscription/billing",
+    // Products
     PRODUCTS: "product",
     PRODUCTS_ALL: "product_all",
     PRODUCTS_CATEGORY: "category",
@@ -90,11 +77,19 @@ export const APP_ROUTES = {
     PRODUCTS_INVENTORY: "inventory",
     PRODUCTS_CREATE: "product_all/createProducts",
   },
-
   // User routes
   USER: {
     DASHBOARD: "/user/dashboard",
   },
+};
+
+export const buildBillingUrl = (
+  orgSlug: string,
+  planId: string,
+  interval: string,
+  currency: string,
+) => {
+  return `/${orgSlug}/admin/${APP_ROUTES.ADMIN.SETTINGS_SUBSCRIPTION_BILLING}?planId=${planId}&interval=${interval}&currency=${currency}`;
 };
 
 export type RouteKeys = keyof typeof APP_ROUTES;

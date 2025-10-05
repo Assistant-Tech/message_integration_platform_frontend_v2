@@ -32,11 +32,16 @@ const PricingcardSubscription = ({
     ? plan.features
     : [];
 
+  /** 🔧 Convert paisa → currency units */
+  const formattedTotalAmount = (plan.totalAmount / 100).toFixed(2);
+
   const displayPrice: string =
-    plan.price || `${plan.currency === "NPR" ? "रु" : "$"}${plan.amount}`;
+    plan.totalAmount === 0
+      ? "Free"
+      : `${plan.currency === "NPR" ? "रु" : "$"}${formattedTotalAmount}`;
 
   const buttonText: string =
-    plan.buttonText || (plan.amount === 0 ? "Contact Us" : "Choose Plan");
+    plan.buttonText || (plan.totalAmount === 0 ? "Contact Us" : "Choose Plan");
 
   return (
     <div
@@ -91,7 +96,9 @@ const PricingcardSubscription = ({
             )}
           >
             {displayPrice}
-            {plan.amount !== 0 && <span className="ps-2">/{duration}</span>}
+            {plan.totalAmount !== 0 && (
+              <span className="ps-2">/{duration}</span>
+            )}
           </div>
           <Button
             className={cn(

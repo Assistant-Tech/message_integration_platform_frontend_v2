@@ -18,6 +18,9 @@ import {
   STRIPE_IMAGE_URL,
 } from "@/app/constants/image-cloudinary";
 import { fetchPlanById } from "@/app/services/plan.services";
+import { initiateSubscription } from "@/app/services/subscription.services";
+import PaymentSection from "@/app/pages/payment/PaymentSection";
+import { useSubscriptionStore } from "@/app/store/subscription.store";
 
 const CheckoutPage = () => {
   const { planId } = useParams<{ planId: string }>();
@@ -29,7 +32,6 @@ const CheckoutPage = () => {
   type IntervalType = (typeof allowedIntervals)[number];
   type CurrencyType = (typeof allowedCurrencies)[number];
 
-  // Get initial values from URL params
   const getInitialInterval = useCallback((): IntervalType => {
     const param = searchParams.get("interval")?.toUpperCase();
     return allowedIntervals.includes(param as any)
@@ -50,16 +52,16 @@ const CheckoutPage = () => {
   const [plan, setPlan] = useState<PlanType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [confirmed, setConfirmed] = useState(false);
+  const { response } = useSubscriptionStore();
 
   type PaymentOption = "khalti" | "esewa" | "stripe";
-
   const paymentIcons: Record<PaymentOption, string> = {
     khalti: KHALTI_IMAGE_URL,
     esewa: ESEWA_IMAGE_URL,
     stripe: STRIPE_IMAGE_URL,
   };
 
-  // Filter payment options based on currency
   const getAvailablePaymentOptions = useCallback((): PaymentOption[] => {
     return currency === "NPR" ? ["khalti", "esewa"] : ["stripe"];
   }, [currency]);
@@ -76,7 +78,6 @@ const CheckoutPage = () => {
       country: "",
       staffCount: 1,
       paymentType: "",
-      paymentOption: "",
       promoCode: "",
     },
   });
@@ -92,7 +93,7 @@ const CheckoutPage = () => {
     setCountries(Country.getAllCountries());
   }, []);
 
-  // Update URL params and state when currency or interval changes
+  // URL params updater
   const updateUrlParams = useCallback(
     (newCurrency?: CurrencyType, newInterval?: IntervalType) => {
       const params = new URLSearchParams(searchParams);
@@ -112,13 +113,13 @@ const CheckoutPage = () => {
 
       if (shouldUpdate) {
         setSearchParams(params);
-        setPlan(null); // force reload
+        setPlan(null);
       }
     },
     [searchParams, currency, interval, setSearchParams],
   );
 
-  // ✅ Replace inline fetch with fetchPlanById util
+  // Fetch plan
   const fetchPlan = useCallback(async () => {
     if (!planId) return;
     setLoading(true);
@@ -135,7 +136,6 @@ const CheckoutPage = () => {
     }
   }, [planId, interval, currency]);
 
-  // Fetch plan when planId, interval, or currency changes
   useEffect(() => {
     fetchPlan();
   }, [fetchPlan]);
@@ -158,7 +158,7 @@ const CheckoutPage = () => {
       currentPaymentOption &&
       !availableOptions.includes(currentPaymentOption as PaymentOption)
     ) {
-      setValue("paymentOption", "");
+      setValue("paymentOption", "esewa" as PaymentOption);
     }
   }, [currency, setValue, watch, getAvailablePaymentOptions]);
 
@@ -169,19 +169,16 @@ const CheckoutPage = () => {
 
   const formattedPlanName = useMemo(() => {
     if (!plan?.name) return "";
-
     const cleanedName = plan.name
       .replace(/_/g, " ")
       .replace(/\b(Monthly|Yearly|Plan)\b/gi, "")
       .trim();
-
     const baseName = cleanedName
       .toLowerCase()
       .split(" ")
       .filter(Boolean)
       .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
       .join(" ");
-
     return `${baseName} Plan`;
   }, [plan?.name]);
 
@@ -206,8 +203,6 @@ const CheckoutPage = () => {
   const handleIntervalChange = useCallback(
     (newInterval: IntervalType) => {
       updateUrlParams(currency, newInterval);
-
-      // Update payment type accordingly
       const newPaymentType =
         newInterval === "YEARLY" ? "BILL_YEARLY" : "BILL_MONTHLY";
       setValue("paymentType", newPaymentType);
@@ -215,22 +210,38 @@ const CheckoutPage = () => {
     [updateUrlParams, currency, setValue],
   );
 
-  const onSubmit = useCallback(
-    (data: CheckoutFormData) => {
-      console.log("Form Submission:", {
-        ...data,
-        selectedPlan: plan,
+  const onSubmit = async (data: CheckoutFormData) => {
+    if (!plan) {
+      toast.error("Plan data is not available. Please try again.");
+      return;
+    }
+    if (!data.paymentOption) {
+      toast.error("Please select a payment option.");
+      return;
+    }
+
+    try {
+      await initiateSubscription({
+        planId: plan.id,
+        paymentProvider: data.paymentOption,
+        billingCycle: interval === "YEARLY" ? "YEARLY" : "MONTHLY",
         currency,
-        interval,
+        useTrial: true,
+        callbackUrl: `${window.location.origin}/payment/callback`,
       });
-      toast.success("Payment successful!");
-    },
-    [plan, currency, interval],
-  );
 
-  const handleFinalSubmit = handleSubmit(onSubmit);
+      setConfirmed(true);
+    } catch (err) {
+      console.error("Checkout failed", err);
+      toast.error("Checkout failed. Please try again.");
+    }
+  };
 
-  // Show loading state if plan data is inconsistent with current params
+  if (confirmed && response) {
+    return <PaymentSection />;
+  }
+
+  // UI states
   const isPlanDataStale =
     plan && (plan.interval !== interval || plan.currency !== currency);
 
@@ -255,7 +266,6 @@ const CheckoutPage = () => {
     );
   }
 
-  // Error state
   if (error) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -267,7 +277,6 @@ const CheckoutPage = () => {
     );
   }
 
-  // No plan found
   if (!plan) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -285,6 +294,7 @@ const CheckoutPage = () => {
       <div className="py-8 sm:py-12">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <h1 className="h3-bold-32 text-base-black">Billing Information</h1>
+
           {/* Currency and Interval Selectors */}
           <div className="flex gap-4">
             <select
@@ -315,7 +325,8 @@ const CheckoutPage = () => {
       <section className="flex flex-col lg:flex-row w-full justify-between items-start gap-12">
         {/* Form Section */}
         <div className="w-full lg:max-w-xl">
-          <form onSubmit={handleFinalSubmit} className="pb-10 space-y-6">
+          <form className="pb-10 space-y-6" onSubmit={handleSubmit(onSubmit)}>
+            {/* Plan header */}
             <div className="flex flex-wrap items-center gap-4">
               <h2 className="h4-bold-24 text-grey">{formattedPlanName}</h2>
               {plan.isPopular && (
@@ -409,7 +420,7 @@ const CheckoutPage = () => {
               </div>
             </div>
 
-            {/* Payment Type - Syncs with interval */}
+            {/* Payment Type */}
             <div>
               <label className="body-bold-16 text-grey pb-1 block">
                 Payment Type
@@ -457,7 +468,7 @@ const CheckoutPage = () => {
               </div>
             </div>
 
-            {/* Payment Option - Filtered by currency */}
+            {/* Payment Option */}
             <div>
               <label className="body-bold-16 text-grey pb-1 block">
                 Payment Option
@@ -527,6 +538,13 @@ const CheckoutPage = () => {
                 />
               </div>
             </div>
+
+            {/* ✅ Confirm Button */}
+            <Button
+              type="submit"
+              label="Confirm & Pay"
+              className="w-full bg-primary text-white py-4"
+            />
           </form>
         </div>
 
@@ -542,7 +560,6 @@ const CheckoutPage = () => {
             paymentOption={watch("paymentOption")}
             currency={currency}
             interval={interval}
-            onConfirm={handleFinalSubmit}
             promocode={appliedPromoCode}
           />
         </div>

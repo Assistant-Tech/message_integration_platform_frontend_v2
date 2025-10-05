@@ -11,7 +11,6 @@ interface UsePricingCardDataProps {
   duration: "monthly" | "yearly";
 }
 
-// 🔹 Utility to make keys human-readable
 const toReadable = (key: string): string =>
   key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase());
 
@@ -64,10 +63,10 @@ export const usePricingCardData = ({
   const displayTitle = formatTitle(plan.title || plan.name);
   const displayFeatures = plan.features ? formatFeatures(plan.features) : [];
   const displayPrice =
-    plan.price || `${plan.currency === "NPR" ? "रु" : "$"}${plan.amount}`;
+    plan.price || `${plan.currency === "NPR" ? "रु" : "$"}${plan.totalAmount}`;
   const buttonText =
-    plan.buttonText || (plan.amount === 0 ? "Contact Us" : "Choose Plan");
-  const priceSuffix = plan.amount !== 0 ? `/${duration}` : "";
+    plan.buttonText || (plan.totalAmount === 0 ? "Contact Us" : "Choose Plan");
+  const priceSuffix = plan.totalAmount !== 0 ? `/${duration}` : "";
   const cardIsPopular = !!plan.isPopular;
 
   return {

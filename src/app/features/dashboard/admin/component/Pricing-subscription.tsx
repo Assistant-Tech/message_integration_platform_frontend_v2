@@ -1,17 +1,22 @@
 import { useMemo, useState } from "react";
 import { Box, Flex, RadioGroup } from "@radix-ui/themes";
+import { useNavigate } from "react-router-dom";
 import { cn } from "@/app/utils/cn";
 import { usePlans } from "@/app/hooks/usePlans";
 import { usePricingStore } from "@/app/store/pricing.store";
+import { useAuthStore } from "@/app/store/auth.store"; // 👈 import auth store
 import { PricingcardSubscription } from "@/app/features/dashboard/admin/component";
 import { Badge, DynamicToggle } from "@/app/components/ui";
 import { Plan, Duration, APIDuration, PlanType } from "@/app/types/plan.types";
 import { extractFeatures } from "@/app/utils/helper";
-import CheckoutDialogPop from "@/app/features/dashboard/admin/component/CheckoutDialogPop";
+import { buildBillingUrl } from "@/app/constants/routes";
 
 const PricingSubscription = () => {
-  const { currency, duration, setCurrency, setDuration } = usePricingStore();
+  const navigate = useNavigate();
 
+  const orgSlug = useAuthStore((state) => state.tenantSlug);
+
+  const { currency, duration, setCurrency, setDuration } = usePricingStore();
   const {
     data: fetchedPlans = [],
     isLoading,
@@ -19,14 +24,13 @@ const PricingSubscription = () => {
   } = usePlans(duration, currency);
 
   const [selectedPlan, setSelectedPlan] = useState<PlanType>();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const transformPlan = (plan: Plan) => ({
     ...plan,
     title: plan.name,
     subtitle: plan.description,
-    price: `${plan.currency === "NPR" ? "रु" : "$"}${plan.amount}`,
-    buttonText: plan.amount === 0 ? "Contact Us" : "Choose Plan",
+    price: `${plan.currency === "NPR" ? "रु" : "$"}${plan.totalAmount}`,
+    buttonText: plan.totalAmount === 0 ? "Contact Us" : "Choose Plan",
     features: extractFeatures(plan.features),
   });
 
@@ -47,9 +51,13 @@ const PricingSubscription = () => {
 
   const handlePlanSelect = (plan: PlanType) => {
     setSelectedPlan(plan);
-    setIsDialogOpen(true);
-  };
 
+    const billingUrl = orgSlug
+      ? buildBillingUrl(orgSlug, plan.id, duration, currency)
+      : `/admin/settings/subscription/billing?planId=${plan.id}&interval=${duration}&currency=${currency}`;
+
+    navigate(billingUrl);
+  };
   return (
     <Box className="px-6 md:px-2 max-w-full mx-auto">
       <Flex direction="column" align="center" gap="3" mb="6">
@@ -133,13 +141,6 @@ const PricingSubscription = () => {
           </>
         )}
       </div>
-
-      {/* Checkout Dialog */}
-      <CheckoutDialogPop
-        open={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
-        plan={selectedPlan}
-      />
     </Box>
   );
 };

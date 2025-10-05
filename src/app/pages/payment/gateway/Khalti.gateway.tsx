@@ -1,0 +1,44 @@
+// import { SubscriptionResponse } from "@/app/types/subscription.types";
+
+// interface KhaltiPaymentProps {
+//   response: SubscriptionResponse;
+// }
+
+const KhaltiPaymentPage = ({ response }: any) => {
+  if (!response?.data) return null;
+
+  const { paymentUrl, pidx, expiresAt } = response.data;
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
+      <div className="bg-white shadow-lg rounded-xl p-8 max-w-md w-full text-center">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">
+          Khalti Payment
+        </h2>
+        <p className="text-gray-600 mb-2">
+          Your payment has been initiated with Khalti.
+        </p>
+
+        <div className="text-left my-4 space-y-2">
+          <p>
+            <strong>Transaction ID:</strong> {pidx}
+          </p>
+          <p>
+            <strong>Expires At:</strong> {new Date(expiresAt).toLocaleString()}
+          </p>
+        </div>
+
+        <a
+          href={paymentUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block mt-4 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-700 transition"
+        >
+          Proceed to Khalti
+        </a>
+      </div>
+    </div>
+  );
+};
+
+export default KhaltiPaymentPage;

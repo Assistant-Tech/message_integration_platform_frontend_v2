@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import { Country } from "country-state-city";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 import { PlanType, CheckoutFormData } from "@/app/types/plan.types";
 
@@ -16,6 +17,7 @@ import {
   KHALTI_IMAGE_URL,
   STRIPE_IMAGE_URL,
 } from "@/app/constants/image-cloudinary";
+import { useAuthStore } from "@/app/store/auth.store";
 
 interface CheckoutDialogProps {
   open: boolean;
@@ -24,9 +26,20 @@ interface CheckoutDialogProps {
 }
 
 const CheckoutDialogPop = ({ open, onClose, plan }: CheckoutDialogProps) => {
+  const navigate = useNavigate(); // Initialize useNavigate for redirection
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  // Get authentication status from AuthContext
   const allowedIntervals = ["MONTHLY", "YEARLY"] as const;
   const allowedCurrencies = ["NPR", "USD"] as const;
-  //log
+
+  // If the user is not authenticated, redirect them to the login page
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login"); // Redirect to login if not authenticated
+    }
+  }, [isAuthenticated, navigate]);
+
+  // log
   console.log("🚀 ~ CheckoutDialogPop ~ allowedIntervals:", allowedIntervals);
   console.log("🚀 ~ CheckoutDialogPop ~ allowedCurrencies:", allowedCurrencies);
 
@@ -45,6 +58,7 @@ const CheckoutDialogPop = ({ open, onClose, plan }: CheckoutDialogProps) => {
   >([]);
   const [promoInput, setPromoInput] = useState("");
   const [appliedPromoCode, setAppliedPromoCode] = useState("");
+  const [confirmed, setConfirmed] = useState(false);
 
   type PaymentOption = "khalti" | "esewa" | "stripe";
 
@@ -70,7 +84,6 @@ const CheckoutDialogPop = ({ open, onClose, plan }: CheckoutDialogProps) => {
       country: "",
       staffCount: 1,
       paymentType: plan?.interval === "YEARLY" ? "BILL_YEARLY" : "BILL_MONTHLY",
-      paymentOption: "",
       promoCode: "",
     },
   });
@@ -99,7 +112,7 @@ const CheckoutDialogPop = ({ open, onClose, plan }: CheckoutDialogProps) => {
       currentPaymentOption &&
       !availableOptions.includes(currentPaymentOption as PaymentOption)
     ) {
-      setValue("paymentOption", "");
+      setValue("paymentOption", "esewa" as PaymentOption);
     }
   }, [currency, setValue, watch, getAvailablePaymentOptions]);
 
@@ -152,19 +165,45 @@ const CheckoutDialogPop = ({ open, onClose, plan }: CheckoutDialogProps) => {
     [setValue],
   );
 
-  const onSubmit = useCallback(
-    (data: CheckoutFormData) => {
-      console.log("Form Submission:", {
-        ...data,
-        selectedPlan: plan,
+  const initiateSubscription = async (data: {
+    planId: string;
+    paymentProvider: string;
+    billingCycle: string;
+    currency: string;
+    useTrial: boolean;
+    callbackUrl: string;
+  }) => {
+    console.log("Initiating subscription:", data);
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+  };
+
+  const onSubmit = async (data: CheckoutFormData) => {
+    if (!plan) {
+      toast.error("Plan data is not available. Please try again.");
+      return;
+    }
+    if (!data.paymentOption) {
+      toast.error("Please select a payment option.");
+      return;
+    }
+
+    try {
+      await initiateSubscription({
+        planId: plan.id,
+        paymentProvider: data.paymentOption,
+        billingCycle: interval === "YEARLY" ? "YEARLY" : "MONTHLY",
         currency,
-        interval,
+        useTrial: true,
+        callbackUrl: `${window.location.origin}/payment/callback`,
       });
-      toast.success("Payment successful!");
-      onClose();
-    },
-    [plan, currency, interval, onClose],
-  );
+
+      toast.success("Subscription successfully initiated!");
+      setConfirmed(true);
+    } catch (err) {
+      console.error("Checkout failed", err);
+      toast.error("Checkout failed. Please try again.");
+    }
+  };
 
   const handleFinalSubmit = handleSubmit(onSubmit);
 

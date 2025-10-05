@@ -3,30 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { LogOut } from "lucide-react";
 import { useMemo, useEffect } from "react";
-<<<<<<< HEAD
-import { Button } from "@/app/components/ui";
 import api from "@/app/services/api/axios";
-=======
-<<<<<<< HEAD:src/app/features/dashboard/user/pages/dashboard/UserDashboard.tsx
-=======
-import { Button } from "@/app/components/ui";
-import api from "@/app/services/api/axios";
->>>>>>> facc89e6709e8f3ec30765853da2c71d76bcf731:src/app/features/auth/pages/Dashboard.tsx
->>>>>>> 33d6893374a6f61ab532b62320d4b44b28f2e1d5
 
 const UserDashboard = () => {
   const navigate = useNavigate();
   const { user, isloading, logout } = useAuthStore();
-  console.log("🚀 ~ Dashboard ~ user:", user);
 
-<<<<<<< HEAD
-  // Redirect to login only after loading is complete
-=======
-<<<<<<< HEAD:src/app/features/dashboard/user/pages/dashboard/UserDashboard.tsx
-=======
-  // Redirect to login only after loading is complete
->>>>>>> facc89e6709e8f3ec30765853da2c71d76bcf731:src/app/features/auth/pages/Dashboard.tsx
->>>>>>> 33d6893374a6f61ab532b62320d4b44b28f2e1d5
   useEffect(() => {
     if (!isloading && !user) {
       navigate("/login");
@@ -39,11 +21,6 @@ const UserDashboard = () => {
     navigate("/login");
   };
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD:src/app/features/dashboard/user/pages/dashboard/UserDashboard.tsx
-=======
->>>>>>> 33d6893374a6f61ab532b62320d4b44b28f2e1d5
   const handleAutoTokenRefresh = async () => {
     try {
       const response = await api.get("test/permission");
@@ -59,10 +36,6 @@ const UserDashboard = () => {
     }
   };
 
-<<<<<<< HEAD
-=======
->>>>>>> facc89e6709e8f3ec30765853da2c71d76bcf731:src/app/features/auth/pages/Dashboard.tsx
->>>>>>> 33d6893374a6f61ab532b62320d4b44b28f2e1d5
   const userInfo = useMemo(() => {
     if (!user) return null;
 

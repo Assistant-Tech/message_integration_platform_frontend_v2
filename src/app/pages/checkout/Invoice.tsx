@@ -10,8 +10,23 @@ interface InvoiceProps {
   currency?: string;
   interval?: string;
   promocode?: string;
-  onConfirm?: () => void;
+  onSubmit?: (e?: React.FormEvent) => void;
 }
+
+const DIVISOR = 100;
+
+const safeNumber = (value: any): number =>
+  value && !isNaN(Number(value)) ? Number(value) / DIVISOR : 0;
+
+const normalizePlan = (plan: PlanType): PlanType => ({
+  ...plan,
+  basePrice: safeNumber(plan.basePrice),
+  discountAmount: safeNumber(plan.discountAmount),
+  originalAmount: safeNumber(plan.originalAmount),
+  taxAmount: safeNumber(plan.taxAmount),
+  totalAmount: safeNumber(plan.totalAmount),
+  taxRate: Number(plan.taxRate) || 0,
+});
 
 const Invoice: React.FC<InvoiceProps> = ({
   plan,
@@ -21,33 +36,44 @@ const Invoice: React.FC<InvoiceProps> = ({
   currency = "USD",
   interval = "MONTHLY",
   promocode = "",
-  onConfirm,
+  onSubmit,
 }) => {
-  const effectiveCurrency = plan.currency || currency;
-  const effectiveInterval = plan.interval || interval;
+  const normalizedPlan = useMemo(() => normalizePlan(plan), [plan]);
+
+  const effectiveCurrency = normalizedPlan.currency || currency;
+  const effectiveInterval = normalizedPlan.interval || interval;
+
+  const getCurrencySymbol = (currency: string) =>
+    currency === "NPR" ? "Rs." : "$";
 
   const calculations = useMemo(() => {
-    const getAdditionalStaffCost = () =>
-      effectiveCurrency === "NPR" ? 500 : 5;
+    const STAFF_COST = {
+      NPR: 50000, // paisa = Rs. 500
+      USD: 500, // cents = $5.00
+    };
 
-    const additionalStaffCost = getAdditionalStaffCost();
+    const additionalStaffCost =
+      (STAFF_COST[effectiveCurrency as keyof typeof STAFF_COST] ?? 0) / DIVISOR;
     const extraStaffCount = Math.max(0, staffCount - 1);
     const additionalStaffs = extraStaffCount * additionalStaffCost;
 
-    const baseAmount = plan.originalAmount || plan.amount;
+    const normalizedBaseAmount = normalizedPlan.basePrice;
+    const normalizedPlanDiscount = normalizedPlan.discountAmount;
+    const normalizedTaxAmount = normalizedPlan.taxAmount;
+    const planTotalAfterPlanDiscount = normalizedPlan.totalAmount;
 
-    // Subtotal excluding VAT (since baseAmount includes VAT)
-    const subtotalExclVat = baseAmount / 1.13;
-    const vat = baseAmount - subtotalExclVat;
+    const subtotalExclVat =
+      normalizedPlan.taxRate > 0
+        ? normalizedBaseAmount / (1 + normalizedPlan.taxRate)
+        : normalizedBaseAmount;
 
-    const baseTotal = baseAmount + additionalStaffs;
+    const vat = normalizedTaxAmount || normalizedBaseAmount - subtotalExclVat;
 
-    const isPromoApplied = promocode === "ABC123";
+    const baseTotal = planTotalAfterPlanDiscount + additionalStaffs;
+    const isPromoApplied = promocode?.toUpperCase() === "ABC123";
     const promoDiscount = isPromoApplied ? baseTotal * 0.1 : 0;
 
-    const planDiscount = plan.discountAmount || 10;
-
-    const total = baseTotal + vat - promoDiscount - planDiscount;
+    const total = Math.max(0, baseTotal - promoDiscount);
 
     return {
       additionalStaffCost,
@@ -55,19 +81,18 @@ const Invoice: React.FC<InvoiceProps> = ({
       additionalStaffs,
       subtotalExclVat,
       vat,
-      baseAmount,
-      baseTotal,
+      baseTotal: planTotalAfterPlanDiscount,
       promoDiscount,
       isPromoApplied,
-      planDiscount,
+      planDiscount: normalizedPlanDiscount,
       total,
     };
-  }, [plan, staffCount, effectiveCurrency, promocode]);
+  }, [normalizedPlan, staffCount, effectiveCurrency, promocode]);
 
   const formatPlanName = useMemo(() => {
-    if (!plan?.name) return "";
+    if (!normalizedPlan?.name) return "";
     return (
-      plan.name
+      normalizedPlan.name
         .toLowerCase()
         .replace("yearly", "")
         .replace("monthly", "")
@@ -76,29 +101,25 @@ const Invoice: React.FC<InvoiceProps> = ({
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(" ") + " Plan"
     );
-  }, [plan?.name]);
+  }, [normalizedPlan?.name]);
 
-  const getPaymentMethodDisplay = useMemo(() => {
+  const paymentMethodDisplay = useMemo(() => {
     if (!paymentOption || !paymentType) return "Not Selected";
     return paymentOption.charAt(0).toUpperCase() + paymentOption.slice(1);
   }, [paymentOption, paymentType]);
 
-  const getCurrencySymbol = (currency: string) =>
-    currency === "NPR" ? "Rs." : "$";
-
-  const formatAmount = (amount: number) => {
+  const formatAmount = (amount: number | string | null | undefined) => {
+    const num = Number(amount) || 0;
     const symbol = getCurrencySymbol(effectiveCurrency);
     return effectiveCurrency === "NPR"
-      ? `${symbol} ${Math.round(amount).toLocaleString()}`
-      : `${symbol} ${amount.toFixed(2)}`;
+      ? `${symbol} ${Math.round(num).toLocaleString()}`
+      : `${symbol} ${num.toFixed(2)}`;
   };
 
-  if (!plan || !plan.amount) {
+  if (!plan) {
     return (
-      <div className="px-8 py-6">
-        <div className="flex items-center justify-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        </div>
+      <div className="px-8 py-6 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -120,7 +141,7 @@ const Invoice: React.FC<InvoiceProps> = ({
 
         <div className="flex justify-between pb-4">
           <span className="body-regular-16">Payment Method:</span>
-          <span className="body-bold-16">{getPaymentMethodDisplay}</span>
+          <span className="body-bold-16">{paymentMethodDisplay}</span>
         </div>
 
         <div className="flex justify-between pt-6 border-t-2 border-grey-light">
@@ -131,7 +152,9 @@ const Invoice: React.FC<InvoiceProps> = ({
         </div>
 
         <div className="flex justify-between">
-          <span className="body-regular-16">VAT (13%):</span>
+          <span className="body-regular-16">
+            VAT ({normalizedPlan.taxRate}%):
+          </span>
           <span className="body-bold-16">{formatAmount(calculations.vat)}</span>
         </div>
 
@@ -176,7 +199,7 @@ const Invoice: React.FC<InvoiceProps> = ({
           label="Confirm and Pay"
           className="w-full mt-6 mb-3 px-4 py-3"
           disabled={!paymentType || !paymentOption}
-          onClick={onConfirm}
+          onClick={onSubmit}
         />
       </div>
 
