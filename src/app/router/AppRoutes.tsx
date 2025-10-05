@@ -47,7 +47,6 @@ import { OnboardingForm } from "@/app/features/auth/pages/onboarding/steps";
 import ProtectedRoute from "@/app/router/guards/ProtectedRoute";
 import OnboardingGuard from "@/app/router/guards/OnboardingGurad";
 import RoleBasedRoute from "@/app/router/guards/RoleBasedRoutes";
-import PaymentCallbackPage from "@/app/pages/payment/PaymentCallback.page";
 import PaymentSuccessPage from "../pages/payment/PaymentSuccess.page";
 import SubscriptionConfirmation from "../pages/payment/confirm/SubscriptionConfirmation";
 import BillingPage from "../pages/payment/confirm/Billing.page";
@@ -232,13 +231,8 @@ const AppRoutes = () => {
             />
           </Route>
 
-          {/* <Route
-            path={APP_ROUTES.PUBLIC.PAYMENT_CALLBACK}
-            element={<PaymentCallbackPage />}
-          /> */}
-
           <Route path="/payments/verify" element={<PaymentVerify />} />
-          <Route path="/:slug/success" element={<PaymentSuccessPage />} />
+          <Route path="/payments/success" element={<PaymentSuccessPage />} />
 
           <Route
             path="/:slug/subscription/confirmation"
@@ -367,12 +361,6 @@ const AppRoutes = () => {
               </Route>
 
               <Route path="/:slug/verify" element={<VerifyRedirect />} />
-
-              {/* Keep existing success routes for backward compatibility */}
-              <Route
-                path="/payments/success"
-                element={<PaymentSuccessPage />}
-              />
 
               {/* Tenant User Dashboard (default for non-admin roles) */}
               <Route path="/:slug/dashboard" element={<DashboardLayout />}>

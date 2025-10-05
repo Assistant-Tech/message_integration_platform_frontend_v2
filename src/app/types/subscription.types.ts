@@ -77,6 +77,28 @@ export interface SubscriptionData {
   plan?: Plan;
 }
 
+export interface EsewaResponse {
+  message: string;
+  success: boolean;
+  data: EsewaData;
+}
+export interface EsewaData {
+  provider: string;
+  paymentUrl: string;
+  fields: {
+    amount: string;
+    total_amount: any;
+    tax_amount: number;
+    transaction_uuid: string;
+    product_code: string;
+    product_service_charge: string;
+    product_delivery_charge: string;
+    success_url: string;
+    failure_url: string;
+    signed_field_names: string;
+    signature: string;
+  };
+}
 export interface SubscriptionResponse {
   plan: any;
   status: ReactNode;

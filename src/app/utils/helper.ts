@@ -63,9 +63,8 @@ export const formatSecret = (secret: string) => {
   );
 };
 
-// utils/currency.ts
 export const formatCurrency = (amount: number, currency: "NPR" | "USD") => {
-  const normalized = amount / 100; // convert paisa → rupee/dollar
+  const normalized = amount / 100;
   return currency === "NPR"
     ? `रु${normalized.toFixed(2)}`
     : `$${normalized.toFixed(2)}`;

@@ -1,12 +1,13 @@
 import { useEffect, useRef } from "react";
-import { SubscriptionResponse } from "@/app/types/subscription.types";
+import { EsewaResponse } from "@/app/types/subscription.types";
 
 interface EsewaPaymentProps {
-  response: SubscriptionResponse;
+  response: EsewaResponse;
 }
 
 const EsewaPayment = ({ response }: EsewaPaymentProps) => {
-  console.log("🚀 ~ EsewaPayment ~ response:", response);
+  const { fields } = response.data;
+
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
@@ -18,8 +19,8 @@ const EsewaPayment = ({ response }: EsewaPaymentProps) => {
   return (
     <div>
       <h3>Redirecting to eSewa...</h3>
-      <form ref={formRef} action={response.data.paymentUrl} method="POST">
-        {Object.entries(response.data.fields).map(([key, value]) => (
+      <form ref={formRef} action={response.data?.paymentUrl} method="POST">
+        {Object.entries(fields).map(([key, value]) => (
           <input
             key={key}
             type="hidden"

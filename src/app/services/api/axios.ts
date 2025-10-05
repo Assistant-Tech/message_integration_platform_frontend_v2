@@ -13,7 +13,7 @@ const api = axios.create({
   baseURL:
     import.meta.env.VITE_API_URL_TEST ||
     ("http://localhost:3000/api/v1" as string),
-  withCredentials: true, // ✅ ensures refresh cookie / csrf cookie are sent
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
@@ -60,6 +60,10 @@ api.interceptors.request.use(async (config) => {
       if (cookieMatch) {
         config.headers["X-CSRF-Token"] = cookieMatch[1];
       }
+    }
+
+    if (config.url?.includes("/esewa")) {
+      config.headers["Idempotency-Key"] = crypto.randomUUID();
     }
   } catch {
     // ignore
@@ -111,9 +115,11 @@ api.interceptors.response.use(
           const mod = await import("@/app/store/auth.store");
           const { refreshAccessToken } = mod.useAuthStore.getState();
 
+          // Only attempt to refresh if not already refreshing
           refreshPromise = refreshAccessToken();
           const newToken = await refreshPromise;
 
+          // After refresh
           isRefreshing = false;
           processQueue(null, newToken);
 
