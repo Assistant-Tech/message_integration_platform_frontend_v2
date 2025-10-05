@@ -4,6 +4,7 @@ import api from "@/app/services/api/axios";
 import { usePaymentStore } from "@/app/store/payment.store";
 import { Loader2 } from "lucide-react";
 import { useAuthStore } from "@/app/store/auth.store";
+import { parseQuery } from "@/app/utils/queryParser";
 
 const PaymentVerify = () => {
   const location = useLocation();
@@ -19,6 +20,9 @@ const PaymentVerify = () => {
     async function handlePaymentCallback() {
       const params = new URLSearchParams(location.search);
       const provider = params.get("provider");
+      const query = parseQuery(params.toString());
+
+      console.log("query", query);
 
       if (!provider) {
         navigate("/", { replace: true });
@@ -26,9 +30,7 @@ const PaymentVerify = () => {
       }
 
       try {
-        const response = await api.post(
-          `/payment/callback?${params.toString()}`,
-        );
+        const response = await api.post(`/payment/callback?${query}`);
 
         if (response.data) {
           const {
