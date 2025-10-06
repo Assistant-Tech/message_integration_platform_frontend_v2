@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { usePlans } from "@/app/hooks/usePlans";
 import { PlanType } from "@/app/types/plan.types";
-import BillingComponent from "../Billing.component";
+import BillingComponent from "@/app/pages/payment/Billing.component";
 import { CurrencyType } from "@/app/services/plan.services";
 
 const BillingPage = () => {

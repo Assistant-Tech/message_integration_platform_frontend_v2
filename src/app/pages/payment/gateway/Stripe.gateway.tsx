@@ -1,7 +1,7 @@
-import { SubscriptionResponse } from "@/app/types/subscription.types";
+import { StripeResponse } from "@/app/types/subscription.types";
 
 interface StripePaymentProps {
-  response: SubscriptionResponse;
+  response: StripeResponse;
 }
 
 const StripePaymentPage = ({ response }: StripePaymentProps) => {

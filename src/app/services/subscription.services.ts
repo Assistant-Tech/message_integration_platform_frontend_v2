@@ -1,5 +1,6 @@
 import api from "@/app/services/api/axios";
 import {
+  CurrentSubscriptionResponse,
   InvoiceResponse,
   SubscriptionInitiationData,
   SubscriptionResponse,
@@ -37,8 +38,22 @@ export const initiateSubscription = async (
  * Get current subscription for logged-in tenant
  */
 export const getCurrentSubscription = async () => {
-  const response = await api.get<SubscriptionResponse>("/subscription/current");
-  return response.data;
+  const { setLoading, setCurrentResponse, setError } =
+    useSubscriptionStore.getState();
+
+  setLoading(true);
+  try {
+    const response = await api.get<CurrentSubscriptionResponse>(
+      "/subscription/current",
+    );
+    setCurrentResponse(response.data);
+    setLoading(false);
+    return response.data;
+  } catch (error: any) {
+    setError(error?.message || "Failed to fetch current subscription");
+    setLoading(false);
+    throw error;
+  }
 };
 
 /**

@@ -1,10 +1,10 @@
-// import { SubscriptionResponse } from "@/app/types/subscription.types";
+import { KhaltiResponse } from "@/app/types/subscription.types";
 
-// interface KhaltiPaymentProps {
-//   response: SubscriptionResponse;
-// }
+interface KhaltiPaymentProps {
+  response: KhaltiResponse;
+}
 
-const KhaltiPaymentPage = ({ response }: any) => {
+const KhaltiPaymentPage = ({ response }: KhaltiPaymentProps) => {
   if (!response?.data) return null;
 
   const { paymentUrl, pidx, expiresAt } = response.data;

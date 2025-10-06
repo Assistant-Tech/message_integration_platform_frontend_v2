@@ -1,5 +1,10 @@
 import { ReactNode } from "react";
 
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 🧾 ▶ Inititate Subscription 
+─────────────────────────────────────────────────────────────────────────────
+*/
 export type SubscriptionInitiationData = {
   planId: string;
   paymentProvider: "stripe" | "khalti" | "esewa";
@@ -14,6 +19,11 @@ export type SubscriptionInitiationData = {
   country?: string;
   promoCode?: string;
 };
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 🧾 ▶ Type of Status for SUBSCRIPTION
+─────────────────────────────────────────────────────────────────────────────
+*/
 export type SubscriptionStatus =
   | "TRIALING"
   | "ACTIVE"
@@ -25,6 +35,11 @@ export type SubscriptionStatus =
   | "PAST_DUE"
   | "UNPAID";
 
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 🧾 ▶ Transction details
+─────────────────────────────────────────────────────────────────────────────
+*/
 export interface Transaction {
   id: string;
   tenantId: string;
@@ -43,7 +58,11 @@ export interface Transaction {
   updatedAt: string;
   invoiceId: string;
 }
-
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 🧾 ▶ Invoice Response 
+─────────────────────────────────────────────────────────────────────────────
+*/
 export interface InvoiceResponse {
   id: string;
   tenantId: string;
@@ -57,17 +76,14 @@ export interface InvoiceResponse {
   paidAt: string | null;
   voidedAt: string | null;
   createdAt: string;
-  transactions: Transaction[];
+  transactions?: Transaction[];
 }
 
-export interface Plan {
-  id: string;
-  name: string;
-  interval: string;
-  features: string[];
-  [key: string]: any;
-}
-
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 🧾 ▶ Subscription Datasets
+─────────────────────────────────────────────────────────────────────────────
+*/
 export interface SubscriptionData {
   id: string;
   status: string;
@@ -77,6 +93,63 @@ export interface SubscriptionData {
   plan?: Plan;
 }
 
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 🧾 ▶ Global Response
+─────────────────────────────────────────────────────────────────────────────
+*/
+export interface SubscriptionResponse {
+  plan: Plan;
+  status: ReactNode;
+  startDate: string;
+  endDate: string;
+  currency: ReactNode;
+  success: boolean;
+  message: string;
+  data: SubscriptionData;
+}
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 🧾 ▶ khalti Response
+─────────────────────────────────────────────────────────────────────────────
+*/
+export interface KhaltiResponse {
+  message: string;
+  success: boolean;
+  data: KhaltiData;
+  timestamp: string;
+}
+
+export interface KhaltiData {
+  provider: "KHALTI";
+  pidx: string;
+  paymentUrl: string;
+  expiresAt: string;
+}
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 🧾 ▶ Stripe Response
+─────────────────────────────────────────────────────────────────────────────
+*/
+export interface StripeResponse {
+  message: string;
+  success: boolean;
+  data: StripeData;
+  timestamp: string;
+}
+
+export interface StripeData {
+  provider: "STRIPE";
+  sessionId: string;
+  paymentUrl: string;
+  expiresAt: string;
+}
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 🧾 ▶ Esewa Response
+─────────────────────────────────────────────────────────────────────────────
+*/
 export interface EsewaResponse {
   message: string;
   success: boolean;
@@ -99,13 +172,68 @@ export interface EsewaData {
     signature: string;
   };
 }
-export interface SubscriptionResponse {
-  plan: any;
-  status: ReactNode;
-  startDate: any;
-  endDate: any;
-  currency: ReactNode;
-  success: boolean;
+export interface Plan {
+  id: string;
+  name: string;
+  description: string;
+  baseAmount: string;
+  currency: string;
+  interval: string;
+  discountedRate: string;
+  discountedAmount: string;
+  taxRate: string;
+  taxAmount: string;
+  totalAmount: string;
+  durationInDays: number;
+  features: string[];
+  isActive: boolean;
+  isPopular: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 🧾 ▶ Subscription Datasets for current Fetch
+─────────────────────────────────────────────────────────────────────────────
+*/
+export interface FetchSubscriptionData {
+  id: string;
+  tenantId: string;
+  planId: string;
+  externalId: string;
+  status: string;
+  startDate: string;
+  endDate: string;
+  currentPeriodStart: string;
+  currentPeriodEnd: string;
+  nextBillingDate: string;
+  billingCycleAnchor: string | null;
+  trialStartDate: string | null;
+  trialEndDate: string | null;
+  hasUsedTrial: boolean;
+  isAutoRenew: boolean;
+  pausedUntil: string | null;
+  cancelledAt: string | null;
+  cancellationReason: string | null;
+  renewdFromId: string | null;
+  baseAmount: string;
+  discountAmount: string;
+  taxRate: string;
+  totalAmount: string;
+  currency: string;
+  failedPaymentCount: number;
+  lastFailedPaymentAt: string | null;
+  gracePeriodEndDate: string | null;
+  createdAt: string;
+  updatedAt: string;
+  plan: Plan;
+  Invoice: InvoiceResponse[];
+}
+
+export interface CurrentSubscriptionResponse {
   message: string;
-  data: SubscriptionData;
+  success: boolean;
+  data: FetchSubscriptionData;
+  timestamp: string;
 }

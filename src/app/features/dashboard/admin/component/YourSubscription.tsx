@@ -1,18 +1,43 @@
 import { motion } from "framer-motion";
-import { Calendar, CreditCard, Clock, DollarSign } from "lucide-react";
+import { Calendar, CreditCard, Clock, Wallet } from "lucide-react";
+import { format, differenceInDays } from "date-fns";
+import { CurrentSubscriptionResponse } from "@/app/types/subscription.types";
+import { formatCurrency } from "@/app/utils/helper";
 
-const YourSubscription = () => {
-  const subscriptionData = {
-    plan: "Basic Plan",
-    type: "Monthly",
-    amount: "Rs. 2000",
-    purchaseDate: "06/17/2025",
-    endDate: "07/17/2025",
-    paymentMethod: "E-Sewa",
-    status: "Active",
-    daysLeft: 25,
-    expiresDate: "Sep 04, 2025",
-  };
+type YourSubscriptionProps = {
+  data?: CurrentSubscriptionResponse["data"];
+};
+
+const YourSubscription = ({ data }: YourSubscriptionProps) => {
+  if (!data) {
+    return (
+      <div className="text-center text-grey-medium py-10">
+        No active subscription found.
+      </div>
+    );
+  }
+
+  const {
+    plan,
+    startDate,
+    endDate,
+    nextBillingDate,
+    status,
+    totalAmount,
+    currency,
+  } = data;
+
+  const formattedStartDate = format(new Date(startDate), "MMM dd, yyyy");
+  const formattedEndDate = format(new Date(endDate), "MMM dd, yyyy");
+  const formattedNextBillingDate = nextBillingDate
+    ? format(new Date(nextBillingDate), "MMM dd, yyyy")
+    : "N/A";
+
+  const daysLeft = Math.max(differenceInDays(new Date(endDate), new Date()), 0);
+  const formattedAmount = formatCurrency(
+    Number(totalAmount),
+    currency as "NPR" | "USD",
+  );
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -31,34 +56,44 @@ const YourSubscription = () => {
             <h2 className="text-lg font-semibold text-grey">
               Subscription Detail
             </h2>
-            <span className="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-              {subscriptionData.status}
+            <span
+              className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
+                status === "ACTIVE"
+                  ? "bg-green-100 text-green-800"
+                  : "bg-red-100 text-red-700"
+              }`}
+            >
+              {status}
             </span>
           </div>
 
           <div className="space-y-4">
             {[
-              { label: "Plan", value: subscriptionData.plan, icon: CreditCard },
-              { label: "Type", value: subscriptionData.type, icon: Clock },
+              { label: "Plan", value: plan?.name || "N/A", icon: CreditCard },
               {
-                label: "Amount",
-                value: subscriptionData.amount,
-                icon: DollarSign,
+                label: "Billing Cycle",
+                value: plan?.interval || "N/A",
+                icon: Clock,
               },
               {
-                label: "Purchase Date",
-                value: subscriptionData.purchaseDate,
+                label: "Amount",
+                value: formattedAmount,
+                icon: Wallet,
+              },
+              {
+                label: "Start Date",
+                value: formattedStartDate,
                 icon: Calendar,
               },
               {
                 label: "End Date",
-                value: subscriptionData.endDate,
+                value: formattedEndDate,
                 icon: Calendar,
               },
               {
-                label: "Payment Method",
-                value: subscriptionData.paymentMethod,
-                icon: CreditCard,
+                label: "Next Billing Date",
+                value: formattedNextBillingDate,
+                icon: Calendar,
               },
             ].map(({ label, value, icon: Icon }, idx) => (
               <div
@@ -103,26 +138,22 @@ const YourSubscription = () => {
                 stroke="currentColor"
                 strokeWidth="10"
                 fill="none"
-                strokeDasharray={`${(subscriptionData.daysLeft / 30) * 282.7} 282.7`}
+                strokeDasharray={`${(daysLeft / 30) * 282.7} 282.7`}
                 strokeLinecap="round"
                 className="text-teal-500 transition-all duration-500"
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
               <span className="text-5xl font-bold text-grey mb-1">
-                {subscriptionData.daysLeft}
+                {daysLeft}
               </span>
               <p className="text-sm font-medium text-grey-medium">days left</p>
             </div>
-            <div className="absolute top-7 right-40 transform translate-x-1/2 -translate-y-1/2 bg-secondary text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-sm">
-              Day-5
-            </div>
           </div>
+
           <div className="text-sm text-center">
             <p className="text-grey-medium mb-1">Expires:</p>
-            <span className="text-danger font-bold">
-              {subscriptionData.expiresDate}
-            </span>
+            <span className="text-danger font-bold">{formattedEndDate}</span>
           </div>
         </motion.div>
       </div>
