@@ -47,10 +47,10 @@ import { OnboardingForm } from "@/app/features/auth/pages/onboarding/steps";
 import ProtectedRoute from "@/app/router/guards/ProtectedRoute";
 import OnboardingGuard from "@/app/router/guards/OnboardingGurad";
 import RoleBasedRoute from "@/app/router/guards/RoleBasedRoutes";
-import PaymentSuccessPage from "../pages/payment/PaymentSuccess.page";
-import SubscriptionConfirmation from "../pages/payment/confirm/SubscriptionConfirmation";
-import BillingPage from "../pages/payment/confirm/Billing.page";
-import PaymentVerify from "../pages/payment/confirm/PaymentVerify.page";
+import PaymentSuccessPage from "@/app/features/dashboard/admin/pages/payments/PaymentSuccess.page";
+import SubscriptionConfirmation from "@/app/features/dashboard/admin/pages/payments/confirm/SubscriptionConfirmation";
+import BillingPage from "@/app/features/dashboard/admin/pages/payments/confirm/Billing.page";
+import PaymentVerify from "@/app/features/dashboard/admin/pages/payments/confirm/PaymentVerify.page";
 
 const VerifyRedirect = () => {
   const { slug } = useParams<{ slug: string }>();

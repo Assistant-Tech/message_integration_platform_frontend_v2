@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 
 /*
 ─────────────────────────────────────────────────────────────────────────────
- 🧾 ▶ Inititate Subscription 
+ 🧾 ▶ Initiate Subscription Data (from frontend → backend)
 ─────────────────────────────────────────────────────────────────────────────
 */
 export type SubscriptionInitiationData = {
@@ -11,7 +11,6 @@ export type SubscriptionInitiationData = {
   billingCycle: "MONTHLY" | "YEARLY";
   currency: string;
   callbackUrl: string;
-  // Optional from the frontend section sent datasets
   paymentType?: "stripe" | "khalti" | "esewa";
   useTrial?: boolean;
   staffCount?: number;
@@ -19,9 +18,10 @@ export type SubscriptionInitiationData = {
   country?: string;
   promoCode?: string;
 };
+
 /*
 ─────────────────────────────────────────────────────────────────────────────
- 🧾 ▶ Type of Status for SUBSCRIPTION
+ 🧾 ▶ Subscription Status
 ─────────────────────────────────────────────────────────────────────────────
 */
 export type SubscriptionStatus =
@@ -37,7 +37,7 @@ export type SubscriptionStatus =
 
 /*
 ─────────────────────────────────────────────────────────────────────────────
- 🧾 ▶ Transction details
+ 🧾 ▶ Transaction details
 ─────────────────────────────────────────────────────────────────────────────
 */
 export interface Transaction {
@@ -58,9 +58,10 @@ export interface Transaction {
   updatedAt: string;
   invoiceId: string;
 }
+
 /*
 ─────────────────────────────────────────────────────────────────────────────
- 🧾 ▶ Invoice Response 
+ 🧾 ▶ Invoice Response
 ─────────────────────────────────────────────────────────────────────────────
 */
 export interface InvoiceResponse {
@@ -77,101 +78,14 @@ export interface InvoiceResponse {
   voidedAt: string | null;
   createdAt: string;
   transactions?: Transaction[];
+  currency?: "NPR" | "USD";
 }
 
 /*
 ─────────────────────────────────────────────────────────────────────────────
- 🧾 ▶ Subscription Datasets
+ 🧾 ▶ Plan definition
 ─────────────────────────────────────────────────────────────────────────────
 */
-export interface SubscriptionData {
-  id: string;
-  status: string;
-  startDate: string;
-  endDate: string;
-  currency: string;
-  plan?: Plan;
-}
-
-/*
-─────────────────────────────────────────────────────────────────────────────
- 🧾 ▶ Global Response
-─────────────────────────────────────────────────────────────────────────────
-*/
-export interface SubscriptionResponse {
-  plan: Plan;
-  status: ReactNode;
-  startDate: string;
-  endDate: string;
-  currency: ReactNode;
-  success: boolean;
-  message: string;
-  data: SubscriptionData;
-}
-/*
-─────────────────────────────────────────────────────────────────────────────
- 🧾 ▶ khalti Response
-─────────────────────────────────────────────────────────────────────────────
-*/
-export interface KhaltiResponse {
-  message: string;
-  success: boolean;
-  data: KhaltiData;
-  timestamp: string;
-}
-
-export interface KhaltiData {
-  provider: "KHALTI";
-  pidx: string;
-  paymentUrl: string;
-  expiresAt: string;
-}
-/*
-─────────────────────────────────────────────────────────────────────────────
- 🧾 ▶ Stripe Response
-─────────────────────────────────────────────────────────────────────────────
-*/
-export interface StripeResponse {
-  message: string;
-  success: boolean;
-  data: StripeData;
-  timestamp: string;
-}
-
-export interface StripeData {
-  provider: "STRIPE";
-  sessionId: string;
-  paymentUrl: string;
-  expiresAt: string;
-}
-
-/*
-─────────────────────────────────────────────────────────────────────────────
- 🧾 ▶ Esewa Response
-─────────────────────────────────────────────────────────────────────────────
-*/
-export interface EsewaResponse {
-  message: string;
-  success: boolean;
-  data: EsewaData;
-}
-export interface EsewaData {
-  provider: string;
-  paymentUrl: string;
-  fields: {
-    amount: string;
-    total_amount: any;
-    tax_amount: number;
-    transaction_uuid: string;
-    product_code: string;
-    product_service_charge: string;
-    product_delivery_charge: string;
-    success_url: string;
-    failure_url: string;
-    signed_field_names: string;
-    signature: string;
-  };
-}
 export interface Plan {
   id: string;
   name: string;
@@ -194,7 +108,126 @@ export interface Plan {
 
 /*
 ─────────────────────────────────────────────────────────────────────────────
- 🧾 ▶ Subscription Datasets for current Fetch
+ 🧾 ▶ Subscription Data
+─────────────────────────────────────────────────────────────────────────────
+*/
+export interface SubscriptionData {
+  id: string;
+  status: string;
+  startDate: string;
+  endDate: string;
+  currency: string;
+  plan?: Plan;
+}
+
+export interface SubscriptionResponse {
+  plan: Plan;
+  status: ReactNode;
+  startDate: string;
+  endDate: string;
+  currency: ReactNode;
+  success: boolean;
+  message: string;
+  data: SubscriptionData;
+}
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 🧾 ▶ Khalti Response
+─────────────────────────────────────────────────────────────────────────────
+*/
+export interface KhaltiResponse {
+  message: string;
+  success: boolean;
+  data: {
+    provider: "KHALTI";
+    pidx: string;
+    paymentUrl: string;
+    expiresAt: string;
+  };
+  timestamp: string;
+}
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 🧾 ▶ Stripe Response
+─────────────────────────────────────────────────────────────────────────────
+*/
+export interface StripeResponse {
+  message: string;
+  success: boolean;
+  data: {
+    provider: "STRIPE";
+    sessionId: string;
+    paymentUrl: string;
+    expiresAt: string;
+  };
+  timestamp: string;
+}
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 🧾 ▶ Esewa Response
+─────────────────────────────────────────────────────────────────────────────
+*/
+export interface EsewaResponse {
+  message: string;
+  success: boolean;
+  data: {
+    provider: "ESEWA";
+    paymentUrl: string;
+    fields: {
+      amount: string;
+      total_amount: any;
+      tax_amount: number;
+      transaction_uuid: string;
+      product_code: string;
+      product_service_charge: string;
+      product_delivery_charge: string;
+      success_url: string;
+      failure_url: string;
+      signed_field_names: string;
+      signature: string;
+    };
+  };
+}
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 🧾 ▶ Union of Gateway Responses
+─────────────────────────────────────────────────────────────────────────────
+*/
+export type PaymentGatewayResponse =
+  | KhaltiResponse
+  | StripeResponse
+  | EsewaResponse;
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 🧾 ▶ Type Guards (to avoid `as`)
+─────────────────────────────────────────────────────────────────────────────
+*/
+export function isKhaltiResponse(
+  res: PaymentGatewayResponse,
+): res is KhaltiResponse {
+  return res.data.provider === "KHALTI";
+}
+
+export function isStripeResponse(
+  res: PaymentGatewayResponse,
+): res is StripeResponse {
+  return res.data.provider === "STRIPE";
+}
+
+export function isEsewaResponse(
+  res: PaymentGatewayResponse,
+): res is EsewaResponse {
+  return res.data.provider === "ESEWA";
+}
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 🧾 ▶ Current Subscription Response
 ─────────────────────────────────────────────────────────────────────────────
 */
 export interface FetchSubscriptionData {
@@ -232,6 +265,13 @@ export interface FetchSubscriptionData {
 }
 
 export interface CurrentSubscriptionResponse {
+  message: string;
+  success: boolean;
+  data: FetchSubscriptionData;
+  timestamp: string;
+}
+
+export interface SubscriptionHistoryResponse {
   message: string;
   success: boolean;
   data: FetchSubscriptionData;

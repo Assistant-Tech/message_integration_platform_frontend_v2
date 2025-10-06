@@ -5,7 +5,12 @@ import {
   KhaltiPayment,
   StripePayment,
   EsewaPayment,
-} from "@/app/pages/payment/gateway";
+} from "@/app/features/dashboard/admin/pages/payments/gateway";
+import {
+  isEsewaResponse,
+  isKhaltiResponse,
+  isStripeResponse,
+} from "@/app/types/subscription.types";
 
 const PaymentSection = () => {
   const { initiationData, response, loading, setResponse } =
@@ -27,16 +32,17 @@ const PaymentSection = () => {
   const renderPaymentComponent = () => {
     if (!response || !initiationData) return null;
 
-    switch (initiationData.paymentProvider) {
-      case "esewa":
-        return <EsewaPayment response={response} />;
-      case "khalti":
-        return <KhaltiPayment response={response} />;
-      case "stripe":
-        return <StripePayment response={response} />;
-      default:
-        return <div>Unsupported provider</div>;
+    if (isEsewaResponse(response)) {
+      return <EsewaPayment response={response} />;
     }
+    if (isKhaltiResponse(response)) {
+      return <KhaltiPayment response={response} />;
+    }
+    if (isStripeResponse(response)) {
+      return <StripePayment response={response} />;
+    }
+
+    return <div>Unsupported provider</div>;
   };
 
   return (

@@ -2,13 +2,15 @@ import api from "@/app/services/api/axios";
 import {
   CurrentSubscriptionResponse,
   InvoiceResponse,
+  SubscriptionHistoryResponse,
   SubscriptionInitiationData,
   SubscriptionResponse,
+  PaymentGatewayResponse,
 } from "@/app/types/subscription.types";
 import { useSubscriptionStore } from "@/app/store/subscription.store";
 
 /**
- * Initiate subscription only if none exists or status is inactive/cancelled
+ * Initiate subscription → returns a gateway response
  */
 export const initiateSubscription = async (
   data: SubscriptionInitiationData,
@@ -17,7 +19,7 @@ export const initiateSubscription = async (
   setLoading(true);
 
   try {
-    const response = await api.post<SubscriptionResponse>(
+    const response = await api.post<PaymentGatewayResponse>( 
       "/subscription/initiate",
       data,
     );
@@ -51,6 +53,28 @@ export const getCurrentSubscription = async () => {
     return response.data;
   } catch (error: any) {
     setError(error?.message || "Failed to fetch current subscription");
+    setLoading(false);
+    throw error;
+  }
+};
+
+/**
+ * Get subscription history
+ */
+export const getSubscriptionHistory = async () => {
+  const { setLoading, setHistoryResponse, setError } =
+    useSubscriptionStore.getState();
+
+  setLoading(true);
+  try {
+    const response = await api.get<SubscriptionHistoryResponse>(
+      "/subscription/history",
+    );
+    setHistoryResponse(response.data);
+    setLoading(false);
+    return response.data;
+  } catch (error: any) {
+    setError(error?.message || "Failed to fetch subscription history");
     setLoading(false);
     throw error;
   }

@@ -133,13 +133,17 @@ const SubscriptionSettings = () => {
               </motion.div>
             )}
           </AnimatePresence>
-
-          {/* Available Plans */}
-          <div className="py-4">
-            <h1 className="h4-bold-24 text-grey py-6">Available Plans</h1>
-            <PricingSubscription />
-          </div>
         </>
+      )}
+
+      {/* Available Plans */}
+      {activeTab === "your subscription" ? (
+        <div className="py-4">
+          <h1 className="h4-bold-24 text-grey py-6">Available Plans</h1>
+          <PricingSubscription />
+        </div>
+      ) : (
+        <div></div>
       )}
     </motion.div>
   );

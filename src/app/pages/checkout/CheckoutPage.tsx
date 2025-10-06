@@ -19,7 +19,7 @@ import {
 } from "@/app/constants/image-cloudinary";
 import { fetchPlanById } from "@/app/services/plan.services";
 import { initiateSubscription } from "@/app/services/subscription.services";
-import PaymentSection from "@/app/pages/payment/PaymentSection";
+import PaymentSection from "@/app/features/dashboard/admin/pages/payments/PaymentSection";
 import { useSubscriptionStore } from "@/app/store/subscription.store";
 
 const CheckoutPage = () => {

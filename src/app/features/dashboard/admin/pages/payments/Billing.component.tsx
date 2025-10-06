@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Invoice } from "@/app/pages/";
-import PaymentSection from "@/app/pages/payment/PaymentSection";
+import PaymentSection from "@/app/features/dashboard/admin/pages/payments/PaymentSection";
 import { useSubscriptionStore } from "@/app/store/subscription.store";
 import { SubscriptionInitiationData } from "@/app/types/subscription.types";
 import { PlanType } from "@/app/types/plan.types";
