@@ -5,6 +5,7 @@ import {
   YourSubscription,
   PurchaseHistory,
   PricingSubscription,
+  BillingSubscription,
 } from "@/app/features/dashboard/admin/component";
 import { getCurrentSubscription } from "@/app/services/subscription.services";
 import { useSubscriptionStore } from "@/app/store/subscription.store";
@@ -13,7 +14,7 @@ import toast from "react-hot-toast";
 
 const SubscriptionSettings = () => {
   const [activeTab, setActiveTab] = useState<
-    "your subscription" | "purchase history"
+    "your subscription" | "purchase history" | "billing information"
   >("your subscription");
 
   const { loading, error, currentSubscriptionResponse } =
@@ -88,6 +89,16 @@ const SubscriptionSettings = () => {
         >
           Purchase History
         </button>
+        <button
+          className={`w-1/2 px-6 py-3 text-sm font-medium transition-colors ${
+            activeTab === "billing information"
+              ? "text-primary border-b-2 border-primary bg-primary-light"
+              : "text-grey-medium hover:text-grey"
+          }`}
+          onClick={() => setActiveTab("billing information")}
+        >
+          Billing Information & Invoice
+        </button>
       </motion.div>
 
       {/* Loading State */}
@@ -100,8 +111,8 @@ const SubscriptionSettings = () => {
 
       {/* Error State */}
       {!loading && error && (
-        <div className="text-center text-red-500 py-6">
-          {error || "Something went wrong."}
+        <div className="text-center text-danger py-6">
+          You don’t have an active subscription yet.
         </div>
       )}
 
@@ -111,15 +122,21 @@ const SubscriptionSettings = () => {
           <AnimatePresence mode="wait">
             {activeTab === "your subscription" ? (
               <motion.div
-                key="your subscription"
+                key="your-subscription"
                 variants={tabVariants}
                 initial="hidden"
                 animate="visible"
                 exit="exit"
               >
-                <YourSubscription data={currentSubscriptionResponse?.data} />
+                {currentSubscriptionResponse ? (
+                  <YourSubscription data={currentSubscriptionResponse.data} />
+                ) : (
+                  <div className="text-center py-12 text-grey">
+                    You don’t have an active subscription yet.
+                  </div>
+                )}
               </motion.div>
-            ) : (
+            ) : activeTab === "purchase history" ? (
               <motion.div
                 key="purchase history"
                 variants={tabVariants}
@@ -127,23 +144,42 @@ const SubscriptionSettings = () => {
                 animate="visible"
                 exit="exit"
               >
-                <PurchaseHistory
-                // invoices={currentSubscriptionResponse?.data?.Invoice}
-                />
+                <PurchaseHistory />
               </motion.div>
+            ) : (
+              <div></div>
             )}
           </AnimatePresence>
         </>
       )}
 
-      {/* Available Plans */}
-      {activeTab === "your subscription" ? (
-        <div className="py-4">
-          <h1 className="h4-bold-24 text-grey py-6">Available Plans</h1>
-          <PricingSubscription />
-        </div>
-      ) : (
-        <div></div>
+      {/* Available Plans / Upgrade */}
+      {activeTab === "your subscription" && (
+        <>
+          {!currentSubscriptionResponse ? (
+            <div className="py-4">
+              <h1 className="h4-bold-24 text-grey py-6">Available Plans</h1>
+              <PricingSubscription />
+            </div>
+          ) : (
+            <div className="py-4">
+              <h1 className="h4-bold-24 text-grey py-6">
+                Upgrade Subscription
+              </h1>
+              {/* <UpgradeSubscription current={currentSubscriptionResponse} /> */}
+            </div>
+          )}
+        </>
+      )}
+
+      {/* Implement after the api fix */}
+      {/* Invoice list and billing info  */}
+      {activeTab === "billing information" && (
+        <BillingSubscription
+          subscriptionId={
+            currentSubscriptionResponse?.data?.Invoice[0]?.subscriptionId
+          }
+        />
       )}
     </motion.div>
   );

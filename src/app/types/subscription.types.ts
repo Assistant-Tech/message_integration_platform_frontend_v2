@@ -1,3 +1,4 @@
+import { T } from "node_modules/framer-motion/dist/types.d-CtuPurYT";
 import { ReactNode } from "react";
 
 /*
@@ -65,6 +66,13 @@ export interface Transaction {
 ─────────────────────────────────────────────────────────────────────────────
 */
 export interface InvoiceResponse {
+  message: string;
+  success: boolean;
+  data: Invoice[];
+  timestamp: string;
+}
+
+export interface Invoice {
   id: string;
   tenantId: string;
   subscriptionId: string;
@@ -80,7 +88,6 @@ export interface InvoiceResponse {
   transactions?: Transaction[];
   currency?: "NPR" | "USD";
 }
-
 /*
 ─────────────────────────────────────────────────────────────────────────────
  🧾 ▶ Plan definition
@@ -261,7 +268,7 @@ export interface FetchSubscriptionData {
   createdAt: string;
   updatedAt: string;
   plan: Plan;
-  Invoice: InvoiceResponse[];
+  Invoice: Invoice[];
 }
 
 export interface CurrentSubscriptionResponse {

@@ -26,6 +26,7 @@ const YourSubscription = ({ data }: YourSubscriptionProps) => {
     totalAmount,
     currency,
   } = data;
+  // console.log("🚀 ~ data:", data);
 
   const formattedStartDate = format(new Date(startDate), "MMM dd, yyyy");
   const formattedEndDate = format(new Date(endDate), "MMM dd, yyyy");
@@ -46,13 +47,32 @@ const YourSubscription = ({ data }: YourSubscriptionProps) => {
 
   return (
     <div>
+      {/* only showcase when trialing */}
+      {status === "TRIALING" ? (
+        <div className="flex flex-col items-start justify-center mb-6 bg-information-light py-6 px-4 rounded-2xl">
+          <h1 className="body-bold-16 text-information-dark">
+            Updrage your plan
+          </h1>
+          <p className="body-regular-16 text-information">
+            You are currently on trial period which ends in
+            <strong> {daysLeft} days left</strong>. To continue using Chatblix,
+            Please upgrade to paid plans and access exclusive features and added
+            benefits{" "}
+            <span className="body-regular-16 underline cursor-pointer">
+              terms & conditions applied.
+            </span>
+          </p>
+        </div>
+      ) : (
+        <div></div>
+      )}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Subscription Details */}
         <motion.div
-          className="lg:col-span-2 bg-white rounded-lg border border-grey-light p-6"
+          className="lg:col-span-2  rounded-lg border border-grey-light bg-base-white"
           variants={itemVariants}
         >
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-6 px-6 pt-6">
             <h2 className="text-lg font-semibold text-grey">
               Subscription Detail
             </h2>
@@ -60,14 +80,16 @@ const YourSubscription = ({ data }: YourSubscriptionProps) => {
               className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
                 status === "ACTIVE"
                   ? "bg-green-100 text-green-800"
-                  : "bg-red-100 text-red-700"
+                  : status === "TRIALING"
+                    ? "bg-information-light text-information"
+                    : "bg-danger-light text-danger"
               }`}
             >
               {status}
             </span>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-4 bg-white p-6 rounded-b-xl">
             {[
               { label: "Plan", value: plan?.name || "N/A", icon: CreditCard },
               {
@@ -102,7 +124,7 @@ const YourSubscription = ({ data }: YourSubscriptionProps) => {
                   idx < 5 ? "border-b border-gray-100" : ""
                 }`}
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 ">
                   <Icon size={20} className="text-grey-medium" />
                   <span className="text-grey-medium">{label}</span>
                 </div>

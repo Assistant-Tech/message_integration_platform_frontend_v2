@@ -1,11 +1,12 @@
 import api from "@/app/services/api/axios";
 import {
   CurrentSubscriptionResponse,
-  InvoiceResponse,
   SubscriptionHistoryResponse,
   SubscriptionInitiationData,
   SubscriptionResponse,
   PaymentGatewayResponse,
+  InvoiceResponse,
+  Invoice,
 } from "@/app/types/subscription.types";
 import { useSubscriptionStore } from "@/app/store/subscription.store";
 
@@ -19,7 +20,7 @@ export const initiateSubscription = async (
   setLoading(true);
 
   try {
-    const response = await api.post<PaymentGatewayResponse>( 
+    const response = await api.post<PaymentGatewayResponse>(
       "/subscription/initiate",
       data,
     );
@@ -96,9 +97,59 @@ export const completeSubscription = async (
 /**
  * Get invoices for a subscription
  */
-export const getSubscriptionInvoices = async (subscriptionId: string) => {
-  const response = await api.get<InvoiceResponse[]>(
+export const getSubscriptionInvoices = async (
+  subscriptionId: string | undefined,
+): Promise<Invoice[]> => {
+  const response = await api.get<InvoiceResponse>(
     `/subscription/${subscriptionId}/invoices`,
   );
-  return response.data;
+
+  console.log("🚀 ~ getSubscriptionInvoices ~ response.data:", response.data);
+
+  return response.data.data; // ✅ clean Invoice[]
+};
+
+/**
+ * Get Subscription Invoices
+ */
+export const getSubscriptionInvoicesAll = async () => {
+  const { setLoading, setError } = useSubscriptionStore.getState();
+
+  setLoading(true);
+  try {
+    const response = await api.get<any[]>("/subscription/invoices");
+    setLoading(false);
+    console.log(
+      "🚀 ~ getSubscriptionInvoicesAll ~ return response.data response.data",
+    );
+    return response.data;
+  } catch (error: any) {
+    setError(error?.message || "Failed to fetch subscription history");
+    setLoading(false);
+    throw error;
+  }
+};
+
+/**
+ * Get a single Subscription Invoice by ID
+ */
+export const getSubscriptionInvoiceById = async (subscriptionId: string) => {
+  const { setLoading, setError } = useSubscriptionStore.getState();
+
+  setLoading(true);
+  try {
+    const response = await api.get<any>(
+      `/subscription/invoices/${subscriptionId}`,
+    );
+    setLoading(false);
+    console.log(
+      "🚀 ~ getSubscriptionInvoiceById ~ response.data:",
+      response.data,
+    );
+    return response.data;
+  } catch (error: any) {
+    setError(error?.message || "Failed to fetch invoice detail");
+    setLoading(false);
+    throw error;
+  }
 };

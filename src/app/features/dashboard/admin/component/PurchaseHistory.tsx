@@ -90,22 +90,17 @@ const PurchaseHistory = () => {
       }),
       columnHelper.accessor("amount", {
         header: "Amount",
-        cell: (info) => (
-          columnHelper.accessor("amount", {
-            header: "Amount",
-            cell: (info) => {
-              const value = info.getValue() as number;
-              const currency = info.row.original.currency ?? "USD";
-              return (
-                <span className="text-grey-medium">
-                  {formatCurrency(value, currency)}
-                </span>
-              );
-            },
-          }),
-          (<span className="text-grey-medium">{info.getValue()}</span>)
-        ),
+        cell: (info) => {
+          const value = info.getValue() as number;
+          const currency = info.row.original.currency ?? "NPR";
+          return (
+            <span className="text-grey-medium">
+              {formatCurrency(value, currency)}
+            </span>
+          );
+        },
       }),
+
       columnHelper.accessor("endDate", {
         header: "End Date",
         cell: (info) => (
