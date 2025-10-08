@@ -85,6 +85,7 @@ export interface Invoice {
   paidAt: string | null;
   voidedAt: string | null;
   createdAt: string;
+  paymentMethod?: string;
   transactions?: Transaction[];
   currency?: "NPR" | "USD";
 }
