@@ -285,3 +285,20 @@ export interface SubscriptionHistoryResponse {
   data: FetchSubscriptionData;
   timestamp: string;
 }
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 🧾 ▶ Cancel Subscription Props
+─────────────────────────────────────────────────────────────────────────────
+*/
+
+export interface CancelSubscriptionProps {
+  subscriptionId: string;
+  cancellationReason: string;
+  cancelImmediately?: boolean;
+}
+
+export interface CancelSubscriptionImmediatelyProps {
+  cancelReason: string;
+  cancelAtPeriodEnd: boolean;
+}

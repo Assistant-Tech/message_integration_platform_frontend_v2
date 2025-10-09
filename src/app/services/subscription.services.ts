@@ -7,6 +7,8 @@ import {
   PaymentGatewayResponse,
   InvoiceResponse,
   Invoice,
+  CancelSubscriptionProps,
+  CancelSubscriptionImmediatelyProps,
 } from "@/app/types/subscription.types";
 import { useSubscriptionStore } from "@/app/store/subscription.store";
 
@@ -106,7 +108,7 @@ export const getSubscriptionInvoices = async (
 
   console.log("🚀 ~ getSubscriptionInvoices ~ response.data:", response.data);
 
-  return response.data.data; // ✅ clean Invoice[]
+  return response.data.data;
 };
 
 /**
@@ -150,6 +152,44 @@ export const getSubscriptionInvoiceById = async (subscriptionId: string) => {
   } catch (error: any) {
     setError(error?.message || "Failed to fetch invoice detail");
     setLoading(false);
+    throw error;
+  }
+};
+
+/**
+ * subscription cancelation
+ */
+export const cancelSubscription = async ({
+  subscriptionId,
+  cancellationReason,
+  cancelImmediately,
+}: CancelSubscriptionProps) => {
+  try {
+    const response = await api.post(`/subscription/cancel`, {
+      subscriptionId,
+      cancellationReason,
+      cancelImmediately,
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * subscription cancelation immediately
+ */
+export const cancelSubscriptionImmediately = async ({
+  cancelReason,
+  cancelAtPeriodEnd,
+}: CancelSubscriptionImmediatelyProps) => {
+  try {
+    const response = await api.post(`/subscription/cancel`, {
+      cancelReason,
+      cancelAtPeriodEnd,
+    });
+    return response.data;
+  } catch (error) {
     throw error;
   }
 };

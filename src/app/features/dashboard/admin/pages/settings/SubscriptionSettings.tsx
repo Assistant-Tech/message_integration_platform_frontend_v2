@@ -10,7 +10,7 @@ import {
 import { getCurrentSubscription } from "@/app/services/subscription.services";
 import { useSubscriptionStore } from "@/app/store/subscription.store";
 import { Loader2 } from "lucide-react";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 
 const SubscriptionSettings = () => {
   const [activeTab, setActiveTab] = useState<
