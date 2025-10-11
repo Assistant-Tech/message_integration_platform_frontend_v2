@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { cn } from "@/app/utils/cn";
 import { usePlans } from "@/app/hooks/usePlans";
 import { usePricingStore } from "@/app/store/pricing.store";
-import { useAuthStore } from "@/app/store/auth.store"; // 👈 import auth store
+import { useAuthStore } from "@/app/store/auth.store";
 import { PricingcardSubscription } from "@/app/features/dashboard/admin/component";
 import { Badge, DynamicToggle } from "@/app/components/ui";
 import { Plan, Duration, APIDuration, PlanType } from "@/app/types/plan.types";
@@ -13,7 +13,6 @@ import { buildBillingUrl } from "@/app/constants/routes";
 
 const PricingSubscription = () => {
   const navigate = useNavigate();
-
   const orgSlug = useAuthStore((state) => state.tenantSlug);
 
   const { currency, duration, setCurrency, setDuration } = usePricingStore();
@@ -51,13 +50,12 @@ const PricingSubscription = () => {
 
   const handlePlanSelect = (plan: PlanType) => {
     setSelectedPlan(plan);
-
     const billingUrl = orgSlug
       ? buildBillingUrl(orgSlug, plan.id, duration, currency)
       : `/admin/settings/subscription/billing?planId=${plan.id}&interval=${duration}&currency=${currency}`;
-
     navigate(billingUrl);
   };
+
   return (
     <Box className="px-6 md:px-2 max-w-full mx-auto">
       <Flex direction="column" align="center" gap="3" mb="6">
@@ -78,28 +76,33 @@ const PricingSubscription = () => {
           />
         </div>
 
-        <RadioGroup.Root
-          value={currency}
-          onValueChange={(val) => setCurrency(val as any)}
-          color="teal"
-          className="w-full pb-4 md:pb-8"
-        >
-          <Flex justify="end" align="center" className="py-4 gap-4">
+        {/* ✅ Fixed NPR/USD toggle (same as Upgrade) */}
+        <Flex justify="end" align="center" className="py-4 gap-6">
+          <RadioGroup.Root
+            value={currency}
+            onValueChange={(val: any) => setCurrency(val as any)}
+            className="flex items-center justify-end gap-6"
+          >
             {["NPR", "USD"].map((cur) => (
-              <Flex key={cur} direction="row" align="center" gap="2">
-                <RadioGroup.Item value={cur} id={cur.toLowerCase()} />
-                <label
-                  className={cn(
-                    currency === cur ? "text-primary" : "text-base-black",
-                    "body-regular-16 cursor-pointer lowercase",
-                  )}
-                >
-                  {cur === "NPR" ? "Nepal (रु)" : "USD ($)"}
-                </label>
-              </Flex>
+              <label
+                key={cur}
+                className={cn(
+                  "flex items-center gap-2 cursor-pointer transition-colors",
+                  currency === cur
+                    ? "text-primary font-medium"
+                    : "text-gray-600 hover:text-primary/70",
+                )}
+              >
+                <RadioGroup.Item
+                  value={cur}
+                  id={cur.toLowerCase()}
+                  className="w-4 h-4 rounded-full border border-gray-400 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                />
+                <span>{cur === "NPR" ? "Nepal (रु)" : "USD ($)"}</span>
+              </label>
             ))}
-          </Flex>
-        </RadioGroup.Root>
+          </RadioGroup.Root>
+        </Flex>
       </Flex>
 
       <div className="w-full">

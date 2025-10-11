@@ -8,7 +8,8 @@ import {
   InvoiceResponse,
   Invoice,
   CancelSubscriptionProps,
-  CancelSubscriptionImmediatelyProps,
+  pauseSubscriptionProps,
+  resumeSubscriptionProps,
 } from "@/app/types/subscription.types";
 import { useSubscriptionStore } from "@/app/store/subscription.store";
 
@@ -177,16 +178,32 @@ export const cancelSubscription = async ({
 };
 
 /**
- * subscription cancelation immediately
+ * subscription Resume
  */
-export const cancelSubscriptionImmediately = async ({
-  cancelReason,
-  cancelAtPeriodEnd,
-}: CancelSubscriptionImmediatelyProps) => {
+export const resumeSubscription = async ({
+  subscriptionId,
+}: resumeSubscriptionProps) => {
   try {
-    const response = await api.post(`/subscription/cancel`, {
-      cancelReason,
-      cancelAtPeriodEnd,
+    const response = await api.post(`/subscription/resume`, {
+      subscriptionId,
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * subscription Pause
+ */
+export const pauseSubscription = async ({
+  subscriptionId,
+  pauseDuration,
+}: pauseSubscriptionProps) => {
+  try {
+    const response = await api.post(`/subscription/pause`, {
+      subscriptionId,
+      pauseDuration,
     });
     return response.data;
   } catch (error) {

@@ -1,5 +1,7 @@
+import { z } from "zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { Invoice } from "@/app/pages/";
 import PaymentSection from "@/app/features/dashboard/admin/pages/payments/PaymentSection";
@@ -7,10 +9,15 @@ import { useSubscriptionStore } from "@/app/store/subscription.store";
 import { SubscriptionInitiationData } from "@/app/types/subscription.types";
 import { PlanType } from "@/app/types/plan.types";
 
-interface CheckoutFormData {
-  paymentOption: "stripe" | "khalti" | "esewa" | "";
-  useTrial: boolean;
-}
+const checkoutSchema = z.object({
+  paymentOption: z.enum(["stripe", "khalti", "esewa"], {
+    required_error: "Please select a payment option.",
+    invalid_type_error: "Invalid payment option selected.",
+  }),
+  useTrial: z.boolean().optional(),
+});
+
+type CheckoutFormData = z.infer<typeof checkoutSchema>;
 
 interface BillingComponentProps {
   plan: PlanType;
@@ -26,9 +33,16 @@ const BillingComponent: React.FC<BillingComponentProps> = ({
   currency,
 }) => {
   const [confirmed, setConfirmed] = useState(false);
-  const { register, handleSubmit, watch } = useForm<CheckoutFormData>({
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<CheckoutFormData>({
+    resolver: zodResolver(checkoutSchema),
     defaultValues: {
-      paymentOption: "",
+      paymentOption: undefined,
       useTrial: false,
     },
   });
@@ -38,10 +52,6 @@ const BillingComponent: React.FC<BillingComponentProps> = ({
   const onSubmit = async (data: CheckoutFormData) => {
     if (!plan) {
       toast.error("Plan data is not available. Please try again.");
-      return;
-    }
-    if (!data.paymentOption) {
-      toast.error("Please select a payment option.");
       return;
     }
 
@@ -80,13 +90,20 @@ const BillingComponent: React.FC<BillingComponentProps> = ({
         </label>
         <select
           {...register("paymentOption")}
-          className="w-full text-grey border border-grey-light rounded-lg px-3 py-2"
+          className={`w-full text-grey border ${
+            errors.paymentOption ? "border-danger" : "border-grey-light"
+          } rounded-lg px-3 py-2`}
         >
           <option value="">-- Choose Payment Option --</option>
           <option value="khalti">Khalti</option>
           <option value="esewa">eSewa</option>
           <option value="stripe">Stripe</option>
         </select>
+        {errors.paymentOption && (
+          <p className="text-danger text-sm mt-1">
+            {errors.paymentOption.message}
+          </p>
+        )}
       </div>
 
       {/* Use Trial Period */}

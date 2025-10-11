@@ -23,6 +23,7 @@ import {
 import { useSubscriptionStore } from "@/app/store/subscription.store";
 import { toast } from "sonner";
 import { Invoice } from "@/app/types/subscription.types";
+import jsPDF from "jspdf";
 
 interface Transaction {
   id: string;
@@ -124,6 +125,32 @@ const BillingSubscription = ({
       setIsTransactionModalOpen(true);
     } catch (error) {
       toast.error("Failed to load transaction details");
+    }
+  };
+
+  // ✅ Download Invoice as PDF (Frontend only)
+  const handleDownloadInvoice = (invoice: Invoice) => {
+    try {
+      const doc = new jsPDF();
+
+      doc.setFontSize(18);
+      doc.text("Invoice", 20, 20);
+      doc.setFontSize(12);
+      doc.text(`Invoice Number: ${invoice.invoiceNumber}`, 20, 40);
+      doc.text(`Date: ${formatDate(invoice.createdAt)}`, 20, 50);
+      doc.text(
+        `Total: ${formatAmount(invoice.total, invoice.currency)}`,
+        20,
+        60,
+      );
+      doc.text(`Status: ${invoice.status}`, 20, 70);
+      doc.text(`Currency: ${invoice.currency}`, 20, 80);
+      doc.text(`Generated on: ${new Date().toLocaleString()}`, 20, 100);
+
+      doc.save(`${invoice.invoiceNumber || "invoice"}.pdf`);
+      toast.success("Invoice downloaded successfully");
+    } catch (error) {
+      toast.error("Failed to generate PDF");
     }
   };
 
@@ -250,7 +277,10 @@ const BillingSubscription = ({
                       >
                         <Eye className="w-4 h-4" />
                       </button>
-                      <button className="p-2 text-teal-600 hover:bg-teal-50 rounded-lg">
+                      <button
+                        onClick={() => handleDownloadInvoice(invoice)}
+                        className="p-2 text-primary hover:bg-primary-light rounded-lg"
+                      >
                         <Download className="w-4 h-4" />
                       </button>
                     </td>
@@ -495,7 +525,10 @@ const BillingSubscription = ({
             </div>
 
             <div className="p-6 border-t flex justify-between gap-3">
-              <button className="flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark">
+              <button
+                onClick={() => handleDownloadInvoice(selectedInvoice)}
+                className="flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark"
+              >
                 <Download className="w-4 h-4" />
                 Download PDF
               </button>

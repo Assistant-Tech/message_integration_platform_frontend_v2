@@ -13,12 +13,14 @@ interface PricingCardProps {
   };
   duration: "monthly" | "yearly";
   onSelect?: () => void;
+  selected?: boolean;
 }
 
 const PricingcardSubscription = ({
   plan,
   duration,
   onSelect,
+  selected,
 }: PricingCardProps) => {
   const formatTitle = (rawTitle?: string): string => {
     if (!rawTitle) return "";
@@ -45,14 +47,29 @@ const PricingcardSubscription = ({
 
   return (
     <div
+      onClick={onSelect}
       className={cn(
-        "relative rounded-2xl p-6 sm:p-8 transition-all duration-300 w-full h-full",
+        "relative rounded-2xl p-6 sm:p-8 transition-all duration-300 cursor-pointer select-none w-full h-full",
         plan.isPopular
           ? "bg-primary text-white transform scale-105 shadow-2xl shadow-primary/25 border-2 border-primary-light z-10 overflow-hidden"
           : "bg-white border-2 border-grey-light shadow-lg hover:shadow-xl",
+        selected && "ring-2 ring-primary border-primary", // ✅ highlight selected
         "min-w-[280px] max-w-sm md:max-w-full flex-shrink-0",
       )}
     >
+      {/* 🔹 Radio circle in corner */}
+      <div
+        className={cn(
+          "absolute top-4 right-4 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors",
+          selected
+            ? "bg-primary border-primary"
+            : "border-gray-300 bg-white hover:border-primary/60",
+        )}
+      >
+        {selected && <div className="w-2.5 h-2.5 bg-white rounded-full" />}
+      </div>
+
+      {/* 🔸 Most Popular Ribbon */}
       {plan.isPopular && (
         <div className="absolute -top-0 -right-0 z-20 overflow-hidden w-32 h-32">
           <div className="absolute transform rotate-45 bg-orange-500 text-white text-xs font-bold py-2 px-1 w-[140px] top-[22px] right-[-35px] text-center shadow-lg">

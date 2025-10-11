@@ -11,6 +11,7 @@ import { getCurrentSubscription } from "@/app/services/subscription.services";
 import { useSubscriptionStore } from "@/app/store/subscription.store";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import UpgradeSubscription from "../../component/subscription/UpgradeSubscription";
 
 const SubscriptionSettings = () => {
   const [activeTab, setActiveTab] = useState<
@@ -163,10 +164,7 @@ const SubscriptionSettings = () => {
             </div>
           ) : (
             <div className="py-4">
-              <h1 className="h4-bold-24 text-grey py-6">
-                Upgrade Subscription
-              </h1>
-              {/* <UpgradeSubscription current={currentSubscriptionResponse} /> */}
+              <UpgradeSubscription current={currentSubscriptionResponse} />
             </div>
           )}
         </>

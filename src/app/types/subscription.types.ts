@@ -297,8 +297,10 @@ export interface CancelSubscriptionProps {
   cancellationReason: string;
   cancelImmediately?: boolean;
 }
+export interface resumeSubscriptionProps {
+  subscriptionId: string;
+}
 
-export interface CancelSubscriptionImmediatelyProps {
-  cancelReason: string;
-  cancelAtPeriodEnd: boolean;
+export interface pauseSubscriptionProps extends resumeSubscriptionProps {
+  pauseDuration: number;
 }
