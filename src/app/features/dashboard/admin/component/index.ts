@@ -38,7 +38,6 @@ export { default as AssignDialog } from "./AssignDialogBox";
 
 // SETTINGS
 export { default as YourSubscription } from "./subscription/YourSubscription";
-export { default as PurchaseHistory } from "./PurchaseHistory";
 export { default as PricingSubscription } from "./Pricing-subscription";
 export { default as PricingcardSubscription } from "./PricingCard-subscription";
 export { default as BillingSubscription } from "../component/subscription/BillingSubscription";

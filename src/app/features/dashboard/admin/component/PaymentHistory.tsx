@@ -9,81 +9,89 @@ import {
   SortingState,
 } from "@tanstack/react-table";
 import { motion } from "framer-motion";
-import { useSubscriptionStore } from "@/app/store/subscription.store";
-import { getSubscriptionHistory } from "@/app/services/subscription.services";
-import { FetchSubscriptionData } from "@/app/types/subscription.types";
 import { formatCurrency } from "@/app/utils/helper";
+import { getPaymentHistory } from "@/app/services/subscription.services";
 
-// Table row type
-interface Purchase {
+interface Payment {
   id: string;
-  plan: string;
-  type: string;
+  transactionId: string;
+  method: string;
   amount: number;
-  startDate: string;
-  endDate: string;
-  status: "Active" | "Expired" | "Cancelled" | "Trialing";
-  currency?: "NPR" | "USD";
+  currency: "NPR" | "USD";
+  status: "SUCCESS" | "FAILED" | "PENDING";
+  createdAt: string;
 }
 
-const columnHelper = createColumnHelper<Purchase>();
+const columnHelper = createColumnHelper<Payment>();
 
-const PurchaseHistory = () => {
-  const { historyResponse, setHistoryResponse, loading } =
-    useSubscriptionStore();
-  const [globalFilter, setGlobalFilter] = useState("");
+const PaymentHistory = () => {
+  const [loading, setLoading] = useState(false);
+  const [history, setHistory] = useState<Payment[]>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [globalFilter, setGlobalFilter] = useState("");
 
-  // Fetch subscription history
   useEffect(() => {
-    if (!historyResponse) {
-      getSubscriptionHistory().then(setHistoryResponse).catch(console.error);
-    }
-  }, [historyResponse, setHistoryResponse]);
+    let mounted = true;
+    setLoading(true);
 
-  // Transform API → table rows
-  const data: Purchase[] = useMemo(() => {
-    if (!historyResponse?.data) return [];
+    getPaymentHistory()
+      .then((res) => {
+        if (!mounted) return;
+        const data = Array.isArray(res.data) ? res.data : [res.data];
+        const normalized: Payment[] = data.map((item: any) => ({
+          id: item.id ?? item._id ?? "",
+          transactionId:
+            item.transactionId ??
+            item.providerTransactionId ??
+            item.txnId ??
+            "",
+          method:
+            item.method ??
+            item.paymentMethod?.provider ??
+            (typeof item.paymentMethod === "string"
+              ? item.paymentMethod
+              : "Unknown"),
+          amount: Number(item.amount ?? item.invoice?.total ?? 0),
+          currency: (item.currency ?? item.invoice?.currency ?? "NPR") as
+            | "NPR"
+            | "USD",
+          status: (item.status ?? item.invoice?.status ?? "PENDING") as
+            | "SUCCESS"
+            | "FAILED"
+            | "PENDING",
+          createdAt:
+            item.createdAt ?? item.invoice?.paidAt ?? new Date().toISOString(),
+        }));
 
-    // 🛠 Fix: historyResponse.data can be array or single object
-    const subscriptions: FetchSubscriptionData[] = Array.isArray(
-      historyResponse.data,
-    )
-      ? historyResponse.data
-      : [historyResponse.data];
+        setHistory(normalized);
+      })
+      .catch(console.error)
+      .finally(() => mounted && setLoading(false));
 
-    return subscriptions.map((sub) => {
-      const invoice = sub.Invoice?.[0];
-      return {
-        id: sub.id,
-        plan: sub.plan?.name || "Unknown",
-        type: "Subscription",
-        amount: invoice ? Number(invoice.total) : 0,
-        currency: invoice?.currency as "NPR" | "USD",
-        startDate: new Date(sub.startDate).toLocaleDateString(),
-        endDate: new Date(sub.endDate).toLocaleDateString(),
-        status:
-          sub.status === "TRIALING"
-            ? "Trialing"
-            : sub.status === "CANCELLED"
-              ? "Cancelled"
-              : sub.status === "ACTIVE"
-                ? "Active"
-                : "Expired",
-      };
-    });
-  }, [historyResponse]);
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const data = useMemo(
+    () =>
+      history.map((p) => ({
+        ...p,
+        createdAt: new Date(p.createdAt).toLocaleDateString(),
+      })),
+    [history],
+  );
 
   const columns = useMemo(
     () => [
-      columnHelper.accessor("plan", {
-        header: "Plan",
+      columnHelper.accessor("transactionId", {
+        header: "Transaction ID",
         cell: (info) => (
           <span className="font-medium text-grey">{info.getValue()}</span>
         ),
       }),
-      columnHelper.accessor("type", {
-        header: "Type",
+      columnHelper.accessor("method", {
+        header: "Payment Method",
         cell: (info) => (
           <span className="text-grey-medium">{info.getValue()}</span>
         ),
@@ -91,8 +99,8 @@ const PurchaseHistory = () => {
       columnHelper.accessor("amount", {
         header: "Amount",
         cell: (info) => {
-          const value = info.getValue() as number;
-          const currency = info.row.original.currency ?? "NPR";
+          const value = info.getValue();
+          const currency = info.row.original.currency;
           return (
             <span className="text-grey-medium">
               {formatCurrency(value, currency)}
@@ -100,9 +108,8 @@ const PurchaseHistory = () => {
           );
         },
       }),
-
-      columnHelper.accessor("endDate", {
-        header: "End Date",
+      columnHelper.accessor("createdAt", {
+        header: "Date",
         cell: (info) => (
           <span className="text-grey-medium">{info.getValue()}</span>
         ),
@@ -114,13 +121,11 @@ const PurchaseHistory = () => {
           return (
             <span
               className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
-                status === "Active"
+                status === "SUCCESS"
                   ? "bg-green-100 text-green-800"
-                  : status === "Trialing"
-                    ? "bg-blue-100 text-blue-800"
-                    : status === "Expired"
-                      ? "bg-yellow-100 text-yellow-800"
-                      : "bg-red-100 text-red-800"
+                  : status === "PENDING"
+                    ? "bg-yellow-100 text-yellow-800"
+                    : "bg-red-100 text-red-800"
               }`}
             >
               {status}
@@ -138,10 +143,7 @@ const PurchaseHistory = () => {
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    state: {
-      globalFilter,
-      sorting,
-    },
+    state: { globalFilter, sorting },
     onGlobalFilterChange: setGlobalFilter,
     onSortingChange: setSorting,
   });
@@ -167,7 +169,6 @@ const PurchaseHistory = () => {
       initial="hidden"
       animate="visible"
     >
-      {/* Table */}
       <div className="bg-white rounded-lg border border-grey-light overflow-hidden my-2">
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -187,10 +188,11 @@ const PurchaseHistory = () => {
                               header.column.columnDef.header,
                               header.getContext(),
                             )}
-                        {{
-                          asc: " ↑",
-                          desc: " ↓",
-                        }[header.column.getIsSorted() as string] ?? null}
+                        {header.column.getIsSorted() === "asc"
+                          ? " ↑"
+                          : header.column.getIsSorted() === "desc"
+                            ? " ↓"
+                            : null}
                       </div>
                     </th>
                   ))}
@@ -229,7 +231,7 @@ const PurchaseHistory = () => {
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center">
                     <p className="text-grey-medium text-sm">
-                      No purchase history available
+                      No payment history available
                     </p>
                   </td>
                 </tr>
@@ -242,4 +244,4 @@ const PurchaseHistory = () => {
   );
 };
 
-export default PurchaseHistory;
+export default PaymentHistory;

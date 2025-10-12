@@ -150,7 +150,7 @@ const YourSubscription = ({ data }: YourSubscriptionProps) => {
     <div>
       {/* PAUSED STATE NOTICE */}
       {status === "PAUSED" && (
-        <div className="flex flex-col items-start justify-center mb-6 bg-warning-light py-6 px-4 rounded-2xl">
+        <div className="flex flex-col items-start justify-center mb-6 bg-white py-6 px-4 rounded-2xl">
           <h1 className="body-bold-16 text-warning-dark">
             Subscription Paused
           </h1>

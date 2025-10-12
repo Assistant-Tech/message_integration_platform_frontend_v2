@@ -74,7 +74,7 @@ const BillingSubscription = ({
   const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
   const [isTransactionModalOpen, setIsTransactionModalOpen] = useState(false);
 
-  const { loading, setLoading } = useSubscriptionStore();
+  const [loading, setLoading] = useState(false);
   const [loadingTransactions, setLoadingTransactions] = useState(false);
 
   useEffect(() => {

@@ -1,9 +1,7 @@
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   YourSubscription,
-  PurchaseHistory,
   PricingSubscription,
   BillingSubscription,
 } from "@/app/features/dashboard/admin/component";
@@ -12,10 +10,11 @@ import { useSubscriptionStore } from "@/app/store/subscription.store";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import UpgradeSubscription from "../../component/subscription/UpgradeSubscription";
+import PaymentHistory from "../../component/PaymentHistory";
 
 const SubscriptionSettings = () => {
   const [activeTab, setActiveTab] = useState<
-    "your subscription" | "purchase history" | "billing information"
+    "your subscription" | "billing information" | "payment history"
   >("your subscription");
 
   const { loading, error, currentSubscriptionResponse } =
@@ -71,7 +70,7 @@ const SubscriptionSettings = () => {
         variants={itemVariants}
       >
         <button
-          className={`w-1/2 px-6 py-3 text-sm font-medium transition-colors rounded-tl-lg ${
+          className={`flex-1 px-6 py-3 text-sm font-medium transition-colors rounded-tl-lg ${
             activeTab === "your subscription"
               ? "text-primary border-b-2 border-primary bg-primary-light"
               : "text-grey-medium hover:text-grey"
@@ -81,17 +80,17 @@ const SubscriptionSettings = () => {
           Your Subscription
         </button>
         <button
-          className={`w-1/2 px-6 py-3 text-sm font-medium transition-colors ${
-            activeTab === "purchase history"
+          className={`flex-1 px-6 py-3 text-sm font-medium transition-colors ${
+            activeTab === "payment history"
               ? "text-primary border-b-2 border-primary bg-primary-light"
               : "text-grey-medium hover:text-grey"
           }`}
-          onClick={() => setActiveTab("purchase history")}
+          onClick={() => setActiveTab("payment history")}
         >
-          Purchase History
+          Payment History
         </button>
         <button
-          className={`w-1/2 px-6 py-3 text-sm font-medium transition-colors ${
+          className={`flex-1 px-6 py-3 text-sm font-medium transition-colors rounded-tr-lg ${
             activeTab === "billing information"
               ? "text-primary border-b-2 border-primary bg-primary-light"
               : "text-grey-medium hover:text-grey"
@@ -137,18 +136,31 @@ const SubscriptionSettings = () => {
                   </div>
                 )}
               </motion.div>
-            ) : activeTab === "purchase history" ? (
+            ) : activeTab === "payment history" ? (
               <motion.div
-                key="purchase history"
+                key="payment history"
                 variants={tabVariants}
                 initial="hidden"
                 animate="visible"
                 exit="exit"
               >
-                <PurchaseHistory />
+                <PaymentHistory />
               </motion.div>
             ) : (
-              <div></div>
+              <motion.div
+                key="billing information"
+                variants={tabVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+              >
+                <BillingSubscription
+                  subscriptionId={
+                    currentSubscriptionResponse?.data?.Invoice[0]
+                      ?.subscriptionId
+                  }
+                />
+              </motion.div>
             )}
           </AnimatePresence>
         </>
@@ -170,8 +182,7 @@ const SubscriptionSettings = () => {
         </>
       )}
 
-      {/* Implement after the api fix */}
-      {/* Invoice list and billing info  */}
+      {/* Invoice list and billing info */}
       {activeTab === "billing information" && (
         <BillingSubscription
           subscriptionId={

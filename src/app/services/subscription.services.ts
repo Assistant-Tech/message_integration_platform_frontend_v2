@@ -210,3 +210,10 @@ export const pauseSubscription = async ({
     throw error;
   }
 };
+/**
+ * Payment history fetch all
+ */
+export const getPaymentHistory = async () => {
+  const response = await api.get("/payment/history");
+  return response.data;
+};
