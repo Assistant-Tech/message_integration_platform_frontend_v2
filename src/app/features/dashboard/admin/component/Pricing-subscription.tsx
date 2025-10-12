@@ -23,6 +23,7 @@ const PricingSubscription = () => {
   } = usePlans(duration, currency);
 
   const [selectedPlan, setSelectedPlan] = useState<PlanType>();
+  console.log("🚀 ~ PricingSubscription ~ selectedPlan:", selectedPlan);
 
   const transformPlan = (plan: Plan) => ({
     ...plan,

@@ -60,6 +60,8 @@ const CheckoutDialogPop = ({ open, onClose, plan }: CheckoutDialogProps) => {
   const [appliedPromoCode, setAppliedPromoCode] = useState("");
   const [confirmed, setConfirmed] = useState(false);
 
+  if (confirmed) return toast.success("Success ");
+
   type PaymentOption = "khalti" | "esewa" | "stripe";
 
   const paymentIcons: Record<PaymentOption, string> = {
@@ -411,7 +413,7 @@ const CheckoutDialogPop = ({ open, onClose, plan }: CheckoutDialogProps) => {
             paymentOption={watch("paymentOption")}
             currency={currency}
             interval={interval}
-            onConfirm={handleFinalSubmit}
+            onSubmit={handleFinalSubmit}
             promocode={appliedPromoCode}
           />
         </div>

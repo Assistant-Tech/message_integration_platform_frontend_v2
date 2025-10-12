@@ -1,4 +1,3 @@
-import { T } from "node_modules/framer-motion/dist/types.d-CtuPurYT";
 import { ReactNode } from "react";
 
 /*
@@ -66,6 +65,10 @@ export interface Transaction {
 ─────────────────────────────────────────────────────────────────────────────
 */
 export interface InvoiceResponse {
+  id: null | undefined;
+  invoiceNumber: ReactNode;
+  status: ReactNode;
+  total: ReactNode;
   message: string;
   success: boolean;
   data: Invoice[];

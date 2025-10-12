@@ -193,12 +193,9 @@ const LoginInfoTable = () => {
     visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
   };
 
-  const currentPage = table.getState().pagination.pageIndex + 1;
   const totalPages = meta
     ? Math.max(1, Math.ceil(meta.total / pagination.pageSize))
     : 1;
-  const canNextPage = table.getCanNextPage();
-  const canPreviousPage = table.getCanPreviousPage();
   const hasMultiplePages = totalPages > 1;
 
   if (loading) {

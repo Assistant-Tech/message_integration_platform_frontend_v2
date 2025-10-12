@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { LogOut } from "lucide-react";
 import { useMemo, useEffect } from "react";
-import api from "@/app/services/api/axios";
 
 const UserDashboard = () => {
   const navigate = useNavigate();
@@ -21,20 +20,20 @@ const UserDashboard = () => {
     navigate("/login");
   };
 
-  const handleAutoTokenRefresh = async () => {
-    try {
-      const response = await api.get("test/permission");
-      if (response.status === 401) {
-        toast.error("Token Expired! Refreshing...");
-      } else {
-        toast.success(response.data.message || "Token refreshed successfully!");
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      }
-    }
-  };
+  // const handleAutoTokenRefresh = async () => {
+  //   try {
+  //     const response = await api.get("test/permission");
+  //     if (response.status === 401) {
+  //       toast.error("Token Expired! Refreshing...");
+  //     } else {
+  //       toast.success(response.data.message || "Token refreshed successfully!");
+  //     }
+  //   } catch (error) {
+  //     if (error instanceof Error) {
+  //       toast.error(error.message);
+  //     }
+  //   }
+  // };
 
   const userInfo = useMemo(() => {
     if (!user) return null;
