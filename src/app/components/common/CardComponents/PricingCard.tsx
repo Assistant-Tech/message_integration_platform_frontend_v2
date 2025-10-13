@@ -17,7 +17,6 @@ interface PricingCardProps {
 }
 
 const PricingCard = ({ plan, duration }: PricingCardProps) => {
-  // Use the custom hook to get all the data needed for rendering
   const {
     displayTitle,
     displayFeatures,
@@ -158,7 +157,6 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
   );
 };
 
-// Only re-render if duration or plan.id changes
 const arePropsEqual = (
   prevProps: PricingCardProps,
   nextProps: PricingCardProps,

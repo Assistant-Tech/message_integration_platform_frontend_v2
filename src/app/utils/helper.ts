@@ -1,11 +1,26 @@
-import { LoginResponse, MFARequiredResponse } from "@/app/types/auth.types";
-
 /**
  * Extracts and formats features from a plan's features object into a readable array
  */
-export const extractFeatures = (features: Record<string, any>): string[] => {
+export const extractFeatures = (
+  features: Record<string, any> | string[],
+): string[] => {
   const featuresList: string[] = [];
 
+  // Case 1: When features are an array of strings
+  if (Array.isArray(features)) {
+    return features.map((feature: string) =>
+      feature
+        .split(" ")
+        .map((word: string, index: number) =>
+          index === 0
+            ? word.charAt(0).toUpperCase() + word.slice(1)
+            : word.toLowerCase(),
+        )
+        .join(" "),
+    );
+  }
+
+  // Case 2: When features are an object with keys and values
   Object.entries(features).forEach(([key, value]) => {
     if (key === "includes") {
       featuresList.push(`Includes all ${value} features`);
@@ -35,6 +50,7 @@ export const extractFeatures = (features: Record<string, any>): string[] => {
 
   return featuresList;
 };
+
 /**
  * Format secret code into suitable double liner
  */
@@ -46,3 +62,11 @@ export const formatSecret = (secret: string) => {
       ?.join(" ") ?? ""
   );
 };
+
+export const formatCurrency = (amount: number, currency: "NPR" | "USD") => {
+  const normalized = amount / 100;
+  return currency === "NPR"
+    ? `रु${normalized.toFixed(2)}`
+    : `$${normalized.toFixed(2)}`;
+};
+

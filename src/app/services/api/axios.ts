@@ -13,7 +13,7 @@ const api = axios.create({
   baseURL:
     import.meta.env.VITE_API_URL_TEST ||
     ("http://localhost:3000/api/v1" as string),
-  withCredentials: true, // ✅ ensures refresh cookie / csrf cookie are sent
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
@@ -21,7 +21,7 @@ const api = axios.create({
 
 // ---------------------------------------------------------------------------
 // REQUEST INTERCEPTOR
-// Adds Authorization + CSRF headers when available
+// Adds Authorization, CSRF, and Idempotency headers
 // ---------------------------------------------------------------------------
 let isCooldown = false;
 let cooldownTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -61,8 +61,16 @@ api.interceptors.request.use(async (config) => {
         config.headers["X-CSRF-Token"] = cookieMatch[1];
       }
     }
+
+    // ✅ Idempotency Key: Apply for all mutating methods (POST, PUT, PATCH, DELETE)
+    // This generalizes the requirement beyond specific endpoints like /esewa
+    // const method = config.method?.toUpperCase();
+    // if (method && !["GET", "HEAD", "OPTIONS"].includes(method)) {
+    //   // Use crypto.randomUUID() to generate a unique key for each request
+    //   config.headers["Idempotency-Key"] = crypto.randomUUID();
+    // }
   } catch {
-    // ignore
+    // ignore, typically for scenarios where the store import might fail in testing environments
   }
   return config;
 });
@@ -91,6 +99,7 @@ const processQueue = (error: unknown, token: string | null) => {
         pending.config.headers = pending.config.headers || {};
         pending.config.headers.Authorization = `Bearer ${token}`;
       }
+      // Re-run the original request with the new token
       api(pending.config).then(pending.resolve).catch(pending.reject);
     }
   }
@@ -106,28 +115,33 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        if (!isRefreshing) {
-          isRefreshing = true;
-          const mod = await import("@/app/store/auth.store");
-          const { refreshAccessToken } = mod.useAuthStore.getState();
-
-          refreshPromise = refreshAccessToken();
-          const newToken = await refreshPromise;
-
-          isRefreshing = false;
-          processQueue(null, newToken);
-
-          if (newToken) {
-            originalRequest.headers = originalRequest.headers || {};
-            originalRequest.headers.Authorization = `Bearer ${newToken}`;
-            return api(originalRequest);
-          }
+        // If a refresh is already in progress, queue the current request
+        if (isRefreshing) {
+          return new Promise((resolve, reject) => {
+            failedQueue.push({ resolve, reject, config: originalRequest });
+          });
         }
 
-        return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject, config: originalRequest });
-        });
+        // Start the refresh process
+        isRefreshing = true;
+        const mod = await import("@/app/store/auth.store");
+        const { refreshAccessToken } = mod.useAuthStore.getState();
+
+        refreshPromise = refreshAccessToken();
+        const newToken = await refreshPromise;
+
+        // Process queue and reset state after successful refresh
+        isRefreshing = false;
+        processQueue(null, newToken);
+
+        if (newToken) {
+          originalRequest.headers = originalRequest.headers || {};
+          originalRequest.headers.Authorization = `Bearer ${newToken}`;
+          // Retry the original request
+          return api(originalRequest);
+        }
       } catch (refreshErr) {
+        // Failed refresh: process queue with error and trigger logout
         isRefreshing = false;
         processQueue(refreshErr, null);
 

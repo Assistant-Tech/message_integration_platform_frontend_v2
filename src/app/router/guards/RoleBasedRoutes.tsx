@@ -13,7 +13,7 @@ const RoleBasedRoute = ({ allowedRoles }: { allowedRoles: string[] }) => {
   if (!user) return <Loading />;
 
   if (!allowedRoles.includes(user.roleType)) {
-    return <Navigate to={`/${slug}/dashboard`} replace />;
+    return <Navigate to={`/${slug}/admin/dashboard`} replace />;
   }
 
   return <Outlet />;

@@ -8,6 +8,7 @@ import {
   OrderStats,
   TagTable,
 } from "@/app/features/dashboard/admin/component/";
+import { memo } from "framer-motion";
 
 const TagsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -118,4 +119,4 @@ const TagsPage = () => {
   );
 };
 
-export default TagsPage;
+export default memo(TagsPage);

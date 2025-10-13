@@ -1,15 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   YourSubscription,
-  PurchaseHistory,
-} from "@/app/features/dashboard/admin/component/";
-import { PricingSubscription } from "@/app/features/dashboard/admin/component";
+  PricingSubscription,
+  BillingSubscription,
+} from "@/app/features/dashboard/admin/component";
+import { getCurrentSubscription } from "@/app/services/subscription.services";
+import { useSubscriptionStore } from "@/app/store/subscription.store";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import UpgradeSubscription from "../../component/subscription/UpgradeSubscription";
+import PaymentHistory from "../../component/PaymentHistory";
 
 const SubscriptionSettings = () => {
   const [activeTab, setActiveTab] = useState<
-    "your subscription" | "purchase history"
+    "your subscription" | "billing information" | "payment history"
   >("your subscription");
+
+  const { loading, error, currentSubscriptionResponse } =
+    useSubscriptionStore();
+
+  useEffect(() => {
+    const fetchCurrentSubscription = async () => {
+      try {
+        await getCurrentSubscription();
+      } catch {
+        toast.error("Failed to fetch current subscription");
+      }
+    };
+    fetchCurrentSubscription();
+  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -50,7 +70,7 @@ const SubscriptionSettings = () => {
         variants={itemVariants}
       >
         <button
-          className={`w-1/2 px-6 py-3 text-sm font-medium transition-colors rounded-tl-lg ${
+          className={`flex-1 px-6 py-3 text-sm font-medium transition-colors rounded-tl-lg ${
             activeTab === "your subscription"
               ? "text-primary border-b-2 border-primary bg-primary-light"
               : "text-grey-medium hover:text-grey"
@@ -60,45 +80,116 @@ const SubscriptionSettings = () => {
           Your Subscription
         </button>
         <button
-          className={`w-1/2 px-6 py-3 text-sm font-medium transition-colors ${
-            activeTab === "purchase history"
+          className={`flex-1 px-6 py-3 text-sm font-medium transition-colors ${
+            activeTab === "payment history"
               ? "text-primary border-b-2 border-primary bg-primary-light"
               : "text-grey-medium hover:text-grey"
           }`}
-          onClick={() => setActiveTab("purchase history")}
+          onClick={() => setActiveTab("payment history")}
         >
-          Purchase History
+          Payment History
+        </button>
+        <button
+          className={`flex-1 px-6 py-3 text-sm font-medium transition-colors rounded-tr-lg ${
+            activeTab === "billing information"
+              ? "text-primary border-b-2 border-primary bg-primary-light"
+              : "text-grey-medium hover:text-grey"
+          }`}
+          onClick={() => setActiveTab("billing information")}
+        >
+          Billing Information & Invoice
         </button>
       </motion.div>
 
-      <AnimatePresence mode="wait">
-        {activeTab === "your subscription" ? (
-          <motion.div
-            key="your subscription"
-            variants={tabVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-          >
-            <YourSubscription />
-          </motion.div>
-        ) : (
-          <motion.div
-            key="purchase history"
-            variants={tabVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-          >
-            <PurchaseHistory />
-          </motion.div>
-        )}
-      </AnimatePresence>
-      <div className="py-4">
-        {/* available plans */}
-        <h1 className="h4-bold-24 text-grey py-6">Available Plans</h1>
-        <PricingSubscription />
-      </div>
+      {/* Loading State */}
+      {loading && (
+        <div className="flex justify-center items-center py-12">
+          <Loader2 className="animate-spin text-primary w-6 h-6" />
+          <span className="ml-2 text-grey">Loading subscription...</span>
+        </div>
+      )}
+
+      {/* Error State */}
+      {!loading && error && (
+        <div className="text-center text-danger py-6">
+          You don’t have an active subscription yet.
+        </div>
+      )}
+
+      {/* Content */}
+      {!loading && !error && (
+        <>
+          <AnimatePresence mode="wait">
+            {activeTab === "your subscription" ? (
+              <motion.div
+                key="your-subscription"
+                variants={tabVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+              >
+                {currentSubscriptionResponse ? (
+                  <YourSubscription data={currentSubscriptionResponse.data} />
+                ) : (
+                  <div className="text-center py-12 text-grey">
+                    You don’t have an active subscription yet.
+                  </div>
+                )}
+              </motion.div>
+            ) : activeTab === "payment history" ? (
+              <motion.div
+                key="payment history"
+                variants={tabVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+              >
+                <PaymentHistory />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="billing information"
+                variants={tabVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+              >
+                <BillingSubscription
+                  subscriptionId={
+                    currentSubscriptionResponse?.data?.Invoice[0]
+                      ?.subscriptionId
+                  }
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </>
+      )}
+
+      {/* Available Plans / Upgrade */}
+      {activeTab === "your subscription" && (
+        <>
+          {!currentSubscriptionResponse ? (
+            <div className="py-4">
+              <h1 className="h4-bold-24 text-grey py-6">Available Plans</h1>
+              <PricingSubscription />
+            </div>
+          ) : (
+            <div className="py-4">
+              <UpgradeSubscription current={currentSubscriptionResponse} />
+            </div>
+          )}
+        </>
+      )}
+
+      {/* Invoice list and billing info */}
+      {activeTab === "billing information" && (
+        <BillingSubscription
+          subscriptionId={
+            currentSubscriptionResponse?.data?.Invoice[0]?.subscriptionId
+          }
+        />
+      )}
     </motion.div>
   );
 };

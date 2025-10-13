@@ -1,5 +1,5 @@
 import { Suspense, lazy } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useParams } from "react-router-dom";
 import { Loading } from "@/app/components/common";
 import {
   PublicLayout,
@@ -47,6 +47,16 @@ import { OnboardingForm } from "@/app/features/auth/pages/onboarding/steps";
 import ProtectedRoute from "@/app/router/guards/ProtectedRoute";
 import OnboardingGuard from "@/app/router/guards/OnboardingGurad";
 import RoleBasedRoute from "@/app/router/guards/RoleBasedRoutes";
+import PaymentSuccessPage from "@/app/features/dashboard/admin/pages/payments/PaymentSuccess.page";
+import SubscriptionConfirmation from "@/app/features/dashboard/admin/pages/payments/confirm/SubscriptionConfirmation";
+import BillingPage from "@/app/features/dashboard/admin/pages/payments/confirm/Billing.page";
+import PaymentVerify from "@/app/features/dashboard/admin/pages/payments/confirm/PaymentVerify.page";
+
+const VerifyRedirect = () => {
+  const { slug } = useParams<{ slug: string }>();
+  if (!slug) return <Navigate to="/" replace />;
+  return <Navigate to={`/${slug}/admin/dashboard`} replace />;
+};
 
 /* ------------------ Lazy User Module ------------------ */
 const UserDashboardPage = lazy(
@@ -209,12 +219,6 @@ const AppRoutes = () => {
             <Route path={APP_ROUTES.PUBLIC.ABOUT} element={<AboutUs />} />
             <Route path={APP_ROUTES.PUBLIC.PRICING} element={<PricingPage />} />
 
-            {/* Checkout */}
-            <Route
-              path={APP_ROUTES.PUBLIC.CHECKOUT}
-              element={<CheckoutPage />}
-            />
-
             {/* Auth semi-protected */}
             <Route path="/check-email" element={<CheckEmail />} />
             <Route path="/verify/:token" element={<VerifyEmail />} />
@@ -226,6 +230,14 @@ const AppRoutes = () => {
               element={<Forbidden />}
             />
           </Route>
+
+          <Route path="/payments/verify" element={<PaymentVerify />} />
+          <Route path="/payments/success" element={<PaymentSuccessPage />} />
+
+          <Route
+            path="/:slug/subscription/confirmation"
+            element={<SubscriptionConfirmation />}
+          />
 
           {/* ---------------- Protected Routes ---------------- */}
           <Route element={<ProtectedRoute />}>
@@ -241,6 +253,7 @@ const AppRoutes = () => {
               >
                 <Route path="/:slug/admin" element={<DashboardLayout />}>
                   <Route index element={<AdminDashboardPage />} />
+
                   <Route
                     path={APP_ROUTES.ADMIN.DASHBOARD}
                     element={<AdminDashboardPage />}
@@ -308,6 +321,16 @@ const AppRoutes = () => {
                     path={APP_ROUTES.ADMIN.SETTINGS_SUBSCRIPTION}
                     element={<SubscriptionSettings />}
                   />
+                  {/* Checkout */}
+                  <Route
+                    path={APP_ROUTES.ADMIN.SETTINGS_SUBSCRIPTION}
+                    element={<CheckoutPage />}
+                  />
+                  {/* Billing Info */}
+                  <Route
+                    path={APP_ROUTES.ADMIN.SETTINGS_SUBSCRIPTION_BILLING}
+                    element={<BillingPage />}
+                  />
 
                   {/* Products */}
                   <Route
@@ -336,6 +359,8 @@ const AppRoutes = () => {
                   />
                 </Route>
               </Route>
+
+              <Route path="/:slug/verify" element={<VerifyRedirect />} />
 
               {/* Tenant User Dashboard (default for non-admin roles) */}
               <Route path="/:slug/dashboard" element={<DashboardLayout />}>
