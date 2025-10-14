@@ -83,7 +83,7 @@ const Dashboard = () => {
 
       {showRecoveryModal && (
         <RecoveryPhrasesModal
-          codes={recoveryPhrases}
+          codes={recoveryPhrases} 
           onClose={() => setShowRecoveryModal(false)}
         />
       )}

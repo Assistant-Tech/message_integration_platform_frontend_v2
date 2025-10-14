@@ -3,6 +3,7 @@ import {
   CollapseSidebar,
   TopNavbar,
 } from "@/app/features/dashboard/admin/component/ui";
+import SubscriptionListener from "@/app/components/common/socket/SubscriptionListener";
 
 const DashboardLayout = () => {
   return (
@@ -11,6 +12,7 @@ const DashboardLayout = () => {
       <div className="flex flex-col flex-1 overflow-hidden">
         <TopNavbar />
         <main className="overflow-auto flex-1">
+          <SubscriptionListener />
           <Outlet />
         </main>
       </div>

@@ -12,13 +12,13 @@ import {
 import { format, differenceInDays } from "date-fns";
 import { CurrentSubscriptionResponse } from "@/app/types/subscription.types";
 import { formatCurrency } from "@/app/utils/helper";
-import toast from "react-hot-toast";
 import {
   cancelSubscription,
   getCurrentSubscription,
   pauseSubscription,
   resumeSubscription,
 } from "@/app/services/subscription.services";
+import { toast } from "sonner";
 
 type YourSubscriptionProps = {
   data?: CurrentSubscriptionResponse["data"];
