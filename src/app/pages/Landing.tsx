@@ -4,9 +4,9 @@ import { Suspense, lazy, memo } from "react";
 import {
   Footer,
   NewsLetterModalPopUp,
-  AnnoucementBanner,
   Navbar,
   FAQ,
+  AnnouncementBanner,
 } from "@/app/components/common";
 import {
   BuiltAssistant,
@@ -40,7 +40,7 @@ const LoadingTestimonials = memo(() => (
 ));
 
 const LandingContent = () => {
-  const { bannerVisible } = useBanner();
+  const { isVisible } = useBanner();
   const { width } = useWindowSize();
 
   const BANNER_HEIGHT = width < 768 ? 78 : 50;
@@ -75,22 +75,22 @@ const LandingContent = () => {
 
   return (
     <>
-      {bannerVisible && (
+      {isVisible("landing_banner_dismissed") && (
         <div
           className="fixed top-0 left-0 right-0 z-[60] transition-all duration-500 ease-in-out"
           style={{ height: BANNER_HEIGHT }}
         >
-          <AnnoucementBanner>
-            <h1>
-              🚀 Start your free trial today and enjoy 20% off the starter plan!
-              Don't miss out on this limited time offer.{" "}
-              <span className="underline cursor-pointer">Learn More</span>
-            </h1>
-          </AnnoucementBanner>
+          <AnnouncementBanner
+            message="🚀 Start your free trial today and enjoy 20% off the starter plan! Don't miss out on this limited-time offer. Learn More"
+            type="success"
+            storageKey="landing_banner_dismissed"
+          />
         </div>
       )}
 
-      <Navbar offsetTop={bannerVisible ? BANNER_HEIGHT : 0} />
+      <Navbar
+        offsetTop={isVisible("landing_banner_dismissed") ? BANNER_HEIGHT : 0}
+      />
 
       {sections.map(({ element, useContainer = true }, idx) => (
         <Section key={idx} useContainer={useContainer}>

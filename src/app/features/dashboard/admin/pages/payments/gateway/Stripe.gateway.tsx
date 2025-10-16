@@ -11,7 +11,7 @@ const StripePaymentPage = ({ response }: StripePaymentProps) => {
 
   const handleStripeRedirect = () => {
     if (paymentUrl) {
-      window.location.href = paymentUrl;
+      window.open(paymentUrl, "_blank");
     }
   };
 

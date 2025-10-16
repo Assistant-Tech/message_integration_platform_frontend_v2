@@ -1,49 +1,57 @@
 import { useBanner } from "@/app/context/BannerContext";
 import { Text } from "@radix-ui/themes";
 import { X } from "lucide-react";
-import { ReactNode } from "react";
+import clsx from "clsx";
 
 interface AnnouncementBannerProps {
-  children?: ReactNode;
+  message?: string;
+  type?: "info" | "warning" | "success" | "error";
   storageKey?: string;
+  nonDismissable?: boolean;
 }
 
-const DEFAULT_KEY =
-  import.meta.env.VITE_ANNOUNCEMENT_BANNER_KEY ||
-  "announcement_banner_dismissed";
+const AnnouncementBanner = ({
+  message,
+  type = "info",
+  storageKey,
+  nonDismissable = false,
+}: AnnouncementBannerProps) => {
+  const { isVisible, dismiss } = useBanner();
 
-const AnnouncementBanner = ({ children }: AnnouncementBannerProps) => {
-  const { bannerVisible, setBannerVisible } = useBanner();
-  
+  const key = storageKey || "announcement_banner_dismissed";
+  const visible = nonDismissable ? true : isVisible(key);
+
+  if (!visible) return null;
+
   const handleClose = () => {
-    localStorage.setItem(DEFAULT_KEY, "true");
-    setBannerVisible(false);
+    if (!nonDismissable) dismiss(key);
   };
 
-  if (!bannerVisible) return null;
-
   return (
-    <div className="fixed top-0 left-0 right-0 z-40 bg-primary text-white px-2 py-2">
-      <div className="mx-auto max-w-[1600px] w-full flex items-center justify-between">
-        {/* Centered text */}
+    <div
+      className={clsx("fixed top-0 left-0 right-0 z-50 px-3 py-2 text-white", {
+        "bg-warning": type === "warning",
+        "bg-information": type === "info",
+        "bg-primary": type === "success",
+        "bg-danger": type === "error",
+      })}
+    >
+      <div className="mx-auto max-w-[1600px] flex items-center justify-between">
         <div className="flex-1 text-center">
-          <Text
-            size={{ initial: "2", sm: "3" }}
-            weight="bold"
-            className="h5-bold-16"
-          >
-            {children}
+          <Text size={{ initial: "2", sm: "3" }} weight="bold">
+            {message}
           </Text>
         </div>
 
-        {/* Close button */}
-        <button
-          className="text-white hover:text-base-black hover:bg-white cursor-pointer ml-4 p-1 rounded-full shrink-0"
-          onClick={handleClose}
-          aria-label="Close banner"
-        >
-          <X size={24} />
-        </button>
+        {!nonDismissable && (
+          <button
+            className="text-white hover:bg-white hover:text-black ml-3 p-1 rounded-full transition"
+            onClick={handleClose}
+            aria-label="Close banner"
+          >
+            <X size={20} />
+          </button>
+        )}
       </div>
     </div>
   );

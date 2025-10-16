@@ -1,7 +1,7 @@
 import { useAuthStore } from "@/app/store/auth.store";
 import { useSocketStore } from "@/app/store/socket.store";
 import { io, Socket } from "socket.io-client";
-import { SOCKET_EVENTS } from "@/app/components/common/socket/socketEvents";
+import { CUSTOM_EVENTS } from "@/app/components/common/socket/socketEvents";
 
 let socket: Socket | null = null;
 
@@ -25,7 +25,7 @@ export const connectSubscriptionSocket = () => {
     transports: ["websocket"],
     query: {
       EIO: "4",
-      transport: "websocket", 
+      transport: "websocket",
       token,
     },
     reconnection: true,
@@ -63,11 +63,11 @@ export const connectSubscriptionSocket = () => {
   });
 
   //  Socket success and data set response
-  socket.on(SOCKET_EVENTS.SUBSCRIPTION_EVENT, (data) => {
-    console.log("Subscription event received: ", data);
-
-    const event = new CustomEvent(SOCKET_EVENTS.SUBSCRIPTION_EVENT, {
-      detail: data,
+  socket.on(CUSTOM_EVENTS.SUBSCRIPTION_EVENT, (data) => {
+    console.log("🔥 Raw socket data:", data);
+    const parsedData = typeof data === "string" ? JSON.parse(data) : data;
+    const event = new CustomEvent(CUSTOM_EVENTS.SUBSCRIPTION_EVENT, {
+      detail: parsedData,
     });
     window.dispatchEvent(event);
   });

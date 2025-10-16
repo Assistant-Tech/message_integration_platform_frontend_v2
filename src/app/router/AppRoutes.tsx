@@ -7,7 +7,6 @@ import {
   ResourceLayout,
 } from "@/app/components/layout";
 import { APP_ROUTES } from "@/app/constants/routes";
-import { BannerProvider } from "@/app/context/BannerContext";
 
 /* ------------------ Public Pages ------------------ */
 import {
@@ -157,7 +156,6 @@ const SubscriptionSettings = lazy(
 const AppRoutes = () => {
   return (
     <Suspense fallback={<Loading />}>
-      <BannerProvider>
         <Routes>
           {/* ---------------- Public Layout ---------------- */}
           <Route path="/" element={<PublicLayout />}>
@@ -373,7 +371,6 @@ const AppRoutes = () => {
             </Route>
           </Route>
         </Routes>
-      </BannerProvider>
     </Suspense>
   );
 };

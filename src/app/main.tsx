@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@/app/styles/globals.css";
 import App from "@/app/App";
 import React from "react";
+import { BannerProvider } from "./context/BannerContext";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -14,25 +15,27 @@ const queryClient = new QueryClient({
 });
 
 // Lazy load ReactQueryDevtools only in development
-const DevTools = React.lazy(() => 
-  import("@tanstack/react-query-devtools").then(module => ({
-    default: module.ReactQueryDevtools
-  }))
+const DevTools = React.lazy(() =>
+  import("@tanstack/react-query-devtools").then((module) => ({
+    default: module.ReactQueryDevtools,
+  })),
 );
 
 const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
+  document.getElementById("root") as HTMLElement,
 );
 
 root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <App />
-      {import.meta.env.DEV && (
-        <React.Suspense fallback={null}>
-          <DevTools initialIsOpen={false} />
-        </React.Suspense>
-      )}
+      <BannerProvider>
+        <App />
+        {import.meta.env.DEV && (
+          <React.Suspense fallback={null}>
+            <DevTools initialIsOpen={false} />
+          </React.Suspense>
+        )}
+      </BannerProvider>
     </QueryClientProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );
