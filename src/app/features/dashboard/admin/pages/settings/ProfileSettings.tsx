@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { Edit, Eye, EyeOff, Save, X, User } from "lucide-react";
 import { Input, Button } from "@/app/components/ui";
 import { useAuthStore } from "@/app/store/auth.store";
+import { Switch } from "../../component/ui";
+import { useNotificationStore } from "@/app/store/notification.store";
 
 const ProfileSettings = () => {
   const { user } = useAuthStore();
@@ -51,6 +53,15 @@ const ProfileSettings = () => {
         <h1 className="text-2xl font-bold text-gray-700 mb-1">Settings</h1>
         <h2 className="text-base font-medium text-primary">My Profile</h2>
       </motion.article>
+
+      {/* Notification Preferences */}
+      <div className="flex justify-start py-4 items-center">
+        <span className="w-72 text-gray-500">Show Toast Notifications</span>
+        <Switch
+          checked={useNotificationStore.getState().showToasts}
+          onCheckedChange={() => useNotificationStore.getState().toggleToasts()}
+        />
+      </div>
 
       {/* Profile Card */}
       <motion.div className="flex items-center border border-gray-200 rounded-xl p-4 bg-white mb-6">

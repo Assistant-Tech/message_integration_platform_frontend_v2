@@ -1,10 +1,12 @@
-import { Input } from "@/app/components/ui";
-import { Bell, ChevronDown, HelpCircle, Search } from "lucide-react";
+import { Button, Input } from "@/app/components/ui";
+import { ChevronDown, HelpCircle, Search } from "lucide-react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useAuthStore } from "@/app/store/auth.store";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { APP_ROUTES } from "@/app/constants/routes";
+import NotificationDropdown from "@/app/components/common/Notification/NotificationDropDown";
+import { triggerCron } from "@/app/services/api/socket.api";
 
 const TopNavbar = () => {
   const { logout } = useAuthStore();
@@ -34,16 +36,19 @@ const TopNavbar = () => {
 
       {/* Right (Icons and Profile) */}
       <div className="flex items-center gap-8">
+        <Button
+          label="test"
+          onClick={async () => {
+            const result = await triggerCron();
+            console.log("Cron Trigger Result:", result);
+          }}
+        />
         <HelpCircle
           color="grey"
           size={24}
           className="text-grey-medium cursor-pointer"
         />
-        <Bell
-          color="grey"
-          size={24}
-          className="text-grey-medium cursor-pointer"
-        />
+        <NotificationDropdown />
 
         <DropdownMenu.Root>
           <DropdownMenu.Trigger asChild>
