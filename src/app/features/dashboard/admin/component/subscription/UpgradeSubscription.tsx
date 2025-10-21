@@ -18,7 +18,6 @@ interface UpgradeSubscriptionProps {
 
 const UpgradeSubscription = ({ current }: UpgradeSubscriptionProps) => {
   const { currency, duration, setCurrency, setDuration } = usePricingStore();
-
   const {
     data: fetchedPlans = [],
     isLoading,
@@ -28,8 +27,6 @@ const UpgradeSubscription = ({ current }: UpgradeSubscriptionProps) => {
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const [applyImmediately, setApplyImmediately] = useState(true);
   const [loading, setLoading] = useState(false);
-
-  // Dialog states
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState<string | null>(null);
   const [providerResponse, setProviderResponse] = useState<any>(null);
@@ -43,7 +40,12 @@ const UpgradeSubscription = ({ current }: UpgradeSubscriptionProps) => {
     features: extractFeatures(plan.features),
   });
 
-  const plans = useMemo(() => {
+  const currentPlan = useMemo(() => {
+    if (!current?.plan) return null;
+    return transformPlan(current.plan);
+  }, [current]);
+
+  const upgradePlans = useMemo(() => {
     if (!fetchedPlans || !Array.isArray(fetchedPlans)) return [];
     return fetchedPlans
       .filter((p) => p.id !== current?.planId)
@@ -113,12 +115,6 @@ const UpgradeSubscription = ({ current }: UpgradeSubscriptionProps) => {
         animate={{ opacity: 1, y: 0 }}
       >
         <h2 className="h4-bold-24 text-grey py-6">Change Your Plan</h2>
-        <p className="h5-regular-16 text-grey-medium text-sm mb-6">
-          Current Plan:{" "}
-          <span className="font-medium text-primary">
-            {current?.plan?.name}
-          </span>
-        </p>
 
         {/* Currency + Duration toggles */}
         <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-8">
@@ -152,15 +148,30 @@ const UpgradeSubscription = ({ current }: UpgradeSubscriptionProps) => {
           </RadioGroup.Root>
         </div>
 
-        {/* Plans */}
+        {/* CURRENT PLAN */}
+        {currentPlan && (
+          <div className="mb-10">
+            <h3 className="text-sm text-gray-500 mb-2">Your Current Plan</h3>
+            <div className="border-2 border-primary rounded-lg p-3 opacity-80 cursor-not-allowed">
+              <PricingcardSubscription
+                plan={currentPlan}
+                duration={duration.toLowerCase() as Duration}
+                onSelect={() => {}}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* UPGRADE PLANS */}
+        <h3 className="text-sm text-gray-500 mb-3">Available Upgrade Plans</h3>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-          {plans.map((plan) => (
+          {upgradePlans.map((plan) => (
             <div
               key={plan.id}
               className={`rounded-lg transition-all cursor-pointer ${
                 selectedPlan?.id === plan.id
                   ? "border-2 border-primary bg-primary-light/40"
-                  : "border border-grey-light hover:border-primary"
+                  : "border border-grey-light"
               }`}
               onClick={() => setSelectedPlan(plan)}
             >
@@ -200,16 +211,7 @@ const UpgradeSubscription = ({ current }: UpgradeSubscriptionProps) => {
           onClick={handleUpgrade}
           disabled={loading || !selectedPlan}
           className="w-full sm:w-auto"
-          label={`${
-            loading ? (
-              <>
-                <Loader2 className="animate-spin w-4 h-4 mr-2" />
-                Changing Plan...
-              </>
-            ) : (
-              "Confirm Plan Change"
-            )
-          }`}
+          label={"Confirm Plan Change"}
         />
       </motion.div>
 
@@ -232,8 +234,8 @@ const UpgradeSubscription = ({ current }: UpgradeSubscriptionProps) => {
                   key={provider}
                   className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-all ${
                     selectedProvider === provider
-                      ? "border-primary bg-primary-light/30"
-                      : "border-gray-300 hover:border-primary"
+                      ? "border-primary"
+                      : "border-gray-300"
                   }`}
                 >
                   <input
@@ -258,7 +260,6 @@ const UpgradeSubscription = ({ current }: UpgradeSubscriptionProps) => {
                 variant="outlined"
                 onClick={() => setOpenDialog(false)}
               />
-
               <Button
                 label="Proceed to Payment"
                 variant="primary"

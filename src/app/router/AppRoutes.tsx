@@ -156,221 +156,210 @@ const SubscriptionSettings = lazy(
 const AppRoutes = () => {
   return (
     <Suspense fallback={<Loading />}>
-        <Routes>
-          {/* ---------------- Public Layout ---------------- */}
-          <Route path="/" element={<PublicLayout />}>
-            <Route index element={<Landing />} />
-            <Route path={APP_ROUTES.PUBLIC.DEMO} element={<Demo />} />
-            <Route path={APP_ROUTES.PUBLIC.LOGIN} element={<LoginPage />} />
-            <Route
-              path={APP_ROUTES.PUBLIC.REGISTER}
-              element={<RegisterPage />}
-            />
-            <Route
-              path={APP_ROUTES.PUBLIC.ACCEPT_INVITATION}
-              element={<Accept_Invitation />}
-            />
-            <Route
-              path={APP_ROUTES.PUBLIC.FORGOT_PASSWORD}
-              element={<ForgetPassword />}
-            />
-            <Route
-              path={APP_ROUTES.PUBLIC.RESET_PASSWORD}
-              element={<ResetPassword />}
-            />
-
-            {/* Product Pages */}
-            <Route
-              path={APP_ROUTES.PUBLIC.PRODUCTS_OVERVIEW}
-              element={<ProductLayout />}
-            >
-              <Route index element={<Product />} />
-              <Route path={APP_ROUTES.PUBLIC.CRM} element={<CRM />} />
-            </Route>
-
-            {/* Resource Pages */}
-            <Route
-              path={APP_ROUTES.PUBLIC.RESOURCES_OVERVIEW}
-              element={<ResourceLayout />}
-            >
-              <Route path={APP_ROUTES.PUBLIC.FAQ} element={<FAQPage />} />
-              <Route path={APP_ROUTES.PUBLIC.BLOG} element={<BlogPage />} />
-              <Route path={APP_ROUTES.PUBLIC.VIDEOS} element={<VideosPage />} />
-              <Route
-                path={APP_ROUTES.PUBLIC.BLOG_ID}
-                element={<BlogDetailPage />}
-              />
-              <Route path={APP_ROUTES.PUBLIC.SUPPORT} element={<Support />} />
-              <Route
-                path={APP_ROUTES.PUBLIC.ONBOARDING}
-                element={<Onboarding />}
-              />
-              <Route
-                path={APP_ROUTES.PUBLIC.TERMSCONDITION}
-                element={<TermsCondition />}
-              />
-              <Route path={APP_ROUTES.PUBLIC.POLICY} element={<Policy />} />
-              <Route path={APP_ROUTES.PUBLIC.UPDATES} element={<Updates />} />
-            </Route>
-
-            {/* About & Pricing */}
-            <Route path={APP_ROUTES.PUBLIC.ABOUT} element={<AboutUs />} />
-            <Route path={APP_ROUTES.PUBLIC.PRICING} element={<PricingPage />} />
-
-            {/* Auth semi-protected */}
-            <Route path="/check-email" element={<CheckEmail />} />
-            <Route path="/verify/:token" element={<VerifyEmail />} />
-
-            {/* Error Pages */}
-            <Route path="*" element={<NotFound />} />
-            <Route
-              path={APP_ROUTES.PUBLIC.UNAUTHORIZED}
-              element={<Forbidden />}
-            />
-          </Route>
-
-          <Route path="/payments/verify" element={<PaymentVerify />} />
-          <Route path="/payments/success" element={<PaymentSuccessPage />} />
-
+      <Routes>
+        {/* ---------------- Public Layout ---------------- */}
+        <Route path="/" element={<PublicLayout />}>
+          <Route index element={<Landing />} />
+          <Route path={APP_ROUTES.PUBLIC.DEMO} element={<Demo />} />
+          <Route path={APP_ROUTES.PUBLIC.LOGIN} element={<LoginPage />} />
+          <Route path={APP_ROUTES.PUBLIC.REGISTER} element={<RegisterPage />} />
           <Route
-            path="/:slug/subscription/confirmation"
-            element={<SubscriptionConfirmation />}
+            path={APP_ROUTES.PUBLIC.ACCEPT_INVITATION}
+            element={<Accept_Invitation />}
+          />
+          <Route
+            path={APP_ROUTES.PUBLIC.FORGOT_PASSWORD}
+            element={<ForgetPassword />}
+          />
+          <Route
+            path={APP_ROUTES.PUBLIC.RESET_PASSWORD}
+            element={<ResetPassword />}
           />
 
-          {/* ---------------- Protected Routes ---------------- */}
-          <Route element={<ProtectedRoute />}>
+          {/* Product Pages */}
+          <Route
+            path={APP_ROUTES.PUBLIC.PRODUCTS_OVERVIEW}
+            element={<ProductLayout />}
+          >
+            <Route index element={<Product />} />
+            <Route path={APP_ROUTES.PUBLIC.CRM} element={<CRM />} />
+          </Route>
+
+          {/* Resource Pages */}
+          <Route
+            path={APP_ROUTES.PUBLIC.RESOURCES_OVERVIEW}
+            element={<ResourceLayout />}
+          >
+            <Route path={APP_ROUTES.PUBLIC.FAQ} element={<FAQPage />} />
+            <Route path={APP_ROUTES.PUBLIC.BLOG} element={<BlogPage />} />
+            <Route path={APP_ROUTES.PUBLIC.VIDEOS} element={<VideosPage />} />
+            <Route
+              path={APP_ROUTES.PUBLIC.BLOG_ID}
+              element={<BlogDetailPage />}
+            />
+            <Route path={APP_ROUTES.PUBLIC.SUPPORT} element={<Support />} />
+            <Route
+              path={APP_ROUTES.PUBLIC.ONBOARDING}
+              element={<Onboarding />}
+            />
+            <Route
+              path={APP_ROUTES.PUBLIC.TERMSCONDITION}
+              element={<TermsCondition />}
+            />
+            <Route path={APP_ROUTES.PUBLIC.POLICY} element={<Policy />} />
+            <Route path={APP_ROUTES.PUBLIC.UPDATES} element={<Updates />} />
+          </Route>
+
+          {/* About & Pricing */}
+          <Route path={APP_ROUTES.PUBLIC.ABOUT} element={<AboutUs />} />
+          <Route path={APP_ROUTES.PUBLIC.PRICING} element={<PricingPage />} />
+
+          {/* Auth semi-protected */}
+          <Route path="/check-email" element={<CheckEmail />} />
+          <Route path="/verify/:token" element={<VerifyEmail />} />
+
+          {/* Error Pages */}
+          <Route path="*" element={<NotFound />} />
+          <Route
+            path={APP_ROUTES.PUBLIC.UNAUTHORIZED}
+            element={<Forbidden />}
+          />
+        </Route>
+
+        <Route path="/payments/verify" element={<PaymentVerify />} />
+        <Route path="/payments/success" element={<PaymentSuccessPage />} />
+
+        <Route
+          path="/:slug/subscription/confirmation"
+          element={<SubscriptionConfirmation />}
+        />
+
+        {/* ---------------- Protected Routes ---------------- */}
+        <Route element={<ProtectedRoute />}>
+          <Route element={<OnboardingGuard />}>
             <Route
               path={APP_ROUTES.PUBLIC.ONBOARDING_FORM}
               element={<OnboardingForm />}
             />
 
-            <Route element={<OnboardingGuard />}>
-              {/* Admin Dashboard (TENANT_ADMIN only) */}
-              <Route
-                element={<RoleBasedRoute allowedRoles={["TENANT_ADMIN"]} />}
-              >
-                <Route path="/:slug/admin" element={<DashboardLayout />}>
-                  <Route index element={<AdminDashboardPage />} />
+            {/* Admin Dashboard (TENANT_ADMIN only) */}
+            <Route element={<RoleBasedRoute allowedRoles={["TENANT_ADMIN"]} />}>
+              <Route path="/:slug/admin" element={<DashboardLayout />}>
+                <Route index element={<AdminDashboardPage />} />
 
-                  <Route
-                    path={APP_ROUTES.ADMIN.DASHBOARD}
-                    element={<AdminDashboardPage />}
-                  />
-                  <Route
-                    path={APP_ROUTES.ADMIN.CONVERSATION}
-                    element={<ConversationPage />}
-                  />
-                  <Route
-                    path={APP_ROUTES.ADMIN.CHATBOT}
-                    element={<ChatbotPage />}
-                  />
-                  <Route
-                    path={APP_ROUTES.ADMIN.CHANNEL}
-                    element={<ChannelPage />}
-                  />
-                  <Route
-                    path={APP_ROUTES.ADMIN.ORDERS}
-                    element={<OrderPage />}
-                  />
-                  <Route
-                    path={APP_ROUTES.ADMIN.ORDERS_CREATE}
-                    element={<CreateOrderPage />}
-                  />
-                  <Route path={APP_ROUTES.ADMIN.TAGS} element={<TagsPage />} />
-                  <Route
-                    path={APP_ROUTES.ADMIN.ANALYTICS}
-                    element={<AnalyticsPage />}
-                  />
-
-                  {/* Settings */}
-                  <Route
-                    path={APP_ROUTES.ADMIN.SETTINGS}
-                    element={<SettingsPage />}
-                  />
-                  <Route
-                    path={APP_ROUTES.ADMIN.SETTINGS_PROFILE}
-                    element={<ProfileSettings />}
-                  />
-                  <Route
-                    path={APP_ROUTES.ADMIN.SETTINGS_COMPANY}
-                    element={<CompanySettings />}
-                  />
-                  <Route
-                    path={APP_ROUTES.ADMIN.SETTINGS_SECURITY}
-                    element={<SecuritySettings />}
-                  />
-                  <Route
-                    path={APP_ROUTES.ADMIN.SETTINGS_NOTIFICATIONS}
-                    element={<NotificationSettings />}
-                  />
-                  <Route
-                    path={APP_ROUTES.ADMIN.SETTINGS_ROLE_MANAGEMENT}
-                    element={<RoleManagement />}
-                  />
-                  <Route
-                    path={APP_ROUTES.ADMIN.SETTINGS_CHAT_SETTINGS}
-                    element={<ChatSettings />}
-                  />
-                  <Route
-                    path={APP_ROUTES.ADMIN.SETTINGS_SHIPPING}
-                    element={<ShippingSettings />}
-                  />
-                  <Route
-                    path={APP_ROUTES.ADMIN.SETTINGS_SUBSCRIPTION}
-                    element={<SubscriptionSettings />}
-                  />
-                  {/* Checkout */}
-                  <Route
-                    path={APP_ROUTES.ADMIN.SETTINGS_SUBSCRIPTION}
-                    element={<CheckoutPage />}
-                  />
-                  {/* Billing Info */}
-                  <Route
-                    path={APP_ROUTES.ADMIN.SETTINGS_SUBSCRIPTION_BILLING}
-                    element={<BillingPage />}
-                  />
-
-                  {/* Products */}
-                  <Route
-                    path={APP_ROUTES.ADMIN.PRODUCTS}
-                    element={<ProductPage />}
-                  />
-                  <Route
-                    path={APP_ROUTES.ADMIN.PRODUCTS_ALL}
-                    element={<AllProductsPage />}
-                  />
-                  <Route
-                    path={APP_ROUTES.ADMIN.PRODUCTS_CATEGORY}
-                    element={<ProductCategory />}
-                  />
-                  <Route
-                    path={APP_ROUTES.ADMIN.PRODUCTS_VARIANTS}
-                    element={<ProductVariants />}
-                  />
-                  <Route
-                    path={APP_ROUTES.ADMIN.PRODUCTS_INVENTORY}
-                    element={<ProductInventory />}
-                  />
-                  <Route
-                    path={APP_ROUTES.ADMIN.PRODUCTS_CREATE}
-                    element={<CreateProductPage />}
-                  />
-                </Route>
-              </Route>
-
-              <Route path="/:slug/verify" element={<VerifyRedirect />} />
-
-              {/* Tenant User Dashboard (default for non-admin roles) */}
-              <Route path="/:slug/dashboard" element={<DashboardLayout />}>
-                <Route index element={<UserDashboardPage />} />
                 <Route
-                  path={"settings/profile"}
+                  path={APP_ROUTES.ADMIN.DASHBOARD}
+                  element={<AdminDashboardPage />}
+                />
+                <Route
+                  path={APP_ROUTES.ADMIN.CONVERSATION}
+                  element={<ConversationPage />}
+                />
+                <Route
+                  path={APP_ROUTES.ADMIN.CHATBOT}
+                  element={<ChatbotPage />}
+                />
+                <Route
+                  path={APP_ROUTES.ADMIN.CHANNEL}
+                  element={<ChannelPage />}
+                />
+                <Route path={APP_ROUTES.ADMIN.ORDERS} element={<OrderPage />} />
+                <Route
+                  path={APP_ROUTES.ADMIN.ORDERS_CREATE}
+                  element={<CreateOrderPage />}
+                />
+                <Route path={APP_ROUTES.ADMIN.TAGS} element={<TagsPage />} />
+                <Route
+                  path={APP_ROUTES.ADMIN.ANALYTICS}
+                  element={<AnalyticsPage />}
+                />
+
+                {/* Settings */}
+                <Route
+                  path={APP_ROUTES.ADMIN.SETTINGS}
+                  element={<SettingsPage />}
+                />
+                <Route
+                  path={APP_ROUTES.ADMIN.SETTINGS_PROFILE}
                   element={<ProfileSettings />}
+                />
+                <Route
+                  path={APP_ROUTES.ADMIN.SETTINGS_COMPANY}
+                  element={<CompanySettings />}
+                />
+                <Route
+                  path={APP_ROUTES.ADMIN.SETTINGS_SECURITY}
+                  element={<SecuritySettings />}
+                />
+                <Route
+                  path={APP_ROUTES.ADMIN.SETTINGS_NOTIFICATIONS}
+                  element={<NotificationSettings />}
+                />
+                <Route
+                  path={APP_ROUTES.ADMIN.SETTINGS_ROLE_MANAGEMENT}
+                  element={<RoleManagement />}
+                />
+                <Route
+                  path={APP_ROUTES.ADMIN.SETTINGS_CHAT_SETTINGS}
+                  element={<ChatSettings />}
+                />
+                <Route
+                  path={APP_ROUTES.ADMIN.SETTINGS_SHIPPING}
+                  element={<ShippingSettings />}
+                />
+                <Route
+                  path={APP_ROUTES.ADMIN.SETTINGS_SUBSCRIPTION}
+                  element={<SubscriptionSettings />}
+                />
+                {/* Checkout */}
+                <Route
+                  path={APP_ROUTES.ADMIN.SETTINGS_SUBSCRIPTION}
+                  element={<CheckoutPage />}
+                />
+                {/* Billing Info */}
+                <Route
+                  path={APP_ROUTES.ADMIN.SETTINGS_SUBSCRIPTION_BILLING}
+                  element={<BillingPage />}
+                />
+
+                {/* Products */}
+                <Route
+                  path={APP_ROUTES.ADMIN.PRODUCTS}
+                  element={<ProductPage />}
+                />
+                <Route
+                  path={APP_ROUTES.ADMIN.PRODUCTS_ALL}
+                  element={<AllProductsPage />}
+                />
+                <Route
+                  path={APP_ROUTES.ADMIN.PRODUCTS_CATEGORY}
+                  element={<ProductCategory />}
+                />
+                <Route
+                  path={APP_ROUTES.ADMIN.PRODUCTS_VARIANTS}
+                  element={<ProductVariants />}
+                />
+                <Route
+                  path={APP_ROUTES.ADMIN.PRODUCTS_INVENTORY}
+                  element={<ProductInventory />}
+                />
+                <Route
+                  path={APP_ROUTES.ADMIN.PRODUCTS_CREATE}
+                  element={<CreateProductPage />}
                 />
               </Route>
             </Route>
+
+            <Route path="/:slug/verify" element={<VerifyRedirect />} />
+
+            {/* Tenant User Dashboard (default for non-admin roles) */}
+            <Route path="/:slug/dashboard" element={<DashboardLayout />}>
+              <Route index element={<UserDashboardPage />} />
+              <Route path={"settings/profile"} element={<ProfileSettings />} />
+            </Route>
           </Route>
-        </Routes>
+        </Route>
+      </Routes>
     </Suspense>
   );
 };

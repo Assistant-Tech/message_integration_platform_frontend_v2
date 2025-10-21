@@ -8,6 +8,7 @@ import {
   MoreVertical,
   XCircle,
   PauseCircle,
+  MoveUpRight,
 } from "lucide-react";
 import { format, differenceInDays } from "date-fns";
 import { CurrentSubscriptionResponse } from "@/app/types/subscription.types";
@@ -19,12 +20,14 @@ import {
   resumeSubscription,
 } from "@/app/services/subscription.services";
 import { toast } from "sonner";
+import { Button } from "@/app/components/ui";
 
 type YourSubscriptionProps = {
   data?: CurrentSubscriptionResponse["data"];
+  onUpgradeClick?: () => void;
 };
 
-const YourSubscription = ({ data }: YourSubscriptionProps) => {
+const YourSubscription = ({ data, onUpgradeClick }: YourSubscriptionProps) => {
   const [subscription, setSubscription] = useState<
     CurrentSubscriptionResponse["data"] | null
   >(data || null);
@@ -52,13 +55,7 @@ const YourSubscription = ({ data }: YourSubscriptionProps) => {
     }
   }, [subscription]);
 
-  if (!subscription) {
-    return (
-      <div className="text-center text-grey-medium py-10">
-        You don’t have an active subscription yet.
-      </div>
-    );
-  }
+  if (!subscription) return null;
 
   const {
     id: subscriptionId,
@@ -317,9 +314,14 @@ const YourSubscription = ({ data }: YourSubscriptionProps) => {
               <p className="text-sm font-medium text-grey-medium">days left</p>
             </div>
           </div>
-          <div className="text-sm text-center">
-            <p className="text-grey-medium mb-1">Expires:</p>
-            <span className="text-danger font-bold">{formattedEndDate}</span>
+          <div className="flex flex-col justify-center gap-4">
+            <div className="text-sm text-center">
+              <p className="text-grey-medium mb-1">Expires:</p>
+              <span className="text-danger font-bold">{formattedEndDate}</span>
+            </div>
+            <div onClick={onUpgradeClick}>
+              <Button label="Upgrade plans" IconRight={<MoveUpRight />} />
+            </div>
           </div>
         </motion.div>
       </div>

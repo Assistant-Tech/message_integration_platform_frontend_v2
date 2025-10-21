@@ -10,6 +10,7 @@ const ProtectedRoute = ({ allowedRoles }: { allowedRoles?: string[] }) => {
   const user = useAuthStore((s) => s.user);
   const tenantSlug = useAuthStore((s) => s.tenantSlug);
   const accessToken = useAuthStore((s) => s.accessToken);
+  const requiresOnboarding = useAuthStore((s) => s.requiresOnboarding);
   const fetchCurrentUserProfile = useAuthStore(
     (s) => s.fetchCurrentUserProfile,
   );
@@ -53,17 +54,21 @@ const ProtectedRoute = ({ allowedRoles }: { allowedRoles?: string[] }) => {
   if (isRefreshing) return <Loading />;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
 
-  if (!user || !tenantSlug) return <Loading />;
+  if (!user) return <Loading />;
+
+  if (!tenantSlug && !requiresOnboarding) return <Loading />;
+
+  // Redirect to tenant path only if tenantSlug exists
+  if (tenantSlug) {
+    const [, firstSegment, ...rest] = location.pathname.split("/");
+    if (firstSegment !== tenantSlug) {
+      return <Navigate to={`/${tenantSlug}/${rest.join("/")}`} replace />;
+    }
+  }
 
   const userRole = user.roleType;
   if (allowedRoles && !allowedRoles.includes(userRole)) {
     return <Navigate to={APP_ROUTES.PUBLIC.UNAUTHORIZED} replace />;
-  }
-
-  const [, firstSegment, ...rest] = location.pathname.split("/");
-
-  if (firstSegment !== tenantSlug) {
-    return <Navigate to={`/${tenantSlug}/${rest.join("/")}`} replace />;
   }
 
   return <Outlet />;

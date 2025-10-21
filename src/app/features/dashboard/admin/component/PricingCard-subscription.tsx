@@ -53,22 +53,10 @@ const PricingcardSubscription = ({
         plan.isPopular
           ? "bg-primary text-white transform scale-105 shadow-2xl shadow-primary/25 border-2 border-primary-light z-10 overflow-hidden"
           : "bg-white border-2 border-grey-light shadow-lg hover:shadow-xl",
-        selected && "ring-2 ring-primary border-primary", // ✅ highlight selected
+        selected && "ring-2 ring-primary border-primary",
         "min-w-[280px] max-w-sm md:max-w-full flex-shrink-0",
       )}
     >
-      {/* 🔹 Radio circle in corner */}
-      <div
-        className={cn(
-          "absolute top-4 right-4 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors",
-          selected
-            ? "bg-primary border-primary"
-            : "border-gray-300 bg-white hover:border-primary/60",
-        )}
-      >
-        {selected && <div className="w-2.5 h-2.5 bg-white rounded-full" />}
-      </div>
-
       {/* 🔸 Most Popular Ribbon */}
       {plan.isPopular && (
         <div className="absolute -top-0 -right-0 z-20 overflow-hidden w-32 h-32">

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Box, Flex, RadioGroup } from "@radix-ui/themes";
+import { Box, Flex } from "@radix-ui/themes";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/app/utils/cn";
 import { usePlans } from "@/app/hooks/usePlans";
@@ -7,9 +7,16 @@ import { usePricingStore } from "@/app/store/pricing.store";
 import { useAuthStore } from "@/app/store/auth.store";
 import { PricingcardSubscription } from "@/app/features/dashboard/admin/component";
 import { Badge, DynamicToggle } from "@/app/components/ui";
-import { Plan, Duration, APIDuration, PlanType } from "@/app/types/plan.types";
+import {
+  Plan,
+  Duration,
+  APIDuration,
+  PlanType,
+  Currency,
+} from "@/app/types/plan.types";
 import { extractFeatures } from "@/app/utils/helper";
 import { buildBillingUrl } from "@/app/constants/routes";
+import * as RadioGroup from "@radix-ui/react-radio-group";
 
 const PricingSubscription = () => {
   const navigate = useNavigate();
@@ -76,33 +83,39 @@ const PricingSubscription = () => {
           />
         </div>
 
-        {/* ✅ Fixed NPR/USD toggle (same as Upgrade) */}
-        <Flex justify="end" align="center" className="py-4 gap-6">
-          <RadioGroup.Root
-            value={currency}
-            onValueChange={(val: any) => setCurrency(val as any)}
-            className="flex items-center justify-end gap-6"
-          >
+        <RadioGroup.Root
+          value={currency}
+          onValueChange={(val) => setCurrency(val as Currency)}
+          className="w-full pb-4 md:pb-8"
+        >
+          <Flex justify="end" align="center" className="pt-4 gap-4">
             {["NPR", "USD"].map((cur) => (
-              <label
-                key={cur}
-                className={cn(
-                  "flex items-center gap-2 cursor-pointer transition-colors",
-                  currency === cur
-                    ? "text-primary font-medium"
-                    : "text-gray-600 hover:text-primary/70",
-                )}
-              >
+              <Flex key={cur} direction="row" align="center" gap="2">
                 <RadioGroup.Item
                   value={cur}
                   id={cur.toLowerCase()}
-                  className="w-4 h-4 rounded-full border border-gray-400 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-                />
-                <span>{cur === "NPR" ? "Nepal (रु)" : "USD ($)"}</span>
-              </label>
+                  className={cn(
+                    "relative flex items-center justify-center",
+                    "w-4 h-4 rounded-full border border-gray-400",
+                    "data-[state=checked]:border-primary",
+                  )}
+                >
+                  <RadioGroup.Indicator className="absolute w-2 h-2 bg-primary rounded-full" />
+                </RadioGroup.Item>
+
+                <label
+                  htmlFor={cur.toLowerCase()}
+                  className={cn(
+                    currency === cur ? "text-primary" : "text-base-black",
+                    "body-regular-16 cursor-pointer select-none",
+                  )}
+                >
+                  {cur === "NPR" ? "NPR (रु)" : "USD ($)"}
+                </label>
+              </Flex>
             ))}
-          </RadioGroup.Root>
-        </Flex>
+          </Flex>
+        </RadioGroup.Root>
       </Flex>
 
       <div className="w-full">
