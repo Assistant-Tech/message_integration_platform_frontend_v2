@@ -1,13 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTenantStore } from "@/app/store/tenant.store";
 import { ColumnDef } from "@tanstack/react-table";
-import { RefreshCw, Plus, X } from "lucide-react";
+import { RefreshCw, Plus } from "lucide-react";
 import { Button, Input } from "@/app/components/ui";
 import { GenericTable } from "@/app/features/dashboard/admin/component/table/GenericTable";
 import { toast } from "sonner";
-import { motion, AnimatePresence } from "framer-motion";
+import { Modal } from "@/app/components/common";
 
-// Table row shape based on API
 interface TenantUserRow {
   user: {
     id: string;
@@ -19,10 +18,30 @@ interface TenantUserRow {
   role: {
     id: string;
     name: string;
-    type: string;
     description: string;
+    permissions?: string[];
   };
 }
+
+interface RoleForm {
+  name: string;
+  description: string;
+  permissions: string[];
+}
+
+interface EditRoleForm extends RoleForm {
+  id: string;
+  addPermissions: string[];
+  removePermissions: string[];
+}
+
+const AVAILABLE_PERMISSIONS = [
+  "conversations:read",
+  "messages:read",
+  "messages:update",
+  "reports:read",
+  "reports:export",
+];
 
 const RoleManagement = () => {
   const {
@@ -39,54 +58,60 @@ const RoleManagement = () => {
     updateTenantRole,
   } = useTenantStore();
 
-  // 🔹 State
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [isCreateRoleModalOpen, setIsCreateRoleModalOpen] = useState(false);
+  const [isEditRoleModalOpen, setIsEditRoleModalOpen] = useState(false);
+
   const [newUser, setNewUser] = useState({ email: "", role: "" });
-  const [newRole, setNewRole] = useState({
+  const [newRole, setNewRole] = useState<RoleForm>({
     name: "",
     description: "",
-    permissions: [] as string[],
+    permissions: [],
   });
-
-  const [isEditRoleModalOpen, setIsEditRoleModalOpen] = useState(false);
-  const [editRole, setEditRole] = useState({
+  const [editRole, setEditRole] = useState<EditRoleForm>({
     id: "",
     name: "",
     description: "",
-    permissions: [] as string[],
+    permissions: [],
+    addPermissions: [],
+    removePermissions: [],
   });
 
-  // Available roles from API
   const availableRoles = useMemo(
     () => roles.map((r) => ({ id: r.id, name: r.name })),
     [roles],
   );
 
-  // Fetch users + roles on mount
+  // Initial load
   useEffect(() => {
-    fetchTenantUsers().catch(() => toast.error("Failed to load tenant users"));
-    fetchTenantRoles().catch(() => toast.error("Failed to load tenant roles"));
-  }, [fetchTenantUsers, fetchTenantRoles]);
+    (async () => {
+      try {
+        await Promise.all([fetchTenantUsers(), fetchTenantRoles()]);
+      } catch {
+        toast.error("Failed to load tenant data");
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  // Refresh users
-  const handleRefresh = async () => {
+  // ---------- HANDLERS ----------
+
+  const handleRefresh = useCallback(async () => {
     try {
       await fetchTenantUsers();
       toast.success("Users refreshed successfully");
     } catch {
       toast.error("Failed to refresh users");
     }
-  };
+  }, [fetchTenantUsers]);
 
-  // Invite Member
-  const handleInvite = async () => {
+  const handleInvite = useCallback(async () => {
     if (!newUser.email || !newUser.role) {
       toast.error("Email and role are required");
       return;
     }
     try {
-      await inviteMember({ email: newUser.email, role: newUser.role });
+      await inviteMember({ email: newUser.email.trim(), role: newUser.role });
       toast.success(`Invitation sent to ${newUser.email}`);
       setIsInviteModalOpen(false);
       setNewUser({ email: "", role: "" });
@@ -94,19 +119,15 @@ const RoleManagement = () => {
     } catch {
       toast.error("Failed to invite member");
     }
-  };
+  }, [newUser, inviteMember, fetchTenantUsers]);
 
-  // Create Role
-  const handleCreateRole = async () => {
+  const handleCreateRole = useCallback(async () => {
     if (!newRole.name || !newRole.description) {
       toast.error("Name and description are required");
       return;
     }
     try {
-      await createTenantRole({
-        ...newRole,
-        permissions: newRole.permissions || [], // ✅ ensure array
-      });
+      await createTenantRole(newRole);
       toast.success("Role created successfully");
       setIsCreateRoleModalOpen(false);
       setNewRole({ name: "", description: "", permissions: [] });
@@ -114,70 +135,62 @@ const RoleManagement = () => {
     } catch {
       toast.error("Failed to create role");
     }
-  };
+  }, [newRole, createTenantRole, fetchTenantRoles]);
 
-  // Edit Role
-  const handleEditRole = (roleId: string, roleData: any) => {
-    setEditRole({
-      id: roleId,
-      name: roleData.name,
-      description: roleData.description,
-      permissions: roleData.permissions || [],
-    });
-    setIsEditRoleModalOpen(true);
-  };
+  const handleEditRole = useCallback(
+    (roleId: string, roleData: TenantUserRow["role"]) => {
+      setEditRole({
+        id: roleId,
+        name: roleData.name,
+        description: roleData.description,
+        permissions: roleData.permissions || [],
+        addPermissions: [],
+        removePermissions: [],
+      });
+      setIsEditRoleModalOpen(true);
+    },
+    [],
+  );
 
-  // Update Role
-  const handleUpdateRole = async () => {
+  const handleUpdateRole = useCallback(async () => {
+    const { id, addPermissions, removePermissions } = editRole;
     if (!editRole.name || !editRole.description) {
       toast.error("Name and description are required");
       return;
     }
 
-    const addPermissions = editRole.permissions.filter((p) =>
-      p.startsWith("addPermissions:"),
-    );
-    const removePermissions = editRole.permissions.filter((p) =>
-      p.startsWith("removePermissions:"),
-    );
-
     if (addPermissions.length === 0 && removePermissions.length === 0) {
-      toast.error("At least one permission must be added or removed.");
+      toast.error("At least one permission must be modified.");
       return;
     }
 
     try {
-      await updateTenantRole(editRole.id, {
-        addPermissions,
-        removePermissions,
-      });
-      setIsEditRoleModalOpen(false);
-      setEditRole({ id: "", name: "", description: "", permissions: [] });
-      await fetchTenantRoles();
-      await fetchTenantUsers();
+      await updateTenantRole(id, { addPermissions, removePermissions });
       toast.success("Role updated successfully");
+      setIsEditRoleModalOpen(false);
+      await Promise.all([fetchTenantRoles(), fetchTenantUsers()]);
     } catch {
       toast.error("Failed to update role");
     }
-  };
+  }, [editRole, updateTenantRole, fetchTenantRoles, fetchTenantUsers]);
 
-  // Table columns
+  // ---------- COLUMNS ----------
   const columns = useMemo<ColumnDef<TenantUserRow>[]>(
     () => [
       {
         accessorKey: "user.name",
         header: "Name",
-        cell: (info) => (info.getValue() as string) || "-",
+        cell: (info) => info.getValue() || "-",
       },
       {
         accessorKey: "user.email",
         header: "Email",
-        cell: (info) => (info.getValue() as string) || "-",
+        cell: (info) => info.getValue() || "-",
       },
       {
         accessorKey: "role.name",
         header: "Role",
-        cell: (info) => (info.getValue() as string) || "-",
+        cell: (info) => info.getValue() || "-",
       },
       {
         accessorKey: "user.status",
@@ -216,6 +229,7 @@ const RoleManagement = () => {
 
           return (
             <select
+              className="border border-grey-light rounded px-2 py-1 text-sm"
               value={currentRoleId}
               onChange={async (e) => {
                 const selectedRoleId = e.target.value;
@@ -242,24 +256,31 @@ const RoleManagement = () => {
       {
         id: "actions",
         header: "Actions",
-        cell: ({ row }) => {
-          const roleId = row.original.role.id;
-          return (
-            <Button
-              label="Edit"
-              variant="secondary"
-              onClick={() => handleEditRole(roleId, row.original.role)}
-            />
-          );
-        },
+        cell: ({ row }) => (
+          <Button
+            label="Edit"
+            variant="secondary"
+            onClick={() =>
+              handleEditRole(row.original.role.id, row.original.role)
+            }
+          />
+        ),
       },
     ],
-    [availableRoles, assignRole, fetchTenantUsers],
+    [availableRoles, assignRole, fetchTenantUsers, handleEditRole],
   );
 
+  const isLoading = loading || roleLoading || inviteLoading;
+
+  // ---------- UI ----------
   return (
-    <div className="p-6">
-      {/* Header */}
+    <div className="p-6 relative">
+      {isLoading && (
+        <div className="absolute inset-0 bg-white/70 flex items-center justify-center z-50">
+          <span className="animate-pulse text-gray-600">Loading...</span>
+        </div>
+      )}
+
       <div className="flex justify-between items-center mb-4">
         <div>
           <h2 className="text-xl font-bold">Role Management</h2>
@@ -290,248 +311,189 @@ const RoleManagement = () => {
         </div>
       </div>
 
-      {/* Table */}
       <GenericTable
         data={tenantUsers}
         columns={columns}
         emptyMessage={loading ? "Loading users..." : "No users found"}
       />
 
-      {/* 🔹 Invite Modal */}
-      <AnimatePresence>
-        {isInviteModalOpen && (
-          <motion.div
-            className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setIsInviteModalOpen(false)}
-          >
-            <motion.div
-              className="bg-white rounded-lg p-6 w-full max-w-md mx-4"
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
+      {/* 🔹 Invite Member Modal */}
+      {isInviteModalOpen && (
+        <Modal
+          title="Invite Member"
+          onClose={() => setIsInviteModalOpen(false)}
+        >
+          <div className="space-y-4">
+            <Input
+              type="email"
+              placeholder="Enter email"
+              value={newUser.email}
+              onChange={(e) =>
+                setNewUser({ ...newUser, email: e.target.value.trim() })
+              }
+            />
+            <select
+              className="w-full border px-3 py-2 rounded"
+              value={newUser.role}
+              onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
             >
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold">Invite Member</h3>
-                <button onClick={() => setIsInviteModalOpen(false)}>
-                  <X size={20} />
-                </button>
-              </div>
-              <div className="space-y-4">
-                <Input
-                  type="email"
-                  placeholder="Enter email"
-                  value={newUser.email}
-                  onChange={(e) =>
-                    setNewUser({ ...newUser, email: e.target.value })
-                  }
-                />
-                <select
-                  className="w-full border px-3 py-2 rounded"
-                  value={newUser.role}
-                  onChange={(e) =>
-                    setNewUser({ ...newUser, role: e.target.value })
-                  }
-                >
-                  <option value="">Select Role</option>
-                  {availableRoles.map((role) => (
-                    <option key={role.id} value={role.id}>
-                      {role.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="flex justify-end gap-2 mt-6">
-                <Button
-                  label="Cancel"
-                  variant="secondary"
-                  onClick={() => setIsInviteModalOpen(false)}
-                />
-                <Button
-                  label={inviteLoading ? "Inviting..." : "Invite"}
-                  variant="primary"
-                  onClick={handleInvite}
-                  disabled={inviteLoading}
-                />
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              <option value="">Select Role</option>
+              {availableRoles.map((role) => (
+                <option key={role.id} value={role.id}>
+                  {role.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex justify-end gap-2 mt-6">
+            <Button
+              label="Cancel"
+              variant="secondary"
+              onClick={() => setIsInviteModalOpen(false)}
+            />
+            <Button
+              label={inviteLoading ? "Inviting..." : "Invite"}
+              variant="primary"
+              onClick={handleInvite}
+              disabled={inviteLoading}
+            />
+          </div>
+        </Modal>
+      )}
 
       {/* 🔹 Create Role Modal */}
-      <AnimatePresence>
-        {isCreateRoleModalOpen && (
-          <motion.div
-            className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setIsCreateRoleModalOpen(false)}
-          >
-            <motion.div
-              className="bg-white rounded-lg p-6 w-full max-w-md mx-4"
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold">Create Role</h3>
-                <button onClick={() => setIsCreateRoleModalOpen(false)}>
-                  <X size={20} />
-                </button>
-              </div>
+      {isCreateRoleModalOpen && (
+        <Modal
+          title="Create Role"
+          onClose={() => setIsCreateRoleModalOpen(false)}
+        >
+          <div className="space-y-4">
+            <Input
+              type="text"
+              placeholder="Role Name"
+              value={newRole.name}
+              onChange={(e) => setNewRole({ ...newRole, name: e.target.value })}
+            />
+            <Input
+              type="text"
+              placeholder="Description"
+              value={newRole.description}
+              onChange={(e) =>
+                setNewRole({ ...newRole, description: e.target.value })
+              }
+            />
+            <div className="space-y-2">
+              <h4 className="font-medium text-sm">Permissions</h4>
+              {AVAILABLE_PERMISSIONS.map((perm) => (
+                <label key={perm} className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={newRole.permissions.includes(perm)}
+                    onChange={() =>
+                      setNewRole((prev) => ({
+                        ...prev,
+                        permissions: prev.permissions.includes(perm)
+                          ? prev.permissions.filter((p) => p !== perm)
+                          : [...prev.permissions, perm],
+                      }))
+                    }
+                  />
+                  {perm}
+                </label>
+              ))}
+            </div>
+          </div>
 
-              <div className="space-y-4">
-                {/* Role Name */}
-                <Input
-                  type="text"
-                  placeholder="Role Name"
-                  value={newRole.name}
-                  onChange={(e) =>
-                    setNewRole({ ...newRole, name: e.target.value })
-                  }
-                />
-
-                {/* Role Description */}
-                <Input
-                  type="text"
-                  placeholder="Description"
-                  value={newRole.description}
-                  onChange={(e) =>
-                    setNewRole({ ...newRole, description: e.target.value })
-                  }
-                />
-
-                {/* Permissions Selection */}
-                <div className="space-y-2">
-                  <h4 className="font-medium text-sm">Permissions</h4>
-                  {[
-                    "conversations:read",
-                    "messages:read",
-                    "messages:update",
-                    "reports:read",
-                  ].map((perm) => (
-                    <label
-                      key={perm}
-                      className="flex items-center gap-2 text-sm"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={newRole.permissions.includes(perm)}
-                        onChange={() => {
-                          setNewRole((prev) => ({
-                            ...prev,
-                            permissions: prev.permissions.includes(perm)
-                              ? prev.permissions.filter((p) => p !== perm)
-                              : [...prev.permissions, perm],
-                          }));
-                        }}
-                      />
-                      {perm}
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Footer */}
-              <div className="flex justify-end gap-2 mt-6">
-                <Button
-                  label="Cancel"
-                  variant="secondary"
-                  onClick={() => setIsCreateRoleModalOpen(false)}
-                />
-                <Button
-                  label={roleLoading ? "Creating..." : "Create Role"}
-                  variant="primary"
-                  onClick={handleCreateRole}
-                  disabled={roleLoading}
-                />
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          <div className="flex justify-end gap-2 mt-6">
+            <Button
+              label="Cancel"
+              variant="secondary"
+              onClick={() => setIsCreateRoleModalOpen(false)}
+            />
+            <Button
+              label={roleLoading ? "Creating..." : "Create Role"}
+              variant="primary"
+              onClick={handleCreateRole}
+              disabled={roleLoading}
+            />
+          </div>
+        </Modal>
+      )}
 
       {/* 🔹 Edit Role Modal */}
-      <AnimatePresence>
-        {isEditRoleModalOpen && (
-          <motion.div
-            className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setIsEditRoleModalOpen(false)}
-          >
-            <motion.div
-              className="bg-white rounded-lg p-6 w-full max-w-md mx-4"
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div>
-                <h3 className="text-lg font-semibold">Edit Role</h3>
-                <div className="space-y-2 flex flex-col">
-                  <label>
+      {isEditRoleModalOpen && (
+        <Modal title="Edit Role" onClose={() => setIsEditRoleModalOpen(false)}>
+          <div className="space-y-3">
+            <Input
+              type="text"
+              placeholder="Role Name"
+              value={editRole.name}
+              onChange={(e) =>
+                setEditRole({ ...editRole, name: e.target.value })
+              }
+            />
+            <Input
+              type="text"
+              placeholder="Description"
+              value={editRole.description}
+              onChange={(e) =>
+                setEditRole({ ...editRole, description: e.target.value })
+              }
+            />
+            <div className="space-y-2">
+              <h4 className="font-medium text-sm">Modify Permissions</h4>
+              {AVAILABLE_PERMISSIONS.map((perm) => (
+                <div key={perm} className="flex items-center justify-between">
+                  <label className="text-sm">{perm}</label>
+                  <div className="flex gap-2">
                     <input
                       type="checkbox"
-                      checked={editRole.permissions.includes(
-                        "addPermissions:reports:export",
-                      )}
-                      onChange={() => {
-                        const perm = "addPermissions:reports:export";
-                        setEditRole({
-                          ...editRole,
-                          permissions: editRole.permissions.includes(perm)
-                            ? editRole.permissions.filter((p) => p !== perm)
-                            : [...editRole.permissions, perm],
-                        });
-                      }}
+                      checked={editRole.addPermissions.includes(perm)}
+                      onChange={() =>
+                        setEditRole((prev) => ({
+                          ...prev,
+                          addPermissions: prev.addPermissions.includes(perm)
+                            ? prev.addPermissions.filter((p) => p !== perm)
+                            : [...prev.addPermissions, perm],
+                        }))
+                      }
                     />
-                    Add Report Export Permission
-                  </label>
-                  <label>
                     <input
                       type="checkbox"
-                      checked={editRole.permissions.includes(
-                        "removePermissions:messages:update",
-                      )}
-                      onChange={() => {
-                        const perm = "removePermissions:messages:update";
-                        setEditRole({
-                          ...editRole,
-                          permissions: editRole.permissions.includes(perm)
-                            ? editRole.permissions.filter((p) => p !== perm)
-                            : [...editRole.permissions, perm],
-                        });
-                      }}
+                      checked={editRole.removePermissions.includes(perm)}
+                      onChange={() =>
+                        setEditRole((prev) => ({
+                          ...prev,
+                          removePermissions: prev.removePermissions.includes(
+                            perm,
+                          )
+                            ? prev.removePermissions.filter((p) => p !== perm)
+                            : [...prev.removePermissions, perm],
+                        }))
+                      }
                     />
-                    Remove Message Update Permission
-                  </label>
+                  </div>
                 </div>
-                <div className="flex justify-end gap-2 mt-6">
-                  <Button
-                    label="Cancel"
-                    variant="secondary"
-                    onClick={() => setIsEditRoleModalOpen(false)}
-                  />
-                  <Button
-                    label={roleLoading ? "Updating..." : "Update Role"}
-                    variant="primary"
-                    onClick={handleUpdateRole}
-                    disabled={roleLoading}
-                  />
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-2 mt-6">
+            <Button
+              label="Cancel"
+              variant="secondary"
+              onClick={() => setIsEditRoleModalOpen(false)}
+            />
+            <Button
+              label={roleLoading ? "Updating..." : "Update Role"}
+              variant="primary"
+              onClick={handleUpdateRole}
+              disabled={roleLoading}
+            />
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };

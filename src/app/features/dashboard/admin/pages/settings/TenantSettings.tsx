@@ -19,8 +19,8 @@ const TenantSettings = () => {
   };
 
   useEffect(() => {
-    fetchTenantUsers();
-  }, [fetchTenantUsers]);
+    if (!tenantUsers.length) fetchTenantUsers();
+  }, []);
 
   const columns = useMemo<ColumnDef<any>[]>(
     () => [

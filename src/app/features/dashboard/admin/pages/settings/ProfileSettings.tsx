@@ -26,7 +26,6 @@ const ProfileSettings = () => {
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   const handleSavePersonal = () => {
-    // API call here
     setIsEditingPersonal(false);
   };
 
@@ -35,7 +34,6 @@ const ProfileSettings = () => {
       alert("Passwords do not match!");
       return;
     }
-    // API call here
     setCurrentPassword("");
     setNewPassword("");
     setConfirmPassword("");

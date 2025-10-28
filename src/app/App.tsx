@@ -6,7 +6,6 @@ import AppRoutes from "@/app/router/AppRoutes";
 import { ScrollToTop } from "@/app/hooks/ui/ScrollToTop";
 import { useAuthStore } from "@/app/store/auth.store";
 import ErrorBoundary from "@/app/ErrorBoundary";
-import { BannerProvider } from "@/app/context/BannerContext";
 
 const App = () => {
   useEffect(() => {
