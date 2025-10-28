@@ -26,16 +26,16 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-  <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <BannerProvider>
-        <App />
-        {import.meta.env.DEV && (
-          <React.Suspense fallback={null}>
-            <DevTools initialIsOpen={false} />
-          </React.Suspense>
-        )}
-      </BannerProvider>
-    </QueryClientProvider>
-  </React.StrictMode>,
+  // <React.StrictMode>
+  <QueryClientProvider client={queryClient}>
+    <BannerProvider>
+      <App />
+      {import.meta.env.DEV && (
+        <React.Suspense fallback={null}>
+          <DevTools initialIsOpen={false} />
+        </React.Suspense>
+      )}
+    </BannerProvider>
+  </QueryClientProvider>,
+  // </React.StrictMode>,
 );

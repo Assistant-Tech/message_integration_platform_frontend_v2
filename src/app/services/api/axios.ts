@@ -62,13 +62,12 @@ api.interceptors.request.use(async (config) => {
       }
     }
 
-    // ✅ Idempotency Key: Apply for all mutating methods (POST, PUT, PATCH, DELETE)
-    // This generalizes the requirement beyond specific endpoints like /esewa
-    // const method = config.method?.toUpperCase();
-    // if (method && !["GET", "HEAD", "OPTIONS"].includes(method)) {
-    //   // Use crypto.randomUUID() to generate a unique key for each request
-    //   config.headers["Idempotency-Key"] = crypto.randomUUID();
-    // }
+    const method = config.method?.toUpperCase();
+    const isMutating = method && !["GET", "HEAD", "OPTIONS"].includes(method);
+
+    if (isMutating && config.url?.includes("/esewa")) {
+      config.headers["Idempotency-Key"] = crypto.randomUUID();
+    }
   } catch {
     // ignore, typically for scenarios where the store import might fail in testing environments
   }

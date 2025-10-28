@@ -45,7 +45,7 @@ const ChatBot: React.FC = () => {
         whileInView="visible"
         viewport={{ once: true }}
       >
-        <motion.div className="flex flex-col md:flex-col lg:flex-row items-center justify-between gap-6 relative">
+        <motion.div className="flex flex-col md:flex-col lg:flex-row items-center justify-between gap-16 relative">
           {/* Left Section: Image + Animation */}
           <motion.div
             variants={itemVariants}
@@ -88,8 +88,8 @@ const ChatBot: React.FC = () => {
               variants={itemVariants}
               className="h2-bold-40 text-grey pt-4 xs:text-start sm:text-center md:text-center lg:text-start"
             >
-              Create Your Chatbots in{" "}
-              <span className="text-primary">Minutes</span>
+              Create Your <span className="text-primary">AI Chatbots</span> in
+              Minutes
             </motion.h1>
 
             <motion.p

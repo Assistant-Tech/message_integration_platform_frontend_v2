@@ -1,5 +1,4 @@
-// FeatureCard.tsx
-import { Box, Flex } from "@radix-ui/themes";
+import React from "react";
 
 interface Feature {
   img: string;
@@ -9,21 +8,26 @@ interface Feature {
 
 const FeatureCard: React.FC<Feature> = ({ img, title, description }) => {
   return (
-    <Box className="w-full bg-white rounded-2xl p-4 cursor-pointer">
-      <Flex direction="row" align="center" gap="4">
-        <Box className="flex">
-          <img
-            src={img}
-            alt={title}
-            className="w-24 h-24 object-cover rounded-xl"
-          />
-        </Box>
-        <Box className="px-3 pt-2 text-start">
-          <h3 className="h5-bold-16 text-grey mb-1">{title}</h3>
-          <p className="h5-regular-16 text-grey-medium">{description}</p>
-        </Box>
-      </Flex>
-    </Box>
+    <div className="w-full bg-white rounded-2xl p-5 md:p-6 flex items-center gap-4 md:gap-6 shadow-sm hover:shadow-md transition cursor-pointer">
+      {/* Image Section (1/3) */}
+      <div className="flex-shrink-0 w-1/3 flex justify-center">
+        <img
+          src={img}
+          alt={title}
+          className="w-full max-w-[80px] md:max-w-[120px] aspect-square object-cover rounded-xl"
+        />
+      </div>
+
+      {/* Text Section (2/3) */}
+      <div className="w-2/3 text-left">
+        <h3 className="text-grey text-lg md:text-xl font-semibold mb-1">
+          {title}
+        </h3>
+        <p className="text-grey-medium text-sm md:text-base leading-relaxed">
+          {description}
+        </p>
+      </div>
+    </div>
   );
 };
 

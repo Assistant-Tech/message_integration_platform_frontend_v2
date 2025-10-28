@@ -1,5 +1,4 @@
 //PUBLIC exports
-export { default as DashboardLayout } from "./DashboardLayout";
 export { default as SelectAllCustomer } from "./SelectAllCustomer";
 export { default as GenericTable } from "./table/GenericTable";
 

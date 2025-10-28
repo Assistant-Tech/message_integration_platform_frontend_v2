@@ -76,6 +76,8 @@ export const APP_ROUTES = {
     PRODUCTS_VARIANTS: "variants",
     PRODUCTS_INVENTORY: "inventory",
     PRODUCTS_CREATE: "product_all/createProducts",
+
+    CHECKOUT: "checkout",
   },
   // User routes
   USER: {

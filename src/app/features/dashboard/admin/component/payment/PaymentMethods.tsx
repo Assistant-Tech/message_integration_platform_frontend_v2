@@ -27,7 +27,7 @@ const PaymentMethods = () => {
     {
       id: "Khalti",
       image: KHALTI_IMAGE_URL,
-      label: "Khalti",
+      label: "Khalti"
     },
     {
       id: "eSewa",

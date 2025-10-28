@@ -13,7 +13,6 @@ import {
 import { Cross } from "lucide-react";
 import { toast } from "sonner";
 import { useAuthStore } from "@/app/store/auth.store";
-import { APP_ROUTES } from "@/app/constants/routes";
 
 const OnboardingForm: React.FC = () => {
   const navigate = useNavigate();
@@ -107,10 +106,10 @@ const OnboardingForm: React.FC = () => {
         }
       });
 
-      // const response = await onboarding(formData);
+      const response = await onboarding(formData);
 
       reset();
-      navigate(APP_ROUTES.ADMIN.DASHBOARD, {
+      navigate(`/login`, {
         state: { message: "Onboarding completed successfully!" },
       });
       toast.success("Onboarding completed successfully!");
