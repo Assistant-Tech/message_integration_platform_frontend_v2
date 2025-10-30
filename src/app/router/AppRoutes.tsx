@@ -47,7 +47,7 @@ const AppRoutes = () => {
             </Route>
 
             {/* User routes */}
-            <Route path="/user/*" element={<UserRoutes />} />
+            <Route path="/:slug/dashboard/*" element={<UserRoutes />} />
           </Route>
         </Route>
 
