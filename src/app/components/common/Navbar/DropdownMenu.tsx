@@ -4,7 +4,7 @@ import { Button } from "@/app/components/ui";
 import { ArrowUpRight } from "lucide-react";
 import { APP_ROUTES } from "@/app/constants/routes";
 import { cn } from "@/app/utils/cn";
-import { useBanner } from "@/app/context/BannerContext";
+// import { useBanner } from "@/app/context/BannerContext";
 
 interface DropdownItem {
   name: string;
@@ -22,7 +22,7 @@ interface DropdownMenuProps {
 }
 
 const DropdownMenu = ({ items, isVisible }: DropdownMenuProps) => {
-  const { bannerVisible } = useBanner();
+  // const { bannerVisible } = useBanner();
 
   return (
     <AnimatePresence>
@@ -34,7 +34,7 @@ const DropdownMenu = ({ items, isVisible }: DropdownMenuProps) => {
           transition={{ duration: 0.2 }}
           className={cn(
             "fixed left-0 right-0 z-40 w-screen",
-            bannerVisible ? "top-32" : "top-20",
+            // bannerVisible ? "top-32" : "top-20",
           )}
         >
           <div>
