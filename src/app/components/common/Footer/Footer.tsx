@@ -182,7 +182,7 @@ const Footer = () => {
                 variants={itemVariants}
                 whileHover={{ scale: 1.2, rotate: 10 }}
               >
-                <a href={item.href} aria-label={item.name}>
+                <a href={item.href} aria-label={item.name} target="_blank" rel="noopener noreferrer">
                   <img
                     src={item.src}
                     alt={`${item.name} icon`}

@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 import google from "@/app/assets/icons/google.svg";
@@ -277,9 +277,9 @@ const LoginForm = () => {
 
           <p className="text-center text-grey-medium mt-4">
             Don't have an account?{" "}
-            <a href="/register" className="text-primary hover:underline">
+            <Link to="/register" className="text-primary hover:underline">
               Register
-            </a>
+            </Link>
           </p>
 
           <p className="text-center text-xs text-grey-medium mt-4">

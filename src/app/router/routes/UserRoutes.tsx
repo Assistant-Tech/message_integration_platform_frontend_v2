@@ -1,4 +1,4 @@
-import { Route, Navigate, useParams } from "react-router-dom";
+import { Route, Navigate, useParams, Routes } from "react-router-dom";
 import { lazy } from "react";
 
 const UserLayout = lazy(
@@ -17,14 +17,15 @@ const VerifyRedirect = () => {
   return <Navigate to={`/${slug}/admin/dashboard`} replace />;
 };
 
-const UserRoutes = (
-  <>
-    <Route path="/:slug/verify" element={<VerifyRedirect />} />
-    <Route path="/:slug/dashboard" element={<UserLayout />}>
-      <Route index element={<UserDashboardPage />} />
-      <Route path="settings/profile" element={<ProfileSettings />} />
-    </Route>
-  </>
-);
-
+const UserRoutes = () => {
+  return (
+    <Routes>
+      <Route path="/:slug/verify" element={<VerifyRedirect />} />
+      <Route path="/:slug/dashboard" element={<UserLayout />}>
+        <Route index element={<UserDashboardPage />} />
+        <Route path="settings/profile" element={<ProfileSettings />} />
+      </Route>
+    </Routes>
+  );
+};
 export default UserRoutes;

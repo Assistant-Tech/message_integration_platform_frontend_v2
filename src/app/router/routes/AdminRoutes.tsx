@@ -1,4 +1,4 @@
-import { Route } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { lazy } from "react";
 import { APP_ROUTES } from "@/app/constants/routes";
 
@@ -26,18 +26,12 @@ const ProductCategory = lazy(() => import("@/app/features/dashboard/admin/pages/
 const ProductVariants = lazy(() => import("@/app/features/dashboard/admin/pages/products/ProductVariants"));
 const ProductInventory = lazy(() => import("@/app/features/dashboard/admin/pages/products/ProductInventory"));
 const CreateProductPage = lazy(() => import("@/app/features/dashboard/admin/pages/products/CreateProductPage"));
-const PaymentSuccessPage = lazy(() => import("@/app/features/dashboard/admin/pages/payments/PaymentSuccess.page"));
 const BillingPage = lazy(() => import("@/app/features/dashboard/admin/pages/payments/confirm/Billing.page"));
-const SubscriptionConfirmation = lazy(() => import("@/app/features/dashboard/admin/pages/payments/confirm/SubscriptionConfirmation"));
-const PaymentVerify = lazy(() => import("@/app/features/dashboard/admin/pages/payments/confirm/PaymentVerify.page"));
 const CheckoutPage = lazy(() => import("@/app/pages/checkout/CheckoutPage"));
 
-const AdminRoutes = (
-  <>
-    <Route path="/payments/verify" element={<PaymentVerify />} />
-    <Route path="/payments/success" element={<PaymentSuccessPage />} />
-    <Route path="/:slug/subscription/confirmation" element={<SubscriptionConfirmation />} />
-    <Route path="/:slug/admin" element={<AdminLayout />}>
+const AdminRoutes = () => {
+  return( <Routes>
+    <Route element={<AdminLayout />}>
       <Route index element={<AdminDashboardPage />} />
       <Route path={APP_ROUTES.ADMIN.DASHBOARD} element={<AdminDashboardPage />} />
       <Route path={APP_ROUTES.ADMIN.CONVERSATION} element={<ConversationPage />} />
@@ -65,7 +59,7 @@ const AdminRoutes = (
       <Route path={APP_ROUTES.ADMIN.PRODUCTS_CREATE} element={<CreateProductPage />} />
       <Route path={APP_ROUTES.ADMIN.CHECKOUT} element={<CheckoutPage />} />
     </Route>
-  </>
-);
+  </Routes>)
+};
 
 export default AdminRoutes;

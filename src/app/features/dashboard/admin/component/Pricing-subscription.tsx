@@ -65,57 +65,65 @@ const PricingSubscription = () => {
 
   return (
     <Box className="px-6 md:px-2 max-w-full mx-auto">
-      <Flex direction="column" align="center" gap="3" mb="6">
+      <Flex direction="column" align="center" gap="4" mb="8" className="w-full">
         <article className="flex flex-col items-center text-center space-y-4">
           <Badge title="PLANS TAILORED TO YOUR NEEDS" />
           <h1 className="h2-bold-40 text-grey">Discover Plans For You</h1>
-          <p className="h4-regular-24 text-grey-medium">
+          <p className="h4-regular-24 text-grey-medium max-w-2xl">
             Whether you're just starting out or ready to scale, we have a plan
             designed to fit your goals.
           </p>
         </article>
 
-        <div className="pt-6">
-          <DynamicToggle
-            options={pricingOptions}
-            defaultSelected={duration}
-            onChange={(val) => setDuration(val.value as APIDuration)}
-          />
-        </div>
-
-        <RadioGroup.Root
-          value={currency}
-          onValueChange={(val) => setCurrency(val as Currency)}
-          className="w-full pb-4 md:pb-8"
+        {/* Top control bar */}
+        <Flex
+          justify="between"
+          align="center"
+          className="w-full flex-col md:flex-row pt-8"
         >
-          <Flex justify="end" align="center" className="pt-4 gap-4">
-            {["NPR", "USD"].map((cur) => (
-              <Flex key={cur} direction="row" align="center" gap="2">
-                <RadioGroup.Item
-                  value={cur}
-                  id={cur.toLowerCase()}
-                  className={cn(
-                    "relative flex items-center justify-center",
-                    "w-4 h-4 rounded-full border border-gray-400",
-                    "data-[state=checked]:border-primary",
-                  )}
-                >
-                  <RadioGroup.Indicator className="absolute w-2 h-2 bg-primary rounded-full" />
-                </RadioGroup.Item>
+          {/* Centered toggle on desktop */}
+          <div className="flex justify-center w-full md:w-auto mb-4 md:mb-0">
+            <DynamicToggle
+              options={pricingOptions}
+              defaultSelected={duration}
+              onChange={(val) => setDuration(val.value as APIDuration)}
+            />
+          </div>
 
-                <label
-                  htmlFor={cur.toLowerCase()}
-                  className={cn(
-                    currency === cur ? "text-primary" : "text-base-black",
-                    "body-regular-16 cursor-pointer select-none",
-                  )}
-                >
-                  {cur === "NPR" ? "NPR (रु)" : "USD ($)"}
-                </label>
-              </Flex>
-            ))}
-          </Flex>
-        </RadioGroup.Root>
+          {/* Currency selector on same line, right side */}
+          <RadioGroup.Root
+            value={currency}
+            onValueChange={(val) => setCurrency(val as Currency)}
+          >
+            <div className="flex justify-end items-center gap-6">
+              {["NPR", "USD"].map((cur) => (
+                <div key={cur} className="flex items-center gap-2 pb-4">
+                  <RadioGroup.Item
+                    value={cur}
+                    id={cur.toLowerCase()}
+                    className={cn(
+                      "relative flex items-center justify-center",
+                      "w-4 h-4 rounded-full border border-gray-400",
+                      "data-[state=checked]:border-primary",
+                    )}
+                  >
+                    <RadioGroup.Indicator className="absolute w-2 h-2 bg-primary rounded-full" />
+                  </RadioGroup.Item>
+
+                  <label
+                    htmlFor={cur.toLowerCase()}
+                    className={cn(
+                      currency === cur ? "text-primary" : "text-base-black",
+                      "body-regular-16 cursor-pointer select-none",
+                    )}
+                  >
+                    {cur === "NPR" ? "NPR (रु)" : "USD ($)"}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </RadioGroup.Root>
+        </Flex>
       </Flex>
 
       <div className="w-full">

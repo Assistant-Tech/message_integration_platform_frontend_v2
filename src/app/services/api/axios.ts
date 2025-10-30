@@ -10,9 +10,7 @@ interface RetriableAxiosRequestConfig extends InternalAxiosRequestConfig {
 }
 
 const api = axios.create({
-  baseURL:
-    import.meta.env.VITE_API_URL_TEST ||
-    ("http://localhost:3000/api/v1" as string),
+  baseURL: import.meta.env.VITE_API_URL_TEST ?? "http://localhost:3000/api/v1",
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
@@ -29,48 +27,34 @@ let cooldownTimeout: ReturnType<typeof setTimeout> | null = null;
 const setCooldown = (seconds: number) => {
   isCooldown = true;
   if (cooldownTimeout) clearTimeout(cooldownTimeout);
-  cooldownTimeout = setTimeout(() => {
-    isCooldown = false;
-  }, seconds * 1000);
+  cooldownTimeout = setTimeout(() => (isCooldown = false), seconds * 1000);
 };
 
+// REQUEST INTERCEPTOR
 api.interceptors.request.use(async (config) => {
-  // ⏳ Block requests if in cooldown
   if (isCooldown) {
     toast.error("You are temporarily rate-limited. Please wait.");
     return Promise.reject(new Error("Rate-limited"));
   }
 
   try {
-    const mod = await import("@/app/store/auth.store");
-    const { accessToken, csrfToken } = mod.useAuthStore.getState();
+    const { useAuthStore } = await import("@/app/store/auth.store");
+    const { accessToken, csrfToken } = useAuthStore.getState();
 
-    config.headers = config.headers || {};
+    config.headers = config.headers ?? {};
 
-    // ✅ Access token
     if (accessToken && !config.headers.Authorization) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
 
-    // ✅ CSRF token: Prefer store, fallback to cookie
-    if (csrfToken) {
-      config.headers["X-CSRF-Token"] = csrfToken;
-    } else {
-      const cookieMatch = document.cookie.match(/csrf_token=([^;]+)/);
-      if (cookieMatch) {
-        config.headers["X-CSRF-Token"] = cookieMatch[1];
-      }
-    }
-
-    const method = config.method?.toUpperCase();
-    const isMutating = method && !["GET", "HEAD", "OPTIONS"].includes(method);
-
-    if (isMutating && config.url?.includes("/esewa")) {
-      config.headers["Idempotency-Key"] = crypto.randomUUID();
-    }
+    config.headers["X-CSRF-Token"] =
+      csrfToken ??
+      document.cookie.match(/csrf_token=([^;]+)/)?.[1] ??
+      undefined;
   } catch {
-    // ignore, typically for scenarios where the store import might fail in testing environments
+    // ignore store import errors
   }
+
   return config;
 });
 
@@ -79,26 +63,22 @@ api.interceptors.request.use(async (config) => {
 // ---------------------------------------------------------------------------
 let isRefreshing = false;
 let refreshPromise: Promise<string | null> | null = null;
-
-type PendingRequest = {
+const failedQueue: {
   resolve: (value: AxiosResponse) => void;
   reject: (reason?: unknown) => void;
   config: RetriableAxiosRequestConfig;
-};
-const failedQueue: PendingRequest[] = [];
+}[] = [];
 
 const processQueue = (error: unknown, token: string | null) => {
-  while (failedQueue.length) {
+  while (failedQueue.length > 0) {
     const pending = failedQueue.shift();
     if (!pending) continue;
-    if (error) {
-      pending.reject(error);
-    } else {
+    if (error) pending.reject(error);
+    else {
       if (token) {
         pending.config.headers = pending.config.headers || {};
         pending.config.headers.Authorization = `Bearer ${token}`;
       }
-      // Re-run the original request with the new token
       api(pending.config).then(pending.resolve).catch(pending.reject);
     }
   }
@@ -109,53 +89,49 @@ api.interceptors.response.use(
   async (err: AxiosError) => {
     const originalRequest = err.config as RetriableAxiosRequestConfig;
 
-    // 🔴 Handle 401 (unauthorized -> refresh logic)
+    // Handle 401 with refresh
     if (err.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
-        // If a refresh is already in progress, queue the current request
         if (isRefreshing) {
           return new Promise((resolve, reject) => {
             failedQueue.push({ resolve, reject, config: originalRequest });
           });
         }
 
-        // Start the refresh process
         isRefreshing = true;
-        const mod = await import("@/app/store/auth.store");
-        const { refreshAccessToken } = mod.useAuthStore.getState();
+
+        const { useAuthStore } = await import("@/app/store/auth.store");
+        const { refreshAccessToken } = useAuthStore.getState();
 
         refreshPromise = refreshAccessToken();
         const newToken = await refreshPromise;
 
-        // Process queue and reset state after successful refresh
         isRefreshing = false;
         processQueue(null, newToken);
 
         if (newToken) {
-          originalRequest.headers = originalRequest.headers || {};
-          originalRequest.headers.Authorization = `Bearer ${newToken}`;
-          // Retry the original request
+          if (originalRequest.headers) {
+            originalRequest.headers.Authorization = `Bearer ${newToken}`;
+          }
           return api(originalRequest);
         }
       } catch (refreshErr) {
-        // Failed refresh: process queue with error and trigger logout
         isRefreshing = false;
         processQueue(refreshErr, null);
 
-        const mod = await import("@/app/store/auth.store");
-        mod.useAuthStore.getState().logout();
+        const { useAuthStore } = await import("@/app/store/auth.store");
+        useAuthStore.getState().logout();
+
         return Promise.reject(refreshErr);
       }
     }
 
-    // 🔴 Handle 429 (rate-limiting)
+    // Handle 429 Too Many Requests
     if (err.response?.status === 429) {
       const retryAfter = Number(err.response.headers?.["retry-after"]) || 5;
-      toast.error(
-        `Too many requests. Please wait ${retryAfter} seconds before trying again.`,
-      );
+      toast.error(`Too many requests. Please wait ${retryAfter}s.`);
       setCooldown(retryAfter);
     }
 

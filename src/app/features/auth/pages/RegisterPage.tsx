@@ -4,6 +4,7 @@ import { Button, Logo } from "@/app/components/ui";
 import google from "@/app/assets/icons/google.svg";
 import circlefb from "@/app/assets/icons/circlefb.svg";
 import { REGISTER_IMAGE_URL } from "@/app/constants/image-cloudinary";
+import { Link } from "react-router-dom";
 
 const RegisterPage = () => {
   return (
@@ -76,12 +77,12 @@ const RegisterPage = () => {
           {/* Login Redirect */}
           <p className="text-center h5-regular-16 text-grey-medium mt-4">
             Already have an account?{" "}
-            <a
-              href="/login"
+            <Link
+              to="/login"
               className="text-primary h5-regular-16 hover:underline"
             >
               Log in
-            </a>
+            </Link>
           </p>
 
           {/* Copyright */}
