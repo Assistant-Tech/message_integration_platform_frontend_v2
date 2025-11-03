@@ -18,7 +18,7 @@ export const APP_ROUTES = {
     // Onboarding
     ONBOARDING_FORM: "/onboardingform",
     ONBOARDING_FORM_STEP_1: "step-1",
-    ONBOARDING_FORM_STEP_2: "step-2",
+    ONBOARDING_FORM_STEP_2: "step-2", 
     ONBOARDING_FORM_STEP_3: "step-3",
     ONBOARDING_FORM_STEP_4: "step-4",
     ONBOARDING_FORM_STEP_5: "step-5",
@@ -76,6 +76,8 @@ export const APP_ROUTES = {
     PRODUCTS_VARIANTS: "variants",
     PRODUCTS_INVENTORY: "inventory",
     PRODUCTS_CREATE: "product_all/createProducts",
+
+    CHECKOUT: "checkout",
   },
   // User routes
   USER: {

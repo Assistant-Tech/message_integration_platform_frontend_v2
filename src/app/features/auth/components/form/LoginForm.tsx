@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 import google from "@/app/assets/icons/google.svg";
@@ -19,6 +19,7 @@ import { handleApiError } from "@/app/utils/handlerApiError";
 import { useRef, useState } from "react";
 import { useMfaStore } from "@/app/store/mfa.store";
 import RecoveryPhrasesModal from "@/app/features/dashboard/admin/component/mfa/RecoveryCodesModal";
+import { APP_ROUTES } from "@/app/constants/routes";
 
 const LoginForm = () => {
   const { login, mfalogin } = useAuthStore();
@@ -101,7 +102,7 @@ const LoginForm = () => {
         useAuthStore.getState().setTenantSlug(res.data.tenantSlug);
 
         if (res.data.requiresOnboarding) {
-          navigate("/onboardingform");
+          navigate(APP_ROUTES.PUBLIC.ONBOARDING_FORM);
         } else {
           navigate(`/${res.data.tenantSlug}/admin/dashboard`);
         }
@@ -276,9 +277,9 @@ const LoginForm = () => {
 
           <p className="text-center text-grey-medium mt-4">
             Don't have an account?{" "}
-            <a href="/register" className="text-primary hover:underline">
+            <Link to="/register" className="text-primary hover:underline">
               Register
-            </a>
+            </Link>
           </p>
 
           <p className="text-center text-xs text-grey-medium mt-4">

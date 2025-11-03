@@ -8,13 +8,15 @@ import {
 import { getCurrentSubscription } from "@/app/services/subscription.services";
 import { useSubscriptionStore } from "@/app/store/subscription.store";
 import { Loader2 } from "lucide-react";
-import { toast } from "sonner";
 import UpgradeSubscription from "../../component/subscription/UpgradeSubscription";
 import PaymentHistory from "../../component/PaymentHistory";
 
 const SubscriptionSettings = () => {
   const [activeTab, setActiveTab] = useState<
-    "your subscription" | "billing information" | "payment history"
+    | "your subscription"
+    | "billing information"
+    | "payment history"
+    | "upgrade plan"
   >("your subscription");
 
   const { loading, error, currentSubscriptionResponse } =
@@ -25,7 +27,7 @@ const SubscriptionSettings = () => {
       try {
         await getCurrentSubscription();
       } catch {
-        toast.error("Failed to fetch current subscription");
+        console.log("There is no subscription to fetch");
       }
     };
     fetchCurrentSubscription();
@@ -90,6 +92,16 @@ const SubscriptionSettings = () => {
           Payment History
         </button>
         <button
+          className={`flex-1 px-6 py-3 text-sm font-medium transition-colors ${
+            activeTab === "upgrade plan"
+              ? "text-primary border-b-2 border-primary bg-primary-light"
+              : "text-grey-medium hover:text-grey"
+          }`}
+          onClick={() => setActiveTab("upgrade plan")}
+        >
+          Upgrade Plan
+        </button>
+        <button
           className={`flex-1 px-6 py-3 text-sm font-medium transition-colors rounded-tr-lg ${
             activeTab === "billing information"
               ? "text-primary border-b-2 border-primary bg-primary-light"
@@ -110,11 +122,7 @@ const SubscriptionSettings = () => {
       )}
 
       {/* Error State */}
-      {!loading && error && (
-        <div className="text-center text-danger py-6">
-          You don’t have an active subscription yet.
-        </div>
-      )}
+      {!loading && error && <div></div>}
 
       {/* Content */}
       {!loading && !error && (
@@ -128,12 +136,11 @@ const SubscriptionSettings = () => {
                 animate="visible"
                 exit="exit"
               >
-                {currentSubscriptionResponse ? (
-                  <YourSubscription data={currentSubscriptionResponse.data} />
-                ) : (
-                  <div className="text-center py-12 text-grey">
-                    You don’t have an active subscription yet.
-                  </div>
+                {currentSubscriptionResponse && (
+                  <YourSubscription
+                    data={currentSubscriptionResponse.data}
+                    onUpgradeClick={() => setActiveTab("upgrade plan")}
+                  />
                 )}
               </motion.div>
             ) : activeTab === "payment history" ? (
@@ -145,6 +152,16 @@ const SubscriptionSettings = () => {
                 exit="exit"
               >
                 <PaymentHistory />
+              </motion.div>
+            ) : activeTab === "upgrade plan" ? (
+              <motion.div
+                key="billing information"
+                variants={tabVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+              >
+                <UpgradeSubscription current={currentSubscriptionResponse} />
               </motion.div>
             ) : (
               <motion.div
@@ -169,26 +186,13 @@ const SubscriptionSettings = () => {
       {/* Available Plans / Upgrade */}
       {activeTab === "your subscription" && (
         <>
-          {!currentSubscriptionResponse ? (
+          {!currentSubscriptionResponse && (
             <div className="py-4">
               <h1 className="h4-bold-24 text-grey py-6">Available Plans</h1>
               <PricingSubscription />
             </div>
-          ) : (
-            <div className="py-4">
-              <UpgradeSubscription current={currentSubscriptionResponse} />
-            </div>
           )}
         </>
-      )}
-
-      {/* Invoice list and billing info */}
-      {activeTab === "billing information" && (
-        <BillingSubscription
-          subscriptionId={
-            currentSubscriptionResponse?.data?.Invoice[0]?.subscriptionId
-          }
-        />
       )}
     </motion.div>
   );

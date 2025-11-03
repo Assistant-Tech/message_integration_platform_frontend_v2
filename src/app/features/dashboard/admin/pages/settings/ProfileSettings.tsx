@@ -1,13 +1,27 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Edit, Eye, EyeOff, Save, X, User } from "lucide-react";
+import { Edit, Eye, EyeOff, Save, X, CircleUser } from "lucide-react";
 import { Input, Button } from "@/app/components/ui";
-import { useAuthStore } from "@/app/store/auth.store";
 import { Switch } from "../../component/ui";
 import { useNotificationStore } from "@/app/store/notification.store";
+import { User } from "@/app/types/auth.types";
+import { useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/app/constants/queryKeys";
+// import { useAuthStore } from "@/app/store/auth.store";
 
 const ProfileSettings = () => {
-  const { user } = useAuthStore();
+  // Tarika -1
+  const queryClient = useQueryClient();
+  const user = queryClient.getQueryData<User>(QUERY_KEYS.CURRENT_USER);
+  console.log("🚀 ~ ProfileSettings ~ user:", user)
+  console.log(useQueryClient().getQueryCache().getAll());
+
+  // Tarika - 2
+  // const user = useAuthStore((state) => state.user);
+  // console.log("🚀 ~ ProfileSettings ~ user:", user)
+
+  // Debuging garne tarika in React-Query
+
   const [showPassword, setShowPassword] = useState(false);
 
   const [isEditingPersonal, setIsEditingPersonal] = useState(false);
@@ -26,7 +40,6 @@ const ProfileSettings = () => {
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   const handleSavePersonal = () => {
-    // API call here
     setIsEditingPersonal(false);
   };
 
@@ -35,7 +48,6 @@ const ProfileSettings = () => {
       alert("Passwords do not match!");
       return;
     }
-    // API call here
     setCurrentPassword("");
     setNewPassword("");
     setConfirmPassword("");
@@ -74,7 +86,7 @@ const ProfileSettings = () => {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <User size={24} className="text-white" />
+              <CircleUser size={24} className="text-white" />
             )}
           </div>
         </div>

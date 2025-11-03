@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Calendar,
   CreditCard,
@@ -8,60 +8,53 @@ import {
   MoreVertical,
   XCircle,
   PauseCircle,
+  MoveUpRight,
 } from "lucide-react";
 import { format, differenceInDays } from "date-fns";
+import { Button } from "@/app/components/ui";
 import { CurrentSubscriptionResponse } from "@/app/types/subscription.types";
 import { formatCurrency } from "@/app/utils/helper";
-import {
-  cancelSubscription,
-  getCurrentSubscription,
-  pauseSubscription,
-  resumeSubscription,
-} from "@/app/services/subscription.services";
-import { toast } from "sonner";
+import { getCurrentSubscription } from "@/app/services/subscription.services";
+import { Modal } from "@/app/components/common";
+import { useSubscriptionMutations } from "@/app/hooks/mutation/useSubscriptionMutation";
 
 type YourSubscriptionProps = {
   data?: CurrentSubscriptionResponse["data"];
+  onUpgradeClick?: () => void;
 };
 
-const YourSubscription = ({ data }: YourSubscriptionProps) => {
+const YourSubscription = ({ data, onUpgradeClick }: YourSubscriptionProps) => {
   const [subscription, setSubscription] = useState<
     CurrentSubscriptionResponse["data"] | null
   >(data || null);
-  const [showCancel, setShowCancel] = useState(false);
-  const [showPause, setShowPause] = useState(false);
-  const [showResume, setShowResume] = useState(false);
+
+  const [menuOpen, setMenuOpen] = useState(false);
   const [cancelReason, setCancelReason] = useState("");
   const [cancelImmediately, setCancelImmediately] = useState(false);
   const [pauseDuration, setPauseDuration] = useState(7);
-  const [loading, setLoading] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [modalType, setModalType] = useState<
+    null | "cancel" | "pause" | "resume"
+  >(null);
+
+  const { cancelMutation, pauseMutation, resumeMutation } =
+    useSubscriptionMutations(); 
 
   const refreshData = async () => {
     try {
       const res = await getCurrentSubscription();
-      setSubscription(res?.success ? res.data : null);
+      if (res.success) setSubscription(res.data);
     } catch (err) {
       console.error("Failed to refresh subscription:", err);
     }
   };
 
   useEffect(() => {
-    if (!subscription) {
-      refreshData();
-    }
+    if (!subscription) refreshData();
   }, [subscription]);
 
-  if (!subscription) {
-    return (
-      <div className="text-center text-grey-medium py-10">
-        You don’t have an active subscription yet.
-      </div>
-    );
-  }
+  if (!subscription) return <div>Loading...</div>;
 
   const {
-    id: subscriptionId,
     plan,
     startDate,
     endDate,
@@ -87,68 +80,9 @@ const YourSubscription = ({ data }: YourSubscriptionProps) => {
     visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
   };
 
-  // --- ACTION HANDLERS ---
-  const handleCancelSubscription = async () => {
-    try {
-      setLoading(true);
-      const res = await cancelSubscription({
-        subscriptionId,
-        cancellationReason: cancelReason || "No reason provided",
-        cancelImmediately,
-      });
-      if (res?.success) {
-        toast.success(res.message || "Subscription cancelled successfully");
-        await refreshData();
-      } else toast.error("Failed to cancel subscription");
-      setShowCancel(false);
-    } catch (err: any) {
-      toast.error(
-        err?.response?.data?.message || "Failed to cancel subscription",
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handlePauseSubscription = async () => {
-    try {
-      setLoading(true);
-      const res = await pauseSubscription({ subscriptionId, pauseDuration });
-      if (res?.success) {
-        toast.success(res.message || "Subscription paused successfully");
-        await refreshData();
-      } else toast.error("Failed to pause subscription");
-      setShowPause(false);
-    } catch (err: any) {
-      toast.error(
-        err?.response?.data?.message || "Failed to pause subscription",
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleResumeSubscription = async () => {
-    try {
-      setLoading(true);
-      const res = await resumeSubscription({ subscriptionId });
-      if (res?.success) {
-        toast.success(res.message || "Subscription resumed successfully");
-        await refreshData();
-      } else toast.error("Failed to resume subscription");
-      setShowResume(false);
-    } catch (err: any) {
-      toast.error(
-        err?.response?.data?.message || "Failed to resume subscription",
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div>
-      {/* PAUSED STATE NOTICE */}
+      {/* STATUS NOTICE */}
       {status === "PAUSED" && (
         <div className="flex flex-col items-start justify-center mb-6 bg-white py-6 px-4 rounded-2xl">
           <h1 className="body-bold-16 text-warning-dark">
@@ -156,10 +90,10 @@ const YourSubscription = ({ data }: YourSubscriptionProps) => {
           </h1>
           <p className="body-regular-16 text-warning">
             Your subscription is currently paused. Resume anytime to continue
-            using all premium features.
+            using premium features.
           </p>
           <button
-            onClick={() => setShowResume(true)}
+            onClick={() => setModalType("resume")}
             className="mt-4 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition"
           >
             Resume Subscription
@@ -167,25 +101,26 @@ const YourSubscription = ({ data }: YourSubscriptionProps) => {
         </div>
       )}
 
-      {/* TRIAL NOTICE */}
       {status === "TRIALING" && (
         <div className="flex flex-col items-start justify-center mb-6 bg-information-light py-6 px-4 rounded-2xl">
           <h1 className="body-bold-16 text-information-dark">
             Upgrade your plan
           </h1>
           <p className="body-regular-16 text-information">
-            You are currently on trial period which ends in{" "}
-            <strong>{daysLeft} days</strong>. To continue using Chatblix, please
-            upgrade to paid plans.
+            You are currently on a trial period which ends in{" "}
+            <strong>{daysLeft} days</strong>. Upgrade to continue using premium
+            features.
           </p>
         </div>
       )}
 
-      {/* Subscription Details */}
+      {/* MAIN SECTION */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <motion.div
-          className="lg:col-span-2 rounded-lg border border-grey-light bg-base-white relative"
+          className="lg:col-span-2 rounded-lg border border-grey-light bg-white relative"
           variants={itemVariants}
+          initial="hidden"
+          animate="visible"
         >
           <div className="flex items-center justify-between mb-6 px-6 pt-6">
             <div className="flex items-center gap-4">
@@ -207,7 +142,6 @@ const YourSubscription = ({ data }: YourSubscriptionProps) => {
               </span>
             </div>
 
-            {/* Menu */}
             {status !== "PAUSED" && (
               <div className="relative">
                 <button
@@ -221,17 +155,16 @@ const YourSubscription = ({ data }: YourSubscriptionProps) => {
                   <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
                     <button
                       onClick={() => {
-                        setShowPause(true);
+                        setModalType("pause");
                         setMenuOpen(false);
                       }}
                       className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-50 w-full text-left"
                     >
                       <PauseCircle size={16} /> Pause Subscription
                     </button>
-
                     <button
                       onClick={() => {
-                        setShowCancel(true);
+                        setModalType("cancel");
                         setMenuOpen(false);
                       }}
                       className="flex items-center gap-2 px-4 py-2 text-sm text-danger hover:bg-danger-light/10 w-full text-left"
@@ -267,7 +200,9 @@ const YourSubscription = ({ data }: YourSubscriptionProps) => {
             ].map(({ label, value, icon: Icon }, idx) => (
               <div
                 key={idx}
-                className={`flex items-center justify-between py-3 ${idx < 5 ? "border-b border-gray-100" : ""}`}
+                className={`flex items-center justify-between py-3 ${
+                  idx < 5 ? "border-b border-gray-100" : ""
+                }`}
               >
                 <div className="flex items-center gap-3">
                   <Icon size={20} className="text-grey-medium" />
@@ -279,10 +214,12 @@ const YourSubscription = ({ data }: YourSubscriptionProps) => {
           </div>
         </motion.div>
 
-        {/* Days Left */}
+        {/* DAYS LEFT */}
         <motion.div
           className="bg-white rounded-lg border border-grey-light p-6 flex flex-col items-center justify-center"
           variants={itemVariants}
+          initial="hidden"
+          animate="visible"
         >
           <div className="relative w-48 h-48 mb-6">
             <svg
@@ -317,122 +254,141 @@ const YourSubscription = ({ data }: YourSubscriptionProps) => {
               <p className="text-sm font-medium text-grey-medium">days left</p>
             </div>
           </div>
-          <div className="text-sm text-center">
-            <p className="text-grey-medium mb-1">Expires:</p>
-            <span className="text-danger font-bold">{formattedEndDate}</span>
+          <div className="flex flex-col justify-center gap-4">
+            <div className="text-sm text-center">
+              <p className="text-grey-medium mb-1">Expires:</p>
+              <span className="text-danger font-bold">{formattedEndDate}</span>
+            </div>
+            <div onClick={onUpgradeClick}>
+              <Button label="Upgrade plans" IconRight={<MoveUpRight />} />
+            </div>
           </div>
         </motion.div>
       </div>
 
-      {/* DIALOGS */}
-      {showCancel && (
-        <Dialog
-          title="Cancel Subscription"
-          onClose={() => setShowCancel(false)}
-          onConfirm={handleCancelSubscription}
-          loading={loading}
-          confirmText="Confirm Cancel"
-        >
-          <p className="text-sm text-grey-medium mb-4">
-            Are you sure you want to cancel your subscription?
-          </p>
-          <textarea
-            className="w-full border border-grey-light rounded-md p-2 text-sm mb-3"
-            placeholder="Reason for cancellation (optional)"
-            value={cancelReason}
-            onChange={(e) => setCancelReason(e.target.value)}
-          />
-          <div className="flex items-center gap-2">
-            <input
-              id="cancelNow"
-              type="checkbox"
-              checked={cancelImmediately}
-              onChange={(e) => setCancelImmediately(e.target.checked)}
-              className="w-4 h-4"
+      {/* MODALS */}
+      <AnimatePresence>
+        {modalType === "cancel" && (
+          <Modal title="Cancel Subscription" onClose={() => setModalType(null)}>
+            <p className="text-sm text-grey-medium mb-4">
+              Are you sure you want to cancel your subscription?
+            </p>
+            <textarea
+              className="w-full border border-grey-light rounded-md p-2 text-sm mb-3"
+              placeholder="Reason for cancellation (optional)"
+              value={cancelReason}
+              onChange={(e) => setCancelReason(e.target.value)}
             />
-            <label htmlFor="cancelNow" className="text-sm">
-              Cancel immediately
-            </label>
-          </div>
-        </Dialog>
-      )}
+            <div className="flex items-center gap-2">
+              <input
+                id="cancelNow"
+                type="checkbox"
+                checked={cancelImmediately}
+                onChange={(e) => setCancelImmediately(e.target.checked)}
+                className="w-4 h-4"
+              />
+              <label htmlFor="cancelNow" className="text-sm">
+                Cancel immediately
+              </label>
+            </div>
+            <div className="flex justify-end gap-3 mt-4">
+              <button
+                onClick={() => setModalType(null)}
+                className="px-4 py-2 rounded-md text-grey-medium hover:bg-gray-100"
+              >
+                Close
+              </button>
+              <button
+                onClick={() =>
+                  cancelMutation.mutate(
+                    {
+                      subscriptionId: subscription.id,
+                      cancellationReason: cancelReason,
+                      cancelImmediately: cancelImmediately,
+                    },
+                    { onSuccess: refreshData },
+                  )
+                }
+                disabled={cancelMutation.isPending}
+                className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition disabled:opacity-50"
+              >
+                {cancelMutation.isPending ? "Processing..." : "Confirm Cancel"}
+              </button>
+            </div>
+          </Modal>
+        )}
 
-      {showPause && (
-        <Dialog
-          title="Pause Subscription"
-          onClose={() => setShowPause(false)}
-          onConfirm={handlePauseSubscription}
-          loading={loading}
-          confirmText="Confirm Pause"
-        >
-          <p className="text-sm text-grey-medium mb-4">
-            Choose how many days to pause (1–15 days):
-          </p>
-          <input
-            type="number"
-            min={1}
-            max={15}
-            value={pauseDuration}
-            onChange={(e) => setPauseDuration(Number(e.target.value))}
-            className="w-full border border-grey-light rounded-md p-2 text-sm"
-          />
-        </Dialog>
-      )}
+        {modalType === "pause" && (
+          <Modal title="Pause Subscription" onClose={() => setModalType(null)}>
+            <p className="text-sm text-grey-medium mb-4">
+              Choose how many days to pause (1–15 days):
+            </p>
+            <input
+              type="number"
+              min={1}
+              max={15}
+              value={pauseDuration}
+              onChange={(e) => setPauseDuration(Number(e.target.value))}
+              className="w-full border border-grey-light rounded-md p-2 text-sm"
+            />
+            <div className="flex justify-end gap-3 mt-4">
+              <button
+                onClick={() => setModalType(null)}
+                className="px-4 py-2 rounded-md text-grey-medium hover:bg-gray-100"
+              >
+                Close
+              </button>
+              <button
+                onClick={() =>
+                  pauseMutation.mutate(
+                    {
+                      subscriptionId: subscription.id,
+                      pauseDuration: pauseDuration,
+                    },
+                    { onSuccess: refreshData },
+                  )
+                }
+                disabled={pauseMutation.isPending}
+                className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition disabled:opacity-50"
+              >
+                {pauseMutation.isPending ? "Processing..." : "Confirm Pause"}
+              </button>
+            </div>
+          </Modal>
+        )}
 
-      {showResume && (
-        <Dialog
-          title="Resume Subscription"
-          onClose={() => setShowResume(false)}
-          onConfirm={handleResumeSubscription}
-          loading={loading}
-          confirmText="Confirm Resume"
-        >
-          <p className="text-sm text-grey-medium mb-4">
-            Do you want to resume your paused subscription?
-          </p>
-        </Dialog>
-      )}
+        {modalType === "resume" && (
+          <Modal title="Resume Subscription" onClose={() => setModalType(null)}>
+            <p className="text-sm text-grey-medium mb-4">
+              Do you want to resume your paused subscription?
+            </p>
+            <div className="flex justify-end gap-3 mt-4">
+              <button
+                onClick={() => setModalType(null)}
+                className="px-4 py-2 rounded-md text-grey-medium hover:bg-gray-100"
+              >
+                Close
+              </button>
+              <button
+                onClick={() =>
+                  resumeMutation.mutate(
+                    {
+                      subscriptionId: subscription.id,
+                    },
+                    { onSuccess: refreshData },
+                  )
+                }
+                disabled={resumeMutation.isPending}
+                className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition disabled:opacity-50"
+              >
+                {resumeMutation.isPending ? "Processing..." : "Confirm Resume"}
+              </button>
+            </div>
+          </Modal>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
-
-// Reusable Dialog Component
-const Dialog = ({
-  title,
-  children,
-  onClose,
-  onConfirm,
-  loading,
-  confirmText,
-}: {
-  title: string;
-  children: React.ReactNode;
-  onClose: () => void;
-  onConfirm: () => void;
-  loading: boolean;
-  confirmText: string;
-}) => (
-  <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
-    <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-xl">
-      <h2 className="text-lg font-semibold mb-3">{title}</h2>
-      {children}
-      <div className="flex justify-end gap-3 mt-4">
-        <button
-          onClick={onClose}
-          className="px-4 py-2 rounded-md text-grey-medium hover:bg-gray-100"
-        >
-          Close
-        </button>
-        <button
-          onClick={onConfirm}
-          disabled={loading}
-          className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition disabled:opacity-50"
-        >
-          {loading ? "Processing..." : confirmText}
-        </button>
-      </div>
-    </div>
-  </div>
-);
 
 export default YourSubscription;

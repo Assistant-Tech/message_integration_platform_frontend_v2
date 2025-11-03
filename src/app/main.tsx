@@ -1,18 +1,10 @@
 import ReactDOM from "react-dom/client";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@/app/styles/globals.css";
 import App from "@/app/App";
 import React from "react";
 import { BannerProvider } from "./context/BannerContext";
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 5 * 60 * 1000,
-      gcTime: 10 * 60 * 1000,
-    },
-  },
-});
+import queryClient, { persister } from "@/app/utils/queryClient";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 
 // Lazy load ReactQueryDevtools only in development
 const DevTools = React.lazy(() =>
@@ -26,16 +18,19 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-  <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <BannerProvider>
-        <App />
-        {import.meta.env.DEV && (
-          <React.Suspense fallback={null}>
-            <DevTools initialIsOpen={false} />
-          </React.Suspense>
-        )}
-      </BannerProvider>
-    </QueryClientProvider>
-  </React.StrictMode>,
+  // <React.StrictMode>
+  <PersistQueryClientProvider
+    client={queryClient}
+    persistOptions={{ persister: persister }}
+  >
+    <BannerProvider>
+      <App />
+      {import.meta.env.DEV && (
+        <React.Suspense fallback={null}>
+          <DevTools initialIsOpen={false} />
+        </React.Suspense>
+      )}
+    </BannerProvider>
+  </PersistQueryClientProvider>,
+  // </React.StrictMode>,
 );

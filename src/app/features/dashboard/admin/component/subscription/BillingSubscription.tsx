@@ -5,9 +5,7 @@ import {
   Download,
   Eye,
   Calendar,
-  CreditCard,
   FileText,
-  DollarSign,
   Receipt,
   EyeIcon,
   X,
@@ -127,7 +125,6 @@ const BillingSubscription = ({
     }
   };
 
-  // ✅ Download Invoice as PDF (Frontend only)
   const handleDownloadInvoice = (invoice: Invoice) => {
     try {
       const doc = new jsPDF();
@@ -256,7 +253,6 @@ const BillingSubscription = ({
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-grey">
                       <div className="flex items-center gap-2">
-                        <CreditCard className="w-4 h-4 text-grey-medium" />
                         {formatAmount(invoice.total, invoice.currency)}
                       </div>
                     </td>
@@ -360,7 +356,6 @@ const BillingSubscription = ({
                   </td>
                   <td className="px-6 py-4 text-grey">
                     <div className="flex items-center gap-2">
-                      <DollarSign className="w-4 h-4 text-grey-medium" />
                       {formatAmount(t.amount, t.currency)}
                     </div>
                   </td>

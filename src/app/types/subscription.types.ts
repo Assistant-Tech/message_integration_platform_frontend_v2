@@ -297,7 +297,7 @@ export interface SubscriptionHistoryResponse {
 
 export interface CancelSubscriptionProps {
   subscriptionId: string;
-  cancellationReason: string;
+  cancellationReason?: string;
   cancelImmediately?: boolean;
 }
 export interface resumeSubscriptionProps {

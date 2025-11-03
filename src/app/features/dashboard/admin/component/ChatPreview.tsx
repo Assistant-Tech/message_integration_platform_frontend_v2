@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { MessageSquare } from "lucide-react";
 import { cn } from "@/app/utils/cn";
 import { Input } from "@/app/components/ui";
+import { Link } from "react-router-dom";
+import { APP_ROUTES } from "@/app/constants/routes";
 
 const ChatPreview: React.FC<{ settings: any }> = ({ settings }) => {
   return (
@@ -118,13 +120,13 @@ const ChatPreview: React.FC<{ settings: any }> = ({ settings }) => {
           {/* Bottom Terms */}
           <div className="px-4 py-2 text-[11px] text-grey-medium border-t border-grey-light bg-base-white">
             By starting this chat, you agree to{" "}
-            <a href="#" className="text-blue-600 hover:underline">
+            <Link to={APP_ROUTES.PUBLIC.TERMSCONDITION} className="text-blue-600 hover:underline">
               Terms & Conditions
-            </a>{" "}
+            </Link>{" "}
             and{" "}
-            <a href="#" className="text-blue-600 hover:underline">
+            <Link to={APP_ROUTES.PUBLIC.POLICY} className="text-blue-600 hover:underline">
               Privacy Policy
-            </a>{" "}
+            </Link>{" "}
             of the company.
           </div>
 

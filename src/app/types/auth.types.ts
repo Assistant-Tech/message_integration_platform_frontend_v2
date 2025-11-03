@@ -16,6 +16,7 @@ export interface User {
 
   tenantId: string;
   tenantStatus: "ACTIVE" | "INACTIVE" | string;
+  requiresOnboarding: boolean;
 
   roleId: string;
   roleType: "TENANT_ADMIN" | "MEMBER" | string;

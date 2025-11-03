@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Box, Flex, RadioGroup } from "@radix-ui/themes";
+import { Box, Flex } from "@radix-ui/themes";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/app/utils/cn";
 import { usePlans } from "@/app/hooks/usePlans";
@@ -7,9 +7,16 @@ import { usePricingStore } from "@/app/store/pricing.store";
 import { useAuthStore } from "@/app/store/auth.store";
 import { PricingcardSubscription } from "@/app/features/dashboard/admin/component";
 import { Badge, DynamicToggle } from "@/app/components/ui";
-import { Plan, Duration, APIDuration, PlanType } from "@/app/types/plan.types";
+import {
+  Plan,
+  Duration,
+  APIDuration,
+  PlanType,
+  Currency,
+} from "@/app/types/plan.types";
 import { extractFeatures } from "@/app/utils/helper";
 import { buildBillingUrl } from "@/app/constants/routes";
+import * as RadioGroup from "@radix-ui/react-radio-group";
 
 const PricingSubscription = () => {
   const navigate = useNavigate();
@@ -23,6 +30,7 @@ const PricingSubscription = () => {
   } = usePlans(duration, currency);
 
   const [selectedPlan, setSelectedPlan] = useState<PlanType>();
+  console.log("🚀 ~ PricingSubscription ~ selectedPlan:", selectedPlan);
 
   const transformPlan = (plan: Plan) => ({
     ...plan,
@@ -58,49 +66,63 @@ const PricingSubscription = () => {
 
   return (
     <Box className="px-6 md:px-2 max-w-full mx-auto">
-      <Flex direction="column" align="center" gap="3" mb="6">
+      <Flex direction="column" align="center" gap="4" mb="8" className="w-full">
         <article className="flex flex-col items-center text-center space-y-4">
           <Badge title="PLANS TAILORED TO YOUR NEEDS" />
           <h1 className="h2-bold-40 text-grey">Discover Plans For You</h1>
-          <p className="h4-regular-24 text-grey-medium">
+          <p className="h4-regular-24 text-grey-medium max-w-2xl">
             Whether you're just starting out or ready to scale, we have a plan
             designed to fit your goals.
           </p>
         </article>
 
-        <div className="pt-6">
-          <DynamicToggle
-            options={pricingOptions}
-            defaultSelected={duration}
-            onChange={(val) => setDuration(val.value as APIDuration)}
-          />
-        </div>
+        {/* Top control bar */}
+        <Flex
+          justify="between"
+          align="center"
+          className="w-full flex-col md:flex-row pt-8"
+        >
+          {/* Centered toggle on desktop */}
+          <div className="flex justify-center w-full md:w-auto mb-4 md:mb-0">
+            <DynamicToggle
+              options={pricingOptions}
+              defaultSelected={duration}
+              onChange={(val) => setDuration(val.value as APIDuration)}
+            />
+          </div>
 
-        {/* ✅ Fixed NPR/USD toggle (same as Upgrade) */}
-        <Flex justify="end" align="center" className="py-4 gap-6">
+          {/* Currency selector on same line, right side */}
           <RadioGroup.Root
             value={currency}
-            onValueChange={(val: any) => setCurrency(val as any)}
-            className="flex items-center justify-end gap-6"
+            onValueChange={(val) => setCurrency(val as Currency)}
           >
-            {["NPR", "USD"].map((cur) => (
-              <label
-                key={cur}
-                className={cn(
-                  "flex items-center gap-2 cursor-pointer transition-colors",
-                  currency === cur
-                    ? "text-primary font-medium"
-                    : "text-gray-600 hover:text-primary/70",
-                )}
-              >
-                <RadioGroup.Item
-                  value={cur}
-                  id={cur.toLowerCase()}
-                  className="w-4 h-4 rounded-full border border-gray-400 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-                />
-                <span>{cur === "NPR" ? "Nepal (रु)" : "USD ($)"}</span>
-              </label>
-            ))}
+            <div className="flex justify-end items-center gap-6">
+              {["NPR", "USD"].map((cur) => (
+                <div key={cur} className="flex items-center gap-2 pb-4">
+                  <RadioGroup.Item
+                    value={cur}
+                    id={cur.toLowerCase()}
+                    className={cn(
+                      "relative flex items-center justify-center",
+                      "w-4 h-4 rounded-full border border-gray-400",
+                      "data-[state=checked]:border-primary",
+                    )}
+                  >
+                    <RadioGroup.Indicator className="absolute w-2 h-2 bg-primary rounded-full" />
+                  </RadioGroup.Item>
+
+                  <label
+                    htmlFor={cur.toLowerCase()}
+                    className={cn(
+                      currency === cur ? "text-primary" : "text-base-black",
+                      "body-regular-16 cursor-pointer select-none",
+                    )}
+                  >
+                    {cur === "NPR" ? "NPR (रु)" : "USD ($)"}
+                  </label>
+                </div>
+              ))}
+            </div>
           </RadioGroup.Root>
         </Flex>
       </Flex>

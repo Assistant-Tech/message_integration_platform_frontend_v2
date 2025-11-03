@@ -38,7 +38,7 @@ const Footer = () => {
 
   return (
     <footer className="bg-primary-light pt-10 w-full" id="footer-observer">
-      <div className="w-full max-w-[1600px] mx-auto px-6">
+      <div className="w-full max-w-[1600px] mx-auto px-6 md:px-12 lg:px-4 pb-10">
         {/* Top */}
         <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-x-40">
           {/* Brand */}
@@ -182,7 +182,7 @@ const Footer = () => {
                 variants={itemVariants}
                 whileHover={{ scale: 1.2, rotate: 10 }}
               >
-                <a href={item.href} aria-label={item.name}>
+                <a href={item.href} aria-label={item.name} target="_blank" rel="noopener noreferrer">
                   <img
                     src={item.src}
                     alt={`${item.name} icon`}

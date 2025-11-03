@@ -338,7 +338,7 @@ export const buildFeature: BuildFeature[] = [
   },
   {
     title: "Secure & Private",
-    description: "Reports to see how you're doing",
+    description: "Reports to see how you're doing over time",
     img: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920904/feature3_lfvett.png",
     animate: true,
   },
@@ -691,3 +691,5 @@ export const teamMembers: TeamMember[] = [
     ],
   },
 ];
+
+

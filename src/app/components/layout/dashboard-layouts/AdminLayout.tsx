@@ -8,7 +8,7 @@ import { AnnouncementBanner } from "@/app/components/common";
 import { useBanner } from "@/app/context/BannerContext";
 import { useNotificationStore } from "@/app/store/notification.store";
 
-const DashboardLayout = () => {
+const AdminLayout = () => {
   const { isVisible } = useBanner();
   const { hasUpcomingRenewal } = useNotificationStore();
 
@@ -41,4 +41,4 @@ const DashboardLayout = () => {
   );
 };
 
-export default DashboardLayout;
+export default AdminLayout;

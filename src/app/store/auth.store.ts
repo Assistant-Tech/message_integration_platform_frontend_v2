@@ -218,20 +218,25 @@ export const useAuthStore = create<AuthState>()(
       },
 
       refreshAccessToken: async () => {
+        set({ isRefreshing: true });
         try {
-          set({ isRefreshing: true });
-          const accessToken = await refreshAccessTokenAPI();
+          const res = await refreshAccessTokenAPI();
+
+          const accessToken = res;
+
           set({
             accessToken,
             isRefreshing: false,
             isAuthenticated: !!accessToken,
           });
+
           return accessToken;
-        } catch {
+        } catch (err) {
           set({
             accessToken: null,
-            isAuthenticated: false,
+            csrfToken: null,
             isRefreshing: false,
+            isAuthenticated: false,
           });
           return null;
         }
@@ -272,8 +277,10 @@ export const useAuthStore = create<AuthState>()(
       name: "auth-csrf",
       partialize: (state) => ({
         csrfToken: state.csrfToken,
+        accessToken: state.accessToken,
         isAuthenticated: state.isAuthenticated,
         tenantSlug: state.tenantSlug,
+        user: state.user,
       }),
     },
   ),

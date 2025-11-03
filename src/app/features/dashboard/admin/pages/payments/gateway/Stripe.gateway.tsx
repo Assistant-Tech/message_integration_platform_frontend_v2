@@ -16,29 +16,35 @@ const StripePaymentPage = ({ response }: StripePaymentProps) => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
-      <div className="bg-white shadow-lg rounded-xl p-8 max-w-md w-full text-center">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">
-          Stripe Payment
-        </h2>
-        <p className="text-gray-600 mb-2">
-          Your payment has been initiated with Stripe.
-        </p>
+    <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4">
+      <div className="bg-white rounded-lg shadow-md p-8 max-w-md w-full">
+        <div className="text-center mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            Complete Payment
+          </h2>
+          <p className="text-gray-600">
+            Click the button below to proceed with Stripe
+          </p>
+        </div>
 
-        <div className="text-left my-4 space-y-2">
-          <p>
-            <strong>Session ID:</strong> {sessionId}
-          </p>
-          <p>
-            <strong>Expires At:</strong> {new Date(expiresAt).toLocaleString()}
-          </p>
+        <div className="bg-gray-50 rounded-lg p-4 mb-6 space-y-3">
+          <div>
+            <p className="text-sm text-gray-500 mb-1">Session ID</p>
+            <p className="text-sm text-gray-900 font-mono break-all">{sessionId}</p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500 mb-1">Expires At</p>
+            <p className="text-sm text-gray-900">
+              {new Date(expiresAt).toLocaleString()}
+            </p>
+          </div>
         </div>
 
         <button
           onClick={handleStripeRedirect}
-          className="mt-4 px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg shadow hover:bg-purple-700 transition"
+          className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-4 rounded-lg transition"
         >
-          Proceed to Stripe
+          Continue to Stripe
         </button>
       </div>
     </div>

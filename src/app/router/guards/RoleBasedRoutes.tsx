@@ -1,8 +1,14 @@
 import { Navigate, Outlet, useParams } from "react-router-dom";
 import { useAuthStore } from "@/app/store/auth.store";
 import { Loading } from "@/app/components/common";
+import { ReactNode } from "react";
 
-const RoleBasedRoute = ({ allowedRoles }: { allowedRoles: string[] }) => {
+interface RoleBasedRouteProps {
+  allowedRoles: string[];
+  children?: ReactNode;
+}
+
+const RoleBasedRoute = ({ allowedRoles, children }: RoleBasedRouteProps) => {
   const isRefreshing = useAuthStore((s) => s.isRefreshing);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const user = useAuthStore((s) => s.user);
@@ -16,7 +22,8 @@ const RoleBasedRoute = ({ allowedRoles }: { allowedRoles: string[] }) => {
     return <Navigate to={`/${slug}/admin/dashboard`} replace />;
   }
 
-  return <Outlet />;
+  // ✅ if children passed, render them — otherwise use <Outlet /> for nested <Route>
+  return children ? <>{children}</> : <Outlet />;
 };
 
 export default RoleBasedRoute;

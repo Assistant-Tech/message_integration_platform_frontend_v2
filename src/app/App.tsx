@@ -6,32 +6,39 @@ import AppRoutes from "@/app/router/AppRoutes";
 import { ScrollToTop } from "@/app/hooks/ui/ScrollToTop";
 import { useAuthStore } from "@/app/store/auth.store";
 import ErrorBoundary from "@/app/ErrorBoundary";
-import { BannerProvider } from "@/app/context/BannerContext";
+import { useQueryClient } from "@tanstack/react-query";
+import { CURRENT_USER_QUERY_KEY } from "./hooks/useCurrentUserQuery";
+import { fetchCurrentUser } from "@/app/services/auth.services";
 
 const App = () => {
+  const queryClient = useQueryClient();
+  const { refreshAccessToken, setRefreshing, resetAuth, isAuthenticated, accessToken } =
+    useAuthStore();
+
   useEffect(() => {
     let cancelled = false;
 
     const bootstrap = async () => {
-      const {
-        refreshAccessToken,
-        fetchCurrentUserProfile,
-        setRefreshing,
-        resetAuth,
-        isAuthenticated,
-      } = useAuthStore.getState();
-
       if (!isAuthenticated) return;
 
       try {
         setRefreshing(true);
-        const newToken = await refreshAccessToken();
-        if (newToken) {
-          await fetchCurrentUserProfile();
+        if(accessToken) return;
+
+        const token = await refreshAccessToken();
+
+        if (token) {
+          await queryClient.prefetchQuery({
+            queryKey: CURRENT_USER_QUERY_KEY,
+            queryFn: async () => {
+              const res = await fetchCurrentUser();
+              return (res.data ?? res) as any;
+            },
+          });
         } else {
           resetAuth();
         }
-      } catch {
+      } catch (err) {
         if (!cancelled) resetAuth();
       } finally {
         if (!cancelled) setRefreshing(false);
@@ -39,11 +46,10 @@ const App = () => {
     };
 
     bootstrap();
-
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [isAuthenticated, refreshAccessToken, setRefreshing, resetAuth, queryClient, accessToken]);
 
   return (
     <ErrorBoundary>
