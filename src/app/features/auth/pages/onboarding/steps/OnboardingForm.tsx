@@ -12,6 +12,7 @@ import {
 } from "@/app/features/auth/pages/onboarding/steps";
 import { Cross } from "lucide-react";
 import { toast } from "sonner";
+import { onboarding } from "@/app/services/auth.services";
 // import { useAuthStore } from "@/app/store/auth.store";
 
 const OnboardingForm: React.FC = () => {
@@ -106,13 +107,14 @@ const OnboardingForm: React.FC = () => {
         }
       });
 
-      // const response = await onboarding(formData);
+      const response = await onboarding(formData);
 
       reset();
       navigate(`/login`, {
         state: { message: "Onboarding completed successfully!" },
       });
       toast.success("Onboarding completed successfully!");
+      console.log(response.data);
 
       //Clear localstorage
       useOnboardingStore.persist.clearStorage();

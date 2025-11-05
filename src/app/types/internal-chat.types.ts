@@ -1,30 +1,6 @@
-
-// A single participant in a conversation
-export interface ChatParticipant {
-  id: string;
-  name: string;
-  role?: string;
-  avatarUrl?: string | null;
-  online?: boolean;
-}
-
-// A single conversation object
-export interface InternalConversation {
-  id: string;
-  name: string;
-  type: "channel" | "dm";
-  createdAt: string;
-  updatedAt: string;
-  members: ChatParticipant[];
-  lastMessage?: {
-    id: string;
-    senderId: string;
-    content: string;
-    createdAt: string;
-  };
-}
-
-// Pagination metadata
+// -----------------------------
+// Shared Types
+// -----------------------------
 export interface PaginationMeta {
   total: number;
   page: number;
@@ -32,19 +8,90 @@ export interface PaginationMeta {
   hasNextPage: boolean;
 }
 
-// Full response type
+export interface ChatParticipant {
+  id: string;
+  name: string;
+  email?: string;
+  role?: string;
+  avatar?: string | null;
+  online?: boolean;
+}
+
+// -----------------------------
+// Internal Conversation Types
+// -----------------------------
+export type ChatPlatform = "facebook" | "instagram" | "whatsapp" | "internal";
+
+export interface InternalConversation {
+  _id: string;
+  tenantId: string;
+  title: string;
+  type: "INTERNAL";
+  isDefault: boolean;
+  status: "open" | "closed";
+  priority: "normal" | "high" | "urgent";
+  tags: string[];
+  participants: string[];
+  lastMessage?: string;
+  avatar?: string | null;
+  platform?: ChatPlatform;
+  lastActiveAt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface GetInternalConversationsResponse {
   data: InternalConversation[];
   meta: PaginationMeta;
   defaultConversation?: InternalConversation | null;
 }
 
-// -----------------------------
-// API Function
-// -----------------------------
-
 export interface GetAllInternalConversationsParams {
   page?: number;
   limit?: number;
   includeDefault?: boolean;
+  search?: string;
+}
+
+// -----------------------------
+// Create Conversation
+// -----------------------------
+export interface CreateInternalConversationPayload {
+  title: string;
+  type: "INTERNAL";
+  status: "open" | "closed";
+  priority: "normal" | "high" | "urgent";
+}
+
+export interface InternalConversationResponse {
+  message: string;
+  success: boolean;
+  data: InternalConversation;
+  timestamp: string;
+}
+
+// -----------------------------
+// Members Management
+// -----------------------------
+export interface MemberDetails {
+  id: string;
+  email: string;
+  name: string;
+  avatar?: string;
+}
+
+export interface InternalConversationMembersResponse {
+  success: boolean;
+  message: string;
+  data: MemberDetails[];
+}
+
+export interface AddConversationMembersPayload {
+  participants: string[];
+}
+
+export interface AddConversationMembersResponse {
+  success: boolean;
+  message: string;
+  data: MemberDetails[];
 }
