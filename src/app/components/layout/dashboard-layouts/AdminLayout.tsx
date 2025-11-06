@@ -3,7 +3,7 @@ import {
   CollapseSidebar,
   TopNavbar,
 } from "@/app/features/dashboard/admin/component/ui";
-import SubscriptionListener from "@/app/components/common/socket/SubscriptionListener";
+import SubscriptionListener from "@/app/Socket/listeners/SubscriptionListener";
 import { AnnouncementBanner } from "@/app/components/common";
 import { useBanner } from "@/app/context/BannerContext";
 import { useNotificationStore } from "@/app/store/notification.store";

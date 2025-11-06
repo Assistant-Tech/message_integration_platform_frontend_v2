@@ -6,9 +6,9 @@ import { toast } from "sonner";
 import facebook from "@/app/assets/icons/fb.svg";
 import instagram from "@/app/assets/icons/insta.svg";
 import whatsapp from "@/app/assets/icons/whatsapp.svg";
-import { useInternalConversationStore } from "@/app/store/internalConversation.store";
+import { useInternalConversationStore } from "@/app/store/internal-conversation.store";
 import { getAllInternalConversations } from "@/app/services/internal-converstion.services";
-import type { InternalConversation } from "@/app/types/internal-chat.types";
+import type { InternalConversation } from "@/app/types/internal-conversation.types";
 
 const platformIcons: Record<string, string> = {
   facebook,

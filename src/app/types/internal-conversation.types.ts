@@ -95,3 +95,11 @@ export interface AddConversationMembersResponse {
   message: string;
   data: MemberDetails[];
 }
+
+// -----------------------------
+// Search Filter Typse
+// -----------------------------
+export interface SearchParamstypes {
+  search: string;
+  includeDefault: "false" | boolean;
+}

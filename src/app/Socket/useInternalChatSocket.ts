@@ -1,13 +1,19 @@
 import { useEffect } from "react";
 import { io, Socket } from "socket.io-client";
 import { toast } from "sonner";
-import { useChatStore } from "@/app/store/chat.store";
 import { useAuthStore } from "@/app/store/auth.store";
-import { CHAT_EVENTS } from "@/app/components/common/socket/chatEvents";
+import { CHAT_EVENTS } from "@/app/Socket/events/chatEvents";
+import { useInternalConversationStore } from "@/app/store/internal-conversation.store";
 
 export const useChatSocket = () => {
   const { accessToken } = useAuthStore();
-  const { addMessage, setConversations, setConnected } = useChatStore();
+  const {
+    addConversation,
+    setConversations,
+    updateConversation,
+    removeConversation,
+    updateAndMoveConversation,
+  } = useInternalConversationStore();
 
   useEffect(() => {
     if (!accessToken) return;
@@ -15,19 +21,17 @@ export const useChatSocket = () => {
     let socket: Socket;
 
     try {
-      socket = io(`${import.meta.env.VITE_API_BASE_URL_TEST}/internal-chat`, {
+      socket = io(`${import.meta.env.VITE_SOCKET_CHAT_URL}`, {
         auth: { token: accessToken },
         transports: ["websocket"],
       });
 
       socket.on("connect", () => {
         console.log("✅ Chat socket connected");
-        setConnected(true);
       });
 
       socket.on("disconnect", (reason) => {
         console.warn("⚠️ Chat socket disconnected:", reason);
-        setConnected(false);
       });
 
       socket.on(CHAT_EVENTS.CHAT_CONNECTED, (data) => {
@@ -35,9 +39,11 @@ export const useChatSocket = () => {
         setConversations(data.channels || []);
       });
 
-      socket.on(CHAT_EVENTS.CHAT_MESSAGE, (payload) => {
-        addMessage(payload.conversationId, payload.message);
-        toast.success(`💬 New message in ${payload.conversationId}`);
+      socket.on(CHAT_EVENTS.CHAT_MESSAGE, (updatedConversation) => {
+        updateConversation(updatedConversation);
+        toast.success(
+          `💬 New message in ${updatedConversation.name || updatedConversation._id}`,
+        );
       });
 
       socket.on(CHAT_EVENTS.CHAT_ERROR, (error) => {
@@ -45,9 +51,22 @@ export const useChatSocket = () => {
         toast.error(`Chat error: ${error.message || "Unknown error"}`);
       });
 
-      socket.on(CHAT_EVENTS.CONVERSATION_MEMBER_ADDED, (data) => {
-        setConversations([...data]);
-        toast.info(`🆕 New member added: ${data.userName}`);
+      socket.on(
+        CHAT_EVENTS.CONVERSATION_MEMBER_ADDED,
+        (updatedConversation) => {
+          updateConversation(updatedConversation);
+          toast.info(`👤 New member added to ${updatedConversation.name}`);
+        },
+      );
+
+      socket.on(CHAT_EVENTS.CONVERSATION_CREATED, (newConversation) => {
+        addConversation(newConversation);
+        toast.info(`✨ New conversation created: ${newConversation.name}`);
+      });
+
+      socket.on(CHAT_EVENTS.CONVERSATION_JOINED, (joinedConversation) => {
+        addConversation(joinedConversation);
+        toast.info(`🔗 Joined conversation: ${joinedConversation.name}`);
       });
 
       socket.on(CHAT_EVENTS.USER_JOINED, (data) => {
@@ -72,7 +91,13 @@ export const useChatSocket = () => {
       };
     } catch (err) {
       console.error("❌ Error initializing chat socket:", err);
-      setConnected(false);
     }
-  }, [accessToken, setConnected, setConversations, addMessage]);
+  }, [
+    accessToken,
+    setConversations,
+    addConversation,
+    updateConversation,
+    removeConversation,
+    updateAndMoveConversation,
+  ]);
 };

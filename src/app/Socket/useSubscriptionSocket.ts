@@ -1,7 +1,7 @@
 import { useAuthStore } from "@/app/store/auth.store";
 import { useSocketStore } from "@/app/store/socket.store";
 import { io, Socket } from "socket.io-client";
-import { CUSTOM_EVENTS } from "@/app/components/common/socket/socketEvents";
+import { CUSTOM_EVENTS } from "@/app/Socket/events/customEvents";
 
 let socket: Socket | null = null;
 
@@ -9,7 +9,6 @@ const SOCKET_URL = import.meta.env.VITE_SOCKET_URL as string;
 
 export const connectSubscriptionSocket = () => {
   const token = useAuthStore.getState().accessToken;
-  // console.log("🚀 ~ connectSubscriptionSocket ~ token:", token)
 
   if (!token) {
     console.error("❌ No access token found");

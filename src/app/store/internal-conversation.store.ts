@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { InternalConversation } from "@/app/types/internal-chat.types";
+import type { InternalConversation } from "@/app/types/internal-conversation.types";
 
 interface InternalConversationState {
   conversations: InternalConversation[];
@@ -9,6 +9,7 @@ interface InternalConversationState {
   setConversations: (conversations: InternalConversation[]) => void;
   addConversation: (conversation: InternalConversation) => void;
   updateConversation: (updated: InternalConversation) => void;
+  updateAndMoveConversation: (updated: InternalConversation) => void;
   removeConversation: (conversationId: string) => void;
   setSelectedConversationId: (conversationId: string | null) => void;
   clearStore: () => void;
@@ -33,6 +34,16 @@ export const useInternalConversationStore = create<InternalConversationState>()(
             c._id === updated._id ? { ...c, ...updated } : c,
           ),
         })),
+
+      updateAndMoveConversation: (updated) =>
+        set((state) => {
+          const filteredConversations = state.conversations.filter(
+            (c) => c._id !== updated._id,
+          );
+          return {
+            conversations: [updated, ...filteredConversations],
+          };
+        }),
 
       removeConversation: (conversationId) =>
         set((state) => ({

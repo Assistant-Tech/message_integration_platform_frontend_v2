@@ -1,4 +1,4 @@
-import api from "./api/axios";
+import api from "@/app/services/api/axios";
 import {
   CreateInternalConversationPayload,
   GetAllInternalConversationsParams,
@@ -7,7 +7,9 @@ import {
   InternalConversationMembersResponse,
   AddConversationMembersPayload,
   AddConversationMembersResponse,
-} from "@/app/types/internal-chat.types";
+  SearchParamstypes,
+} from "@/app/types/internal-conversation.types";
+import { handleApiError } from "@/app/utils/handlerApiError";
 
 // ------------------------------------------
 // 🔹 Get all internal conversations
@@ -44,9 +46,9 @@ export const createInternalConversation = async (
   return data;
 };
 
-// ------------------------------------------
-// 🔹 Get conversation by ID
-// ------------------------------------------
+// -------------------------------------------------------
+// 🔹 Get conversation by ID or also conversation details
+// -------------------------------------------------------
 export const getInternalConversationById = async (
   conversationId: string,
 ): Promise<InternalConversationResponse> => {
@@ -100,13 +102,44 @@ export const updateInternalConversationById = async (
 };
 
 // ------------------------------------------
+// 🔹 Remove a memeber via userId into specific channels
+// ------------------------------------------
+export const removeMemeberById = async (
+  conversationId: string,
+  userId: string,
+) => {
+  const { data } = await api.delete(
+    `internal-conversation/${conversationId}/memebers${userId}`,
+  );
+  return data;
+};
+
+// ------------------------------------------
 // 🔹 Delete conversation by Conversation - ID --> YOO baki chha to add types of the deletion
 // ------------------------------------------
 export const removeInternalConversationById = async (
   conversationId: string,
-): Promise<any> => {
+) => {
   const { data } = await api.delete<any>(
     `/internal-conversations/${conversationId}`,
   );
   return data;
+};
+
+// ------------------------------------------
+// 🔹 Search Conversation in internal-conversation
+// ------------------------------------------
+export const searchBetweenInternalConversation = async (
+  params: SearchParamstypes,
+) => {
+  try {
+    const { search, includeDefault } = params;
+    const res = await api.get(
+      `/internal-conversations?search=${search}&includeDefault=${includeDefault}`,
+    );
+    return res.data;
+  } catch (error: any) {
+    handleApiError(error) ||
+      console.error("Search Filter api not working", error);
+  }
 };

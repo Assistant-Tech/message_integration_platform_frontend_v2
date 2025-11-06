@@ -3,8 +3,8 @@ import { toast } from "sonner";
 import {
   connectSubscriptionSocket,
   disconnectSubscriptionSocket,
-} from "@/app/components/common/socket/subscriptionSocket";
-import { CUSTOM_EVENTS } from "@/app/components/common/socket/socketEvents";
+} from "@/app/Socket/useSubscriptionSocket";
+import { CUSTOM_EVENTS } from "@/app/Socket/events/customEvents";
 import { useNotificationStore } from "@/app/store/notification.store";
 
 const SubscriptionListener = () => {

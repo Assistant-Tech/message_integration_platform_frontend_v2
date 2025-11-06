@@ -25,4 +25,7 @@ export { default as PricingCard } from "./CardComponents/PricingCard";
 export { default as FrequentlyAskedQuestion } from "./FaqComponent/FAQ";
 
 // Modal components
-export {default as Modal} from "./Modal/Modal";
+export { default as Modal } from "./Modal/Modal";
+
+// Conversation Components
+export { default as ChatSidebar } from "./Conversation/Chat-Sidebar";
