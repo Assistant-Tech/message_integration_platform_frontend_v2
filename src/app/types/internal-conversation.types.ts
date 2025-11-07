@@ -58,8 +58,8 @@ export interface GetAllInternalConversationsParams {
 // -----------------------------
 export interface CreateInternalConversationPayload {
   title: string;
-  type: "INTERNAL";
-  status: "open" | "closed";
+  type: "INTERNAL" | "WHATSAPP" | "FACEBOOK" | "INSTAGRAM";
+  status: "open" | "closed" | "pending";
   priority: "normal" | "high" | "urgent";
 }
 

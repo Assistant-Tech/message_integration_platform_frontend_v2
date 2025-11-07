@@ -28,4 +28,6 @@ export { default as FrequentlyAskedQuestion } from "./FaqComponent/FAQ";
 export { default as Modal } from "./Modal/Modal";
 
 // Conversation Components
-export { default as ChatSidebar } from "./Conversation/Chat-Sidebar";
+export { default as ChatSidebar } from "./Conversation/chat/Chat-Sidebar";
+export { default as ChatPannel } from "./Conversation/chat/Chat-Pannel";
+export { default as ChatDisplay } from "./Conversation/chat/Chat-Display";
