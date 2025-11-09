@@ -47,7 +47,7 @@ export const useChatSocket = () => {
 
     socket.on(CHAT_EVENTS.CHAT_CONNECTED, (data) => {
       setConversations(data.channels || []);
-      toast.success("Connected to internal chat");
+      // toast.success("Connected to internal chat");
     });
 
     socket.on(CHAT_EVENTS.CHAT_MESSAGE, (payload) => {

@@ -2,14 +2,19 @@ import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useChatSocket } from "@/app/Socket/useInternalChatSocket";
 import { useInternalConversationStore } from "@/app/store/internal-conversation.store";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  addInternalConversationMembers,
   getInternalConversationById,
   getInternalConversationMembers,
+  updateInternalConversationById,
 } from "@/app/services/internal-converstion.services";
 import { format } from "date-fns";
 import { cn } from "@/app/utils/cn";
 import { Info, Loader2, Send, Users } from "lucide-react";
+import { toast } from "sonner";
+import { GenericDialog } from "@/app/components/common/";
+import { Button, Input } from "@/app/components/ui";
 
 export const ChatPanel = () => {
   const { selectedConversationId } = useInternalConversationStore();
@@ -19,23 +24,25 @@ export const ChatPanel = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [isOpenDetails, setIsOpenDetails] = useState<boolean>(false);
 
-  // 🔹 Fetch conversation details
-  const {
-    data: conversationData,
-    isLoading: conversationLoading,
-    refetch: refetchConversation,
-  } = useQuery({
+  // Dialog states
+  const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState(false);
+  const [newMemberEmail, setNewMemberEmail] = useState("");
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [title, setTitle] = useState("");
+  const [priority, setPriority] = useState<
+    "low" | "normal" | "high" | "urgent"
+  >("normal");
+
+  const queryClient = useQueryClient();
+
+  const { data: conversationData, isLoading: conversationLoading } = useQuery({
     queryKey: ["internalConversation", selectedConversationId],
     queryFn: () =>
       getInternalConversationById(selectedConversationId as string),
     enabled: !!selectedConversationId,
   });
 
-  const {
-    data: membersData,
-    isLoading: membersLoading,
-    refetch: refetchMembers,
-  } = useQuery({
+  const { data: membersData, isLoading: membersLoading } = useQuery({
     queryKey: ["internalConversationMembers", selectedConversationId],
     queryFn: () =>
       getInternalConversationMembers(selectedConversationId as string),
@@ -45,10 +52,19 @@ export const ChatPanel = () => {
   const conversation = conversationData?.data;
   const members = membersData?.data || [];
 
+  // Sync title/priority when conversation data updates
+  useEffect(() => {
+    if (conversation) {
+      setTitle(conversation.title || "");
+      setPriority(conversation.priority || "normal");
+    }
+  }, [conversation]);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [localMessages]);
 
+  // ----------------- Send Message -----------------
   const handleSend = () => {
     if (!message.trim() || !selectedConversationId) return;
     sendMessage(selectedConversationId, message.trim());
@@ -64,11 +80,53 @@ export const ChatPanel = () => {
     setMessage("");
   };
 
-  // 🔹 Handle Enter key
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
+    }
+  };
+
+  // ----------------- Add Member -----------------
+  const handleAddMember = async () => {
+    if (!newMemberEmail.trim())
+      return toast.error("Enter a valid email or user ID");
+
+    try {
+      await addInternalConversationMembers(selectedConversationId!, {
+        participants: [newMemberEmail],
+      });
+      toast.success("✅ Member added successfully");
+      setNewMemberEmail("");
+      setIsAddMemberDialogOpen(false);
+    } catch (err: any) {
+      console.error("❌ Add member failed", err);
+      toast.error(err?.response?.data?.message || "Failed to add member");
+    }
+  };
+
+  // ----------------- Update Conversation -----------------
+  const handleUpdateConversation = async () => {
+    if (!title.trim()) return toast.error("Title cannot be empty");
+
+    try {
+      const updated = await updateInternalConversationById(
+        selectedConversationId!,
+        { title, priority },
+      );
+      toast.success("✅ Conversation updated");
+
+      // Update cache immediately
+      queryClient.setQueryData(
+        ["internalConversation", selectedConversationId],
+        updated,
+      );
+      setIsEditDialogOpen(false);
+    } catch (err: any) {
+      console.error("❌ Failed to update conversation", err);
+      toast.error(
+        err?.response?.data?.message || "Failed to update conversation",
+      );
     }
   };
 
@@ -89,7 +147,7 @@ export const ChatPanel = () => {
 
   return (
     <div className="flex flex-1 h-screen w-full overflow-hidden bg-white border border-grey-light">
-      {/* 🔹 Chat Feed */}
+      {/* Chat Feed */}
       <div className="flex flex-1 flex-col">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-grey-light py-2 px-4">
@@ -101,14 +159,7 @@ export const ChatPanel = () => {
               {conversation?.participantsWithDetails?.length || 0} members
             </p>
           </div>
-          <button
-            onClick={() => {
-              setIsOpenDetails((prev) => !prev);
-            }}
-            aria-label={
-              isOpenDetails ? "Hide details panel" : "Show details panel"
-            }
-          >
+          <button onClick={() => setIsOpenDetails((prev) => !prev)}>
             <Info size={24} color="grey" />
           </button>
         </div>
@@ -147,14 +198,15 @@ export const ChatPanel = () => {
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="sticky bottom-0 left-0 right-0 border-t border-grey-light text-base-black bg-white p-3 flex items-center gap-2">
+        {/* Input */}
+        <div className="sticky bottom-0 left-0 right-0 border-t border-grey-light bg-white p-3 flex items-center gap-2">
           <textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Type a message..."
             rows={1}
-            className="flex-1 text-grey resize-none overflow-hidden border border-grey-light rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            className="flex-1 text-grey resize-none overflow-hidden border border-grey-light rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 body-regular-16"
             style={{ maxHeight: "120px" }}
           />
           <button
@@ -167,7 +219,7 @@ export const ChatPanel = () => {
         </div>
       </div>
 
-      {/* 🔹 Right Details Panel */}
+      {/* Right Details Panel */}
       {isOpenDetails && (
         <div className="flex w-80 flex-col border-l border-grey-light py-2 px-4">
           <div className="p-4 border-b border-grey-light">
@@ -175,7 +227,6 @@ export const ChatPanel = () => {
               <Users className="h-4 w-4" /> Details
             </h3>
           </div>
-
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             <div>
               <h4 className="body-bold-16 text-grey">Status</h4>
@@ -183,14 +234,12 @@ export const ChatPanel = () => {
                 {conversation?.status}
               </p>
             </div>
-
             <div>
               <h4 className="body-bold-16 text-grey">Priority</h4>
               <p className="text-base font-semibold capitalize">
                 {conversation?.priority}
               </p>
             </div>
-
             <div className="flex flex-col justify-start items-start gap-2">
               <h4 className="body-bold-16 text-grey">Created At</h4>
               <p className="body-regular-16 text-grey-medium">
@@ -206,7 +255,6 @@ export const ChatPanel = () => {
                     : "Unknown"}
                 </p>
               </div>
-
               {Array.isArray(conversation?.tags) &&
                 conversation.tags.length > 0 && (
                   <div>
@@ -223,7 +271,6 @@ export const ChatPanel = () => {
                     </div>
                   </div>
                 )}
-
               <div className="flex flex-col justify-start items-start gap-2">
                 <h4 className="body-bold-16 text-grey">Members</h4>
                 {membersLoading ? (
@@ -246,10 +293,100 @@ export const ChatPanel = () => {
                   </ul>
                 )}
               </div>
+
+              <div className="w-full flex justify-start items-start gap-4">
+                <Button
+                  variant="primary"
+                  label="Add Member"
+                  onClick={() => setIsAddMemberDialogOpen(true)}
+                  className="mt-4 px-3 py-2"
+                />
+                <Button
+                  variant="outlined"
+                  label="Edit"
+                  onClick={() => setIsEditDialogOpen(true)}
+                  className="mt-4 px-3 py-2"
+                />
+              </div>
             </div>
           </div>
         </div>
       )}
+
+      {/* Add Member Dialog */}
+      <GenericDialog
+        open={isAddMemberDialogOpen}
+        onClose={() => setIsAddMemberDialogOpen(false)}
+        title="Add Member"
+        maxWidth="max-w-md"
+      >
+        <div className="flex flex-col gap-4">
+          <label className="body-regular-16 text-grey-medium mb-1 block">
+            Member Email or ID
+          </label>
+          <Input
+            type="text"
+            value={newMemberEmail}
+            onChange={(e) => setNewMemberEmail(e.target.value)}
+            placeholder="user@example.com or UUID"
+            className="w-full border border-gray-300 rounded-md px-2 py-1 body-regular-16"
+          />
+          <Button
+            label="Add Member"
+            variant="primary"
+            onClick={handleAddMember}
+            className="mt-3"
+          />
+        </div>
+      </GenericDialog>
+
+      {/* Edit Conversation Dialog */}
+      <GenericDialog
+        open={isEditDialogOpen}
+        onClose={() => setIsEditDialogOpen(false)}
+        title="Edit Conversation"
+        maxWidth="max-w-md"
+      >
+        <div className="flex flex-col gap-4">
+          <div>
+            <label className="body-regular-16 text-grey-medium mb-1 block">
+              Title
+            </label>
+            <Input
+              placeholder="Edit Name"
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full border border-gray-300 rounded-md px-2 py-1 body-regular-16"
+            />
+          </div>
+          <div className="text-grey-medium">
+            <label className="body-regular-16 text-grey-medium mb-1 block">
+              Priority
+            </label>
+            <select
+              value={priority}
+              onChange={(e) =>
+                setPriority(
+                  e.target.value as "low" | "normal" | "high" | "urgent",
+                )
+              }
+              className="w-full border border-gray-300 rounded-md px-2 py-1 body-regular-16"
+            >
+              <option value="low">Low</option>
+              <option value="normal">Normal</option>
+              <option value="high">High</option>
+              <option value="urgent">Urgent</option>
+            </select>
+          </div>
+          <button
+            onClick={handleUpdateConversation}
+            className="bg-blue-600 hover:bg-blue-700 text-white rounded-md py-2 body-regular-16 mt-3"
+          >
+            Update Conversation
+          </button>
+        </div>
+      </GenericDialog>
     </div>
   );
 };
