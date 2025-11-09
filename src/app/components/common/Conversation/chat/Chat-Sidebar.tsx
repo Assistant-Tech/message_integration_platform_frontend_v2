@@ -4,9 +4,6 @@ import { Input } from "@/app/components/ui";
 import { Heading } from "@/app/features/dashboard/admin/component/ui";
 import { toast } from "sonner";
 
-import facebook from "@/app/assets/icons/fb.svg";
-import instagram from "@/app/assets/icons/insta.svg";
-import whatsapp from "@/app/assets/icons/whatsapp.svg";
 import { useInternalConversationStore } from "@/app/store/internal-conversation.store";
 import {
   getAllInternalConversations,
@@ -17,12 +14,6 @@ import {
   type InternalConversation,
 } from "@/app/types/internal-conversation.types";
 import { MessageCirclePlus, X } from "lucide-react";
-
-const platformIcons: Record<string, string> = {
-  facebook,
-  instagram,
-  whatsapp,
-};
 
 const statusFilters = ["All", "Unassigned", "Assigned", "Resolved"];
 
@@ -118,7 +109,6 @@ const ChatSidebar = () => {
       </article>
 
       {isOpen ? (
-        // ✅ Create Conversation Form (React Hook Form)
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-4 px-6 py-4"
@@ -127,7 +117,6 @@ const ChatSidebar = () => {
             New Internal Conversation
           </h3>
 
-          {/* Title */}
           <div>
             <label className="block text-sm font-medium text-grey-medium">
               Title
@@ -138,7 +127,6 @@ const ChatSidebar = () => {
             />
           </div>
 
-          {/* Status */}
           <div>
             <label className="block text-sm font-medium text-grey-medium">
               Status
@@ -152,7 +140,6 @@ const ChatSidebar = () => {
             </select>
           </div>
 
-          {/* Priority */}
           <div>
             <label className="block text-sm font-medium text-grey-medium">
               Priority
@@ -225,18 +212,23 @@ const ChatSidebar = () => {
                 >
                   {/* Avatar and Platform Icon */}
                   <div className="flex flex-col items-end relative">
-                    <img
-                      src={chat.avatar || "/placeholder-avatar.png"}
-                      alt={chat.title}
-                      className="w-12 h-10 rounded-full object-cover"
-                    />
-                    {chat.platform && platformIcons[chat.platform] && (
-                      <img
-                        src={platformIcons[chat.platform]}
-                        alt={chat.platform}
-                        className="w-6 h-6 absolute bottom-0 -right-2 rounded-3xl p-px bg-white"
-                      />
-                    )}
+                    <div className="flex flex-col items-end relative">
+                      {chat.avatar ? (
+                        <img
+                          src={chat.avatar}
+                          alt={chat.title}
+                          className="w-10 h-10 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                          <span className="text-primary font-semibold text-lg">
+                            {chat.title?.charAt(0)?.toUpperCase() ||
+                              chat.title?.charAt(0)?.toUpperCase() ||
+                              "?"}
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   {/* Message Content */}

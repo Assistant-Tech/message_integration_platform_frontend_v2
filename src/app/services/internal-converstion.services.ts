@@ -6,13 +6,12 @@ import {
   InternalConversationResponse,
   InternalConversationMembersResponse,
   AddConversationMembersPayload,
-  AddConversationMembersResponse,
   SearchParamstypes,
 } from "@/app/types/internal-conversation.types";
 import { handleApiError } from "@/app/utils/handlerApiError";
 
 // ------------------------------------------
-// 🔹 Get all internal conversations
+// 🔹 Get all internal conversations --> Yesma Type issue cha fix garne pachi when implemented in the component
 // ------------------------------------------
 export const getAllInternalConversations = async (
   params: GetAllInternalConversationsParams = {},
@@ -25,12 +24,13 @@ export const getAllInternalConversations = async (
     query.search = search.trim();
   }
 
-  const { data } = await api.get<GetInternalConversationsResponse>(
+  const res = await api.get<GetInternalConversationsResponse>(
     "/internal-conversations",
     { params: query },
   );
 
-  return data;
+  console.log("🚀 ~ getAllInternalConversations ~ data:", res.data);
+  return res.data;
 };
 
 // ------------------------------------------
@@ -73,11 +73,19 @@ export const getInternalConversationMembers = async (
 // ------------------------------------------
 // 🔹 Add members to a conversation
 // ------------------------------------------
+const UUID_REGEX =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
 export const addInternalConversationMembers = async (
   conversationId: string,
   payload: AddConversationMembersPayload,
-): Promise<AddConversationMembersResponse> => {
-  const { data } = await api.post<AddConversationMembersResponse>(
+) => {
+  const invalid = payload.participants.filter((p) => !UUID_REGEX.test(p));
+  if (invalid.length > 0) {
+    throw new Error(`Invalid UUID(s): ${invalid.join(", ")}`);
+  }
+
+  const { data } = await api.post(
     `/internal-conversations/${conversationId}/members`,
     payload,
   );

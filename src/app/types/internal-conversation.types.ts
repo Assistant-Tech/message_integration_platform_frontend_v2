@@ -32,12 +32,14 @@ export interface InternalConversation {
   priority: "normal" | "high" | "urgent";
   tags: string[];
   participants: string[];
+  participantsWithDetails: string[];
   lastMessage?: string;
   avatar?: string | null;
   platform?: ChatPlatform;
   lastActiveAt: string;
   createdAt: string;
   updatedAt: string;
+  messages?: string;
 }
 
 export interface GetInternalConversationsResponse {

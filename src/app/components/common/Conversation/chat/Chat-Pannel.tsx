@@ -1,210 +1,257 @@
+import React, { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import { useChatSocket } from "@/app/Socket/useInternalChatSocket";
+import { useInternalConversationStore } from "@/app/store/internal-conversation.store";
+import { useQuery } from "@tanstack/react-query";
 import {
-  MessagesSquare,
-  Send,
-  Paperclip,
-  Smile,
-  Info,
-  ListOrdered,
-} from "lucide-react";
-import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+  getInternalConversationById,
+  getInternalConversationMembers,
+} from "@/app/services/internal-converstion.services";
+import { format } from "date-fns";
+import { cn } from "@/app/utils/cn";
+import { Info, Loader2, Send, Users } from "lucide-react";
 
-import {
-  DetailsPanel,
-  OrderPannel,
-} from "@/app/features/dashboard/admin/component/";
-
-interface ChatPanelProps {
-  chat?: {
-    name: string;
-    message: string;
-    time: string;
-    avatar: string;
-    platform: string;
-  };
-}
-
-import facebook from "@/app/assets/icons/fb.svg";
-import instagram from "@/app/assets/icons/insta.svg";
-import whatsapp from "@/app/assets/icons/whatsapp.svg";
-
-const platformIcons: Record<string, string> = {
-  facebook,
-  instagram,
-  whatsapp,
-};
-
-const ChatPannel = ({ chat }: ChatPanelProps) => {
+export const ChatPanel = () => {
+  const { selectedConversationId } = useInternalConversationStore();
+  const { sendMessage } = useChatSocket();
   const [message, setMessage] = useState("");
-  const [showDetails, setShowDetails] = useState(false);
-  const [showOrders, setShowOrders] = useState(false);
+  const [localMessages, setLocalMessages] = useState<any[]>([]);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [isOpenDetails, setIsOpenDetails] = useState<boolean>(false);
 
-  const handleShowOrdersClick = () => {
-    setShowOrders((prev) => !prev);
-    setShowDetails(false);
+  // 🔹 Fetch conversation details
+  const {
+    data: conversationData,
+    isLoading: conversationLoading,
+    refetch: refetchConversation,
+  } = useQuery({
+    queryKey: ["internalConversation", selectedConversationId],
+    queryFn: () =>
+      getInternalConversationById(selectedConversationId as string),
+    enabled: !!selectedConversationId,
+  });
+
+  const {
+    data: membersData,
+    isLoading: membersLoading,
+    refetch: refetchMembers,
+  } = useQuery({
+    queryKey: ["internalConversationMembers", selectedConversationId],
+    queryFn: () =>
+      getInternalConversationMembers(selectedConversationId as string),
+    enabled: !!selectedConversationId,
+  });
+
+  const conversation = conversationData?.data;
+  const members = membersData?.data || [];
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [localMessages]);
+
+  const handleSend = () => {
+    if (!message.trim() || !selectedConversationId) return;
+    sendMessage(selectedConversationId, message.trim());
+    setLocalMessages((prev) => [
+      ...prev,
+      {
+        _id: Math.random().toString(36).slice(2),
+        sender: "You",
+        content: message,
+        createdAt: new Date().toISOString(),
+      },
+    ]);
+    setMessage("");
   };
 
-  const handleShowDetailsClick = () => {
-    setShowDetails((prev) => !prev);
-    setShowOrders(false);
-  };
-
-  const handleSendMessage = () => {
-    if (message.trim()) {
-      console.log("Sending message:", message);
-      setMessage("");
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  // 🔹 Handle Enter key
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      handleSendMessage();
+      handleSend();
     }
   };
 
-  // Render a placeholder if no chat is selected
-  if (!chat) {
+  if (!selectedConversationId)
     return (
-      <main className="flex-1 flex items-center justify-center text-center">
-        <div className="space-y-1">
-          <MessagesSquare className="mx-auto h-48 w-48 text-grey-medium" />
-          <h3 className="h4-semi-bold-24 text-grey">Chat with Customers</h3>
-          <p className="body-regular-16 text-grey-medium">
-            View and manage all your conversations here.
-          </p>
-        </div>
-      </main>
+      <div className="flex h-full items-center justify-center text-grey-medium">
+        Select a conversation to start chatting.
+      </div>
     );
-  }
 
-  // Main chat panel rendering
+  if (conversationLoading)
+    return (
+      <div className="flex h-full items-center justify-center text-grey-medium">
+        <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Loading
+        conversation...
+      </div>
+    );
+
   return (
-    <div className="flex flex-1 h-full">
-      <main className="flex-1 flex flex-col h-full">
-        {/* Header section of the chat panel */}
-        <header className="flex justify-between items-center px-6 py-[9px] border-b border-grey-light">
-          <div className="flex items-center gap-4">
-            <div className="flex flex-col items-end relative">
-              <img
-                src={chat.avatar}
-                alt={chat.name}
-                className="w-10 h-10 rounded-full"
-              />
-              {platformIcons[chat.platform] && (
-                <img
-                  src={platformIcons[chat.platform]}
-                  alt={chat.platform}
-                  className="w-6 h-6 absolute bottom-0 -right-2 rounded-3xl p-px bg-white"
-                />
-              )}
+    <div className="flex flex-1 h-screen w-full overflow-hidden bg-white border border-grey-light">
+      {/* 🔹 Chat Feed */}
+      <div className="flex flex-1 flex-col">
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-grey-light py-2 px-4">
+          <div className="flex flex-col items-start">
+            <h2 className="text-lg font-semibold text-grey">
+              {conversation?.title}
+            </h2>
+            <p className="body-regular-16 text-grey-medium">
+              {conversation?.participantsWithDetails?.length || 0} members
+            </p>
+          </div>
+          <button
+            onClick={() => {
+              setIsOpenDetails((prev) => !prev);
+            }}
+            aria-label={
+              isOpenDetails ? "Hide details panel" : "Show details panel"
+            }
+          >
+            <Info size={24} color="grey" />
+          </button>
+        </div>
+
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-base-white">
+          {localMessages.length === 0 ? (
+            <div className="text-center text-grey-medium mt-10">
+              No messages yet. Start the conversation!
             </div>
+          ) : (
+            localMessages.map((msg) => (
+              <motion.div
+                key={msg._id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={cn(
+                  "flex flex-col w-fit max-w-[75%] p-3 rounded-2xl break-words",
+                  msg.sender === "You"
+                    ? "ml-auto bg-primary text-white"
+                    : "bg-white text-grey border border-grey-light",
+                )}
+              >
+                <span className="body-bold-16">
+                  {msg.sender === "You" ? "You" : msg.sender}
+                </span>
+                <p className="body-regular-16 whitespace-pre-wrap break-words">
+                  {msg.content}
+                </p>
+                <span className="mt-1 text-xs opacity-70 self-end">
+                  {format(new Date(msg.createdAt), "p")}
+                </span>
+              </motion.div>
+            ))
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        <div className="sticky bottom-0 left-0 right-0 border-t border-grey-light text-base-black bg-white p-3 flex items-center gap-2">
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Type a message..."
+            rows={1}
+            className="flex-1 text-grey resize-none overflow-hidden border border-grey-light rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            style={{ maxHeight: "120px" }}
+          />
+          <button
+            onClick={handleSend}
+            disabled={!message.trim()}
+            className="bg-information hover:bg-information text-white px-4 py-2 rounded-lg flex items-center gap-1 transition"
+          >
+            <Send className="h-4 w-4" /> Send
+          </button>
+        </div>
+      </div>
+
+      {/* 🔹 Right Details Panel */}
+      {isOpenDetails && (
+        <div className="flex w-80 flex-col border-l border-grey-light py-2 px-4">
+          <div className="p-4 border-b border-grey-light">
+            <h3 className="font-semibold text-grey flex items-center gap-2">
+              <Users className="h-4 w-4" /> Details
+            </h3>
+          </div>
+
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
             <div>
-              <h4 className="body-bold-16 text-grey">{chat.name}</h4>
-              <p className="text-sm text-grey-medium">Online</p>
+              <h4 className="body-bold-16 text-grey">Status</h4>
+              <p className="text-base font-semibold capitalize">
+                {conversation?.status}
+              </p>
+            </div>
+
+            <div>
+              <h4 className="body-bold-16 text-grey">Priority</h4>
+              <p className="text-base font-semibold capitalize">
+                {conversation?.priority}
+              </p>
+            </div>
+
+            <div className="flex flex-col justify-start items-start gap-2">
+              <h4 className="body-bold-16 text-grey">Created At</h4>
+              <p className="body-regular-16 text-grey-medium">
+                {conversation?.createdAt
+                  ? format(new Date(conversation.createdAt), "PPpp")
+                  : "Unknown"}
+              </p>
+              <div>
+                <h4 className="body-bold-16 text-grey">Last Active</h4>
+                <p className="body-regular-16 text-grey-medium">
+                  {conversation?.lastActiveAt
+                    ? format(new Date(conversation.lastActiveAt), "PPpp")
+                    : "Unknown"}
+                </p>
+              </div>
+
+              {Array.isArray(conversation?.tags) &&
+                conversation.tags.length > 0 && (
+                  <div>
+                    <h4 className="body-bold-16 text-grey mb-1">Tags</h4>
+                    <div className="flex flex-wrap gap-1">
+                      {conversation.tags.map((tag: string) => (
+                        <span
+                          key={tag}
+                          className="px-2 py-0.5 text-xs rounded-full bg-primary text-primary-dark"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+              <div className="flex flex-col justify-start items-start gap-2">
+                <h4 className="body-bold-16 text-grey">Members</h4>
+                {membersLoading ? (
+                  <p className="text-grey-medium body-regular-16">
+                    Loading members...
+                  </p>
+                ) : members.length === 0 ? (
+                  <p className="text-grey-medium body-regular-16">No members</p>
+                ) : (
+                  <ul className="space-y-1">
+                    {members.map((m: any) => (
+                      <li
+                        key={m.id || m._id}
+                        className="body-regular-16 text-grey-medium flex items-center gap-2"
+                      >
+                        <span className="h-2 w-2 bg-green-500 rounded-full" />
+                        {m.name || m.email || "Unnamed user"}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </div>
           </div>
-          <div className="flex justify-end items-center gap-4">
-            {/* Button to toggle Order Panel */}
-            <button
-              onClick={handleShowOrdersClick}
-              className="text-grey-medium hover:text-primary transition-colors"
-              title="Show Order"
-            >
-              <ListOrdered className="w-5 h-5 cursor-pointer" />
-            </button>
-            {/* Button to toggle Details Panel */}
-            <button
-              onClick={handleShowDetailsClick}
-              className="text-grey-medium hover:text-primary transition-colors"
-              title="Show Details"
-            >
-              <Info className="w-5 h-5 cursor-pointer" />
-            </button>
-          </div>
-        </header>
-
-        {/* Message display section */}
-        <section className="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-grey-lightest">
-          {/* Example chat messages */}
-          <div className="bg-white w-max px-4 py-2 rounded-lg shadow text-sm text-black">
-            {chat.message}
-          </div>
-          <div className="text-sm text-right text-grey-medium">
-            Today, {chat.time}
-          </div>
-          <div className="w-max ml-auto bg-primary text-white px-4 py-2 rounded-lg shadow text-sm">
-            Hello Sir, Yes, this product is available in black color
-          </div>
-          <div className="w-max ml-auto bg-primary text-white px-4 py-2 rounded-lg shadow text-sm underline">
-            Buy t-shirt casual multi color - Shop Name
-          </div>
-        </section>
-
-        {/* Message input footer */}
-        <footer className="px-6 py-2 border-t border-grey-light bg-white">
-          <div className="flex items-center gap-3">
-            <button className="p-2 text-grey-medium hover:text-grey transition-colors">
-              <Paperclip className="w-5 h-5" />
-            </button>
-            <div className="flex-1 relative">
-              <textarea
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Type a message..."
-                className="w-full px-4 py-3 pr-12 text-grey border border-grey-light rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-grey-light focus:border-transparent mt-2"
-                rows={1}
-                style={{
-                  minHeight: "44px",
-                  maxHeight: "120px",
-                  overflow: "auto",
-                }}
-              />
-              <button className="absolute right-4 top-1/2 transform -translate-y-1/2 p-1 text-grey-medium hover:text-grey transition-colors">
-                <Smile className="w-5 h-5" />
-              </button>
-            </div>
-            <button
-              onClick={handleSendMessage}
-              disabled={!message.trim()}
-              className="p-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <Send className="w-5 h-5" />
-            </button>
-          </div>
-        </footer>
-      </main>
-
-      {/* Right Sidebar for Order and Details panels */}
-      <AnimatePresence mode="wait">
-        {showOrders && (
-          <motion.div
-            key="order-panel"
-            initial={{ x: "100%", opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: "100%", opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="w-96 border-l border-grey-light py-px space-y-6 bg-white overflow-y-auto overflow-x-hidden"
-          >
-            <OrderPannel />
-          </motion.div>
-        )}
-        {showDetails && (
-          <motion.div
-            key="details-panel"
-            initial={{ x: "100%", opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: "100%", opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="w-96 border-l border-grey-light py-px space-y-6 bg-white overflow-y-auto overflow-x-hidden"
-          >
-            <DetailsPanel />
-          </motion.div>
-        )}
-      </AnimatePresence>
+        </div>
+      )}
     </div>
   );
 };
 
-export default ChatPannel;
+export default ChatPanel;
