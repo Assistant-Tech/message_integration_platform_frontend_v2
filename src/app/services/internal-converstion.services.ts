@@ -11,7 +11,7 @@ import {
 import { handleApiError } from "@/app/utils/handlerApiError";
 
 // ------------------------------------------
-// 🔹 Get all internal conversations --> Yesma Type issue cha fix garne pachi when implemented in the component
+// 🔹 Get all internal conversations --> Yesma Type issue cha  fix garne pachi when implemented in the component
 // ------------------------------------------
 export const getAllInternalConversations = async (
   params: GetAllInternalConversationsParams = {},
@@ -25,11 +25,10 @@ export const getAllInternalConversations = async (
   }
 
   const res = await api.get<GetInternalConversationsResponse>(
-    "/internal-conversations",
-    { params: query },
+    "/internal-conversations?page=1&limit=20&includeDefault=true"
   );
+  console.log("🚀 ~ getAllInternalConversations ~ res:", res)
 
-  console.log("🚀 ~ getAllInternalConversations ~ data:", res.data);
   return res.data;
 };
 
@@ -112,12 +111,12 @@ export const updateInternalConversationById = async (
 // ------------------------------------------
 // 🔹 Remove a memeber via userId into specific channels
 // ------------------------------------------
-export const removeMemeberById = async (
+export const removeMemberById = async (
   conversationId: string,
   userId: string,
 ) => {
   const { data } = await api.delete(
-    `internal-conversation/${conversationId}/memebers${userId}`,
+    `/internal-conversations/${conversationId}/members/${userId}`,
   );
   return data;
 };

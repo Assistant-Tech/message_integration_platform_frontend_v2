@@ -1,4 +1,3 @@
-// useInternalChatSocket.ts (UPDATED)
 import { useEffect, useRef, useCallback } from "react";
 import { io, Socket } from "socket.io-client";
 import { toast } from "sonner";
@@ -100,7 +99,7 @@ export const useChatSocket = () => {
 
     socket.on(CHAT_EVENTS.USER_JOINED, (data) => {
       try {
-        toast.info(`${data.user?.name || data.userName || "A user"} joined`);
+        // toast.info(`${data.user?.name || data.userName || "A user"} joined`);
         const convId = data.conversationId;
         if (convId) {
           queryClient.setQueryData<any>(

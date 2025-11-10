@@ -1,58 +1,101 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { format } from "date-fns";
+import { toast } from "sonner";
+import { v4 as uuidv4 } from "uuid";
+import { Info, Loader2, Send, Users } from "lucide-react";
 import { useChatSocket } from "@/app/Socket/useInternalChatSocket";
 import { useInternalConversationStore } from "@/app/store/internal-conversation.store";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  addInternalConversationMembers,
-  getInternalConversationById,
-  getInternalConversationMembers,
-  updateInternalConversationById,
-} from "@/app/services/internal-converstion.services";
-import { format } from "date-fns";
 import { cn } from "@/app/utils/cn";
-import { Info, Loader2, Send, Users } from "lucide-react";
-import { toast } from "sonner";
 import { GenericDialog } from "@/app/components/common/";
 import { Button, Input } from "@/app/components/ui";
+import {
+  useInternalConversationById,
+  useInternalConversationMembers,
+  useUpdateInternalConversation,
+  useAddConversationMembers,
+  useRemoveConversationMember,
+} from "@/app/Socket/conversation/useInternalConversation";
 
-export const ChatPanel = () => {
-  const { selectedConversationId } = useInternalConversationStore();
+interface Member {
+  id: string;
+  name: string;
+  email?: string;
+  avatar?: string;
+}
+
+interface Message {
+  _id: string;
+  sender: string;
+  content: string;
+  createdAt: string;
+}
+
+const ChatPanel = () => {
+  const {
+    selectedConversationId,
+    conversations,
+    updateConversation: updateConversationInStore,
+  } = useInternalConversationStore();
+
   const { sendMessage } = useChatSocket();
-  const [message, setMessage] = useState("");
-  const [localMessages, setLocalMessages] = useState<any[]>([]);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [isOpenDetails, setIsOpenDetails] = useState<boolean>(false);
 
-  // Dialog states
+  const [message, setMessage] = useState("");
+  const [localMessages, setLocalMessages] = useState<Message[]>([]);
+  const [isOpenDetails, setIsOpenDetails] = useState(false);
   const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState(false);
-  const [newMemberEmail, setNewMemberEmail] = useState("");
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [priority, setPriority] = useState<
     "low" | "normal" | "high" | "urgent"
   >("normal");
+  const [membersList, setMembersList] = useState<Member[]>([]);
 
-  const queryClient = useQueryClient();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { data: conversationData, isLoading: conversationLoading } = useQuery({
-    queryKey: ["internalConversation", selectedConversationId],
-    queryFn: () =>
-      getInternalConversationById(selectedConversationId as string),
-    enabled: !!selectedConversationId,
-  });
+  const conversationFromStore = conversations.find(
+    (c) => c._id === selectedConversationId,
+  );
 
-  const { data: membersData, isLoading: membersLoading } = useQuery({
-    queryKey: ["internalConversationMembers", selectedConversationId],
-    queryFn: () =>
-      getInternalConversationMembers(selectedConversationId as string),
-    enabled: !!selectedConversationId,
-  });
+  const { data: conversationData, isLoading: conversationLoading } =
+    useInternalConversationById(selectedConversationId || "", {
+      enabled: !!selectedConversationId && !conversationFromStore,
+      staleTime: 5 * 60 * 1000,
+      gcTime: 10 * 60 * 1000,
+    });
 
-  const conversation = conversationData?.data;
-  const members = membersData?.data || [];
+  const { data: membersData, isLoading: membersLoading } =
+    useInternalConversationMembers(selectedConversationId || "", {
+      enabled: !!selectedConversationId,
+      staleTime: 5 * 60 * 1000,
+      gcTime: 10 * 60 * 1000,
+    });
 
-  // Sync title/priority when conversation data updates
+  const updateConversationMutation = useUpdateInternalConversation(
+    selectedConversationId || "",
+  );
+  const addMembersMutation = useAddConversationMembers(
+    selectedConversationId || "",
+  );
+  const removeMemberMutation = useRemoveConversationMember(
+    selectedConversationId || "",
+  );
+
+  const conversation = conversationFromStore || conversationData?.data;
+  const members = (membersData?.data as Member[]) || [];
+
+  useEffect(() => {
+    if (members && members.length > 0) {
+      setMembersList(members);
+    }
+  }, [members]);
+
+  useEffect(() => {
+    if (conversationData?.data && !conversationFromStore) {
+      updateConversationInStore(conversationData.data);
+    }
+  }, [conversationData, conversationFromStore, updateConversationInStore]);
+
   useEffect(() => {
     if (conversation) {
       setTitle(conversation.title || "");
@@ -64,9 +107,9 @@ export const ChatPanel = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [localMessages]);
 
-  // ----------------- Send Message -----------------
   const handleSend = () => {
     if (!message.trim() || !selectedConversationId) return;
+
     sendMessage(selectedConversationId, message.trim());
     setLocalMessages((prev) => [
       ...prev,
@@ -87,87 +130,102 @@ export const ChatPanel = () => {
     }
   };
 
-  // ----------------- Add Member -----------------
-  const handleAddMember = async () => {
-    if (!newMemberEmail.trim())
-      return toast.error("Enter a valid email or user ID");
-
-    try {
-      await addInternalConversationMembers(selectedConversationId!, {
-        participants: [newMemberEmail],
-      });
-      toast.success("✅ Member added successfully");
-      setNewMemberEmail("");
-      setIsAddMemberDialogOpen(false);
-    } catch (err: any) {
-      console.error("❌ Add member failed", err);
-      toast.error(err?.response?.data?.message || "Failed to add member");
-    }
-  };
-
-  // ----------------- Update Conversation -----------------
   const handleUpdateConversation = async () => {
     if (!title.trim()) return toast.error("Title cannot be empty");
 
     try {
-      const updated = await updateInternalConversationById(
-        selectedConversationId!,
-        { title, priority },
-      );
-      toast.success("✅ Conversation updated");
+      const result = await updateConversationMutation.mutateAsync({
+        title,
+        priority,
+      });
 
-      // Update cache immediately
-      queryClient.setQueryData(
-        ["internalConversation", selectedConversationId],
-        updated,
-      );
+      if (result?.data) {
+        updateConversationInStore(result.data);
+      }
+
+      toast.success("Conversation updated");
       setIsEditDialogOpen(false);
     } catch (err: any) {
-      console.error("❌ Failed to update conversation", err);
       toast.error(
         err?.response?.data?.message || "Failed to update conversation",
       );
     }
   };
 
-  if (!selectedConversationId)
+  const handleAddRandomMembers = async () => {
+    if (!selectedConversationId) return;
+
+    const randomIds = Array.from({ length: 1 }, () => uuidv4());
+
+    try {
+      await addMembersMutation.mutateAsync({ participants: randomIds });
+      toast.success("Added random member(s)");
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || "Failed to add members");
+    }
+  };
+
+  const handleMemberToggle = async (
+    memberId: string,
+    checked: boolean,
+    memberName: string,
+  ) => {
+    try {
+      if (checked) {
+        await addMembersMutation.mutateAsync({ participants: [memberId] });
+        toast.success(`${memberName} added`);
+      } else {
+        await removeMemberMutation.mutateAsync(memberId);
+        toast.success(`${memberName} removed`);
+      }
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || "Failed to update member");
+    }
+  };
+
+  if (!selectedConversationId) {
     return (
-      <div className="flex h-full items-center justify-center text-grey-medium">
+      <div className="flex h-full items-center justify-center text-grey-light">
         Select a conversation to start chatting.
       </div>
     );
+  }
 
-  if (conversationLoading)
+  if (conversationLoading && !conversation) {
     return (
-      <div className="flex h-full items-center justify-center text-grey-medium">
+      <div className="flex h-full items-center justify-center text-grey-light">
         <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Loading
         conversation...
       </div>
     );
+  }
 
   return (
     <div className="flex flex-1 h-screen w-full overflow-hidden bg-white border border-grey-light">
       {/* Chat Feed */}
       <div className="flex flex-1 flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-grey-light py-2 px-4">
-          <div className="flex flex-col items-start">
+        <div className="flex items-center justify-between border-b border-grey-light py-3 px-4 bg-white">
+          <div>
             <h2 className="text-lg font-semibold text-grey">
-              {conversation?.title}
+              {conversation?.title || "Untitled Conversation"}
             </h2>
-            <p className="body-regular-16 text-grey-medium">
-              {conversation?.participantsWithDetails?.length || 0} members
+            <p className="text-sm text-grey-medium">
+              {membersList?.length || 0} members
             </p>
           </div>
-          <button onClick={() => setIsOpenDetails((prev) => !prev)}>
-            <Info size={24} color="grey" />
+          <button
+            onClick={() => setIsOpenDetails((prev) => !prev)}
+            className="p-2 hover:bg-grey-light rounded-lg transition-colors"
+          >
+            <Info size={20} className="text-grey-medium" />
           </button>
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-base-white">
+        <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-grey-light">
           {localMessages.length === 0 ? (
-            <div className="text-center text-grey-medium mt-10">
+            <div className="text-center text-grey-light mt-10">
               No messages yet. Start the conversation!
             </div>
           ) : (
@@ -177,16 +235,16 @@ export const ChatPanel = () => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className={cn(
-                  "flex flex-col w-fit max-w-[75%] p-3 rounded-2xl break-words",
+                  "flex flex-col w-fit max-w-[75%] p-3 rounded-2xl break-words shadow-sm",
                   msg.sender === "You"
-                    ? "ml-auto bg-primary text-white"
+                    ? "ml-auto bg-information text-white"
                     : "bg-white text-grey border border-grey-light",
                 )}
               >
-                <span className="body-bold-16">
+                <span className="text-xs font-semibold mb-1 opacity-80">
                   {msg.sender === "You" ? "You" : msg.sender}
                 </span>
-                <p className="body-regular-16 whitespace-pre-wrap break-words">
+                <p className="text-sm whitespace-pre-wrap break-words">
                   {msg.content}
                 </p>
                 <span className="mt-1 text-xs opacity-70 self-end">
@@ -199,144 +257,179 @@ export const ChatPanel = () => {
         </div>
 
         {/* Input */}
-        <div className="sticky bottom-0 left-0 right-0 border-t border-grey-light bg-white p-3 flex items-center gap-2">
+        <div className="border-t border-grey-light bg-white p-3 flex items-end gap-2">
           <textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Type a message..."
             rows={1}
-            className="flex-1 text-grey resize-none overflow-hidden border border-grey-light rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 body-regular-16"
-            style={{ maxHeight: "120px" }}
+            className="flex-1 resize-none border border-grey-light rounded-lg px-3 py-2 text-grey focus:outline-none focus:ring-2 focus:ring-information max-h-32"
           />
           <button
             onClick={handleSend}
             disabled={!message.trim()}
-            className="bg-information hover:bg-information text-white px-4 py-2 rounded-lg flex items-center gap-1 transition"
+            className="bg-information hover:bg-information-dark disabled:bg-grey-light disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
           >
-            <Send className="h-4 w-4" /> Send
+            <Send className="h-4 w-4" />
+            <span>Send</span>
           </button>
         </div>
       </div>
 
       {/* Right Details Panel */}
       {isOpenDetails && (
-        <div className="flex w-80 flex-col border-l border-grey-light py-2 px-4">
-          <div className="p-4 border-b border-grey-light">
-            <h3 className="font-semibold text-grey flex items-center gap-2">
-              <Users className="h-4 w-4" /> Details
-            </h3>
+        <div className="w-80 border-l border-grey-light bg-white overflow-y-auto">
+          <div className="p-4 border-b border-grey-light flex items-center gap-2 bg-grey-light">
+            <Users className="h-5 w-5 text-grey" />
+            <h3 className="font-semibold text-grey">Details</h3>
           </div>
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            <div>
-              <h4 className="body-bold-16 text-grey">Status</h4>
-              <p className="text-base font-semibold capitalize">
-                {conversation?.status}
-              </p>
-            </div>
-            <div>
-              <h4 className="body-bold-16 text-grey">Priority</h4>
-              <p className="text-base font-semibold capitalize">
-                {conversation?.priority}
-              </p>
-            </div>
-            <div className="flex flex-col justify-start items-start gap-2">
-              <h4 className="body-bold-16 text-grey">Created At</h4>
-              <p className="body-regular-16 text-grey-medium">
-                {conversation?.createdAt
-                  ? format(new Date(conversation.createdAt), "PPpp")
-                  : "Unknown"}
-              </p>
-              <div>
-                <h4 className="body-bold-16 text-grey">Last Active</h4>
-                <p className="body-regular-16 text-grey-medium">
-                  {conversation?.lastActiveAt
-                    ? format(new Date(conversation.lastActiveAt), "PPpp")
-                    : "Unknown"}
-                </p>
-              </div>
-              {Array.isArray(conversation?.tags) &&
-                conversation.tags.length > 0 && (
-                  <div>
-                    <h4 className="body-bold-16 text-grey mb-1">Tags</h4>
-                    <div className="flex flex-wrap gap-1">
-                      {conversation.tags.map((tag: string) => (
-                        <span
-                          key={tag}
-                          className="px-2 py-0.5 text-xs rounded-full bg-primary text-primary-dark"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              <div className="flex flex-col justify-start items-start gap-2">
-                <h4 className="body-bold-16 text-grey">Members</h4>
-                {membersLoading ? (
-                  <p className="text-grey-medium body-regular-16">
-                    Loading members...
-                  </p>
-                ) : members.length === 0 ? (
-                  <p className="text-grey-medium body-regular-16">No members</p>
-                ) : (
-                  <ul className="space-y-1">
-                    {members.map((m: any) => (
-                      <li
-                        key={m.id || m._id}
-                        className="body-regular-16 text-grey-medium flex items-center gap-2"
-                      >
-                        <span className="h-2 w-2 bg-green-500 rounded-full" />
-                        {m.name || m.email || "Unnamed user"}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
 
-              <div className="w-full flex justify-start items-start gap-4">
-                <Button
-                  variant="primary"
-                  label="Add Member"
-                  onClick={() => setIsAddMemberDialogOpen(true)}
-                  className="mt-4 px-3 py-2"
-                />
-                <Button
-                  variant="outlined"
-                  label="Edit"
-                  onClick={() => setIsEditDialogOpen(true)}
-                  className="mt-4 px-3 py-2"
-                />
-              </div>
+          <div className="p-4 space-y-6">
+            <div>
+              <h4 className="font-semibold text-grey mb-2">Title</h4>
+              <p className="text-grey-medium">{conversation?.title || "N/A"}</p>
+            </div>
+
+            <div>
+              <h4 className="font-semibold text-grey mb-2">Priority</h4>
+              <span
+                className={cn(
+                  "inline-block px-3 py-1 rounded-full text-xs font-medium capitalize",
+                  conversation?.priority === "urgent" &&
+                    "bg-red-100 text-red-700",
+                  conversation?.priority === "high" &&
+                    "bg-orange-100 text-orange-700",
+                  conversation?.priority === "normal" &&
+                    "bg-blue-100 text-information-dark",
+                )}
+              >
+                {conversation?.priority || "normal"}
+              </span>
+            </div>
+
+            <div>
+              <h4 className="font-semibold text-grey mb-3">
+                Members ({membersList.length})
+              </h4>
+              {membersLoading && membersList.length === 0 ? (
+                <p className="text-grey-light flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" /> Loading...
+                </p>
+              ) : membersList.length === 0 ? (
+                <p className="text-grey-light">No members yet</p>
+              ) : (
+                <ul className="space-y-2">
+                  {membersList.map((m) => (
+                    <li
+                      key={m.id}
+                      className="flex items-center gap-3 text-sm p-2 hover:bg-grey-light rounded-lg transition-colors"
+                    >
+                      <img
+                        src={
+                          m.avatar ||
+                          `https://ui-avatars.com/api/?name=${m.name}`
+                        }
+                        alt={m.name}
+                        className="h-8 w-8 rounded-full object-cover border border-grey-light"
+                      />
+                      <div className="flex-1">
+                        <p className="font-medium text-grey">{m.name}</p>
+                        {m.email && (
+                          <p className="text-xs text-grey-light">{m.email}</p>
+                        )}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-2 pt-4 border-t border-grey-light">
+              <Button
+                label="Manage Members"
+                onClick={() => setIsAddMemberDialogOpen(true)}
+                variant="primary"
+              />
+              <Button
+                variant="outlined"
+                label="Edit Conversation"
+                onClick={() => setIsEditDialogOpen(true)}
+              />
             </div>
           </div>
         </div>
       )}
 
-      {/* Add Member Dialog */}
+      {/* Manage Members Dialog */}
       <GenericDialog
         open={isAddMemberDialogOpen}
         onClose={() => setIsAddMemberDialogOpen(false)}
-        title="Add Member"
+        title="Manage Members"
         maxWidth="max-w-md"
       >
         <div className="flex flex-col gap-4">
-          <label className="body-regular-16 text-grey-medium mb-1 block">
-            Member Email or ID
-          </label>
-          <Input
-            type="text"
-            value={newMemberEmail}
-            onChange={(e) => setNewMemberEmail(e.target.value)}
-            placeholder="user@example.com or UUID"
-            className="w-full border border-gray-300 rounded-md px-2 py-1 body-regular-16"
-          />
           <Button
-            label="Add Member"
+            label="Add Random Members (Test)"
+            onClick={handleAddRandomMembers}
             variant="primary"
-            onClick={handleAddMember}
-            className="mt-3"
+            disabled={addMembersMutation.isPending}
           />
+
+          {membersLoading && membersList.length === 0 ? (
+            <p className="text-grey-light flex items-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin" /> Loading members...
+            </p>
+          ) : membersList.length === 0 ? (
+            <p className="text-grey-light">No members available.</p>
+          ) : (
+            <ul className="space-y-2 max-h-80 overflow-y-auto">
+              {membersList.map((member) => {
+                const isChecked = membersList.some((m) => m.id === member.id);
+                return (
+                  <li
+                    key={member.id}
+                    className="flex items-center justify-between p-3 border border-grey-light rounded-lg hover:bg-grey-light transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={
+                          member.avatar ||
+                          `https://ui-avatars.com/api/?name=${member.name}`
+                        }
+                        alt={member.name}
+                        className="h-10 w-10 rounded-full object-cover border border-grey-light"
+                      />
+                      <div>
+                        <p className="text-sm font-medium text-grey">
+                          {member.name}
+                        </p>
+                        <p className="text-xs text-grey-light">
+                          {member.email || "No email"}
+                        </p>
+                      </div>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={(e) =>
+                        handleMemberToggle(
+                          member.id,
+                          e.target.checked,
+                          member.name,
+                        )
+                      }
+                      className="h-4 w-4 accent-information cursor-pointer"
+                      disabled={
+                        addMembersMutation.isPending ||
+                        removeMemberMutation.isPending
+                      }
+                    />
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </div>
       </GenericDialog>
 
@@ -349,29 +442,24 @@ export const ChatPanel = () => {
       >
         <div className="flex flex-col gap-4">
           <div>
-            <label className="body-regular-16 text-grey-medium mb-1 block">
+            <label className="block text-sm font-medium text-grey mb-2">
               Title
             </label>
             <Input
-              placeholder="Edit Name"
-              type="text"
+              placeholder="Conversation title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-2 py-1 body-regular-16"
             />
           </div>
-          <div className="text-grey-medium">
-            <label className="body-regular-16 text-grey-medium mb-1 block">
+
+          <div>
+            <label className="block text-sm font-medium text-grey mb-2">
               Priority
             </label>
             <select
               value={priority}
-              onChange={(e) =>
-                setPriority(
-                  e.target.value as "low" | "normal" | "high" | "urgent",
-                )
-              }
-              className="w-full border border-gray-300 rounded-md px-2 py-1 body-regular-16"
+              onChange={(e) => setPriority(e.target.value as any)}
+              className="w-full border border-grey-light rounded-lg px-3 py-2 text-grey focus:outline-none focus:ring-2 focus:ring-information"
             >
               <option value="low">Low</option>
               <option value="normal">Normal</option>
@@ -379,12 +467,12 @@ export const ChatPanel = () => {
               <option value="urgent">Urgent</option>
             </select>
           </div>
-          <button
+
+          <Button
+            label="Update Conversation"
             onClick={handleUpdateConversation}
-            className="bg-blue-600 hover:bg-blue-700 text-white rounded-md py-2 body-regular-16 mt-3"
-          >
-            Update Conversation
-          </button>
+            disabled={updateConversationMutation.isPending}
+          />
         </div>
       </GenericDialog>
     </div>
