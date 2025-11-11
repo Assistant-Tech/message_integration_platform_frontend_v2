@@ -57,7 +57,23 @@ export const useCreateInternalConversation = () => {
     CreateInternalConversationPayload
   >({
     mutationFn: (payload) => createInternalConversation(payload),
-    onSuccess: () => {
+    onSuccess: (data) => {
+      queryClient.setQueryData<GetInternalConversationsResponse>(
+        ["internalConversations"],
+        (old) => {
+          if (!old) return old;
+
+          const newConversation = data.data || data;
+
+          return {
+            ...old,
+            data: Array.isArray(old.data)
+              ? { ...old.data, data: [newConversation, ...old.data] }
+              : old.data,
+          };
+        },
+      );
+
       queryClient.invalidateQueries({ queryKey: ["internalConversations"] });
     },
   });
@@ -74,9 +90,26 @@ export const useUpdateInternalConversation = (conversationId: string) => {
     mutationFn: (payload) =>
       updateInternalConversationById(conversationId, payload),
     onSuccess: (data) => {
-      // Update the specific conversation cache
+      const updatedConversation = data.data || data;
+
       queryClient.setQueryData(["internalConversation", conversationId], data);
-      // Invalidate the list to refresh
+
+      queryClient.setQueryData<GetInternalConversationsResponse>(
+        ["internalConversations"],
+        (old) => {
+          if (!old || !old.data) return old;
+
+          return {
+            ...old,
+            data: {
+              ...old.data,
+              data: old.data.map((conv: any) =>
+                conv._id === conversationId ? updatedConversation : conv,
+              ),
+            },
+          };
+        },
+      );
       queryClient.invalidateQueries({
         queryKey: ["internalConversations"],
       });
@@ -91,28 +124,37 @@ export const useDeleteInternalConversation = () => {
     mutationFn: (conversationId) =>
       removeInternalConversationById(conversationId),
     onSuccess: (_, conversationId) => {
-      // Remove from cache
       queryClient.removeQueries({
         queryKey: ["internalConversation", conversationId],
       });
-      // Invalidate list
+      queryClient.setQueryData<GetInternalConversationsResponse>(
+        ["internalConversations"],
+        (old) => {
+          if (!old || !old.data) return old;
+
+          return {
+            ...old,
+            data: {
+              ...old.data,
+              data: old.data.filter((conv) => conv._id !== conversationId),
+            },
+          };
+        },
+      );
+
       queryClient.invalidateQueries({ queryKey: ["internalConversations"] });
     },
   });
 };
-
-// 🔹 Add conversation members
 export const useAddConversationMembers = (conversationId: string) => {
   const queryClient = useQueryClient();
   return useMutation<any, Error, AddConversationMembersPayload>({
     mutationFn: (payload) =>
       addInternalConversationMembers(conversationId, payload),
     onSuccess: () => {
-      // Invalidate members list
       queryClient.invalidateQueries({
         queryKey: ["internalConversationMembers", conversationId],
       });
-      // Also invalidate the conversation itself
       queryClient.invalidateQueries({
         queryKey: ["internalConversation", conversationId],
       });
@@ -126,11 +168,9 @@ export const useRemoveConversationMember = (conversationId: string) => {
   return useMutation<any, Error, string>({
     mutationFn: (userId) => removeMemberById(conversationId, userId),
     onSuccess: () => {
-      // Invalidate members list
       queryClient.invalidateQueries({
         queryKey: ["internalConversationMembers", conversationId],
       });
-      // Also invalidate the conversation itself
       queryClient.invalidateQueries({
         queryKey: ["internalConversation", conversationId],
       });

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
 import { Info, Loader2, Send, Users } from "lucide-react";
@@ -16,12 +16,15 @@ import {
   useAddConversationMembers,
   useRemoveConversationMember,
 } from "@/app/Socket/conversation/useInternalConversation";
+import { useTenantStore } from "@/app/store/tenant.store";
 
 interface Member {
   id: string;
   name: string;
   email?: string;
   avatar?: string;
+  status: string;
+  lastActiveAt?: string;
 }
 
 interface Message {
@@ -38,7 +41,13 @@ const ChatPanel = () => {
     updateConversation: updateConversationInStore,
   } = useInternalConversationStore();
 
-  const { sendMessage } = useChatSocket();
+  const { sendMessage, incomingMessages } = useChatSocket();
+
+  const { tenantUsers, fetchTenantUsers } = useTenantStore();
+
+  useEffect(() => {
+    fetchTenantUsers();
+  }, [fetchTenantUsers]);
 
   const [message, setMessage] = useState("");
   const [localMessages, setLocalMessages] = useState<Message[]>([]);
@@ -49,7 +58,6 @@ const ChatPanel = () => {
   const [priority, setPriority] = useState<
     "low" | "normal" | "high" | "urgent"
   >("normal");
-  const [membersList, setMembersList] = useState<Member[]>([]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -57,9 +65,12 @@ const ChatPanel = () => {
     (c) => c._id === selectedConversationId,
   );
 
+  const shouldFetchConversation =
+    !!selectedConversationId && !conversationFromStore;
+
   const { data: conversationData, isLoading: conversationLoading } =
     useInternalConversationById(selectedConversationId || "", {
-      enabled: !!selectedConversationId && !conversationFromStore,
+      enabled: shouldFetchConversation,
       staleTime: 5 * 60 * 1000,
       gcTime: 10 * 60 * 1000,
     });
@@ -85,23 +96,21 @@ const ChatPanel = () => {
   const members = (membersData?.data as Member[]) || [];
 
   useEffect(() => {
-    if (members && members.length > 0) {
-      setMembersList(members);
-    }
-  }, [members]);
-
-  useEffect(() => {
-    if (conversationData?.data && !conversationFromStore) {
+    if (
+      conversationData?.data &&
+      !conversationFromStore &&
+      selectedConversationId
+    ) {
       updateConversationInStore(conversationData.data);
     }
-  }, [conversationData, conversationFromStore, updateConversationInStore]);
+  }, [conversationData?.data?._id]);
 
   useEffect(() => {
     if (conversation) {
       setTitle(conversation.title || "");
       setPriority(conversation.priority || "normal");
     }
-  }, [conversation]);
+  }, [conversation?._id]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -110,16 +119,15 @@ const ChatPanel = () => {
   const handleSend = () => {
     if (!message.trim() || !selectedConversationId) return;
 
+    const optimisticMessage: Message = {
+      _id: `temp-${Date.now()}`,
+      sender: "You",
+      content: message.trim(),
+      createdAt: new Date().toISOString(),
+    };
+
+    setLocalMessages((prev) => [...prev, optimisticMessage]);
     sendMessage(selectedConversationId, message.trim());
-    setLocalMessages((prev) => [
-      ...prev,
-      {
-        _id: Math.random().toString(36).slice(2),
-        sender: "You",
-        content: message,
-        createdAt: new Date().toISOString(),
-      },
-    ]);
     setMessage("");
   };
 
@@ -134,18 +142,25 @@ const ChatPanel = () => {
     if (!title.trim()) return toast.error("Title cannot be empty");
 
     try {
+      if (conversation) {
+        updateConversationInStore({
+          ...conversation,
+          title,
+        });
+      }
+
       const result = await updateConversationMutation.mutateAsync({
         title,
         priority,
       });
-
-      if (result?.data) {
-        updateConversationInStore(result.data);
-      }
+      console.log("🚀 ~ handleUpdateConversation ~ result:", result);
 
       toast.success("Conversation updated");
       setIsEditDialogOpen(false);
     } catch (err: any) {
+      if (conversation) {
+        updateConversationInStore(conversation);
+      }
       toast.error(
         err?.response?.data?.message || "Failed to update conversation",
       );
@@ -183,6 +198,12 @@ const ChatPanel = () => {
     }
   };
 
+  useEffect(() => {
+    if (selectedConversationId) {
+      setLocalMessages(incomingMessages[selectedConversationId] || []);
+    }
+  }, [incomingMessages, selectedConversationId]);
+
   if (!selectedConversationId) {
     return (
       <div className="flex h-full items-center justify-center text-grey-light">
@@ -201,17 +222,16 @@ const ChatPanel = () => {
   }
 
   return (
-    <div className="flex flex-1 h-screen w-full overflow-hidden bg-white border border-grey-light">
+    <div className="flex flex-1 h-screen w-full bg-white border border-grey-light">
       {/* Chat Feed */}
-      <div className="flex flex-1 flex-col">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-grey-light py-3 px-4 bg-white">
+      <div className="relative flex flex-col w-full h-screen bg-white">
+        <div className="sticky top-0 z-10 flex items-center justify-between py-2 px-4 bg-white">
           <div>
             <h2 className="text-lg font-semibold text-grey">
               {conversation?.title || "Untitled Conversation"}
             </h2>
             <p className="text-sm text-grey-medium">
-              {membersList?.length || 0} members
+              {members?.length || 0} members
             </p>
           </div>
           <button
@@ -222,10 +242,9 @@ const ChatPanel = () => {
           </button>
         </div>
 
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-grey-light">
+        <div className="flex-1 p-4 space-y-3 bg-slate-100">
           {localMessages.length === 0 ? (
-            <div className="text-center text-grey-light mt-10">
+            <div className="text-center text-grey-medium mt-10">
               No messages yet. Start the conversation!
             </div>
           ) : (
@@ -256,8 +275,7 @@ const ChatPanel = () => {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input */}
-        <div className="border-t border-grey-light bg-white p-3 flex items-end gap-2">
+        <div className="sticky bottom-0 z-10 border-t border-grey-light bg-white p-3 flex items-end gap-2">
           <textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
@@ -279,8 +297,8 @@ const ChatPanel = () => {
 
       {/* Right Details Panel */}
       {isOpenDetails && (
-        <div className="w-80 border-l border-grey-light bg-white overflow-y-auto">
-          <div className="p-4 border-b border-grey-light flex items-center gap-2 bg-grey-light">
+        <div className="w-96 border-l border-grey-light bg-base-white overflow-y-auto">
+          <div className="px-4 py-6 border-b border-grey-light flex items-center gap-2 bg-base-white">
             <Users className="h-5 w-5 text-grey" />
             <h3 className="font-semibold text-grey">Details</h3>
           </div>
@@ -297,9 +315,9 @@ const ChatPanel = () => {
                 className={cn(
                   "inline-block px-3 py-1 rounded-full text-xs font-medium capitalize",
                   conversation?.priority === "urgent" &&
-                    "bg-red-100 text-red-700",
+                    "bg-red-100 text-danger",
                   conversation?.priority === "high" &&
-                    "bg-orange-100 text-orange-700",
+                    "bg-orange-100 text-warning",
                   conversation?.priority === "normal" &&
                     "bg-blue-100 text-information-dark",
                 )}
@@ -310,37 +328,89 @@ const ChatPanel = () => {
 
             <div>
               <h4 className="font-semibold text-grey mb-3">
-                Members ({membersList.length})
+                Members ({members.length})
               </h4>
-              {membersLoading && membersList.length === 0 ? (
+              {membersLoading && members.length === 0 ? (
                 <p className="text-grey-light flex items-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin" /> Loading...
                 </p>
-              ) : membersList.length === 0 ? (
+              ) : members.length === 0 ? (
                 <p className="text-grey-light">No members yet</p>
               ) : (
                 <ul className="space-y-2">
-                  {membersList.map((m) => (
-                    <li
-                      key={m.id}
-                      className="flex items-center gap-3 text-sm p-2 hover:bg-grey-light rounded-lg transition-colors"
-                    >
-                      <img
-                        src={
-                          m.avatar ||
-                          `https://ui-avatars.com/api/?name=${m.name}`
-                        }
-                        alt={m.name}
-                        className="h-8 w-8 rounded-full object-cover border border-grey-light"
-                      />
-                      <div className="flex-1">
-                        <p className="font-medium text-grey">{m.name}</p>
-                        {m.email && (
-                          <p className="text-xs text-grey-light">{m.email}</p>
-                        )}
-                      </div>
-                    </li>
-                  ))}
+                  {tenantUsers?.map(({ user }) => {
+                    const isChecked = members.some((m) => m.id === user.id);
+                    const isOnline = user.status === "ONLINE";
+                    const lastActive =
+                      user.status === "OFFLINE" && user.joinedAt
+                        ? formatDistanceToNow(new Date(user.joinedAt), {
+                            addSuffix: true,
+                          })
+                        : null;
+
+                    return (
+                      <li
+                        key={user.id}
+                        className="flex items-center justify-between p-3 border border-grey-light rounded-lg hover:bg-grey-light transition-colors"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="relative">
+                            <img
+                              src={
+                                user.avatar ||
+                                `https://ui-avatars.com/api/?name=${user.name}`
+                              }
+                              alt={user.name}
+                              className="h-8 w-8 rounded-full object-cover border border-grey-light"
+                            />
+                            {/* Online indicator */}
+                            <span
+                              className={cn(
+                                "absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white",
+                                isOnline ? "bg-primary" : "bg-grey-light",
+                              )}
+                              title={isOnline ? "Online" : "Offline"}
+                            ></span>
+                          </div>
+
+                          <div>
+                            <p className="text-sm font-medium text-grey">
+                              {user.name}
+                            </p>
+                            {/* <p className="text-xs text-grey-medium">
+                              {user.email || "No email"}
+                            </p> */}
+                            <p className="text-xs text-grey-medium">
+                              {isOnline ? (
+                                <span className="text-green-600">Online</span>
+                              ) : lastActive ? (
+                                `Last active ${lastActive}`
+                              ) : (
+                                "Offline"
+                              )}
+                            </p>
+                          </div>
+                        </div>
+
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={(e) =>
+                            handleMemberToggle(
+                              user.id,
+                              e.target.checked,
+                              user.name,
+                            )
+                          }
+                          className="h-4 w-4 accent-information cursor-pointer"
+                          disabled={
+                            addMembersMutation.isPending ||
+                            removeMemberMutation.isPending
+                          }
+                        />
+                      </li>
+                    );
+                  })}
                 </ul>
               )}
             </div>
@@ -376,16 +446,16 @@ const ChatPanel = () => {
             disabled={addMembersMutation.isPending}
           />
 
-          {membersLoading && membersList.length === 0 ? (
-            <p className="text-grey-light flex items-center gap-2">
+          {membersLoading && members.length === 0 ? (
+            <p className="text-grey-medium flex items-center gap-2">
               <Loader2 className="h-4 w-4 animate-spin" /> Loading members...
             </p>
-          ) : membersList.length === 0 ? (
-            <p className="text-grey-light">No members available.</p>
+          ) : members.length === 0 ? (
+            <p className="text-grey-medium">No members available.</p>
           ) : (
             <ul className="space-y-2 max-h-80 overflow-y-auto">
-              {membersList.map((member) => {
-                const isChecked = membersList.some((m) => m.id === member.id);
+              {members.map((member) => {
+                const isChecked = members.some((m) => m.id === member.id);
                 return (
                   <li
                     key={member.id}
@@ -404,7 +474,7 @@ const ChatPanel = () => {
                         <p className="text-sm font-medium text-grey">
                           {member.name}
                         </p>
-                        <p className="text-xs text-grey-light">
+                        <p className="text-xs text-grey-medium">
                           {member.email || "No email"}
                         </p>
                       </div>

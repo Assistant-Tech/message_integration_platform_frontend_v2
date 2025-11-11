@@ -70,6 +70,7 @@ export const useTenantStore = create<TenantState>((set) => ({
 
   updateLoading: false,
 
+
   // Fetch login activity
   fetchLoginActivity: async (page = 1, limit = 10) => {
     set({ loading: true });

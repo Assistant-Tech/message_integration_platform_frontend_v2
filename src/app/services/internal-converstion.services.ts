@@ -11,24 +11,26 @@ import {
 import { handleApiError } from "@/app/utils/handlerApiError";
 
 // ------------------------------------------
-// 🔹 Get all internal conversations --> Yesma Type issue cha  fix garne pachi when implemented in the component
+// 🔹 Get all internal conversations
 // ------------------------------------------
 export const getAllInternalConversations = async (
   params: GetAllInternalConversationsParams = {},
 ): Promise<GetInternalConversationsResponse> => {
   const { page = 1, limit = 20, includeDefault = true, search } = params;
 
-  const query: Record<string, any> = { page, limit, includeDefault };
+  const queryParams = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    includeDefault: "true",
+  });
 
   if (search && search.trim().length > 0) {
-    query.search = search.trim();
+    queryParams.append("search", search.trim());
   }
 
   const res = await api.get<GetInternalConversationsResponse>(
-    "/internal-conversations?page=1&limit=20&includeDefault=true"
+    `/internal-conversations?${queryParams.toString()}`,
   );
-  console.log("🚀 ~ getAllInternalConversations ~ res:", res)
-
   return res.data;
 };
 
@@ -66,6 +68,7 @@ export const getInternalConversationMembers = async (
   const { data } = await api.get<InternalConversationMembersResponse>(
     `/internal-conversations/${conversationId}/members`,
   );
+  console.log("🚀 ~ getInternalConversationMembers ~ data:", data);
   return data;
 };
 
@@ -109,7 +112,7 @@ export const updateInternalConversationById = async (
 };
 
 // ------------------------------------------
-// 🔹 Remove a memeber via userId into specific channels
+// 🔹 Remove a member via userId into specific channels
 // ------------------------------------------
 export const removeMemberById = async (
   conversationId: string,
@@ -122,7 +125,7 @@ export const removeMemberById = async (
 };
 
 // ------------------------------------------
-// 🔹 Delete conversation by Conversation - ID --> YOO baki chha to add types of the deletion
+// 🔹 Delete conversation by Conversation - ID
 // ------------------------------------------
 export const removeInternalConversationById = async (
   conversationId: string,
@@ -141,8 +144,16 @@ export const searchBetweenInternalConversation = async (
 ) => {
   try {
     const { search, includeDefault } = params;
+    const queryParams = new URLSearchParams({
+      includeDefault: includeDefault.toString(),
+    });
+
+    if (search && search.trim()) {
+      queryParams.append("search", search.trim());
+    }
+
     const res = await api.get(
-      `/internal-conversations?search=${search}&includeDefault=${includeDefault}`,
+      `/internal-conversations?${queryParams.toString()}`,
     );
     return res.data;
   } catch (error: any) {
