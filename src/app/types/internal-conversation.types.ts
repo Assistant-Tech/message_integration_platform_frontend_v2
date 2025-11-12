@@ -21,7 +21,11 @@ export interface ChatParticipant {
 // Internal Conversation Types
 // -----------------------------
 export type ChatPlatform = "facebook" | "instagram" | "whatsapp" | "internal";
-
+export interface participantsDetails {
+  name: string;
+  
+  avatar?: string;
+}
 export interface InternalConversation {
   _id: string;
   tenantId: string;
@@ -32,7 +36,7 @@ export interface InternalConversation {
   priority: "normal" | "high" | "urgent";
   tags: string[];
   participants: string[];
-  participantsWithDetails: string[];
+  participantsWithDetails: participantsDetails[];
   lastMessage?: string;
   avatar?: string | null;
   platform?: ChatPlatform;

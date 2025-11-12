@@ -90,6 +90,7 @@ export const useChatSocket = () => {
       try {
         const convId = data.conversationId;
         if (!convId) return;
+        console.log("user - joined");
 
         queryClient.setQueryData<any>(
           ["internalConversationMembers", convId],

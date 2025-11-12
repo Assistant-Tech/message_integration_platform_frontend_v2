@@ -1,14 +1,11 @@
-// import { ConversationSidebar } from "@/app/components/internal/ConversationSidebar";
-// import { ConversationDetails } from "@/app/components/internal/ConversationDetails";
+import React from "react";
 
-const InternalChatPage = () => {
-  return (
-    <div className="flex h-screen">
-      {/* <ConversationSidebar />
-      <ConversationDetails /> */}
-    </div>
-  );
+interface ChatLayoutProps {
+  children: React.ReactNode;
+}
+
+const ChatLayout = ({ children }: ChatLayoutProps) => {
+  return <div className="flex h-screen w-full">{children}</div>;
 };
 
-export default InternalChatPage;
- 
+export default ChatLayout;

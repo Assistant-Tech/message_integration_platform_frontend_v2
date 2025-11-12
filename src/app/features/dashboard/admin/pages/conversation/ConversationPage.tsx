@@ -1,36 +1,29 @@
-import ChatPanel from "@/app/components/common/Conversation/chat/Chat-Pannel";
-import ChatSidebar from "@/app/components/common/Conversation/chat/Chat-Sidebar";
-import { getInternalConversationById } from "@/app/services/internal-converstion.services";
+import { Suspense, lazy } from "react";
+import ChatLayout from "@/app/components/layout/ChatLayout";
 import { useChatSocket } from "@/app/Socket/useInternalChatSocket";
-import { useInternalConversationStore } from "@/app/store/internal-conversation.store";
-import { useQuery } from "@tanstack/react-query";
+
+const ChatPanel = lazy(() =>
+  import("@/app/components/common/Conversation/chat/ChatPanel")
+);
+const ChatSidebar = lazy(() =>
+  import("@/app/components/common/Conversation/chat/ChatSidebar")
+);
 
 const ConversationPage = () => {
-  const { selectedConversationId } = useInternalConversationStore();
-
   useChatSocket();
-
-  const { data, isLoading } = useQuery({
-    queryKey: ["internal-conversation", selectedConversationId],
-    queryFn: () => getInternalConversationById(selectedConversationId!),
-    enabled: !!selectedConversationId,
-  });
-
-  if (isLoading) return <div>Loading...</div>;
 
   return (
     <div className="flex h-screen bg-base-white">
-      {/* Sidebar */}
-      <ChatSidebar />
-
-      {/* Chat Section */}
-      {selectedConversationId ? (
-        <ChatPanel />
-      ) : (
-        <div className="flex-1 flex items-center justify-center text-gray-400">
-          Select a conversation to start chatting
-        </div>
-      )}
+      <ChatLayout>
+        <Suspense fallback={<div className="p-4">Loading chat...</div>}>
+          <div className="w-full max-w-sm border-r border-grey-light bg-white">
+            <ChatSidebar />
+          </div>
+          <div className="flex-1 bg-white">
+            <ChatPanel />
+          </div>
+        </Suspense>
+      </ChatLayout>
     </div>
   );
 };
