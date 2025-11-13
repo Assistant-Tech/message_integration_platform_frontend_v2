@@ -38,12 +38,12 @@ img {
 
 /* Optimize font loading */
 @font-face {
-  font-family: 'Nunito Sans';
+  font-family: "Nunito Sans";
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Merriweather';
+  font-family: "Merriweather";
   font-display: swap;
 }
 
@@ -132,6 +132,13 @@ img {
   border-radius: 8px;
 }
 
+/* ROOT */
+html,
+body,
+#root {
+  height: 100%;
+  overflow: hidden;
+}
 
 /*
 ─────────────────────────────────────────────────────────────────────────────

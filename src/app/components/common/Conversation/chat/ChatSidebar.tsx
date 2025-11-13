@@ -49,7 +49,7 @@ const ChatSidebar = () => {
 
     return conversations.map((conv) => ({
       ...conv,
-      avatar: null, // remove participant DP
+      avatar: null,
       lastMessage: conv.lastMessage || "No messages yet",
       initial: conv.title?.charAt(0).toUpperCase() || "?",
     }));
@@ -173,11 +173,10 @@ const ChatSidebar = () => {
       await fetchConversations();
     };
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <aside className="w-full h-full flex flex-col overflow-hidden">
+    <aside className="w-full h-full flex flex-col overflow-y-auto">
       <ChatSidebarHeader
         isOpen={isOpen}
         isDeleteMode={isDeleteMode}
@@ -214,7 +213,6 @@ const ChatSidebar = () => {
               total={safeConversations.length}
               filtered={filteredConversations.length}
             />
-
             <ChatSidebarList
               conversations={filteredConversations}
               selectedConversationId={selectedConversationId}

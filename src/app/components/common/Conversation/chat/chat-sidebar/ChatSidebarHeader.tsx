@@ -46,7 +46,7 @@ const ChatSidebarHeader = ({
         >
           <Trash2
             size={20}
-            className={`text-grey-medium ${isDeleteMode ? "text-red-500" : ""}`}
+            className={`text-grey-medium ${isDeleteMode ? "text-danger" : ""}`}
           />
         </button>
       )}

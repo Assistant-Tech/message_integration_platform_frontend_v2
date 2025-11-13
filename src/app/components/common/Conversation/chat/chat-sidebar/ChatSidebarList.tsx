@@ -49,7 +49,6 @@ const ChatSidebarList = ({
 
   return (
     <div>
-      {/* Loading indicator outside the list */}
       {loading && (
         <div className="flex items-center justify-center py-2 text-grey-medium text-xs">
           <Loader2 className="h-3 w-3 animate-spin mr-1" />
@@ -110,9 +109,24 @@ const ChatSidebarList = ({
 
               <div className="flex justify-between w-full min-w-0">
                 <div className="min-w-0 flex-1">
-                  <h4 className="body-bold-16 text-grey truncate">
-                    {chat.title}
-                  </h4>
+                  <div className="flex justify-start items-start gap-4">
+                    <h4 className="h5-bold-16 text-grey truncate">
+                      {chat.title}
+                    </h4>
+                    {chat.priority == "normal" ? (
+                      <h5 className="bg-information-light px-2 rounded-full text-information">
+                        {chat.priority}
+                      </h5>
+                    ) : chat.priority == "high" ? (
+                      <h5 className="bg-warning-light px-2 rounded-full text-warning-dark">
+                        {chat.priority}
+                      </h5>
+                    ) : (
+                      <h5 className="bg-danger-light px-2 rounded-full text-danger-dark">
+                        {chat.priority}
+                      </h5>
+                    )}
+                  </div>
                   <p className="label-semi-bold-14 text-grey-medium truncate">
                     {chat.lastMessage || "No messages yet"}
                   </p>

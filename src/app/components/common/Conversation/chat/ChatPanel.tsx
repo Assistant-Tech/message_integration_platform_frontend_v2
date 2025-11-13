@@ -172,14 +172,16 @@ const ChatPanel = () => {
     );
 
   return (
-    <div className="flex flex-1 h-screen w-full bg-white border border-grey-light">
+    <div className="flex flex-1 h-full w-full bg-white border border-grey-light overflow-hidden">
       <div className="relative flex flex-col w-full h-full bg-white">
         <ChatHeader
           conversation={conversation}
           members={members}
           onToggleDetails={() => setIsOpenDetails((p) => !p)}
         />
-        <ChatFeed messages={localMessages} ref={messagesEndRef} />
+        <div className="flex-1 overflow-y-auto">
+          <ChatFeed messages={localMessages} ref={messagesEndRef} />
+        </div>
         <ChatInput
           message={message}
           onChange={setMessage}

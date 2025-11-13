@@ -5,7 +5,7 @@ interface ChatLayoutProps {
 }
 
 const ChatLayout = ({ children }: ChatLayoutProps) => {
-  return <div className="flex h-screen w-full">{children}</div>;
+  return <div className="flex flex-1 h-full">{children}</div>;
 };
 
 export default ChatLayout;
