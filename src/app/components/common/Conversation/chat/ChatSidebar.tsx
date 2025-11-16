@@ -18,13 +18,13 @@ import {
 
 const ChatSidebar = () => {
   const {
-    conversations,
     setConversations,
     selectedConversationId,
     setSelectedConversationId,
     addConversation,
     removeConversation: removeConversationFromStore,
   } = useInternalConversationStore();
+  const conversations = useInternalConversationStore.getState().conversations;
 
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
@@ -44,36 +44,54 @@ const ChatSidebar = () => {
       },
     });
 
-  const safeConversations = useMemo(() => {
-    if (!Array.isArray(conversations)) return [];
+  /** Fetch all */
+  const fetchConversations = async () => {
+    try {
+      setLoading(true);
+      const res = await getAllInternalConversations({
+        page: 1,
+        limit: 100,
+        includeDefault: true,
+      });
 
-    return conversations.map((conv) => ({
-      ...conv,
-      avatar: null,
-      lastMessage: conv.lastMessage || "No messages yet",
-      initial: conv.title?.charAt(0).toUpperCase() || "?",
-    }));
-  }, [conversations]);
+      // useState => chatlist
+      // dashboard -> conversation -> not working
+      const data = Array.isArray(res.data) ? res.data : [];
+      setConversations(data);
+
+      const firstConversation = data[0];
+      if (firstConversation && !selectedConversationId) {
+        setSelectedConversationId(firstConversation._id);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to load conversations");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   /** Filter + sort */
   const filteredConversations = useMemo(() => {
-    let filtered = safeConversations;
+    if (!conversations) console.log("Conversations not found");
+    let filteredConversation = [...conversations];
 
     if (searchTerm.trim()) {
+      ``;
       const lowerSearch = searchTerm.toLowerCase().trim();
-      filtered = filtered.filter(
+      filteredConversation = filteredConversation.filter(
         (conv) =>
           conv.title?.toLowerCase().includes(lowerSearch) ||
           conv.lastMessage?.toLowerCase().includes(lowerSearch),
       );
     }
 
-    return filtered.sort(
+    return filteredConversation.sort(
       (a, b) =>
         new Date(b.updatedAt || 0).getTime() -
         new Date(a.updatedAt || 0).getTime(),
     );
-  }, [safeConversations, searchTerm, statusFilter]);
+  }, [conversations, searchTerm, statusFilter]);
 
   /** Create */
   const onSubmit = async (data: CreateInternalConversationPayload) => {
@@ -83,7 +101,7 @@ const ChatSidebar = () => {
       toast.success(res.message || "Conversation created");
       setIsOpen(false);
       reset();
-      // fetchConversations();
+      fetchConversations();
     } catch (err) {
       console.error(err);
       toast.error("Failed to create conversation");
@@ -137,40 +155,12 @@ const ChatSidebar = () => {
     }
   };
 
-  // const handleRefresh = () => {
-  //   fetchConversations();
-  //   toast.success("Conversations refreshed");
-  // };
+  const handleRefresh = () => {
+    fetchConversations();
+    toast.success("Conversations refreshed");
+  };
 
   useEffect(() => {
-    /** Fetch all */
-    const fetchConversations = async () => {
-      try {
-        setLoading(true);
-        const res = await getAllInternalConversations({
-          page: 1,
-          limit: 100,
-          includeDefault: true,
-        });
-
-        // useState => chatlist
-        // dashboard -> conversation -> not working
-        const data = Array.isArray(res.data) ? res.data : [];
-        setConversations(data);
-
-        const firstConversation = data[0];
-        if (firstConversation && !selectedConversationId) {
-          setSelectedConversationId(firstConversation._id);
-        }
-      } catch (err) {
-        console.error(err);
-        toast.error("Failed to load conversations");
-      } finally {
-        setLoading(false);
-      }
-    };
-    console.log("Conversations fetched");
-
     fetchConversations();
   }, []);
 
@@ -181,7 +171,7 @@ const ChatSidebar = () => {
         isDeleteMode={isDeleteMode}
         loading={loading}
         isDeleting={isDeleting}
-        // onRefresh={handleRefresh}
+        onRefresh={handleRefresh}
         onToggleDeleteMode={handleToggleDeleteMode}
         onToggleForm={() => setIsOpen((p) => !p)}
       />
@@ -209,7 +199,7 @@ const ChatSidebar = () => {
               setSearchTerm={setSearchTerm}
               statusFilter={statusFilter}
               setStatusFilter={setStatusFilter}
-              total={safeConversations.length}
+              total={conversations.length}
               filtered={filteredConversations.length}
             />
             <ChatSidebarList

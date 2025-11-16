@@ -1,7 +1,7 @@
 import { useAuthStore } from "@/app/store/auth.store";
 import { useSocketStore } from "@/app/store/socket.store";
 import { io, Socket } from "socket.io-client";
-import { CUSTOM_EVENTS } from "@/app/Socket/events/customEvents";
+import { CUSTOM_EVENTS } from "@/app/socket/events/customEvents";
 
 let socket: Socket | null = null;
 

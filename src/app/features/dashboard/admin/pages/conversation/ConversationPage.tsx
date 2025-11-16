@@ -1,6 +1,6 @@
 import { Suspense, lazy } from "react";
 import ChatLayout from "@/app/components/layout/ChatLayout";
-import { useChatSocket } from "@/app/Socket/useInternalChatSocket";
+import { useChatSocket } from "@/app/socket/useInternalChatSocket";
 
 const ChatPanel = lazy(
   () => import("@/app/components/common/Conversation/chat/ChatPanel"),

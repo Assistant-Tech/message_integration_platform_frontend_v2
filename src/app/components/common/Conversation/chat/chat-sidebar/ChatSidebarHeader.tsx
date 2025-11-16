@@ -6,7 +6,7 @@ interface Props {
   isDeleteMode: boolean;
   loading: boolean;
   isDeleting: boolean;
-  // onRefresh: () => void;
+  onRefresh: () => void;
   onToggleDeleteMode: () => void;
   onToggleForm: () => void;
 }
@@ -16,14 +16,14 @@ const ChatSidebarHeader = ({
   isDeleteMode,
   loading,
   isDeleting,
-  // onRefresh,
+  onRefresh,
   onToggleDeleteMode,
   onToggleForm,
 }: Props) => (
   <header className="flex justify-between items-center px-6 py-4 border-b border-grey-light sticky top-0 bg-white z-20">
     <Heading title="Conversation" align="left" className="text-base-black" />
     <div className="flex items-center gap-2">
-      {/* {!isOpen && !isDeleteMode && (
+      {!isOpen && !isDeleteMode && (
         <button
           onClick={onRefresh}
           disabled={loading || isDeleting}
@@ -35,7 +35,7 @@ const ChatSidebarHeader = ({
             className={`text-grey-medium ${loading ? "animate-spin" : ""}`}
           />
         </button>
-      )} */}
+      )}
 
       {!isOpen && (
         <button

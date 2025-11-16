@@ -2,7 +2,7 @@ import { useEffect, useRef, useCallback, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { toast } from "sonner";
 import { useAuthStore } from "@/app/store/auth.store";
-import { CHAT_EVENTS } from "@/app/Socket/events/chatEvents";
+import { CHAT_EVENTS } from "@/app/socket/events/chatEvents";
 import { useInternalConversationStore } from "@/app/store/internal-conversation.store";
 import { useQueryClient } from "@tanstack/react-query";
 import { v4 as uuidv4 } from "uuid";
@@ -47,11 +47,6 @@ export const useChatSocket = () => {
     socket.on("disconnect", (reason) =>
       console.warn("⚠️ Chat socket disconnected:", reason),
     );
-
-    // Initial conversation list
-    socket.on(CHAT_EVENTS.CHAT_CONNECTED, (data) => {
-      setConversations(data.channels || []);
-    });
 
     // Incoming messages
     socket.on(CHAT_EVENTS.CHAT_MESSAGE, (payload) => {

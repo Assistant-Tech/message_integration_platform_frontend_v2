@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { v4 as uuidv4 } from "uuid";
 
-import { useChatSocket } from "@/app/Socket/useInternalChatSocket";
+import { useChatSocket } from "@/app/socket/useInternalChatSocket";
 import { useInternalConversationStore } from "@/app/store/internal-conversation.store";
 import {
   useInternalConversationById,
@@ -11,7 +10,7 @@ import {
   useUpdateInternalConversation,
   useAddConversationMembers,
   useRemoveConversationMember,
-} from "@/app/Socket/conversation/useInternalConversation";
+} from "@/app/socket/conversation/useInternalConversation";
 import { useTenantStore } from "@/app/store/tenant.store";
 import {
   ChatDetailsPanel,
@@ -64,7 +63,6 @@ const ChatPanel = () => {
     useInternalConversationMembers(selectedConversationId || "", {
       enabled: !!selectedConversationId,
     });
-  // console.log("🚀 ~ ChatPanel ~ membersData:", membersData);
 
   const updateConversationMutation = useUpdateInternalConversation(
     selectedConversationId || "",
