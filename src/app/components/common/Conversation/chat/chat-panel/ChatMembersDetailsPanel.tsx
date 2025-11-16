@@ -1,23 +1,11 @@
-// import React from "react";
+import { Button } from "@/app/components/ui";
 import { Loader2, User } from "lucide-react";
-
-// interface Member {
-//   _id: string;
-//   name: string;
-//   email?: string;
-//   avatar?: string;
-// }
-
-// interface ChatMembersDetailsPanelProps {
-//   members: Member[];
-//   loading?: boolean;
-//   onMemberDetailsClose: () => void;
-// }
 
 const ChatMembersDetailsPanel = ({
   members,
   loading = false,
   onMemberDetailsClose,
+  onManage,
 }: any) => {
   return (
     <div className="w-80 h-full border-l border-grey-light bg-white flex flex-col">
@@ -46,9 +34,9 @@ const ChatMembersDetailsPanel = ({
           members.map((m: any) => (
             <ul
               key={m._id}
-              className="flex items-start gap-3 p-2 rounded-lg hover:bg-grey-bg transition cursor-pointer"
+              className="flex items-start gap-3 p-2 rounded-lg hover:bg-grey-bg transition"
             >
-              <li className="flex items-center justify-start gap-4 ">
+              <li className="flex items-center gap-4">
                 {/* Avatar */}
                 {m.avatar ? (
                   <img
@@ -62,7 +50,7 @@ const ChatMembersDetailsPanel = ({
                   </div>
                 )}
 
-                {/* Info */}
+                {/* User Info */}
                 <div className="flex flex-col">
                   <span className="body-bold-16 text-grey">{m.name}</span>
                   {m.email && (
@@ -75,6 +63,14 @@ const ChatMembersDetailsPanel = ({
             </ul>
           ))
         )}
+
+        {/* Manage Button */}
+        <Button
+          label="Manage Members"
+          onClick={onManage}
+          variant="primary"
+          className="mt-4 w-full"
+        />
       </div>
     </div>
   );

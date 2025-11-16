@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { GenericDialog } from "@/app/components/common/";
 import { Button } from "@/app/components/ui";
@@ -5,11 +6,47 @@ import { Button } from "@/app/components/ui";
 const ManageMembersDialog = ({
   open,
   onClose,
+  tenantUsers,
   members,
   onToggleMember,
   onAddRandom,
   membersLoading,
 }: any) => {
+  const [localSelection, setLocalSelection] = useState<any[]>([]);
+
+  const normalizedUsers = tenantUsers?.map((item: any) => ({
+    id: item.user.id,
+    name: item.user.name,
+    email: item.user.email,
+    avatar: item.user.avatar ?? null,
+    role: item.role.type,
+  }));
+
+  useEffect(() => {
+    if (open && normalizedUsers) {
+      const initialState = normalizedUsers.map((u: any) => ({
+        ...u,
+        selected: members.some((m: any) => m.id === u.id),
+      }));
+
+      setLocalSelection(initialState);
+    }
+  }, [open, tenantUsers, members]);
+
+  const handleSelectToggle = (id: string, checked: boolean) => {
+    setLocalSelection((prev) =>
+      prev.map((u) => (u.id === id ? { ...u, selected: checked } : u)),
+    );
+  };
+
+  const handleSave = () => {
+    localSelection.forEach((user) => {
+      onToggleMember(user.id, user.selected, user.name);
+    });
+
+    onClose();
+  };
+
   return (
     <GenericDialog
       open={open}
@@ -18,49 +55,52 @@ const ManageMembersDialog = ({
       maxWidth="max-w-md"
     >
       <div className="flex flex-col gap-4">
-        <Button
-          label="Add Random Members (Test)"
-          onClick={onAddRandom}
-          variant="primary"
-        />
+        {onAddRandom && (
+          <Button
+            label="Add Random Members (Test)"
+            onClick={onAddRandom}
+            variant="primary"
+          />
+        )}
 
         {membersLoading ? (
           <p className="text-grey-medium flex items-center gap-2">
-            <Loader2 className="h-4 w-4 animate-spin" /> Loading members...
+            <Loader2 className="h-4 w-4 animate-spin" /> Loading users...
           </p>
-        ) : members.length === 0 ? (
-          <p className="text-grey-medium">No members available.</p>
+        ) : localSelection?.length === 0 ? (
+          <p className="text-grey-medium">No tenant users available.</p>
         ) : (
           <ul className="space-y-2 max-h-80 overflow-y-auto">
-            {members.map((member: any) => (
+            {localSelection.map((user: any) => (
               <li
-                key={member.id}
+                key={user.id}
                 className="flex items-center justify-between p-3 border border-grey-light rounded-lg hover:bg-grey-light transition-colors"
               >
                 <div className="flex items-center gap-3">
                   <img
                     src={
-                      member.avatar ||
-                      `https://ui-avatars.com/api/?name=${member.name}`
+                      user.avatar ||
+                      `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                        user.name,
+                      )}`
                     }
-                    alt={member.name}
+                    alt={user.name}
                     className="h-10 w-10 rounded-full object-cover border border-grey-light"
                   />
+
                   <div>
-                    <p className="text-sm font-medium text-grey">
-                      {member.name}
-                    </p>
+                    <p className="text-sm font-medium text-grey">{user.name}</p>
                     <p className="text-xs text-grey-medium">
-                      {member.email || "No email"}
+                      {user.email || "No email"}
                     </p>
                   </div>
                 </div>
 
                 <input
                   type="checkbox"
-                  checked={true}
+                  checked={user.selected}
                   onChange={(e) =>
-                    onToggleMember(member.id, e.target.checked, member.name)
+                    handleSelectToggle(user.id, e.target.checked)
                   }
                   className="h-4 w-4 accent-information cursor-pointer"
                 />
@@ -68,6 +108,9 @@ const ManageMembersDialog = ({
             ))}
           </ul>
         )}
+
+        {/* Save button */}
+        <Button label="Save Changes" variant="primary" onClick={handleSave} />
       </div>
     </GenericDialog>
   );

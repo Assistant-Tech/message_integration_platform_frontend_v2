@@ -57,7 +57,7 @@ const ChatSidebarList = ({
       )}
 
       <ul className="px-4 space-y-2 pb-4">
-        {conversations.map((chat) => {
+        {conversations && conversations.map((chat) => {
           const isSelected = selectedForDeletion.includes(chat._id);
 
           return (

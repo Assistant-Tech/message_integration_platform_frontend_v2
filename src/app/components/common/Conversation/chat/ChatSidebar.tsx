@@ -75,30 +75,6 @@ const ChatSidebar = () => {
     );
   }, [safeConversations, searchTerm, statusFilter]);
 
-  /** Fetch all */
-  const fetchConversations = async () => {
-    try {
-      setLoading(true);
-      const res = await getAllInternalConversations({
-        page: 1,
-        limit: 100,
-        includeDefault: true,
-      });
-      const data = Array.isArray(res.data) ? res.data : [];
-      setConversations(data);
-
-      const firstConversation = data[0];
-      if (firstConversation && !selectedConversationId) {
-        setSelectedConversationId(firstConversation._id);
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to load conversations");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   /** Create */
   const onSubmit = async (data: CreateInternalConversationPayload) => {
     try {
@@ -107,7 +83,7 @@ const ChatSidebar = () => {
       toast.success(res.message || "Conversation created");
       setIsOpen(false);
       reset();
-      fetchConversations();
+      // fetchConversations();
     } catch (err) {
       console.error(err);
       toast.error("Failed to create conversation");
@@ -161,16 +137,41 @@ const ChatSidebar = () => {
     }
   };
 
-  /** Refresh */
-  const handleRefresh = () => {
-    fetchConversations();
-    toast.success("Conversations refreshed");
-  };
+  // const handleRefresh = () => {
+  //   fetchConversations();
+  //   toast.success("Conversations refreshed");
+  // };
 
-  /** Fetch on mount */
   useEffect(() => {
+    /** Fetch all */
+    const fetchConversations = async () => {
+      try {
+        setLoading(true);
+        const res = await getAllInternalConversations({
+          page: 1,
+          limit: 100,
+          includeDefault: true,
+        });
+
+        // useState => chatlist
+        // dashboard -> conversation -> not working
+        const data = Array.isArray(res.data) ? res.data : [];
+        setConversations(data);
+
+        const firstConversation = data[0];
+        if (firstConversation && !selectedConversationId) {
+          setSelectedConversationId(firstConversation._id);
+        }
+      } catch (err) {
+        console.error(err);
+        toast.error("Failed to load conversations");
+      } finally {
+        setLoading(false);
+      }
+    };
+    console.log("Conversations fetched");
+
     fetchConversations();
-    toast.success("Conversations fetched");
   }, []);
 
   return (
@@ -180,7 +181,7 @@ const ChatSidebar = () => {
         isDeleteMode={isDeleteMode}
         loading={loading}
         isDeleting={isDeleting}
-        onRefresh={handleRefresh}
+        // onRefresh={handleRefresh}
         onToggleDeleteMode={handleToggleDeleteMode}
         onToggleForm={() => setIsOpen((p) => !p)}
       />

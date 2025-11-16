@@ -46,7 +46,7 @@ const ChatPanel = () => {
 
   useEffect(() => {
     fetchTenantUsers();
-  }, [fetchTenantUsers]);
+  }, []);
 
   const conversationFromStore = conversations.find(
     (c) => c._id === selectedConversationId,
@@ -131,16 +131,6 @@ const ChatPanel = () => {
     }
   };
 
-  const handleAddRandomMembers = async () => {
-    const randomIds = Array.from({ length: 1 }, () => uuidv4());
-    try {
-      await addMembersMutation.mutateAsync({ participants: randomIds });
-      toast.success("Added random member(s)");
-    } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Failed to add members");
-    }
-  };
-
   const handleMemberToggle = async (
     id: string,
     checked: boolean,
@@ -149,10 +139,10 @@ const ChatPanel = () => {
     try {
       if (checked) {
         await addMembersMutation.mutateAsync({ participants: [id] });
-        toast.success(`${name} added`);
+        console.log(`${name} added`);
       } else {
         await removeMemberMutation.mutateAsync(id);
-        toast.success(`${name} removed`);
+        console.log(`${name} removed`);
       }
     } catch (err: any) {
       toast.error(err?.response?.data?.message || "Failed to update member");
@@ -209,15 +199,16 @@ const ChatPanel = () => {
           members={members}
           loading={membersLoading}
           isMembersPanelOpen={() => setIsMembersPanelOpen(false)}
+          onManage={() => setIsAddMemberDialogOpen(true)}
         />
       )}
 
       <ManageMembersDialog
         open={isAddMemberDialogOpen}
         onClose={() => setIsAddMemberDialogOpen(false)}
+        tenantUsers={tenantUsers}
         members={members}
         onToggleMember={handleMemberToggle}
-        onAddRandom={handleAddRandomMembers}
         membersLoading={membersLoading}
       />
 
