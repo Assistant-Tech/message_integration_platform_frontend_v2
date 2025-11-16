@@ -1,4 +1,4 @@
-import { Users, Loader2 } from "lucide-react";
+import { Users } from "lucide-react";
 import { cn } from "@/app/utils/cn";
 import { Button } from "@/app/components/ui";
 
@@ -13,14 +13,14 @@ interface ChatDetailsPanelProps {
 
 const ChatDetailsPanel = ({
   conversation,
-  members,
-  tenantUsers,
-  membersLoading,
+  // members,
+  // tenantUsers,
+  // membersLoading,
   onManage,
   onEdit,
 }: ChatDetailsPanelProps) => {
   return (
-    <div className="w-96 border-l border-grey-light bg-base-white overflow-y-auto">
+    <div className="w-96 border-l border-grey-light bg-white overflow-y-auto">
       {/* Header */}
       <div className="px-4 py-6 border-b border-grey-light flex items-center gap-2">
         <Users className="h-5 w-5 text-grey" />
@@ -52,7 +52,7 @@ const ChatDetailsPanel = ({
         </div>
 
         {/* Members */}
-        <div>
+        {/* <div>
           <h4 className="font-semibold text-grey mb-3">
             Members ({members.length})
           </h4>
@@ -104,7 +104,7 @@ const ChatDetailsPanel = ({
               })}
             </ul>
           )}
-        </div>
+        </div> */}
 
         {/* Actions */}
         <div className="flex flex-col gap-2 pt-4 border-t border-grey-light">

@@ -82,7 +82,7 @@ const ChatSidebar = () => {
       const res = await getAllInternalConversations({
         page: 1,
         limit: 100,
-        includeDefault: false,
+        includeDefault: true,
       });
       const data = Array.isArray(res.data) ? res.data : [];
       setConversations(data);
@@ -169,10 +169,8 @@ const ChatSidebar = () => {
 
   /** Fetch on mount */
   useEffect(() => {
-    const load = async () => {
-      await fetchConversations();
-    };
-    load();
+    fetchConversations();
+    toast.success("Conversations fetched");
   }, []);
 
   return (

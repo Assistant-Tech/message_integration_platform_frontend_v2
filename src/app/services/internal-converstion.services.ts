@@ -16,12 +16,12 @@ import { handleApiError } from "@/app/utils/handlerApiError";
 export const getAllInternalConversations = async (
   params: GetAllInternalConversationsParams = {},
 ): Promise<GetInternalConversationsResponse> => {
-  const { page = 1, limit = 20, includeDefault = true, search } = params;
+  const { page = 1, limit = 20, search, includeDefault = true } = params;
 
   const queryParams = new URLSearchParams({
     page: page.toString(),
     limit: limit.toString(),
-    includeDefault: "true",
+    includeDefault: includeDefault.toString(),
   });
 
   if (search && search.trim().length > 0) {
@@ -33,7 +33,6 @@ export const getAllInternalConversations = async (
   );
   return res.data;
 };
-
 // ------------------------------------------
 // 🔹 Create a new internal conversation
 // ------------------------------------------

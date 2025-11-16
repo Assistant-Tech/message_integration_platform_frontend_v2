@@ -21,6 +21,7 @@ import {
   EditConversationDialog,
   ManageMembersDialog,
 } from "@/app/components/common/Conversation/chat/chat-panel";
+import ChatMembersDetailsPanel from "@/app/components/common/Conversation/chat/chat-panel/ChatMembersDetailsPanel";
 
 const ChatPanel = () => {
   const {
@@ -39,6 +40,7 @@ const ChatPanel = () => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [priority, setPriority] = useState("normal");
+  const [isMembersPanelOpen, setIsMembersPanelOpen] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -62,6 +64,7 @@ const ChatPanel = () => {
     useInternalConversationMembers(selectedConversationId || "", {
       enabled: !!selectedConversationId,
     });
+  // console.log("🚀 ~ ChatPanel ~ membersData:", membersData);
 
   const updateConversationMutation = useUpdateInternalConversation(
     selectedConversationId || "",
@@ -178,6 +181,7 @@ const ChatPanel = () => {
           conversation={conversation}
           members={members}
           onToggleDetails={() => setIsOpenDetails((p) => !p)}
+          isMembersPanelOpen={() => setIsMembersPanelOpen((p) => !p)}
         />
         <div className="flex-1 overflow-y-auto">
           <ChatFeed messages={localMessages} ref={messagesEndRef} />
@@ -197,6 +201,14 @@ const ChatPanel = () => {
           membersLoading={membersLoading}
           onEdit={() => setIsEditDialogOpen(true)}
           onManage={() => setIsAddMemberDialogOpen(true)}
+        />
+      )}
+
+      {isMembersPanelOpen && (
+        <ChatMembersDetailsPanel
+          members={members}
+          loading={membersLoading}
+          isMembersPanelOpen={() => setIsMembersPanelOpen(false)}
         />
       )}
 

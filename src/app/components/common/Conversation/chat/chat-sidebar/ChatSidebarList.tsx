@@ -114,6 +114,7 @@ const ChatSidebarList = ({
                       {chat.title}
                     </h4>
                     {chat.priority == "normal" ? (
+                      // <h5 className="bg-primary-light px-2 rounded-full text-primary">
                       <h5 className="bg-information-light px-2 rounded-full text-information">
                         {chat.priority}
                       </h5>
