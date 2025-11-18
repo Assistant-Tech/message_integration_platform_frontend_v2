@@ -17,9 +17,11 @@ export enum Status {
   success = "Success",
   failed = "Failed",
   inprogress = "In Progress",
+  draft = "Draft",
 }
 
 export interface Product {
+  product_id: string;
   name: string;
   image: string;
   price: number;

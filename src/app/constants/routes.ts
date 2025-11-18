@@ -18,7 +18,7 @@ export const APP_ROUTES = {
     // Onboarding
     ONBOARDING_FORM: "/onboardingform",
     ONBOARDING_FORM_STEP_1: "step-1",
-    ONBOARDING_FORM_STEP_2: "step-2", 
+    ONBOARDING_FORM_STEP_2: "step-2",
     ONBOARDING_FORM_STEP_3: "step-3",
     ONBOARDING_FORM_STEP_4: "step-4",
     ONBOARDING_FORM_STEP_5: "step-5",
@@ -69,13 +69,14 @@ export const APP_ROUTES = {
     SETTINGS_SHIPPING: "settings/shipping",
     SETTINGS_SUBSCRIPTION: "settings/subscription",
     SETTINGS_SUBSCRIPTION_BILLING: "settings/subscription/billing",
+
     // Products
-    PRODUCTS: "product",
-    PRODUCTS_ALL: "product_all",
-    PRODUCTS_CATEGORY: "category",
-    PRODUCTS_VARIANTS: "variants",
-    PRODUCTS_INVENTORY: "inventory",
-    PRODUCTS_CREATE: "product_all/createProducts",
+    PRODUCTS: "products",
+    PRODUCTS_ALL: "products/all",
+    PRODUCTS_CATEGORY: "products/category",
+    PRODUCTS_VARIANTS: "products/variants",
+    PRODUCTS_INVENTORY: "products/inventory",
+    PRODUCTS_CREATE: "products/all/createProducts",
 
     CHECKOUT: "checkout",
   },

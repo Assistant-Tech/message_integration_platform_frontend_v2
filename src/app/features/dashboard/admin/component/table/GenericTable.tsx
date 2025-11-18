@@ -23,7 +23,7 @@ export function GenericTable<T>({
 }: GenericTableProps<T>) {
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: 7,
   });
 
   const table = useReactTable({
@@ -90,15 +90,15 @@ export function GenericTable<T>({
       </div>
 
       {/* Pagination Controls */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 mt-4">
+      <div className="flex flex-col md:flex-row items-center justify-center gap-4 mt-4">
         {/* Page Info */}
-        <div className="button-semi-bold-16 text-grey-medium">
+        <div className="w-3/4 button-semi-bold-16 text-grey-medium">
           Page {table.getState().pagination.pageIndex + 1} of{" "}
           {table.getPageCount()}
         </div>
 
         {/* Page Size Selector */}
-        <div className="flex items-center gap-2">
+        {/*<div className="flex items-center gap-2">
           <label className="button-semi-bold-16 text-grey-medium">
             Rows per page:
           </label>
@@ -113,10 +113,10 @@ export function GenericTable<T>({
               </option>
             ))}
           </select>
-        </div>
+        </div>*/}
 
         {/* Prev / Next Buttons */}
-        <div className="flex gap-2 text-grey-medium">
+        <div className="w-full flex gap-2 text-grey-medium">
           <Button
             label="Prev"
             variant="none"

@@ -4,12 +4,13 @@ import { APP_ROUTES } from "@/app/constants/routes";
 import { Heading } from "@/app/features/dashboard/admin/component/ui/";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Product, Status } from "@/app/types/product.types";
-import DataTableToolbar, {
+import {
   FilterConfig,
   SortOption,
 } from "@/app/features/dashboard/admin/component/ui/Data-toolbar";
 import { ProductTable } from "@/app/features/dashboard/admin/component";
+import ProductSearchBar from "@/app/components/common/Search/ProductSearchBar";
+import { mockProducts } from "@/app/utils/product.mock";
 
 const AllProductsPage = () => {
   const [search, setSearch] = useState("");
@@ -35,6 +36,7 @@ const AllProductsPage = () => {
     { label: "Success", value: "Success" },
     { label: "Pending", value: "Pending" },
     { label: "Failed", value: "Failed" },
+    { label: "Draft", value: "Drafted" },
   ];
 
   const filters: FilterConfig[] = [
@@ -43,65 +45,6 @@ const AllProductsPage = () => {
       options: statusOptions,
       value: statusFilter,
       onChange: (value) => setStatusFilter(String(value)),
-    },
-  ];
-
-  // MOCK PRODUCTS
-  const mockProducts: Product[] = [
-    {
-      name: "Classic T-Shirt",
-      image: "https://m.media-amazon.com/images/I/61GfWyQax7L._AC_UL1500_.jpg",
-      price: 25.99,
-      SKU: "TSHIRT001",
-      variants: "S, M, L",
-      visibility: true,
-      status: Status.success,
-      color: "#1e90ff",
-      action: "",
-    },
-    {
-      name: "Blue Denim Jeans",
-      image: "https://m.media-amazon.com/images/I/61GfWyQax7L._AC_UL1500_.jpg",
-      price: 45.0,
-      SKU: "JEANS001",
-      variants: "32, 34, 36",
-      visibility: true,
-      status: Status.inprogress,
-      color: "#2b2d42",
-      action: "",
-    },
-    {
-      name: "Stylish Sneakers",
-      image: "https://m.media-amazon.com/images/I/61GfWyQax7L._AC_UL1500_.jpg",
-      price: 60.0,
-      SKU: "SHOE001",
-      variants: "8, 9, 10",
-      visibility: false,
-      status: Status.pending,
-      color: "#000000",
-      action: "",
-    },
-    {
-      name: "Comfortable Hoodie",
-      image: "https://m.media-amazon.com/images/I/61GfWyQax7L._AC_UL1500_.jpg",
-      price: 38.5,
-      SKU: "HOODIE001",
-      variants: "S, M, L, XL",
-      visibility: true,
-      status: Status.success,
-      color: "#800080",
-      action: "",
-    },
-    {
-      name: "Elegant Dress",
-      image: "https://m.media-amazon.com/images/I/61GfWyQax7L._AC_UL1500_.jpg",
-      price: 79.99,
-      SKU: "DRESS001",
-      variants: "XS, S, M",
-      visibility: true,
-      status: Status.success,
-      color: "#FF69B4",
-      action: "",
     },
   ];
 
@@ -139,7 +82,7 @@ const AllProductsPage = () => {
   }, [mockProducts, search, statusFilter, sortBy]);
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 h-auto">
       {/* Header */}
       <div className="w-full flex justify-between items-center">
         <div className="flex flex-col items-start gap-2">
@@ -154,16 +97,8 @@ const AllProductsPage = () => {
         />
       </div>
 
-      {/* Toolbar */}
-      <DataTableToolbar
-        search={search}
-        onSearchChange={setSearch}
-        sortOptions={sortingOptions}
-        sortValue={sortBy}
-        onSortChange={(v) => setSortBy(String(v))}
-        filters={filters}
-        onFilterClick={() => console.log("Open advanced filter modal")}
-      />
+      {/* SearchBar & Sorting filter */}
+      <ProductSearchBar />
 
       {/* Product Table */}
       <ProductTable data={filteredData} />

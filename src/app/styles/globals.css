@@ -132,14 +132,6 @@ img {
   border-radius: 8px;
 }
 
-/* ROOT */
-html,
-body,
-#root {
-  height: 100%;
-  overflow: hidden;
-}
-
 /*
 ─────────────────────────────────────────────────────────────────────────────
  📦 ▶ Base Styles
