@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { APP_ROUTES } from "@/app/constants/routes";
 import NotificationDropdown from "@/app/components/common/Notification/NotificationDropDown";
-import { triggerCron } from "@/app/services/api/socket.api";
+import { triggerCron } from "@/app/utils/triggerCron";
 
 const TopNavbar = () => {
   const { logout } = useAuthStore();

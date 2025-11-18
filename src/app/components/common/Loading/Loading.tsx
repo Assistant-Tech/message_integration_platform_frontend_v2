@@ -1,12 +1,56 @@
-import React from "react";
 
-const Loading: React.FC = () => {
+const Loading = () => {
   return (
-    <div className="flex justify-center items-center gap-2 w-screen h-screen">
-      <span className="w-4 h-4 bg-primary rounded-full animate-bounce [animation-delay:0s]"></span>
-      <span className="w-4 h-4 bg-primary rounded-full animate-bounce [animation-delay:0.2s]"></span>
-      <span className="w-4 h-4 bg-primary rounded-full animate-bounce [animation-delay:0.4s]"></span>
-      <span className="w-4 h-4 bg-primary rounded-full animate-bounce [animation-delay:0.6s]"></span>
+    <div className="flex flex-col justify-center items-center w-screen h-screen bg-base-white">
+      {/* Animated CHATBLIX text */}
+      <div className="relative">
+        {/* Glowing background effect */}
+        <div className="absolute inset-0 blur-3xl bg-[#1cb496] opacity-30 animate-pulse"></div>
+
+        {/* Main text with staggered letter animation */}
+        <h1 className="relative text-7xl font-black tracking-wider">
+          {["C", "H", "A", "T", "B", "L", "I", "X"].map((letter, index) => (
+            <span
+              key={index}
+              className="inline-block text-transparent bg-clip-text bg-gradient-to-br from-[#1cb496] via-[#15d9b5] to-[#1cb496] animate-pulse"
+              style={{
+                animationDelay: `${index * 0.1}s`,
+                animationDuration: "2s",
+              }}
+            >
+              {letter}
+            </span>
+          ))}
+        </h1>
+      </div>
+
+      {/* Orbiting circles around the text */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="relative w-96 h-96">
+          <div
+            className="absolute inset-0 animate-spin"
+            style={{ animationDuration: "4s" }}
+          >
+            <div className="absolute top-0 left-1/2 w-4 h-4 bg-[#1cb496] rounded-full -ml-2 shadow-lg "></div>
+          </div>
+          <div
+            className="absolute inset-0 animate-spin"
+            style={{
+              animationDuration: "4s",
+              animationDelay: "1s",
+              animationDirection: "reverse",
+            }}
+          >
+            <div className="absolute bottom-0 left-1/2 w-3 h-3 bg-[#15d9b5] rounded-full -ml-1.5"></div>
+          </div>
+          <div
+            className="absolute inset-0 animate-spin"
+            style={{ animationDuration: "4s", animationDelay: "2s" }}
+          >
+            <div className="absolute left-0 top-1/2 w-3 h-3 bg-[#1cb496] rounded-full -mt-1.5 shadow-lg "></div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

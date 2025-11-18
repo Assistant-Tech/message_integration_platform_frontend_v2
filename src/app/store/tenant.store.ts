@@ -70,6 +70,7 @@ export const useTenantStore = create<TenantState>((set) => ({
 
   updateLoading: false,
 
+
   // Fetch login activity
   fetchLoginActivity: async (page = 1, limit = 10) => {
     set({ loading: true });
@@ -145,7 +146,7 @@ export const useTenantStore = create<TenantState>((set) => ({
     try {
       const res = await tenantServices.createTenantRoles(payload);
       set((state) => ({
-        createdRole: res.data, // ✅ res.data is the role object
+        createdRole: res.data,
         roles: [...state.roles, res.data],
         roleSuccess: res.message || "Role successfully created",
         roleLoading: false,
