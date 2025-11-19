@@ -123,3 +123,20 @@ export interface ProductFormData {
   variants: ProductVariant[];
   images: File | null;
 }
+// Sorting datasets
+export type SortOption = {
+  label: string;
+  value: string;
+};
+// Filter options
+export type FilterOption = {
+  label: string;
+  value: string;
+};
+
+export type FilterConfig = {
+  label: string;
+  value: string;
+  options: FilterOption[];
+  onChange: (value: string) => void;
+};

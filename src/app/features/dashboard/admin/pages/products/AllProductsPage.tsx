@@ -4,10 +4,12 @@ import { APP_ROUTES } from "@/app/constants/routes";
 import { Heading } from "@/app/features/dashboard/admin/component/ui/";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+
 import {
   FilterConfig,
   SortOption,
-} from "@/app/features/dashboard/admin/component/ui/Data-toolbar";
+} from "@/app/features/dashboard/admin/component/ui/Data-toolbar/types";
+
 import { ProductTable } from "@/app/features/dashboard/admin/component";
 import ProductSearchBar from "@/app/components/common/Search/ProductSearchBar";
 import { mockProducts } from "@/app/utils/product.mock";
@@ -25,8 +27,8 @@ const AllProductsPage = () => {
   const sortingOptions: SortOption[] = [
     { label: "Newest", value: "newest" },
     { label: "Oldest", value: "oldest" },
-    { label: "Price: Low to High", value: "price-asc" },
-    { label: "Price: High to Low", value: "price-desc" },
+    { label: "Price: Low → High", value: "price-asc" },
+    { label: "Price: High → Low", value: "price-desc" },
   ];
 
   // Filter options
@@ -44,42 +46,46 @@ const AllProductsPage = () => {
       label: "Status",
       options: statusOptions,
       value: statusFilter,
-      onChange: (value) => setStatusFilter(String(value)),
+      onChange: (value) => setStatusFilter(value),
     },
   ];
 
-  // Filter and sort data
+  // Filter + Sort Data
   const filteredData = useMemo(() => {
-    let temp = [...mockProducts];
+    let result = [...mockProducts];
 
-    // Search
-    if (search) {
-      temp = temp.filter((p) =>
-        p.name.toLowerCase().includes(search.toLowerCase()),
+    // Search filter
+    if (search.trim()) {
+      result = result.filter((product) =>
+        product.name.toLowerCase().includes(search.toLowerCase()),
       );
     }
 
     // Status filter
     if (statusFilter) {
-      temp = temp.filter((p) => p.status === statusFilter);
+      result = result.filter((product) => product.status === statusFilter);
     }
 
-    // Sorting
+    // Sorting rules
     switch (sortBy) {
       case "oldest":
-        temp = temp.reverse();
+        result = [...result].reverse();
         break;
+
       case "price-asc":
-        temp = temp.sort((a, b) => a.price - b.price);
+        result = [...result].sort((a, b) => a.price - b.price);
         break;
+
       case "price-desc":
-        temp = temp.sort((a, b) => b.price - a.price);
+        result = [...result].sort((a, b) => b.price - a.price);
         break;
-      // case "newest": do nothing
+
+      default:
+      // newest → do nothing
     }
 
-    return temp;
-  }, [mockProducts, search, statusFilter, sortBy]);
+    return result;
+  }, [search, statusFilter, sortBy]);
 
   return (
     <div className="p-6 space-y-6 h-auto">
@@ -97,8 +103,14 @@ const AllProductsPage = () => {
         />
       </div>
 
-      {/* SearchBar & Sorting filter */}
-      <ProductSearchBar />
+      {/* Search + Sort */}
+      <ProductSearchBar
+        search={search}
+        setSearch={setSearch}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+        sortingOptions={sortingOptions}
+      />
 
       {/* Product Table */}
       <ProductTable data={filteredData} />
