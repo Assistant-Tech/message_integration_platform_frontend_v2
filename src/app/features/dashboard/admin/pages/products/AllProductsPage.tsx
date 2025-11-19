@@ -5,14 +5,10 @@ import { Heading } from "@/app/features/dashboard/admin/component/ui/";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-import {
-  FilterConfig,
-  SortOption,
-} from "@/app/features/dashboard/admin/component/ui/Data-toolbar/types";
-
 import { ProductTable } from "@/app/features/dashboard/admin/component";
 import ProductSearchBar from "@/app/components/common/Search/ProductSearchBar";
 import { mockProducts } from "@/app/utils/product.mock";
+import { SortOption } from "@/app/types/product.types";
 
 const AllProductsPage = () => {
   const [search, setSearch] = useState("");
@@ -20,8 +16,7 @@ const AllProductsPage = () => {
   const [statusFilter, setStatusFilter] = useState("");
   const navigate = useNavigate();
 
-  const handleCreateNewProduct = () =>
-    navigate(APP_ROUTES.ADMIN.PRODUCTS_CREATE);
+  const handleCreateNewProduct = () => navigate("createProducts");
 
   // Sorting options
   const sortingOptions: SortOption[] = [
@@ -29,25 +24,6 @@ const AllProductsPage = () => {
     { label: "Oldest", value: "oldest" },
     { label: "Price: Low → High", value: "price-asc" },
     { label: "Price: High → Low", value: "price-desc" },
-  ];
-
-  // Filter options
-  const statusOptions: FilterConfig["options"] = [
-    { label: "All", value: "" },
-    { label: "In Progress", value: "In Progress" },
-    { label: "Success", value: "Success" },
-    { label: "Pending", value: "Pending" },
-    { label: "Failed", value: "Failed" },
-    { label: "Draft", value: "Drafted" },
-  ];
-
-  const filters: FilterConfig[] = [
-    {
-      label: "Status",
-      options: statusOptions,
-      value: statusFilter,
-      onChange: (value) => setStatusFilter(value),
-    },
   ];
 
   // Filter + Sort Data
@@ -66,7 +42,6 @@ const AllProductsPage = () => {
       result = result.filter((product) => product.status === statusFilter);
     }
 
-    // Sorting rules
     switch (sortBy) {
       case "oldest":
         result = [...result].reverse();

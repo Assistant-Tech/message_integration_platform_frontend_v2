@@ -53,7 +53,7 @@ const ProductInfo: React.FC<Props> = ({ register, errors, setValue }) => {
             <div className="relative flex flex-col gap-2">
               <div>
                 <label className="body-bold-16 text-grey-medium mb-2">
-                  Category
+                  Category <span className="text-red-500">*</span>
                 </label>
               </div>
               <div className="flex gap-2">
@@ -147,12 +147,15 @@ const ProductInfo: React.FC<Props> = ({ register, errors, setValue }) => {
           error={errors.quantity?.message}
         />
         <div>
-          <label className="body-bold-16 text-grey-medium mb-2">Price *</label>
+          <label className="body-bold-16 text-grey-medium mb-2">
+            Price <span className="text-red-500">*</span>
+          </label>
           <div className="flex border border-grey-light rounded-xl">
             <Input
               {...register("price", { required: "Price is required" })}
               placeholder="0.00"
               type="number"
+              required
               className="text-grey-medium border-none"
             />
             <select
@@ -182,6 +185,7 @@ const ProductInfo: React.FC<Props> = ({ register, errors, setValue }) => {
           label="Discount Amount"
           type="number"
           placeholder="0"
+          // whereby more props to be here
           className="text-grey-medium"
         />
       </div>

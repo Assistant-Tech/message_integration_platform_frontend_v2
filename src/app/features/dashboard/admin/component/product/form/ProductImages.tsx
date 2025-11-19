@@ -49,7 +49,9 @@ const ProductImages: React.FC<Props> = ({ setValue }) => {
   return (
     <div className="bg-white rounded-lg border border-grey-light w-full">
       <div className="px-6 py-4 border-b border-grey-light bg-base-white">
-        <h2 className="h5-bold-16 text-grey">Product Image</h2>
+        <h2 className="h5-bold-16 text-grey">
+          Product Image <span className="text-red-500">*</span>
+        </h2>
       </div>
       <div className="p-6" {...getRootProps()}>
         <input {...getInputProps()} style={{ display: "none" }} />
