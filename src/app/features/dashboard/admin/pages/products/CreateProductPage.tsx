@@ -8,12 +8,17 @@ import {
   ActionButtons,
   ProductVariants,
 } from "@/app/features/dashboard/admin/component/product/form";
-import { ProductFormData } from "@/app/types/product.types";
+import { CreateProductData } from "@/app/types/product.types";
 import { Breadcrumb } from "@/app/components/ui";
 import { Heading } from "@/app/features/dashboard/admin/component/ui/";
 import { APP_ROUTES } from "@/app/constants/routes";
+import { createProduct } from "@/app/services/product.services";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/app/store/auth.store";
 
 const CreateProductPage: React.FC = () => {
+  const navigate = useNavigate();
+  const tenantSlug = useAuthStore((s) => s.tenantSlug);
   const ProductsCrumbs = [
     { label: "All Products", href: APP_ROUTES.ADMIN.PRODUCTS_ALL },
     { label: "Create Product" },
@@ -26,9 +31,10 @@ const CreateProductPage: React.FC = () => {
     setValue,
     control,
     formState: { errors, isSubmitting },
-  } = useForm<ProductFormData>({
+    reset,
+  } = useForm<CreateProductData>({
     defaultValues: {
-      name: "",
+      title: "",
       category: "",
       sku: "",
       weight: "",
@@ -53,18 +59,19 @@ const CreateProductPage: React.FC = () => {
 
   const watchVisibility = watch("visibility");
 
-  const onSubmit = async (data: ProductFormData) => {
+  const onSubmit = async (data: CreateProductData) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log("✅ Product saved!", data);
-      alert("Product saved successfully!");
+      const res = await createProduct(data);
+      console.log("✅ Product saved!", res.data);
+      reset();
+      navigate(`/${tenantSlug}/admin/${APP_ROUTES.ADMIN.PRODUCTS_ALL}`);
     } catch (error) {
       console.error("❌ Error:", error);
     }
   };
 
   const handleClearAll = () => {
-    setValue("name", "");
+    setValue("title", "");
     setValue("category", "");
     setValue("sku", "");
     setValue("weight", "");

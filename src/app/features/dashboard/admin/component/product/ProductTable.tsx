@@ -1,135 +1,136 @@
-import { Product, ProductTableProps, Status } from "@/app/types/product.types";
+import { Product } from "@/app/types/product.types";
 import { ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";
 import GenericTable from "../table/GenericTable";
-import { VisibilityCell } from "@/app/features/dashboard/admin/component/ui";
-import { Trash2, Edit } from "lucide-react";
+import { Trash2, Edit, Eye } from "lucide-react";
 import { Button } from "@/app/components/ui";
 
-const ProductTable: React.FC<ProductTableProps> = ({ data }) => {
-  // const [selected, setSelected] = useState<Record<string, boolean>>({});
+interface ExtendedProductTableProps {
+  data: Product[];
+  onViewDetails?: (product: Product) => void;
+  onEdit?: (product: Product) => void;
+  onDelete?: (productId: string) => void;
+}
 
+const ProductTable: React.FC<ExtendedProductTableProps> = ({
+  data,
+  onViewDetails,
+  onEdit,
+  onDelete,
+}) => {
   const columns = useMemo<ColumnDef<Product>[]>(
     () => [
+      // ID
       {
-        accessorKey: "product_id",
-        header: "Id",
-        cell: (info) => {
-          // const row = info.row.original;
-          return (
-            <div className="flex items-center gap-3">
-              {/* checker // checklist */}
-              {/*<label className="inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="sr-only peer"
-                  checked={!!selected[row.id]}
-                  onChange={() =>
-                    setSelected((prev) => ({
-                      ...prev,
-                      [row.id]: !prev[row.id],
-                    }))
-                  }
-                />
-
-                <div className="w-5 h-5 rounded border border-gray-300 peer-checked:bg-primary peer-checked:border-primary grid place-items-center">
-                  {selected && (
-                    <Check className="w-3 h-3 text-white" strokeWidth={3} />
-                  )}
-                </div>
-              </label>*/}
-              {/* PROD-ID */}
-              <span> {info.getValue() as string}</span>
-            </div>
-          );
-        },
+        accessorKey: "id",
+        header: "ID",
+        cell: (info) => <span>{info.getValue() as string}</span>,
       },
+
+      // Product title + image
       {
-        accessorKey: "name",
+        accessorKey: "title",
         header: "Name",
         cell: (info) => {
           const row = info.row.original;
+          const primaryImage = row.images?.[0]?.url;
+
           return (
             <div className="flex items-center gap-3">
-              <div className="bg-grey-light w-16 h-16 flex items-center justify-center overflow-hidden rounded-md">
+              <div className="bg-grey-light w-16 h-16 rounded-md overflow-hidden">
                 <img
-                  src={row.image}
-                  alt={row.name}
+                  src={primaryImage}
+                  alt={row.title}
                   className="object-cover w-full h-full"
                 />
               </div>
-              <span className="font-medium">{row.name}</span>
+              <span className="font-medium">{row.title}</span>
             </div>
           );
         },
       },
+
+      // Price (from first variant)
       {
         accessorKey: "price",
         header: "Price",
-        cell: (info) => <span>${info.getValue() as number}</span>,
+        cell: (info) => {
+          const row = info.row.original;
+          const price = row.variants?.[0]?.price ?? 0;
+
+          return <span>Rs. {price}</span>;
+        },
       },
+
+      // SKU
       {
-        accessorKey: "SKU",
+        accessorKey: "sku",
         header: "SKU",
         cell: (info) => <span>{info.getValue() as string}</span>,
       },
+
+      // Variant count or details
       {
         accessorKey: "variants",
         header: "Variants",
-        cell: (info) => <span>{info.getValue() as string}</span>,
-      },
-      {
-        accessorKey: "visibility",
-        header: "Visibility",
-        cell: (info) => <VisibilityCell value={info.getValue<boolean>()} />,
-      },
-      {
-        accessorKey: "status",
-        header: "Status",
         cell: (info) => {
-          const value = info.getValue() as Status;
+          const row = info.row.original;
 
-          const getStatusStyle = (status: Status) => {
-            switch (status) {
-              case "Pending":
-                return "bg-warning text-black";
-              case "Success":
-                return "bg-primary text-white";
-              case "Failed":
-                return "bg-danger text-white";
-              case "In Progress":
-                return "bg-information text-white";
-              default:
-                return "bg-grey-medium text-white";
-            }
-          };
-
+          // Show size/color: "M / Red"
+          const variant = row.variants?.[0];
           return (
-            <span
-              className={`capitalize px-3 py-1 rounded-lg text-sm ${getStatusStyle(
-                value,
-              )}`}
-            >
-              {value}
+            <span>
+              {variant?.attributes?.size} / {variant?.attributes?.color}
             </span>
           );
         },
       },
+
+      // Stock
+      {
+        accessorKey: "stock",
+        header: "Stock",
+        cell: (info) => {
+          const row = info.row.original;
+          return <span>{row.variants?.[0]?.inventory?.stock ?? "N/A"}</span>;
+        },
+      },
+
+      // Actions
       {
         accessorKey: "action",
         header: "Action",
-        cell: () => (
-          <div className="flex items-center justify-start gap-4">
-            <Button variant="none" IconLeft={<Edit size={24} color="grey" />} />
-            <Button
-              variant="none"
-              IconLeft={<Trash2 size={24} color="red" />}
-            />
-          </div>
-        ),
+        cell: (info) => {
+          const row = info.row.original;
+
+          return (
+            <div className="flex items-center gap-2">
+              <Button
+                variant="none"
+                IconLeft={<Eye size={20} />}
+                onClick={() => onViewDetails?.(row)}
+                className="p-2 hover:bg-gray-100 rounded"
+              />
+
+              <Button
+                variant="none"
+                IconLeft={<Edit size={20} />}
+                onClick={() => onEdit?.(row)}
+                className="p-2 hover:bg-gray-100 rounded"
+              />
+
+              <Button
+                variant="none"
+                IconLeft={<Trash2 size={20} color="#EF4444" />}
+                onClick={() => onDelete?.(row.id)}
+                className="p-2 hover:bg-red-50 rounded"
+              />
+            </div>
+          );
+        },
       },
     ],
-    [],
+    [onViewDetails, onEdit, onDelete],
   );
 
   return <GenericTable columns={columns} data={data} />;

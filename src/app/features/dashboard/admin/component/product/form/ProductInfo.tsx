@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { UseFormRegister, FieldErrors, UseFormSetValue } from "react-hook-form";
 import { Button, Input } from "@/app/components/ui";
-import { ProductFormData } from "@/app/types/product.types";
+import { CreateProductData } from "@/app/types/product.types";
 import { Plus } from "lucide-react";
 
 const categories = [
@@ -16,9 +16,9 @@ const weightUnits = ["g", "kg", "lb", "oz"];
 const currencies = ["Rupees", "USD", "EUR", "GBP"];
 
 interface Props {
-  register: UseFormRegister<ProductFormData>;
-  errors: FieldErrors<ProductFormData>;
-  setValue: UseFormSetValue<ProductFormData>;
+  register: UseFormRegister<CreateProductData>;
+  errors: FieldErrors<CreateProductData>;
+  setValue: UseFormSetValue<CreateProductData>;
 }
 
 const ProductInfo: React.FC<Props> = ({ register, errors, setValue }) => {
@@ -40,11 +40,11 @@ const ProductInfo: React.FC<Props> = ({ register, errors, setValue }) => {
       </div>
       <div className="px-6 py-2 space-y-4">
         <Input
-          {...register("name", { required: "Product name is required" })}
-          label="Name"
+          {...register("title", { required: "Product name is required" })}
+          label="Title"
           placeholder="Enter product name"
           required
-          error={errors.name?.message}
+          error={errors.title?.message}
         />
 
         {/* Category */}

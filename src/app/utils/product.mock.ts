@@ -68,7 +68,7 @@ const descriptors = [
 let nameCount = 0;
 
 for (let i = 0; i < productNames.length && nameCount < 50; i++) {
-  allProductNames.push(productNames[i]);
+  allProductNames.push(productNames[i] as string);
   nameCount++;
   if (i < descriptors.length && nameCount < 50) {
     allProductNames.push(`${descriptors[i]} ${productNames[i]}`);
@@ -97,7 +97,7 @@ export const mockProducts: Product[] = allProductNames
 
     return {
       product_id: `prod_${id.toString().padStart(3, "0")}`,
-      name: name,
+      title: name,
       // Using a single placeholder image for consistency, but in a real app, this would vary
       image: "https://m.media-amazon.com/images/I/61GfWyQax7L._AC_UL1500_.jpg",
       price: price,

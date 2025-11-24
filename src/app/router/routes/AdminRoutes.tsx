@@ -88,6 +88,10 @@ const CreateProductPage = lazy(
   () =>
     import("@/app/features/dashboard/admin/pages/products/CreateProductPage"),
 );
+const ProductDetailsPage = lazy(
+  () =>
+    import("@/app/features/dashboard/admin/pages/products/ProductDetailsPage"),
+);
 const BillingPage = lazy(
   () =>
     import(
@@ -155,6 +159,8 @@ const AdminRoutes = () => {
           path={APP_ROUTES.ADMIN.SETTINGS_SUBSCRIPTION_BILLING}
           element={<BillingPage />}
         />
+
+        {/* Product page routes */}
         <Route path={APP_ROUTES.ADMIN.PRODUCTS} element={<ProductPage />} />
         <Route
           path={APP_ROUTES.ADMIN.PRODUCTS_ALL}
@@ -175,6 +181,10 @@ const AdminRoutes = () => {
         <Route
           path={APP_ROUTES.ADMIN.PRODUCTS_CREATE}
           element={<CreateProductPage />}
+        />
+        <Route
+          path={APP_ROUTES.ADMIN.PRODUCTS_DETAILS}
+          element={<ProductDetailsPage />}
         />
         <Route path={APP_ROUTES.ADMIN.CHECKOUT} element={<CheckoutPage />} />
       </Route>

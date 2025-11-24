@@ -22,7 +22,8 @@ export enum Status {
 
 export interface Product {
   product_id: string;
-  name: string;
+  title: string;
+  description?: string;
   image: string;
   price: number;
   SKU: string;
@@ -100,14 +101,23 @@ export interface InventoryTableProps {
  ─────────────────────────────────────────────────────────────────────────────
 */
 export interface ProductVariant {
-  color: string;
-  size: string;
-  price: string;
-  quantity: string;
+  title: string;
+  price: number;
+  attributes: {
+    color: string;
+    size: string;
+  };
+  inventory: {
+    stock: number;
+    lowStock: boolean;
+  };
 }
 
-export interface ProductFormData {
-  name: string;
+export interface CreateProductForm {
+  payload: CreateProductData[];
+}
+export interface CreateProductData {
+  title: string;
   category: string;
   sku: string;
   weight: string;
