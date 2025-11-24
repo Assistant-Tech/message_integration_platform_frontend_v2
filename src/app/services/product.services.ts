@@ -7,6 +7,13 @@ export const fetchProducts = async () => {
   return res.data.data;
 };
 
+// Fetch Product Details by Id
+export const fetchProductsById = async (productId: string) => {
+  const res = await api.get(`/products/${productId}`);
+  console.log("Product fetched by id ", res.data);
+  return res.data.data;
+};
+
 // Create Product
 export const createProduct = async (data: CreateProductData) => {
   const formData = new FormData();

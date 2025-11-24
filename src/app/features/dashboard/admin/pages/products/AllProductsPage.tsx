@@ -68,19 +68,16 @@ const AllProductsPage = () => {
   }, [products, search, statusFilter, sortBy]);
 
   const handleViewDetails = (product: Product) => {
-    navigate(
-      `/asporto-quasi-vesco/admin/products/details/${product.product_id}`,
-    );
+    console.log("product dataset:  ", product);
+    navigate(`/${tenantSlug}/admin/products/all/details/${product.id}`);
   };
 
   const handleEdit = (product: Product) => {
-    navigate(`/asporto-quasi-vesco/admin/products/edit/${product.product_id}`);
+    console.log("dataset ", product);
   };
 
   const handleDelete = (productId: string) => {
-    if (window.confirm("Are you sure?")) {
-      console.log("Delete:", productId);
-    }
+    console.log("Delete:", productId);
   };
 
   if (isLoading) return <Loading />;

@@ -21,13 +21,13 @@ export enum Status {
 }
 
 export interface Product {
-  product_id: string;
+  id: string;
   title: string;
   description?: string;
   image: string;
   price: number;
-  SKU: string;
-  variants: string;
+  sku: string;
+  variants: ProductVariant[];
   visibility: boolean;
   status: Status;
   color: string;
@@ -36,6 +36,23 @@ export interface Product {
 
 export interface ProductTableProps {
   data: Product[];
+}
+export interface ProductImages {
+  id: string;
+  url: string;
+  alt: string;
+  isPrimary: boolean;
+}
+export interface ProductDetails {
+  data: {
+    id: string;
+    title: string;
+    description: string;
+    sku: string;
+    productCategory: string[];
+    images: ProductImages[];
+    variants: ProductVariant[]
+  };
 }
 /*
 ─────────────────────────────────────────────────────────────────────────────
