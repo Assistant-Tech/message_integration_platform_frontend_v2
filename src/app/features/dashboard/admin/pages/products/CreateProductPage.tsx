@@ -15,6 +15,7 @@ import { APP_ROUTES } from "@/app/constants/routes";
 import { createProduct } from "@/app/services/product.services";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/app/store/auth.store";
+import { useCreateProduct } from "@/app/hooks/useProducts";
 
 const CreateProductPage: React.FC = () => {
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ const CreateProductPage: React.FC = () => {
   } = useForm<CreateProductData>({
     defaultValues: {
       title: "",
-      category: "",
+      categoryId: "",
       sku: "",
       weight: "",
       weightUnit: "g",
@@ -59,11 +60,17 @@ const CreateProductPage: React.FC = () => {
 
   const watchVisibility = watch("visibility");
 
+  const { mutateAsync: createProductMutate } = useCreateProduct();
+
   const onSubmit = async (data: CreateProductData) => {
     try {
-      const res = await createProduct(data);
-      console.log("✅ Product saved!", res.data);
+      console.log("Submitting product with data:", data);
+
+      const res = await createProductMutate(data);
+
+      console.log("✅ Product saved!", res);
       reset();
+
       navigate(`/${tenantSlug}/admin/${APP_ROUTES.ADMIN.PRODUCTS_ALL}`);
     } catch (error) {
       console.error("❌ Error:", error);
@@ -71,17 +78,7 @@ const CreateProductPage: React.FC = () => {
   };
 
   const handleClearAll = () => {
-    setValue("title", "");
-    setValue("category", "");
-    setValue("sku", "");
-    setValue("weight", "");
-    setValue("quantity", "");
-    setValue("price", "");
-    setValue("discountPercentage", "");
-    setValue("discountAmount", "");
-    setValue("description", "");
-    setValue("variants", []);
-    setValue("images", null);
+    reset();
   };
 
   return (

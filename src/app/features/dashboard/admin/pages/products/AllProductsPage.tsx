@@ -6,31 +6,36 @@ import { useNavigate } from "react-router-dom";
 import { ProductTable } from "@/app/features/dashboard/admin/component";
 import ProductSearchBar from "@/app/components/common/Search/ProductSearchBar";
 import { SortOption, Product } from "@/app/types/product.types";
-import { useProducts } from "@/app/hooks/useProducts";
+import { useProducts, useDeleteProduct } from "@/app/hooks/useProducts";
 import { APP_ROUTES } from "@/app/constants/routes";
 import Loading from "@/app/components/common/Loading";
 import { useAuthStore } from "@/app/store/auth.store";
+import { GenericDialog } from "@/app/components/common";
 
 const AllProductsPage = () => {
   const tenantSlug = useAuthStore((s) => s.tenantSlug);
+  const navigate = useNavigate();
+
+  const { data: allProduct = [], isLoading } = useProducts();
+  const deleteMutation = useDeleteProduct();
+
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [statusFilter, setStatusFilter] = useState("");
 
-  const navigate = useNavigate();
-
-  // Fetch products with React Query
-  const { data: allProduct = [], isLoading } = useProducts();
+  // dialog states
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(
+    null,
+  );
 
   const products = Array.isArray(allProduct) ? allProduct : [];
 
-  // Navigate with ABSOLUTE path
   const handleCreateNewProduct = () => {
-    // navigate("/asporto-quasi-vesco/admin/products/all/createProducts");
     navigate(`/${tenantSlug}/admin/${APP_ROUTES.ADMIN.PRODUCTS_CREATE}`);
   };
 
-  // Sorting options
+  // Filters and sorting
   const sortingOptions: SortOption[] = [
     { label: "Newest", value: "newest" },
     { label: "Oldest", value: "oldest" },
@@ -38,7 +43,6 @@ const AllProductsPage = () => {
     { label: "Price: High → Low", value: "price-desc" },
   ];
 
-  // Filter + Sort Data
   const filteredData = useMemo(() => {
     let result = [...products];
 
@@ -68,22 +72,34 @@ const AllProductsPage = () => {
   }, [products, search, statusFilter, sortBy]);
 
   const handleViewDetails = (product: Product) => {
-    console.log("product dataset:  ", product);
     navigate(`/${tenantSlug}/admin/products/all/details/${product.id}`);
   };
 
   const handleEdit = (product: Product) => {
-    console.log("dataset ", product);
+    navigate(`/${tenantSlug}/admin/products/edit/${product.id}`);
   };
 
   const handleDelete = (productId: string) => {
-    console.log("Delete:", productId);
+    setSelectedProductId(productId);
+    setOpenDeleteDialog(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!selectedProductId) return;
+
+    try {
+      await deleteMutation.mutateAsync(selectedProductId);
+      setOpenDeleteDialog(false);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   if (isLoading) return <Loading />;
 
   return (
     <div className="p-6 space-y-6 h-auto">
+      {/* Header */}
       <div className="w-full flex justify-between items-center">
         <div className="flex flex-col items-start gap-2">
           <Heading title="Products" align="left" className="text-base-black" />
@@ -98,6 +114,7 @@ const AllProductsPage = () => {
         />
       </div>
 
+      {/* Search + Sort */}
       <ProductSearchBar
         search={search}
         setSearch={setSearch}
@@ -106,12 +123,44 @@ const AllProductsPage = () => {
         sortingOptions={sortingOptions}
       />
 
+      {/* Table */}
       <ProductTable
         data={filteredData}
         onViewDetails={handleViewDetails}
         onEdit={handleEdit}
         onDelete={handleDelete}
       />
+
+      {/* Delete Dialog */}
+      <GenericDialog
+        open={openDeleteDialog}
+        onClose={() => setOpenDeleteDialog(false)}
+        title="Delete Product"
+        maxWidth="lg"
+      >
+        <p className="text-grey-medium mb-6">
+          Are you sure you want to delete this product? This action cannot be
+          undone.
+        </p>
+
+        <div className="flex justify-end gap-3">
+          <button
+            className="px-4 py-2 border rounded-lg"
+            onClick={() => setOpenDeleteDialog(false)}
+            disabled={deleteMutation.isPending}
+          >
+            Cancel
+          </button>
+
+          <button
+            className="px-4 py-2 bg-red-600 rounded-lg text-white"
+            onClick={confirmDelete}
+            disabled={deleteMutation.isPending}
+          >
+            {deleteMutation.isPending ? "Deleting..." : "Delete"}
+          </button>
+        </div>
+      </GenericDialog>
     </div>
   );
 };

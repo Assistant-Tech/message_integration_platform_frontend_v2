@@ -1,7 +1,7 @@
 import { Button } from "@/app/components/ui";
 import { Heading } from "@/app/features/dashboard/admin/component/ui/";
 import { Plus } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   AddCategory,
   CategoryTable,
@@ -11,27 +11,68 @@ import DataTableToolbar, {
   FilterConfig,
   SortOption,
 } from "@/app/features/dashboard/admin/component/ui/Data-toolbar";
+import {
+  fetchCategories,
+  deleteCategoryById,
+} from "@/app/services/category.services";
 
 const ProductCategory = () => {
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [statusFilter, setStatusFilter] = useState("");
+  const [categoryData, setCategoryData] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const [categoryData, setCategoryData] = useState<Category[]>([
-    { name: "Classic T-Shirt", products: 25, visibility: true, action: "" },
-    { name: "Blue Denim", products: 4, visibility: false, action: "" },
-  ]);
+  // Fetch categories on mount
+  useEffect(() => {
+    loadCategories();
+  }, []);
 
-  const handleCategorySave = (newCategories: string[]) => {
-    const updated = newCategories.map((cat) => {
-      const existing = categoryData.find((c) => c.name === cat);
-      return (
-        existing || { name: cat, products: 0, visibility: true, action: "" }
-      );
-    });
-    setCategoryData(updated);
+  const loadCategories = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await fetchCategories();
+
+      // Handle the response structure: response could be the data array or wrapped in data property
+      const dataArray = Array.isArray(response)
+        ? response
+        : response?.data || [];
+
+      // Transform API data to match Category interface
+      const transformedData: Category[] = dataArray.map((item: any) => ({
+        id: item.id,
+        name: item.title,
+        products: item._count?.children || 0,
+        visibility: true, // Default to true since API doesn't return this
+        action: "",
+      }));
+
+      setCategoryData(transformedData);
+    } catch (err) {
+      console.error("Failed to load categories:", err);
+      setError("Failed to load categories. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const handleCategoryAdded = () => {
+    loadCategories();
+  };
+
+  // const handleCategoryDelete = async (categoryId: string) => {
+  //   try {
+  //     await deleteCategoryById(categoryId);
+  //     // Reload categories after deletion
+  //     await loadCategories();
+  //   } catch (err) {
+  //     console.error("Failed to delete category:", err);
+  //     setError("Failed to delete category. Please try again.");
+  //   }
+  // };
 
   // Sorting options
   const sortingOptions: SortOption[] = [
@@ -107,9 +148,16 @@ const ProductCategory = () => {
         <AddCategory
           isOpen={showCategoryModal}
           onClose={() => setShowCategoryModal(false)}
-          onSave={handleCategorySave}
+          onSave={handleCategoryAdded}
         />
       </div>
+
+      {/* Error Message */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+          {error}
+        </div>
+      )}
 
       {/* Toolbar */}
       <DataTableToolbar
@@ -122,8 +170,15 @@ const ProductCategory = () => {
         onFilterClick={() => console.log("Open advanced filter modal")}
       />
 
-      {/* Table */}
-      <CategoryTable data={filteredData} />
+      {/* Loading State */}
+      {loading ? (
+        <div className="flex justify-center items-center py-12">
+          <div className="text-gray-500">Loading categories...</div>
+        </div>
+      ) : (
+        /* Table */
+        <CategoryTable data={filteredData} />
+      )}
     </div>
   );
 };

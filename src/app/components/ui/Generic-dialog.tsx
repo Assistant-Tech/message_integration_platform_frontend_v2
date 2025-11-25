@@ -38,7 +38,7 @@ const GenericDialog = ({
                 initial={{ y: "-10%", opacity: 0 }}
                 animate={{ y: "0%", opacity: 1 }}
                 exit={{ y: "-10%", opacity: 0 }}
-                className={`fixed z-50 top-1/2 left-1/2 w-[95vw] ${maxWidth} max-h-[90vh] overflow-auto -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white shadow-lg`}
+                className={`fixed z-50 top-1/2 left-1/2 w-[25vw] ${maxWidth} max-h-[90vh] overflow-auto -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white shadow-lg`}
               >
                 {/* Consolidate the title and close button into a single header for flexbox alignment */}
                 {(title || onClose) && (

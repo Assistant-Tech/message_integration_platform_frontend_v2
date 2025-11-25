@@ -20,7 +20,6 @@ const ProductTable: React.FC<ExtendedProductTableProps> = ({
 }) => {
   const columns = useMemo<ColumnDef<Product>[]>(
     () => [
-      // ID
       {
         accessorKey: "id",
         header: "ID",
@@ -39,12 +38,14 @@ const ProductTable: React.FC<ExtendedProductTableProps> = ({
             <div className="flex items-center gap-3">
               <div className="bg-grey-light w-16 h-16 rounded-md overflow-hidden">
                 <img
-                  src={primaryImage}
+                  src={`http://localhost:3000${primaryImage}`}
                   alt={row.title}
                   className="object-cover w-full h-full"
                 />
               </div>
-              <span className="font-medium">{row.title}</span>
+              <span className="body-medium-16 text-grey-medium">
+                {row.title}
+              </span>
             </div>
           );
         },
@@ -109,21 +110,21 @@ const ProductTable: React.FC<ExtendedProductTableProps> = ({
                 variant="none"
                 IconLeft={<Eye size={20} />}
                 onClick={() => onViewDetails?.(row)}
-                className="p-2 hover:bg-gray-100 rounded"
+                className="ps-2 hover:bg-grey-light rounded"
               />
 
               <Button
                 variant="none"
                 IconLeft={<Edit size={20} />}
                 onClick={() => onEdit?.(row)}
-                className="p-2 hover:bg-gray-100 rounded"
+                className="ps-2 hover:bg-grey-light rounded"
               />
 
               <Button
                 variant="none"
                 IconLeft={<Trash2 size={20} color="#EF4444" />}
                 onClick={() => onDelete?.(row.id)}
-                className="p-2 hover:bg-red-50 rounded"
+                className="ps-2 hover:bg-danger-light rounded"
               />
             </div>
           );

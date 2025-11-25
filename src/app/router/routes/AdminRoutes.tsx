@@ -5,6 +5,9 @@ import { APP_ROUTES } from "@/app/constants/routes";
 const AdminLayout = lazy(
   () => import("@/app/components/layout/dashboard-layouts/AdminLayout"),
 );
+const EditProductPage = lazy(
+  () => import("@/app/features/dashboard/admin/pages/products/EditProductPage"),
+);
 const AdminDashboardPage = lazy(
   () =>
     import("@/app/features/dashboard/admin/pages/dashboard/AdminDashboardPage"),
@@ -185,6 +188,10 @@ const AdminRoutes = () => {
         <Route
           path={APP_ROUTES.ADMIN.PRODUCTS_DETAILS}
           element={<ProductDetailsPage />}
+        />
+        <Route
+          path={APP_ROUTES.ADMIN.PRODUCTS_EDIT}
+          element={<EditProductPage />}
         />
         <Route path={APP_ROUTES.ADMIN.CHECKOUT} element={<CheckoutPage />} />
       </Route>

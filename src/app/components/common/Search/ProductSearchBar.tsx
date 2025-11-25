@@ -42,7 +42,6 @@ const ProductSearchBar = ({
             />
           </div>
 
-          {/* Optional: open filter sidebar for later on implementation */}
           <Button
             label="Filter"
             variant="none"

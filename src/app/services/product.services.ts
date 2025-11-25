@@ -1,7 +1,10 @@
 import api from "@/app/services/api/axios";
-import { CreateProductData } from "@/app/types/product.types";
+import {
+  CreateProductData,
+  UpdateProductDetailsProps,
+} from "@/app/types/product.types";
 
-// Fetch All the product
+// Fetch All the products
 export const fetchProducts = async () => {
   const res = await api.get("/products");
   return res.data.data;
@@ -17,7 +20,6 @@ export const fetchProductsById = async (productId: string) => {
 // Create Product
 export const createProduct = async (data: CreateProductData) => {
   const formData = new FormData();
-
   Object.entries(data).forEach(([key, value]) => {
     if (key !== "images" && key !== "variants") {
       formData.append(key, value as any);
@@ -53,4 +55,48 @@ export const createProduct = async (data: CreateProductData) => {
       "Content-Type": "multipart/form-data",
     },
   });
+};
+
+// Update Product by Id for title & description
+export const EditProductById = async ({
+  productId,
+  data,
+}: UpdateProductDetailsProps) => {
+  const res = await api.patch(`/products/${productId}`, { data });
+  console.log("updated data: ", res.data);
+  return res.data;
+};
+
+// Update product images by productId
+export const EditProductForImages = async (
+  productId: string,
+  newImages: File[],
+) => {
+  const formData = new FormData();
+  newImages.forEach((file) => {
+    formData.append("images", file);
+  });
+
+  const res = await api.patch(`/products/${productId}/images`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return res.data;
+};
+
+// Delete product images by productId
+export const DeleteProductByImages = async (
+  productId: string,
+  imagesId: string,
+) => {
+  const res = await api.delete(`/products/${productId}/images/${imagesId}`);
+  return res.data;
+};
+
+// Delete Product by Id
+export const deleteProduct = async (productId: string) => {
+  const res = await api.delete(`/products/${productId}`);
+  console.log("Product deleted: ", res.data);
+  return res.data;
 };

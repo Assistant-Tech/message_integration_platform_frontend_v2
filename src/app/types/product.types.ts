@@ -1,4 +1,13 @@
 import { LucideIcon } from "lucide-react";
+
+// product update payload
+export interface UpdateProductDetailsProps {
+  productId: string;
+  data: {
+    title: string;
+    description: string;
+  };
+}
 /*
 ─────────────────────────────────────────────────────────────────────────────
  📦 ▶ All-product Type utils
@@ -24,7 +33,7 @@ export interface Product {
   id: string;
   title: string;
   description?: string;
-  image: string;
+  images: ProductImages[];
   price: number;
   sku: string;
   variants: ProductVariant[];
@@ -51,7 +60,7 @@ export interface ProductDetails {
     sku: string;
     productCategory: string[];
     images: ProductImages[];
-    variants: ProductVariant[]
+    variants: ProductVariant[];
   };
 }
 /*
@@ -135,7 +144,7 @@ export interface CreateProductForm {
 }
 export interface CreateProductData {
   title: string;
-  category: string;
+  categoryId: string;
   sku: string;
   weight: string;
   weightUnit: string;
@@ -150,6 +159,7 @@ export interface CreateProductData {
   variants: ProductVariant[];
   images: File | null;
 }
+
 // Sorting datasets
 export type SortOption = {
   label: string;

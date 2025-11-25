@@ -23,7 +23,7 @@ export function GenericTable<T>({
 }: GenericTableProps<T>) {
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 7,
+    pageSize: 10,
   });
 
   const table = useReactTable({
