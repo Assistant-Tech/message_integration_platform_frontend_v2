@@ -17,13 +17,12 @@ interface Props {
   register: UseFormRegister<CreateProductData>;
   errors: FieldErrors<CreateProductData>;
   setValue: UseFormSetValue<CreateProductData>;
-  readOnly?: boolean; 
+  readOnly?: boolean;
 }
 
 const ProductInfo: React.FC<Props> = ({
   register,
   errors,
-  setValue,
   readOnly = false,
 }) => {
   const [showCategoryModal, setShowCategoryModal] = useState<boolean>(false);
@@ -87,7 +86,9 @@ const ProductInfo: React.FC<Props> = ({
               }`}
             >
               <option value="">
-                {loadingCategories ? "Loading categories..." : "Select a category"}
+                {loadingCategories
+                  ? "Loading categories..."
+                  : "Select a category"}
               </option>
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>

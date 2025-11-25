@@ -22,8 +22,8 @@ const AllProductsPage = () => {
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [statusFilter, setStatusFilter] = useState("");
+  const [category, setCategory] = useState(""); 
 
-  // dialog states
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(
     null,
@@ -35,7 +35,6 @@ const AllProductsPage = () => {
     navigate(`/${tenantSlug}/admin/${APP_ROUTES.ADMIN.PRODUCTS_CREATE}`);
   };
 
-  // Filters and sorting
   const sortingOptions: SortOption[] = [
     { label: "Newest", value: "newest" },
     { label: "Oldest", value: "oldest" },
@@ -46,16 +45,26 @@ const AllProductsPage = () => {
   const filteredData = useMemo(() => {
     let result = [...products];
 
+    // SEARCH
     if (search.trim()) {
       result = result.filter((p) =>
         p.title.toLowerCase().includes(search.toLowerCase()),
       );
     }
 
+    // CATEGORY FILTER
+    if (category) {
+      result = result.filter((p) =>
+        p.productCategory.some((pc: any) => pc.category.slug === category),
+      );
+    }
+
+    // STATUS FILTER
     if (statusFilter) {
       result = result.filter((p) => p.status === statusFilter);
     }
 
+    // SORTING
     switch (sortBy) {
       case "oldest":
         result.reverse();
@@ -69,7 +78,7 @@ const AllProductsPage = () => {
     }
 
     return result;
-  }, [products, search, statusFilter, sortBy]);
+  }, [products, search, statusFilter, category, sortBy]);
 
   const handleViewDetails = (product: Product) => {
     navigate(`/${tenantSlug}/admin/products/all/details/${product.id}`);
@@ -114,13 +123,17 @@ const AllProductsPage = () => {
         />
       </div>
 
-      {/* Search + Sort */}
+      {/* Search + Sort + Filters */}
       <ProductSearchBar
         search={search}
         setSearch={setSearch}
         sortBy={sortBy}
         setSortBy={setSortBy}
         sortingOptions={sortingOptions}
+        category={category}
+        setCategory={setCategory}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
       />
 
       {/* Table */}

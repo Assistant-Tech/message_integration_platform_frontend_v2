@@ -12,7 +12,6 @@ import { CreateProductData } from "@/app/types/product.types";
 import { Breadcrumb } from "@/app/components/ui";
 import { Heading } from "@/app/features/dashboard/admin/component/ui/";
 import { APP_ROUTES } from "@/app/constants/routes";
-import { createProduct } from "@/app/services/product.services";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/app/store/auth.store";
 import { useCreateProduct } from "@/app/hooks/useProducts";
@@ -60,17 +59,12 @@ const CreateProductPage: React.FC = () => {
 
   const watchVisibility = watch("visibility");
 
-  const { mutateAsync: createProductMutate } = useCreateProduct();
+  const { mutate } = useCreateProduct();
 
   const onSubmit = async (data: CreateProductData) => {
     try {
-      console.log("Submitting product with data:", data);
-
-      const res = await createProductMutate(data);
-
-      console.log("✅ Product saved!", res);
+      mutate(data);
       reset();
-
       navigate(`/${tenantSlug}/admin/${APP_ROUTES.ADMIN.PRODUCTS_ALL}`);
     } catch (error) {
       console.error("❌ Error:", error);

@@ -38,12 +38,19 @@ export const useCreateProduct = () => {
 // Update Product Hook
 export const useUpdateProduct = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
-    mutationFn: ({ productId, data }: { productId: string; data: any }) => 
-      EditProductById({ productId, data }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["products"] });
+    mutationFn: ({ productId, data }: { productId: string; data: any }) => {
+      console.log("🚀 ~ useUpdateProduct ~ data:", data);
+      return EditProductById({ productId, data });
+    },
+    onSuccess: (updatedProduct) => {
+      queryClient.invalidateQueries({
+        queryKey: ["product", updatedProduct.data.id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["products"],
+      });
       toast.success("Product updated successfully");
     },
     onError: (error) => {

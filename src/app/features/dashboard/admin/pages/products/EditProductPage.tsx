@@ -21,6 +21,8 @@ const EditProductPage = () => {
     description: "",
   });
 
+  // const [open]
+
   useEffect(() => {
     if (product) {
       setFormData({
@@ -40,7 +42,6 @@ const EditProductPage = () => {
         productId: id,
         data: formData,
       });
-      console.log("🚀 ~ handleSubmit ~ res:", res);
 
       toast.success("Product updated successfully");
 

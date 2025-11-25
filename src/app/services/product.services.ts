@@ -62,7 +62,7 @@ export const EditProductById = async ({
   productId,
   data,
 }: UpdateProductDetailsProps) => {
-  const res = await api.patch(`/products/${productId}`, { data });
+  const res = await api.patch(`/products/${productId}`, data);
   console.log("updated data: ", res.data);
   return res.data;
 };

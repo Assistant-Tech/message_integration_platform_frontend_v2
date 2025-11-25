@@ -1,11 +1,11 @@
-import { Category, CategoryTableProps } from "@/app/types/product.types";
+import { Category } from "@/app/types/product.types";
 import { ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";
 import GenericTable from "../table/GenericTable";
 import { VisibilityCell } from "@/app/features/dashboard/admin/component/ui";
-import { Edit, Eye, Trash2 } from "lucide-react";
+import { Edit, Trash2 } from "lucide-react";
 
-const CategoryTable: React.FC<CategoryTableProps> = ({ data }) => {
+const CategoryTable: React.FC<any> = ({ data, onDelete, onEdit }) => {
   const columns = useMemo<ColumnDef<Category>[]>(
     () => [
       {
@@ -24,25 +24,27 @@ const CategoryTable: React.FC<CategoryTableProps> = ({ data }) => {
         cell: (info) => <VisibilityCell value={info.getValue<boolean>()} />,
       },
       {
-        // Handle view / edit / delete left to be done
         accessorKey: "action",
         header: "Action",
-        cell: () => (
+        cell: (info) => (
           <div className="flex items-center gap-2">
-            <button className="text-grey-medium hover:underline">
-              <Eye size={24} />
-            </button>
-            <button className="text-information hover:underline">
+            <button
+              className="text-grey-medium hover:underline"
+              onClick={() => onEdit(info.row.original.id)}
+            >
               <Edit size={24} />
             </button>
-            <button className="text-danger hover:underline">
+            <button
+              className="text-danger hover:underline"
+              onClick={() => onDelete(info.row.original.id)}
+            >
               <Trash2 size={24} />
             </button>
           </div>
         ),
       },
     ],
-    [],
+    [onDelete, onEdit],
   );
 
   return <GenericTable columns={columns} data={data} />;

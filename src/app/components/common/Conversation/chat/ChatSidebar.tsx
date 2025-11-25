@@ -54,8 +54,6 @@ const ChatSidebar = () => {
         includeDefault: true,
       });
 
-      // useState => chatlist
-      // dashboard -> conversation -> not working
       const data = Array.isArray(res.data) ? res.data : [];
       setConversations(data);
 
