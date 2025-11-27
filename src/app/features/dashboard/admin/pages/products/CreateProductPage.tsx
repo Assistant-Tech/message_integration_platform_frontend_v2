@@ -15,6 +15,8 @@ import { APP_ROUTES } from "@/app/constants/routes";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/app/store/auth.store";
 import { useCreateProduct } from "@/app/hooks/useProducts";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { productSchema } from "@/app/schemas/createProduct.schema";
 
 const CreateProductPage: React.FC = () => {
   const navigate = useNavigate();
@@ -33,6 +35,7 @@ const CreateProductPage: React.FC = () => {
     formState: { errors, isSubmitting },
     reset,
   } = useForm<CreateProductData>({
+    resolver: zodResolver(productSchema),
     defaultValues: {
       title: "",
       categoryId: "",
@@ -48,7 +51,7 @@ const CreateProductPage: React.FC = () => {
       visibility: "publish",
       publishDate: "",
       variants: [],
-      images: null,
+      images: [] as File[],
     },
   });
 

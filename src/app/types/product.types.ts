@@ -147,19 +147,39 @@ export interface CreateProductData {
   title: string;
   categoryId: string;
   sku: string;
+
   weight: string;
   weightUnit: string;
+
   quantity: string;
+
   price: string;
-  currency: string;
-  discountPercentage: string;
-  discountAmount: string;
+  currency: "Rupees" | "USD" | "EUR" | "GBP";
+
+  discountPercentage?: string;
+  discountAmount?: string;
+
   description: string;
+
   visibility: "publish" | "schedule" | "draft";
-  publishDate: string;
-  variants: ProductVariant[];
-  images: File | null;
+  publishDate?: string;
+
+  variants: {
+    title: string;
+    price: number;
+    attributes: {
+      color: string;
+      size: string;
+    };
+    inventory: {
+      stock: number;
+      lowStock: boolean;
+    };
+  }[];
+
+  images?: File[];
 }
+
 
 // Sorting datasets
 export type SortOption = {

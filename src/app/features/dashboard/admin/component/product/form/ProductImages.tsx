@@ -1,12 +1,12 @@
 import React, { useCallback, useState } from "react";
 import { UseFormSetValue } from "react-hook-form";
-import { ProductFormData } from "@/app/types/product.types";
 import { useDropzone } from "react-dropzone";
 import { Plus, X } from "lucide-react";
 import { Button } from "@/app/components/ui";
+import { CreateProductData } from "@/app/types/product.types";
 
 interface Props {
-  setValue: UseFormSetValue<ProductFormData>;
+  setValue: UseFormSetValue<CreateProductData>;
 }
 
 const ProductImages: React.FC<Props> = ({ setValue }) => {
