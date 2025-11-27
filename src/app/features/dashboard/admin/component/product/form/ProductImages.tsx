@@ -1,12 +1,12 @@
 import React, { useCallback, useState } from "react";
 import { UseFormSetValue } from "react-hook-form";
-import { ProductFormData } from "@/app/types/product.types";
 import { useDropzone } from "react-dropzone";
 import { Plus, X } from "lucide-react";
 import { Button } from "@/app/components/ui";
+import { CreateProductData } from "@/app/types/product.types";
 
 interface Props {
-  setValue: UseFormSetValue<ProductFormData>;
+  setValue: UseFormSetValue<CreateProductData>;
 }
 
 const ProductImages: React.FC<Props> = ({ setValue }) => {
@@ -49,7 +49,9 @@ const ProductImages: React.FC<Props> = ({ setValue }) => {
   return (
     <div className="bg-white rounded-lg border border-grey-light w-full">
       <div className="px-6 py-4 border-b border-grey-light bg-base-white">
-        <h2 className="h5-bold-16 text-grey">Product Image</h2>
+        <h2 className="h5-bold-16 text-grey">
+          Product Image <span className="text-red-500">*</span>
+        </h2>
       </div>
       <div className="p-6" {...getRootProps()}>
         <input {...getInputProps()} style={{ display: "none" }} />
@@ -78,29 +80,37 @@ const ProductImages: React.FC<Props> = ({ setValue }) => {
               {previews.map((src, index) => (
                 <div
                   key={index}
-                  className="relative w-full h-32 bg-grey-light rounded-lg overflow-hidden"
+                  className="group relative w-full h-72 bg-grey-light rounded-lg overflow-hidden"
                 >
                   <img
                     src={src}
                     alt={`preview-${index}`}
-                    className="w-full h-full object-cover"
+                    className="w-72 h-72 object-cover"
                   />
+
+                  {/* Remove button */}
                   <button
                     type="button"
                     onClick={() => removeImage(index)}
-                    className="absolute top-1 right-1 bg-black/60 hover:bg-black text-white rounded-full p-1"
+                    className="absolute top-1 right-1 bg-black/60 hover:bg-black text-white rounded-full p-1 cursor-pointer"
                   >
                     <X size={16} />
                   </button>
+
+                  {/* Index badge */}
+                  <span className="absolute bottom-1 left-1 bg-primary/60 hover:bg-primary-dark cursor-pointer text-white rounded-full px-3 py-1">
+                    {index === 0 ? "Main" : index + 1}
+                  </span>
                 </div>
               ))}
             </div>
+
             <Button
               type="button"
               label="Add Attachment"
               IconLeft={<Plus size={18} />}
               variant="primary"
-              className="px-4 bg-grey hover:bg-base-black text-white mb-6"
+              className="px-4 bg-grey hover:bg-base-black text-white my-4"
               onClick={open}
             />
           </div>

@@ -129,9 +129,12 @@ const CollapsibleSidebar = () => {
                         {item.hasSubmenu && item.submenu && isExpanded && (
                           <ul className="pl-10 mt-1 space-y-1">
                             {item.submenu
-                              .filter((sub) =>
-                                sub.roles?.includes(user?.roleType ?? ""),
-                              )
+                              .filter((sub) => {
+                                const allowedRoles = sub.roles ?? item.roles;
+                                return allowedRoles?.includes(
+                                  user?.roleType ?? "",
+                                );
+                              })
                               .map((sub, subIndex) => {
                                 const subFinalHref = `/${slug}/admin/${sub.href}`;
                                 const subActive =

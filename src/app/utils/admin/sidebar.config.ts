@@ -77,10 +77,26 @@ export const sidebarItems: SidebarItem[] = [
     hasSubmenu: true,
     roles: ["TENANT_ADMIN"],
     submenu: [
-      { label: "All Products", href: APP_ROUTES.ADMIN.PRODUCTS_ALL },
-      { label: "Category", href: APP_ROUTES.ADMIN.PRODUCTS_CATEGORY },
-      { label: "Variants", href: APP_ROUTES.ADMIN.PRODUCTS_VARIANTS },
-      { label: "Inventory", href: APP_ROUTES.ADMIN.PRODUCTS_INVENTORY },
+      {
+        label: "All Products",
+        href: APP_ROUTES.ADMIN.PRODUCTS_ALL,
+        roles: ["TENANT_ADMIN"],
+      },
+      {
+        label: "Category",
+        href: APP_ROUTES.ADMIN.PRODUCTS_CATEGORY,
+        roles: ["TENANT_ADMIN"],
+      },
+      {
+        label: "Variants",
+        href: APP_ROUTES.ADMIN.PRODUCTS_VARIANTS,
+        roles: ["TENANT_ADMIN"],
+      },
+      {
+        label: "Inventory",
+        href: APP_ROUTES.ADMIN.PRODUCTS_INVENTORY,
+        roles: ["TENANT_ADMIN"],
+      },
     ],
   },
   {

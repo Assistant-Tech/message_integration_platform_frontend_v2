@@ -8,12 +8,19 @@ import {
   ActionButtons,
   ProductVariants,
 } from "@/app/features/dashboard/admin/component/product/form";
-import { ProductFormData } from "@/app/types/product.types";
+import { CreateProductData } from "@/app/types/product.types";
 import { Breadcrumb } from "@/app/components/ui";
 import { Heading } from "@/app/features/dashboard/admin/component/ui/";
 import { APP_ROUTES } from "@/app/constants/routes";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/app/store/auth.store";
+import { useCreateProduct } from "@/app/hooks/useProducts";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { productSchema } from "@/app/schemas/createProduct.schema";
 
 const CreateProductPage: React.FC = () => {
+  const navigate = useNavigate();
+  const tenantSlug = useAuthStore((s) => s.tenantSlug);
   const ProductsCrumbs = [
     { label: "All Products", href: APP_ROUTES.ADMIN.PRODUCTS_ALL },
     { label: "Create Product" },
@@ -26,10 +33,12 @@ const CreateProductPage: React.FC = () => {
     setValue,
     control,
     formState: { errors, isSubmitting },
-  } = useForm<ProductFormData>({
+    reset,
+  } = useForm<CreateProductData>({
+    resolver: zodResolver(productSchema),
     defaultValues: {
-      name: "",
-      category: "",
+      title: "",
+      categoryId: "",
       sku: "",
       weight: "",
       weightUnit: "g",
@@ -42,7 +51,7 @@ const CreateProductPage: React.FC = () => {
       visibility: "publish",
       publishDate: "",
       variants: [],
-      images: null,
+      images: [] as File[],
     },
   });
 
@@ -53,28 +62,20 @@ const CreateProductPage: React.FC = () => {
 
   const watchVisibility = watch("visibility");
 
-  const onSubmit = async (data: ProductFormData) => {
+  const { mutate } = useCreateProduct();
+
+  const onSubmit = async (data: CreateProductData) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log("✅ Product saved!", data);
-      alert("Product saved successfully!");
+      mutate(data);
+      reset();
+      navigate(`/${tenantSlug}/admin/${APP_ROUTES.ADMIN.PRODUCTS_ALL}`);
     } catch (error) {
       console.error("❌ Error:", error);
     }
   };
 
   const handleClearAll = () => {
-    setValue("name", "");
-    setValue("category", "");
-    setValue("sku", "");
-    setValue("weight", "");
-    setValue("quantity", "");
-    setValue("price", "");
-    setValue("discountPercentage", "");
-    setValue("discountAmount", "");
-    setValue("description", "");
-    setValue("variants", []);
-    setValue("images", null);
+    reset();
   };
 
   return (

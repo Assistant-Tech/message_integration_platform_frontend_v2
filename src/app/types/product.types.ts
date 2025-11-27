@@ -1,4 +1,13 @@
 import { LucideIcon } from "lucide-react";
+
+// product update payload
+export interface UpdateProductDetailsProps {
+  productId: string;
+  data: {
+    title: string;
+    description: string;
+  };
+}
 /*
 ─────────────────────────────────────────────────────────────────────────────
  📦 ▶ All-product Type utils
@@ -17,14 +26,17 @@ export enum Status {
   success = "Success",
   failed = "Failed",
   inprogress = "In Progress",
+  draft = "Draft",
 }
 
 export interface Product {
-  name: string;
-  image: string;
+  id: string;
+  title: string;
+  description?: string;
+  images: ProductImages[];
   price: number;
-  SKU: string;
-  variants: string;
+  sku: string;
+  variants: ProductVariant[];
   visibility: boolean;
   status: Status;
   color: string;
@@ -34,12 +46,30 @@ export interface Product {
 export interface ProductTableProps {
   data: Product[];
 }
+export interface ProductImages {
+  id: string;
+  url: string;
+  alt: string;
+  isPrimary: boolean;
+}
+export interface ProductDetails {
+  data: {
+    id: string;
+    title: string;
+    description: string;
+    sku: string;
+    productCategory: string[];
+    images: ProductImages[];
+    variants: ProductVariant[];
+  };
+}
 /*
 ─────────────────────────────────────────────────────────────────────────────
  📦 ▶ Category Type utils
  ─────────────────────────────────────────────────────────────────────────────
 */
 export interface Category {
+  id: string;
   name: string;
   products: number;
   visibility: boolean;
@@ -98,26 +128,73 @@ export interface InventoryTableProps {
  ─────────────────────────────────────────────────────────────────────────────
 */
 export interface ProductVariant {
-  color: string;
-  size: string;
-  price: string;
-  quantity: string;
+  title: string;
+  price: number;
+  attributes: {
+    color: string;
+    size: string;
+  };
+  inventory: {
+    stock: number;
+    lowStock: boolean;
+  };
 }
 
-export interface ProductFormData {
-  name: string;
-  category: string;
+export interface CreateProductForm {
+  payload: CreateProductData[];
+}
+export interface CreateProductData {
+  title: string;
+  categoryId: string;
   sku: string;
+
   weight: string;
   weightUnit: string;
+
   quantity: string;
+
   price: string;
-  currency: string;
-  discountPercentage: string;
-  discountAmount: string;
+  currency: "Rupees" | "USD" | "EUR" | "GBP";
+
+  discountPercentage?: string;
+  discountAmount?: string;
+
   description: string;
+
   visibility: "publish" | "schedule" | "draft";
-  publishDate: string;
-  variants: ProductVariant[];
-  images: File | null;
+  publishDate?: string;
+
+  variants: {
+    title: string;
+    price: number;
+    attributes: {
+      color: string;
+      size: string;
+    };
+    inventory: {
+      stock: number;
+      lowStock: boolean;
+    };
+  }[];
+
+  images?: File[];
 }
+
+
+// Sorting datasets
+export type SortOption = {
+  label: string;
+  value: string;
+};
+// Filter options
+export type FilterOption = {
+  label: string;
+  value: string;
+};
+
+export type FilterConfig = {
+  label: string;
+  value: string;
+  options: FilterOption[];
+  onChange: (value: string) => void;
+};

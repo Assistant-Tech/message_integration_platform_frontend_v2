@@ -5,6 +5,9 @@ import { APP_ROUTES } from "@/app/constants/routes";
 const AdminLayout = lazy(
   () => import("@/app/components/layout/dashboard-layouts/AdminLayout"),
 );
+const EditProductPage = lazy(
+  () => import("@/app/features/dashboard/admin/pages/products/EditProductPage"),
+);
 const AdminDashboardPage = lazy(
   () =>
     import("@/app/features/dashboard/admin/pages/dashboard/AdminDashboardPage"),
@@ -88,6 +91,10 @@ const CreateProductPage = lazy(
   () =>
     import("@/app/features/dashboard/admin/pages/products/CreateProductPage"),
 );
+const ProductDetailsPage = lazy(
+  () =>
+    import("@/app/features/dashboard/admin/pages/products/ProductDetailsPage"),
+);
 const BillingPage = lazy(
   () =>
     import(
@@ -155,6 +162,8 @@ const AdminRoutes = () => {
           path={APP_ROUTES.ADMIN.SETTINGS_SUBSCRIPTION_BILLING}
           element={<BillingPage />}
         />
+
+        {/* Product page routes */}
         <Route path={APP_ROUTES.ADMIN.PRODUCTS} element={<ProductPage />} />
         <Route
           path={APP_ROUTES.ADMIN.PRODUCTS_ALL}
@@ -175,6 +184,14 @@ const AdminRoutes = () => {
         <Route
           path={APP_ROUTES.ADMIN.PRODUCTS_CREATE}
           element={<CreateProductPage />}
+        />
+        <Route
+          path={APP_ROUTES.ADMIN.PRODUCTS_DETAILS}
+          element={<ProductDetailsPage />}
+        />
+        <Route
+          path={APP_ROUTES.ADMIN.PRODUCTS_EDIT}
+          element={<EditProductPage />}
         />
         <Route path={APP_ROUTES.ADMIN.CHECKOUT} element={<CheckoutPage />} />
       </Route>

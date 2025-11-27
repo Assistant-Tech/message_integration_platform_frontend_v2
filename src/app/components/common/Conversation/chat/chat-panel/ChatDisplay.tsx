@@ -22,7 +22,6 @@ interface ChatDisplayProps {
 
 const ChatDisplay = ({
   messages = [],
-  participants = [],
   loading,
 }: ChatDisplayProps) => {
   const endRef = useRef<HTMLDivElement | null>(null);

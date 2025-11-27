@@ -17,6 +17,9 @@ const api = axios.create({
   },
 });
 
+// For Image purposes
+export const API_BASE_URL = api.defaults.baseURL;
+
 // ---------------------------------------------------------------------------
 // REQUEST INTERCEPTOR
 // Adds Authorization, CSRF, and Idempotency headers

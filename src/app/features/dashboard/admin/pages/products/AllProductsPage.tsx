@@ -1,151 +1,120 @@
 import { useMemo, useState } from "react";
 import { Button } from "@/app/components/ui";
-import { APP_ROUTES } from "@/app/constants/routes";
 import { Heading } from "@/app/features/dashboard/admin/component/ui/";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Product, Status } from "@/app/types/product.types";
-import DataTableToolbar, {
-  FilterConfig,
-  SortOption,
-} from "@/app/features/dashboard/admin/component/ui/Data-toolbar";
 import { ProductTable } from "@/app/features/dashboard/admin/component";
+import ProductSearchBar from "@/app/components/common/Search/ProductSearchBar";
+import { SortOption, Product } from "@/app/types/product.types";
+import { useProducts, useDeleteProduct } from "@/app/hooks/useProducts";
+import { APP_ROUTES } from "@/app/constants/routes";
+import Loading from "@/app/components/common/Loading";
+import { useAuthStore } from "@/app/store/auth.store";
+import { GenericDialog } from "@/app/components/common";
 
 const AllProductsPage = () => {
+  const tenantSlug = useAuthStore((s) => s.tenantSlug);
+  const navigate = useNavigate();
+
+  const { data: allProduct = [], isLoading } = useProducts();
+  const deleteMutation = useDeleteProduct();
+
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [statusFilter, setStatusFilter] = useState("");
-  const navigate = useNavigate();
+  const [category, setCategory] = useState(""); 
 
-  const handleCreateNewProduct = () =>
-    navigate(APP_ROUTES.ADMIN.PRODUCTS_CREATE);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(
+    null,
+  );
 
-  // Sorting options
+  const products = Array.isArray(allProduct) ? allProduct : [];
+
+  const handleCreateNewProduct = () => {
+    navigate(`/${tenantSlug}/admin/${APP_ROUTES.ADMIN.PRODUCTS_CREATE}`);
+  };
+
   const sortingOptions: SortOption[] = [
     { label: "Newest", value: "newest" },
     { label: "Oldest", value: "oldest" },
-    { label: "Price: Low to High", value: "price-asc" },
-    { label: "Price: High to Low", value: "price-desc" },
+    { label: "Price: Low → High", value: "price-asc" },
+    { label: "Price: High → Low", value: "price-desc" },
   ];
 
-  // Filter options
-  const statusOptions: FilterConfig["options"] = [
-    { label: "All", value: "" },
-    { label: "In Progress", value: "In Progress" },
-    { label: "Success", value: "Success" },
-    { label: "Pending", value: "Pending" },
-    { label: "Failed", value: "Failed" },
-  ];
-
-  const filters: FilterConfig[] = [
-    {
-      label: "Status",
-      options: statusOptions,
-      value: statusFilter,
-      onChange: (value) => setStatusFilter(String(value)),
-    },
-  ];
-
-  // MOCK PRODUCTS
-  const mockProducts: Product[] = [
-    {
-      name: "Classic T-Shirt",
-      image: "https://m.media-amazon.com/images/I/61GfWyQax7L._AC_UL1500_.jpg",
-      price: 25.99,
-      SKU: "TSHIRT001",
-      variants: "S, M, L",
-      visibility: true,
-      status: Status.success,
-      color: "#1e90ff",
-      action: "",
-    },
-    {
-      name: "Blue Denim Jeans",
-      image: "https://m.media-amazon.com/images/I/61GfWyQax7L._AC_UL1500_.jpg",
-      price: 45.0,
-      SKU: "JEANS001",
-      variants: "32, 34, 36",
-      visibility: true,
-      status: Status.inprogress,
-      color: "#2b2d42",
-      action: "",
-    },
-    {
-      name: "Stylish Sneakers",
-      image: "https://m.media-amazon.com/images/I/61GfWyQax7L._AC_UL1500_.jpg",
-      price: 60.0,
-      SKU: "SHOE001",
-      variants: "8, 9, 10",
-      visibility: false,
-      status: Status.pending,
-      color: "#000000",
-      action: "",
-    },
-    {
-      name: "Comfortable Hoodie",
-      image: "https://m.media-amazon.com/images/I/61GfWyQax7L._AC_UL1500_.jpg",
-      price: 38.5,
-      SKU: "HOODIE001",
-      variants: "S, M, L, XL",
-      visibility: true,
-      status: Status.success,
-      color: "#800080",
-      action: "",
-    },
-    {
-      name: "Elegant Dress",
-      image: "https://m.media-amazon.com/images/I/61GfWyQax7L._AC_UL1500_.jpg",
-      price: 79.99,
-      SKU: "DRESS001",
-      variants: "XS, S, M",
-      visibility: true,
-      status: Status.success,
-      color: "#FF69B4",
-      action: "",
-    },
-  ];
-
-  // Filter and sort data
   const filteredData = useMemo(() => {
-    let temp = [...mockProducts];
+    let result = [...products];
 
-    // Search
-    if (search) {
-      temp = temp.filter((p) =>
-        p.name.toLowerCase().includes(search.toLowerCase()),
+    // SEARCH
+    if (search.trim()) {
+      result = result.filter((p) =>
+        p.title.toLowerCase().includes(search.toLowerCase()),
       );
     }
 
-    // Status filter
-    if (statusFilter) {
-      temp = temp.filter((p) => p.status === statusFilter);
+    // CATEGORY FILTER
+    if (category) {
+      result = result.filter((p) =>
+        p.productCategory.some((pc: any) => pc.category.slug === category),
+      );
     }
 
-    // Sorting
+    // STATUS FILTER
+    if (statusFilter) {
+      result = result.filter((p) => p.status === statusFilter);
+    }
+
+    // SORTING
     switch (sortBy) {
       case "oldest":
-        temp = temp.reverse();
+        result.reverse();
         break;
       case "price-asc":
-        temp = temp.sort((a, b) => a.price - b.price);
+        result.sort((a, b) => a.variants[0].price - b.variants[0].price);
         break;
       case "price-desc":
-        temp = temp.sort((a, b) => b.price - a.price);
+        result.sort((a, b) => b.variants[0].price - a.variants[0].price);
         break;
-      // case "newest": do nothing
     }
 
-    return temp;
-  }, [mockProducts, search, statusFilter, sortBy]);
+    return result;
+  }, [products, search, statusFilter, category, sortBy]);
+
+  const handleViewDetails = (product: Product) => {
+    navigate(`/${tenantSlug}/admin/products/all/details/${product.id}`);
+  };
+
+  const handleEdit = (product: Product) => {
+    navigate(`/${tenantSlug}/admin/products/edit/${product.id}`);
+  };
+
+  const handleDelete = (productId: string) => {
+    setSelectedProductId(productId);
+    setOpenDeleteDialog(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!selectedProductId) return;
+
+    try {
+      await deleteMutation.mutateAsync(selectedProductId);
+      setOpenDeleteDialog(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  if (isLoading) return <Loading />;
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 h-auto">
       {/* Header */}
       <div className="w-full flex justify-between items-center">
         <div className="flex flex-col items-start gap-2">
           <Heading title="Products" align="left" className="text-base-black" />
           <h2 className="body-semi-bold-16 text-primary">All Products</h2>
         </div>
+
         <Button
           label="Add New Products"
           IconLeft={<Plus size={24} />}
@@ -154,19 +123,57 @@ const AllProductsPage = () => {
         />
       </div>
 
-      {/* Toolbar */}
-      <DataTableToolbar
+      {/* Search + Sort + Filters */}
+      <ProductSearchBar
         search={search}
-        onSearchChange={setSearch}
-        sortOptions={sortingOptions}
-        sortValue={sortBy}
-        onSortChange={(v) => setSortBy(String(v))}
-        filters={filters}
-        onFilterClick={() => console.log("Open advanced filter modal")}
+        setSearch={setSearch}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+        sortingOptions={sortingOptions}
+        category={category}
+        setCategory={setCategory}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
       />
 
-      {/* Product Table */}
-      <ProductTable data={filteredData} />
+      {/* Table */}
+      <ProductTable
+        data={filteredData}
+        onViewDetails={handleViewDetails}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
+
+      {/* Delete Dialog */}
+      <GenericDialog
+        open={openDeleteDialog}
+        onClose={() => setOpenDeleteDialog(false)}
+        title="Delete Product"
+        maxWidth="lg"
+      >
+        <p className="text-grey-medium mb-6">
+          Are you sure you want to delete this product? This action cannot be
+          undone.
+        </p>
+
+        <div className="flex justify-end gap-3">
+          <button
+            className="px-4 py-2 border rounded-lg"
+            onClick={() => setOpenDeleteDialog(false)}
+            disabled={deleteMutation.isPending}
+          >
+            Cancel
+          </button>
+
+          <button
+            className="px-4 py-2 bg-red-600 rounded-lg text-white"
+            onClick={confirmDelete}
+            disabled={deleteMutation.isPending}
+          >
+            {deleteMutation.isPending ? "Deleting..." : "Delete"}
+          </button>
+        </div>
+      </GenericDialog>
     </div>
   );
 };
