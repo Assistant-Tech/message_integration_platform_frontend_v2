@@ -1,9 +1,9 @@
+import { CreateProductData } from "@/app/types/product.types";
 import React from "react";
 import { UseFormRegister } from "react-hook-form";
-import { ProductFormData } from "@/app/types/product.types";
 
 interface Props {
-  register: UseFormRegister<ProductFormData>;
+  register: UseFormRegister<CreateProductData>;
 }
 
 const ProductDescription: React.FC<Props> = ({ register }) => {

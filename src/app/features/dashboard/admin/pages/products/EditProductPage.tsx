@@ -38,7 +38,7 @@ const EditProductPage = () => {
     if (!id) return;
 
     try {
-      const res = await updateMutation.mutateAsync({
+      await updateMutation.mutateAsync({
         productId: id,
         data: formData,
       });

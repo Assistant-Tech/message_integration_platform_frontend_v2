@@ -1,12 +1,12 @@
 import React from "react";
 import { UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { Circle, CircleDot } from "lucide-react";
-import { ProductFormData } from "@/app/types/product.types";
+import { CreateProductData } from "@/app/types/product.types";
 
 interface Props {
-  register: UseFormRegister<ProductFormData>;
+  register: UseFormRegister<CreateProductData>;
   watchVisibility: string;
-  setValue?: UseFormSetValue<ProductFormData>;
+  setValue?: UseFormSetValue<CreateProductData>;
 }
 
 const ProductVisibility: React.FC<Props> = ({ register, watchVisibility }) => {
