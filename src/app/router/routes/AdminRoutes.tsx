@@ -5,6 +5,12 @@ import { APP_ROUTES } from "@/app/constants/routes";
 const AdminLayout = lazy(
   () => import("@/app/components/layout/dashboard-layouts/AdminLayout"),
 );
+const IntegrationPage = lazy(
+  () =>
+    import(
+      "@/app/features/dashboard/admin/component/integrations/IntegrationPage"
+    ),
+);
 const EditProductPage = lazy(
   () => import("@/app/features/dashboard/admin/pages/products/EditProductPage"),
 );
@@ -194,6 +200,12 @@ const AdminRoutes = () => {
           element={<EditProductPage />}
         />
         <Route path={APP_ROUTES.ADMIN.CHECKOUT} element={<CheckoutPage />} />
+
+        {/* Integration Settings */}
+        <Route
+          path={APP_ROUTES.ADMIN.SETTINGS_INTEGRATION_SETTINGS}
+          element={<IntegrationPage />}
+        />
       </Route>
     </Routes>
   );

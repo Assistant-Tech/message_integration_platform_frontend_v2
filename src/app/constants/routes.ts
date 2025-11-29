@@ -70,6 +70,7 @@ export const APP_ROUTES = {
     SETTINGS_SHIPPING: "settings/shipping",
     SETTINGS_SUBSCRIPTION: "settings/subscription",
     SETTINGS_SUBSCRIPTION_BILLING: "settings/subscription/billing",
+    SETTINGS_INTEGRATION_SETTINGS: "settings/integration",
 
     // Products
     PRODUCTS: "products",
