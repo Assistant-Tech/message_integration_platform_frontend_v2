@@ -34,7 +34,7 @@ const CreateOrderPage = () => {
   };
 
   const OrderBreadCrumb = [
-    { label: "Order", href: APP_ROUTES.ADMIN.ORDERS },
+    { label: "Order", href: "orders" },
     { label: "Create New Order" },
   ];
 

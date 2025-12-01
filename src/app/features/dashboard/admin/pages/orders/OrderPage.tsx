@@ -10,14 +10,13 @@ import {
 import { Button } from "@/app/components/ui/";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { APP_ROUTES } from "@/app/constants/routes";
 
 const OrderPage = () => {
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
 
   const handleCreateNewOrder = () => {
-    navigate(APP_ROUTES.ADMIN.ORDERS_CREATE);
+    navigate("createOrder");
   };
 
   const handleFilterClick = () => {
