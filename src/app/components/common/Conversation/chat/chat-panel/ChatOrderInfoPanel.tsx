@@ -12,9 +12,15 @@ interface OrderFormData {
   deliveryCharge: string;
   paymentMethod: string;
   expectedDelivery: string;
+  totalAmount: string;
+}
+interface OrderInfoPanelProps {
+  onSendOrderMessage: (msg: any) => void;
 }
 
-const OrderPannel: React.FC = () => {
+const OrderInfoPanel: React.FC<OrderInfoPanelProps> = ({
+  onSendOrderMessage,
+}) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -26,6 +32,7 @@ const OrderPannel: React.FC = () => {
     deliveryCharge: "",
     paymentMethod: "",
     expectedDelivery: "",
+    totalAmount: "",
   });
 
   const handleChange = (
@@ -41,7 +48,29 @@ const OrderPannel: React.FC = () => {
 
   const confirmOrder = () => {
     setShowConfirmModal(false);
-    setShowSuccessModal(true);
+
+    const orderMessage = {
+      _id: crypto.randomUUID(),
+      type: "order-confirmation",
+      sender: "System",
+      createdAt: new Date().toISOString(),
+      data: {
+        productName: formData.product,
+        customerName: formData.fullName,
+        phone: formData.phoneNumber,
+        location: "Nepal",
+        totalAmount: Number(formData.totalAmount) || 0,
+        deliveryAmount: Number(formData.deliveryCharge) || 0,
+        finalAmount:
+          (Number(formData.totalAmount) || 0) +
+          (Number(formData.deliveryCharge) || 0),
+        paymentMethod: formData.paymentMethod,
+        expectedDelivery: formData.expectedDelivery,
+      },
+    };
+
+    // 🚀 SEND to ChatPanel
+    onSendOrderMessage(orderMessage);
   };
 
   const closeSuccessModal = () => {
@@ -53,6 +82,7 @@ const OrderPannel: React.FC = () => {
       deliveryCharge: "",
       paymentMethod: "",
       expectedDelivery: "",
+      totalAmount: "",
     });
   };
 
@@ -64,6 +94,7 @@ const OrderPannel: React.FC = () => {
       deliveryCharge: "",
       paymentMethod: "",
       expectedDelivery: "",
+      totalAmount: "",
     });
   };
 
@@ -72,9 +103,9 @@ const OrderPannel: React.FC = () => {
   };
 
   return (
-    <aside className="w-full bg-white">
-      <div className="flex justify-between items-center border-b border-grey-light py-4 px-4">
-        <Heading title="Order Info" className="text-base-black" />
+    <aside className="w-96 bg-white overflow-y-auto border-l border-grey-light">
+      <div className="flex justify-between items-center border-b border-grey-light py-[15.2px] px-4">
+        <Heading title="Order Info" className="text-grey-medium" />
         <EllipsisVertical size={24} color="black" />
       </div>
 
@@ -116,6 +147,19 @@ const OrderPannel: React.FC = () => {
             value={formData.phoneNumber}
             type="text"
             placeholder="Enter phone number"
+            onChange={handleChange}
+            className="w-full py-3 border border-grey-light rounded-lg"
+          />
+        </div>
+
+        {/* Total Amount */}
+        <div className="flex flex-col py-3">
+          <h2 className="body-medium-16 text-grey pb-1">Total Amount</h2>
+          <Input
+            name="totalAmount"
+            value={formData.totalAmount}
+            type="number"
+            placeholder="Enter total amount"
             onChange={handleChange}
             className="w-full py-3 border border-grey-light rounded-lg"
           />
@@ -171,7 +215,7 @@ const OrderPannel: React.FC = () => {
         <div className="flex flex-col p-3 bg-grey-light rounded-xl text-grey-medium my-2">
           <div className="flex justify-between">
             <h1>Total Amount</h1>
-            <p>Rs. 0.0</p>
+            <p>Rs. {formData.totalAmount || "0.0"}</p>
           </div>
           <div className="flex justify-between">
             <h1>Delivery Charge</h1>
@@ -179,7 +223,11 @@ const OrderPannel: React.FC = () => {
           </div>
           <div className="flex justify-between">
             <h5>Total</h5>
-            <p>Rs. {formData.deliveryCharge || "0.0"}</p>
+            <p>
+              Rs.{" "}
+              {(Number(formData.totalAmount) || 0) +
+                (Number(formData.deliveryCharge) || 0)}
+            </p>
           </div>
         </div>
 
@@ -231,4 +279,4 @@ const OrderPannel: React.FC = () => {
   );
 };
 
-export default OrderPannel;
+export default OrderInfoPanel;

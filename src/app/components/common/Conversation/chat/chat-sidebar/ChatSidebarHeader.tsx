@@ -20,7 +20,7 @@ const ChatSidebarHeader = ({
   onToggleDeleteMode,
   onToggleForm,
 }: Props) => (
-  <header className="flex justify-between items-center px-6 py-4 border-b border-grey-light sticky top-0 bg-white z-20">
+  <header className="flex justify-between items-center px-6 py-[15.5px] border-b border-grey-light sticky top-0 bg-white z-20">
     <Heading title="Conversation" align="left" className="text-base-black" />
     <div className="flex items-center gap-2">
       {!isOpen && !isDeleteMode && (

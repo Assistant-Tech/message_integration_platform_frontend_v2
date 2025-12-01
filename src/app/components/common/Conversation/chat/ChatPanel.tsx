@@ -21,6 +21,7 @@ import {
   ManageMembersDialog,
 } from "@/app/components/common/Conversation/chat/chat-panel";
 import ChatMembersDetailsPanel from "@/app/components/common/Conversation/chat/chat-panel/ChatMembersDetailsPanel";
+import ChatOrderInfoPanel from "./chat-panel/ChatOrderInfoPanel";
 
 const ChatPanel = () => {
   const {
@@ -37,6 +38,7 @@ const ChatPanel = () => {
   const [isOpenDetails, setIsOpenDetails] = useState(false);
   const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isOrderInfoOpen, setIsOrderInfoOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [priority, setPriority] = useState("normal");
   const [isMembersPanelOpen, setIsMembersPanelOpen] = useState(false);
@@ -170,6 +172,7 @@ const ChatPanel = () => {
           members={members}
           onToggleDetails={() => setIsOpenDetails((p) => !p)}
           isMembersPanelOpen={() => setIsMembersPanelOpen((p) => !p)}
+          isOrderInfoOpen={() => setIsOrderInfoOpen((p) => !p)}
         />
         <div className="flex-1 overflow-y-auto">
           <ChatFeed messages={localMessages} ref={messagesEndRef} />
@@ -180,6 +183,14 @@ const ChatPanel = () => {
           onSend={handleSend}
         />
       </div>
+
+      {isOrderInfoOpen && (
+        <ChatOrderInfoPanel
+          onSendOrderMessage={(msg) => {
+            setLocalMessages((prev) => [...prev, msg]);
+          }}
+        />
+      )}
 
       {isOpenDetails && (
         <ChatDetailsPanel
