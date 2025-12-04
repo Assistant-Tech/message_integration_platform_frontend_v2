@@ -1,9 +1,10 @@
 import { ChevronLeft, Minus, Plus, Search, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Input } from "@/app/components/ui";
 import { Heading } from "@/app/features/dashboard/admin/component/ui";
 import { cn } from "@/app/utils/cn";
+import { fetchCategories } from "@/app/services/category.services";
 
 interface ChatSearchProductDetailsProps {
   isOpen: boolean;
@@ -21,44 +22,14 @@ interface Product {
   category: string;
 }
 
-const staticCategories = [
-  "Clothing",
-  "T-shirts",
-  "Electronics",
-  "Shoes",
-  "Groceries",
-  "Home Appliances",
-];
-
-const staticProducts: Product[] = [
-  {
-    id: "p1", 
-    name: "Plain T-shirt Round Neck",
-    color: ["#000000", "#ffffff", "#600000", "#800000"],
-    sizes: ["S", "M", "L", "XL"],
-    price: 800,
-    stock: false,
-    category: "Clothing",
-  },
-  {
-    id: "p2",
-    name: "Smartphone X200",
-    color: ["#333333", "#999999"],
-    sizes: [],
-    price: 25000,
-    stock: true,
-    category: "Electronics",
-  },
-  {
-    id: "p3",
-    name: "Running Shoes Pro",
-    color: ["#000000", "#ff0000"],
-    sizes: ["6", "7", "8", "9", "10"],
-    price: 3200,
-    stock: false,
-    category: "Shoes",
-  },
-];
+interface Category {
+  id: string;
+  title: string;
+  description?: string;
+  slug: string;
+  parentId: string | null;
+  children: Product[];
+}
 
 const ChatSearchProductDetails: React.FC<ChatSearchProductDetailsProps> = ({
   isOpen,
@@ -67,14 +38,29 @@ const ChatSearchProductDetails: React.FC<ChatSearchProductDetailsProps> = ({
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [categorydata, setCategorydata] = useState<Category[]>([]);
   const [step, setStep] = useState<"selection" | "details">("selection");
   const [quantity, setQuantity] = useState(1);
 
-  if (!isOpen) return null;
+  // Fetch the categories when the modal opens
+  useEffect(() => {
+    if (!isOpen) return;
 
-  const filteredProducts = selectedCategory
-    ? staticProducts.filter((p) => p.category === selectedCategory)
-    : [];
+    const fetchCategory = async () => {
+      try {
+        const response = await fetchCategories();
+        console.log("🚀 ~ fetchCategory ~ response:", response[0]);
+        setCategorydata(response || []);
+      } catch (error) {
+        console.error("Failed to fetch categories", error);
+      }
+    };
+
+    fetchCategory();
+  }, [isOpen]);
+
+  const filteredProducts =
+    categorydata.find((cat) => cat.title === selectedCategory)?.children || [];
 
   const handleCategoryClick = (category: string) => {
     setSelectedCategory((prev) => (prev === category ? null : category));
@@ -88,6 +74,8 @@ const ChatSearchProductDetails: React.FC<ChatSearchProductDetailsProps> = ({
 
   const increment = () => setQuantity((q) => q + 1);
   const decrement = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
@@ -125,18 +113,22 @@ const ChatSearchProductDetails: React.FC<ChatSearchProductDetailsProps> = ({
             {/* Categories */}
             <h2 className="h5-bold-16 text-start text-grey pt-4">Category</h2>
             <div className="grid grid-cols-3 gap-4 mb-4 pt-3">
-              {staticCategories.map((category) => (
+              {categorydata.length === 0 && (
+                <p className="text-sm text-grey-medium">No categories found</p>
+              )}
+
+              {categorydata.map((category) => (
                 <button
-                  key={category}
-                  onClick={() => handleCategoryClick(category)}
+                  key={category.id}
+                  onClick={() => handleCategoryClick(category.title)}
                   className={cn(
                     "label-regular-14 px-3 py-2 rounded-md border-grey-light hover:bg-primary hover:text-white",
-                    selectedCategory === category
+                    selectedCategory === category.title
                       ? "bg-primary text-white border-primary"
                       : "bg-base-white text-grey-medium",
                   )}
                 >
-                  {category}
+                  {category.title}
                 </button>
               ))}
             </div>

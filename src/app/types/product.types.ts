@@ -180,7 +180,6 @@ export interface CreateProductData {
   images?: File[];
 }
 
-
 // Sorting datasets
 export type SortOption = {
   label: string;
