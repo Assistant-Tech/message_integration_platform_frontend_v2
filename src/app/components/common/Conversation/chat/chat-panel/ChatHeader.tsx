@@ -10,12 +10,13 @@ const ChatHeader = ({
   isMembersPanelOpen,
   isOrderInfoOpen,
   isProductSearchOpen,
+  isOrderNotesOpen,
 }: any) => {
   return (
     <div className="sticky top-0 z-10 flex items-center justify-between py-2 px-4 bg-white border-b border-grey-light">
       <div className="flex items-start gap-2">
         <div>
-          <h2 className="h5-bold-16 text-base-black">
+          <h2 className="h5-bold-16 text-base-grey">
             {conversation?.title || "Untitled Conversation"}
           </h2>
           <p className="text-sm text-grey-medium">
@@ -24,9 +25,27 @@ const ChatHeader = ({
         </div>
       </div>
 
-      <div className="flex justify-end items-end gap-1">
-        {/* PRODUCT CATALOG */}
+      <div className="flex justify-end items-center gap-1">
         <TooltipProvider>
+          {/* Order Notes */}
+          <Tooltip.Root>
+            <Tooltip.Trigger asChild>
+              <button
+                onClick={isOrderNotesOpen}
+                className="p-2 py-px hover:bg-primary hover:text-white rounded-lg transition-colors border border-primary cursor-pointer"
+              >
+                Notes
+              </button>
+            </Tooltip.Trigger>
+            <Tooltip.Content
+              side="bottom"
+              className="rounded-md bg-grey text-white px-2 py-1 text-xs"
+            >
+              Order Notes
+            </Tooltip.Content>
+          </Tooltip.Root>
+
+          {/* PRODUCT CATALOG */}
           <Tooltip.Root>
             <Tooltip.Trigger asChild>
               <button
@@ -38,7 +57,7 @@ const ChatHeader = ({
             </Tooltip.Trigger>
             <Tooltip.Content
               side="bottom"
-              className="rounded-md bg-black text-white px-2 py-1 text-xs"
+              className="rounded-md bg-grey text-white px-2 py-1 text-xs"
             >
               Product Catalog
             </Tooltip.Content>
@@ -55,7 +74,7 @@ const ChatHeader = ({
             </Tooltip.Trigger>
             <Tooltip.Content
               side="bottom"
-              className="rounded-md bg-black text-white px-2 py-1 text-xs"
+              className="rounded-md bg-grey text-white px-2 py-1 text-xs"
             >
               Order Information
             </Tooltip.Content>
@@ -73,7 +92,7 @@ const ChatHeader = ({
             </Tooltip.Trigger>
             <Tooltip.Content
               side="bottom"
-              className="rounded-md bg-black text-white px-2 py-1 text-xs"
+              className="rounded-md bg-grey text-white px-2 py-1 text-xs"
             >
               Members Details
             </Tooltip.Content>
@@ -91,7 +110,7 @@ const ChatHeader = ({
             </Tooltip.Trigger>
             <Tooltip.Content
               side="bottom"
-              className="rounded-md bg-black text-white px-2 py-1 text-xs"
+              className="rounded-md bg-grey text-white px-2 py-1 text-xs"
             >
               Conversation Details
             </Tooltip.Content>

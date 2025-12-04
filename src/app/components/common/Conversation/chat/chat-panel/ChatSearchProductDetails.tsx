@@ -42,7 +42,6 @@ const ChatSearchProductDetails: React.FC<ChatSearchProductDetailsProps> = ({
   const [step, setStep] = useState<"selection" | "details">("selection");
   const [quantity, setQuantity] = useState(1);
 
-  // Fetch the categories when the modal opens
   useEffect(() => {
     if (!isOpen) return;
 

@@ -23,6 +23,7 @@ import {
   ChatOrderInfoPanel,
   ChatSearchProductDetails,
 } from "@/app/components/common/Conversation/chat/chat-panel";
+import ChatOrderNotesPanel from "./chat-panel/ChatNotesOrderPanel";
 
 const ChatPanel = () => {
   const {
@@ -34,6 +35,8 @@ const ChatPanel = () => {
   const { sendMessage, incomingMessages } = useChatSocket();
   const { tenantUsers, fetchTenantUsers } = useTenantStore();
 
+  // For notes
+  const [isOrderNotesOpen, setIsOrderNotesOpen] = useState<boolean>(false);
   const [message, setMessage] = useState("");
   const [localMessages, setLocalMessages] = useState<any[]>([]);
   const [isOpenDetails, setIsOpenDetails] = useState(false);
@@ -176,6 +179,7 @@ const ChatPanel = () => {
           isMembersPanelOpen={() => setIsMembersPanelOpen((p) => !p)}
           isOrderInfoOpen={() => setIsOrderInfoOpen((p) => !p)}
           isProductSearchOpen={() => setIsProductSearchOpen((p) => !p)}
+          isOrderNotesOpen={() => setIsOrderNotesOpen((p) => !p)}
         />
         <div className="flex-1 overflow-y-auto">
           <ChatFeed messages={localMessages} ref={messagesEndRef} />
@@ -198,14 +202,16 @@ const ChatPanel = () => {
             type: "product-details",
             createdAt: new Date().toISOString(),
           };
-
-          // Add to local chat feed
           setLocalMessages((prev) => [...prev, newMsg]);
-
-          // Optional: send to WS server
-          sendMessage(selectedConversationId, JSON.stringify(productMsg));
         }}
       />
+
+      {isOrderNotesOpen && (
+        <ChatOrderNotesPanel
+          onClose={() => setIsOrderNotesOpen(false)}
+          conversationId={selectedConversationId}
+        />
+      )}
 
       {isOrderInfoOpen && (
         <ChatOrderInfoPanel
