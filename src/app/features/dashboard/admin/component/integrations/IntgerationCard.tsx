@@ -11,12 +11,11 @@ interface IntegrationCardProps {
   onToggle?: (enabled: boolean) => void;
   onViewIntegration?: () => void;
 }
-
 const IntegrationCard = ({
-  name = "GitHub",
-  description = "Link pull requests and automate workflows.",
+  name = "",
+  description = "",
   logoSvg,
-  logoBackgroundColor = "bg-black",
+  logoBackgroundColor = "",
   defaultEnabled = true,
   onToggle,
   onViewIntegration,

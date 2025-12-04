@@ -19,9 +19,10 @@ import {
   ChatInput,
   EditConversationDialog,
   ManageMembersDialog,
+  ChatMembersDetailsPanel,
+  ChatOrderInfoPanel,
+  ChatSearchProductDetails,
 } from "@/app/components/common/Conversation/chat/chat-panel";
-import ChatMembersDetailsPanel from "@/app/components/common/Conversation/chat/chat-panel/ChatMembersDetailsPanel";
-import ChatOrderInfoPanel from "./chat-panel/ChatOrderInfoPanel";
 
 const ChatPanel = () => {
   const {
@@ -39,6 +40,7 @@ const ChatPanel = () => {
   const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isOrderInfoOpen, setIsOrderInfoOpen] = useState(false);
+  const [isProductSearchOpen, setIsProductSearchOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [priority, setPriority] = useState("normal");
   const [isMembersPanelOpen, setIsMembersPanelOpen] = useState(false);
@@ -173,6 +175,7 @@ const ChatPanel = () => {
           onToggleDetails={() => setIsOpenDetails((p) => !p)}
           isMembersPanelOpen={() => setIsMembersPanelOpen((p) => !p)}
           isOrderInfoOpen={() => setIsOrderInfoOpen((p) => !p)}
+          isProductSearchOpen={() => setIsProductSearchOpen((p) => !p)}
         />
         <div className="flex-1 overflow-y-auto">
           <ChatFeed messages={localMessages} ref={messagesEndRef} />
@@ -183,6 +186,26 @@ const ChatPanel = () => {
           onSend={handleSend}
         />
       </div>
+
+      <ChatSearchProductDetails
+        isOpen={isProductSearchOpen}
+        onClose={() => setIsProductSearchOpen(false)}
+        onSendProduct={(productMsg) => {
+          const newMsg = {
+            _id: crypto.randomUUID(),
+            sender: "You",
+            content: productMsg,
+            type: "product-details",
+            createdAt: new Date().toISOString(),
+          };
+
+          // Add to local chat feed
+          setLocalMessages((prev) => [...prev, newMsg]);
+
+          // Optional: send to WS server
+          sendMessage(selectedConversationId, JSON.stringify(productMsg));
+        }}
+      />
 
       {isOrderInfoOpen && (
         <ChatOrderInfoPanel

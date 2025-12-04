@@ -10,6 +10,17 @@ export const fetchProducts = async () => {
   return res.data.data;
 };
 
+// Search Products by datasets like: title, sku, color, size 
+// example api : /products/search?q=mobile&minPrice=200&maxPrice=300
+// Query: ?q=mobile&minPrice=200&maxPrice=300
+export const fetchProductsBySearch = async (searchQuery: string) => {
+  const res = await api.get(`/products/search`, {
+    params: { q: searchQuery },
+  });
+  console.log("Products fetched by search ", res.data);
+  return res.data.data;
+}
+
 // Fetch Product Details by Id
 export const fetchProductsById = async (productId: string) => {
   const res = await api.get(`/products/${productId}`);

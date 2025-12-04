@@ -69,7 +69,6 @@ const OrderInfoPanel: React.FC<OrderInfoPanelProps> = ({
       },
     };
 
-    // 🚀 SEND to ChatPanel
     onSendOrderMessage(orderMessage);
   };
 

@@ -97,7 +97,9 @@ const ProductVariants: React.FC<Props> = ({
               />
 
               <select
-                {...register(`variants.${index}.inventory.lowStock` as const)}
+                {...register(`variants.${index}.inventory.lowStock` as const, {
+                  setValueAs: (v) => v === "true",
+                })}
                 className="flex-1 border border-grey-light rounded-lg px-3 py-2"
               >
                 <option value="false">Low Stock: No</option>

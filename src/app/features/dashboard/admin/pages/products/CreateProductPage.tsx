@@ -66,6 +66,7 @@ const CreateProductPage: React.FC = () => {
 
   const onSubmit = async (data: CreateProductData) => {
     try {
+      console.log("🚀 ~ onSubmit ~ data:", data);
       mutate(data);
       reset();
       navigate(`/${tenantSlug}/admin/${APP_ROUTES.ADMIN.PRODUCTS_ALL}`);
