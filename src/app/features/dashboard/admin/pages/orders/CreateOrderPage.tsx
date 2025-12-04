@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form";
 import { ChevronDown, Search } from "lucide-react";
 
-import { APP_ROUTES } from "@/app/constants/routes";
 import { Breadcrumb, Button, Input } from "@/app/components/ui";
 import { Heading } from "@/app/features/dashboard/admin/component/ui";
 import {
@@ -11,6 +10,8 @@ import {
   SelectAllCustomer,
 } from "@/app/features/dashboard/admin/component/";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/app/store/auth.store";
 
 interface OrderFormValues {
   customer: string;
@@ -24,6 +25,8 @@ interface OrderFormValues {
 
 const CreateOrderPage = () => {
   const { register, handleSubmit, reset } = useForm<OrderFormValues>();
+  const navigate = useNavigate();
+  const tenantSlug = useAuthStore((s) => s.tenantSlug);
 
   const [isProductModalOpen, setProductModalOpen] = useState(false);
   const [isSelectAllCustomerModalOpen, setIsSelectAllCustomerModalOpen] =
@@ -33,8 +36,12 @@ const CreateOrderPage = () => {
     console.log("Order Form Data:", data);
   };
 
+  const handleBack = () => {
+    navigate(`/${tenantSlug}/admin/orders`);
+  };
+
   const OrderBreadCrumb = [
-    { label: "Order", href: "orders" },
+    { label: "Order", onClick: handleBack },
     { label: "Create New Order" },
   ];
 

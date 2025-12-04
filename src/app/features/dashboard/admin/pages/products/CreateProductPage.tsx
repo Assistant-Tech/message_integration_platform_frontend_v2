@@ -11,18 +11,21 @@ import {
 import { CreateProductData } from "@/app/types/product.types";
 import { Breadcrumb } from "@/app/components/ui";
 import { Heading } from "@/app/features/dashboard/admin/component/ui/";
-import { APP_ROUTES } from "@/app/constants/routes";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/app/store/auth.store";
 import { useCreateProduct } from "@/app/hooks/useProducts";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { productSchema } from "@/app/schemas/createProduct.schema";
+import { APP_ROUTES } from "@/app/constants/routes";
 
 const CreateProductPage: React.FC = () => {
   const navigate = useNavigate();
   const tenantSlug = useAuthStore((s) => s.tenantSlug);
+  const handleBack = () => {
+    navigate(`/${tenantSlug}/admin/products/all`);
+  };
   const ProductsCrumbs = [
-    { label: "All Products", href: APP_ROUTES.ADMIN.PRODUCTS_ALL },
+    { label: "All Products", onClick: handleBack },
     { label: "Create Product" },
   ];
 

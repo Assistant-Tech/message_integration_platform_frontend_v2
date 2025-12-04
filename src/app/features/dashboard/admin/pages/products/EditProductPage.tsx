@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useProductById, useUpdateProduct } from "@/app/hooks/useProducts";
-import { Button } from "@/app/components/ui";
+import { Breadcrumb, Button } from "@/app/components/ui";
 import { Heading } from "@/app/features/dashboard/admin/component/ui/";
 import Loading from "@/app/components/common/Loading";
 import { useAuthStore } from "@/app/store/auth.store";
@@ -21,7 +21,14 @@ const EditProductPage = () => {
     description: "",
   });
 
-  // const [open]
+  const handleBack = () => {
+    navigate(`/${tenantSlug}/admin/products/all`);
+  };
+
+  const OrderBreadCrumb = [
+    { label: "All Products", onClick: handleBack },
+    { label: "Edit Product" },
+  ];
 
   useEffect(() => {
     if (product) {
@@ -69,19 +76,14 @@ const EditProductPage = () => {
     <div className="p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Button
-            variant="none"
-            IconLeft={<ArrowLeft size={20} />}
-            onClick={handleCancel}
-            className="p-2 hover:bg-grey-light rounded"
-          />
+        <div className="flex flex-col items-center gap-4">
           <div>
             <Heading
               title="Edit Product"
               align="left"
               className="text-base-black"
             />
+            <Breadcrumb items={OrderBreadCrumb} className="py-2" />
             <p className="text-sm text-grey-medium mt-1">
               Update product details
             </p>

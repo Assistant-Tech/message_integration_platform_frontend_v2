@@ -7,11 +7,12 @@ import { fetchProductsById } from "@/app/services/product.services";
 import SelectedImage from "@/app/components/common/SelectedImage";
 import Loading from "@/app/components/common/Loading";
 import { Product } from "@/app/types/product.types";
-import { APP_ROUTES } from "@/app/constants/routes";
 import { Breadcrumb } from "@/app/components/ui";
+import { useAuthStore } from "@/app/store/auth.store";
 
 const ProductDetailsPage = () => {
   const navigate = useNavigate();
+  const tenantSlug = useAuthStore((s) => s.tenantSlug);
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
@@ -31,12 +32,14 @@ const ProductDetailsPage = () => {
     getProduct();
   }, [id]);
 
+  const handleBack = () => {
+    navigate(`/${tenantSlug}/admin/products/all`);
+  };
+
   const ProductsCrumbs = [
-    { label: "All Products", href: APP_ROUTES.ADMIN.PRODUCTS_ALL },
+    { label: "All Products", onClick: handleBack },
     { label: "Product Details" },
   ];
-
-  const handleBack = () => navigate(-1);
 
   if (loading) return <Loading />;
 

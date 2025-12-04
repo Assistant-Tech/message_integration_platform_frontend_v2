@@ -1,3 +1,4 @@
+import { Breadcrumb } from "@/app/components/ui";
 import { useAuthStore } from "@/app/store/auth.store";
 import { ArrowLeft, CheckCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -67,19 +68,19 @@ const OrderDetailsPage = () => {
     navigate(`/${tenantSlug}/admin/orders`);
   };
 
+  const OrderDetalsBreadCrumbs = [
+    { label: "Order", onClick: handleBack, icon: ArrowLeft },
+    { label: "Order Details" },
+  ];
+
   return (
     <div className="p-6 space-y-6 bg-base-white min-h-screen">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <button
-            onClick={handleBack}
-            className="p-2 rounded-lg transition-colors"
-          >
-            <ArrowLeft size={24} className="text-gray-700" />
-          </button>
+        <div className="flex flex-col items-center gap-4">
           <div>
             <h1 className="text-2xl font-semibold text-grey">Order Details</h1>
+            <Breadcrumb items={OrderDetalsBreadCrumbs} className="py-4" />
             <p className="text-sm text-grey-medium mt-1">
               Order ID: {orderData.id}
             </p>
