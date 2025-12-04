@@ -1,6 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { SquarePen, Trash2 } from "lucide-react";
+import { Eye, SquarePen, Trash2 } from "lucide-react";
 import GenericTable from "../table/GenericTable";
+import { useNavigate } from "react-router-dom";
 
 interface Order {
   id: string;
@@ -63,16 +64,26 @@ const columns: ColumnDef<Order>[] = [
   {
     id: "actions",
     header: "Actions",
-    cell: () => (
-      <div className="flex gap-4">
-        <button className="text-grey-medium">
-          <SquarePen size={16} />
-        </button>
-        <button className="text-danger">
-          <Trash2 size={16} />
-        </button>
-      </div>
-    ),
+    cell: ({ row }) => {
+      const navigate = useNavigate();
+
+      return (
+        <div className="flex gap-4">
+          <button
+            className="text-grey-medium cursor-pointer"
+            onClick={() => navigate(`details/${row.original.id}`)}
+          >
+            <Eye size={16} />
+          </button>
+          <button className="text-grey-medium cursor-pointer">
+            <SquarePen size={16} />
+          </button>
+          <button className="text-danger cursor-pointer">
+            <Trash2 size={16} />
+          </button>
+        </div>
+      );
+    },
   },
 ];
 

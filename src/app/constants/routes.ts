@@ -58,6 +58,7 @@ export const APP_ROUTES = {
     ANALYTICS: "analytics",
     ORDERS: "orders",
     ORDERS_CREATE: "orders/createOrder",
+    ORDERS_DETAILS: "orders/details/:id",
 
     // Settings
     SETTINGS: "settings",
