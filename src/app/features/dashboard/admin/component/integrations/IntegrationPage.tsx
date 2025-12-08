@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import IntegrationCard from "./IntgerationCard";
 import {
   allIntegrations,
@@ -7,6 +8,7 @@ import {
 } from "@/app/utils/integration/integration.config";
 
 const IntegrationPage = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("all");
   const [activeCategory, setActiveCategory] = useState("communication");
   const [integrationStates, setIntegrationStates] = useState<
@@ -32,6 +34,14 @@ const IntegrationPage = () => {
       ...prev,
       [id]: enabled,
     }));
+  };
+
+  const handleViewIntegration = (integrationId: string) => {
+    if (integrationId === "stripe") {
+      navigate("stripe");
+    } else {
+      console.log(`View ${integrationId}`);
+    }
   };
 
   const categories = [
@@ -110,7 +120,7 @@ const IntegrationPage = () => {
                   : integration.defaultEnabled
               }
               onToggle={(enabled) => handleToggle(integration.id, enabled)}
-              onViewIntegration={() => console.log(`View ${integration.name}`)}
+              onViewIntegration={() => handleViewIntegration(integration.id)}
             />
           ))}
         </div>

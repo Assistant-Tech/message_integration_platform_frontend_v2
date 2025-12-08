@@ -18,7 +18,7 @@ const ChatFeed = forwardRef<HTMLDivElement, { messages: any[] }>(
           animate={{ opacity: 1, y: 0 }}
           className={cn(
             "ml-auto w-full max-w-xl p-4 rounded-2xl",
-            "bg-primary text-white"
+            "bg-primary text-white",
           )}
         >
           <h3 className="text-base font-bold mb-3 flex items-center gap-2">
@@ -75,7 +75,8 @@ const ChatFeed = forwardRef<HTMLDivElement, { messages: any[] }>(
     // PRODUCT DETAILS MESSAGE
     // ------------------------
     const renderProductDetailsMessage = (msg: any) => {
-      const d = msg.data;
+      const d = msg.content.data;
+      console.log("🚀 ~ renderProductDetailsMessage ~ d:", d);
 
       return (
         <motion.div
@@ -84,7 +85,7 @@ const ChatFeed = forwardRef<HTMLDivElement, { messages: any[] }>(
           animate={{ opacity: 1, y: 0 }}
           className={cn(
             "w-full max-w-xl p-4 rounded-2xl",
-            "bg-white border border-grey-light text-base-black shadow-sm"
+            "bg-primary text-white",
           )}
         >
           <h3 className="text-base font-bold mb-3 flex items-center gap-2">
@@ -93,18 +94,16 @@ const ChatFeed = forwardRef<HTMLDivElement, { messages: any[] }>(
 
           <div className="space-y-2 text-sm">
             <p>
-              <b>Name:</b> {d.name}
+              <b>Name:</b> {d.title}
             </p>
             {d.description && (
               <p>
                 <b>Description:</b> {d.description}
               </p>
             )}
-            {d.price && (
-              <p>
-                <b>Price:</b> Rs. {d.price}
-              </p>
-            )}
+            <p>
+              <b>Price:</b> Rs. {d.variants[0]?.price}
+            </p>
             {d.stock && (
               <p>
                 <b>Available Stock:</b> {d.stock}
@@ -146,16 +145,14 @@ const ChatFeed = forwardRef<HTMLDivElement, { messages: any[] }>(
           "flex flex-col w-fit max-w-[75%] p-3 rounded-2xl break-words shadow-sm",
           msg.sender === "You"
             ? "ml-auto bg-primary text-white"
-            : "bg-white text-grey border border-grey-light"
+            : "bg-white text-grey border border-grey-light",
         )}
       >
         <span className="text-xs font-semibold mb-1 opacity-80">
           {msg.sender}
         </span>
 
-        <p className="text-sm whitespace-pre-wrap break-words">
-          {msg.content}
-        </p>
+        <p className="text-sm whitespace-pre-wrap break-words">{msg.content}</p>
 
         <span className="mt-1 text-xs opacity-70 self-end">
           {format(new Date(msg.createdAt), "p")}
@@ -175,6 +172,7 @@ const ChatFeed = forwardRef<HTMLDivElement, { messages: any[] }>(
             </div>
           ) : (
             messages.map((msg) => {
+              console.log("🚀 ~ msg:", msg);
               switch (msg.type) {
                 case "order-confirmation":
                   return renderOrderMessage(msg);
@@ -191,7 +189,7 @@ const ChatFeed = forwardRef<HTMLDivElement, { messages: any[] }>(
         </div>
       </div>
     );
-  }
+  },
 );
 
 export default ChatFeed;

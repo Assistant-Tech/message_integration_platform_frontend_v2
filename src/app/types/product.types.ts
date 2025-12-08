@@ -128,13 +128,15 @@ export interface InventoryTableProps {
  ─────────────────────────────────────────────────────────────────────────────
 */
 export interface ProductVariant {
+  id?: string;
   title: string;
+  sku?: string;
   price: number;
   attributes: {
     color: string;
     size: string;
   };
-  inventory: {
+  inventory?: {
     stock: number;
     lowStock: boolean;
   };

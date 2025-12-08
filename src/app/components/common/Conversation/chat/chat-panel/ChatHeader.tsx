@@ -10,7 +10,7 @@ const ChatHeader = ({
   isMembersPanelOpen,
   isOrderInfoOpen,
   isProductSearchOpen,
-  isOrderNotesOpen,
+  // isOrderNotesOpen,
 }: any) => {
   return (
     <div className="sticky top-0 z-10 flex items-center justify-between py-2 px-4 bg-white border-b border-grey-light">
@@ -28,7 +28,7 @@ const ChatHeader = ({
       <div className="flex justify-end items-center gap-1">
         <TooltipProvider>
           {/* Order Notes */}
-          <Tooltip.Root>
+          {/* <Tooltip.Root>
             <Tooltip.Trigger asChild>
               <button
                 onClick={isOrderNotesOpen}
@@ -43,7 +43,7 @@ const ChatHeader = ({
             >
               Order Notes
             </Tooltip.Content>
-          </Tooltip.Root>
+          </Tooltip.Root> */}
 
           {/* PRODUCT CATALOG */}
           <Tooltip.Root>

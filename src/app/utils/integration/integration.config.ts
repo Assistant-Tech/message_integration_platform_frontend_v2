@@ -66,24 +66,24 @@ export const allIntegrations: Record<string, Integration[]> = {
       logoBackgroundColor: "bg-indigo-600",
       defaultEnabled: true,
     },
-    {
-      id: "esewa",
-      name: "eSewa",
-      description: "Nepal's popular digital wallet solution.",
-      logoSvg:
-        '<svg viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>',
-      logoBackgroundColor: "bg-green-600",
-      defaultEnabled: true,
-    },
-    {
-      id: "khalti",
-      name: "Khalti",
-      description: "Secure digital payment gateway for Nepal.",
-      logoSvg:
-        '<svg viewBox="0 0 24 24" fill="white"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm3-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>',
-      logoBackgroundColor: "bg-purple-700",
-      defaultEnabled: true,
-    },
+    // {
+    //   id: "esewa",
+    //   name: "eSewa",
+    //   description: "Nepal's popular digital wallet solution.",
+    //   logoSvg:
+    //     '<svg viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>',
+    //   logoBackgroundColor: "bg-green-600",
+    //   defaultEnabled: true,
+    // },
+    // {
+    //   id: "khalti",
+    //   name: "Khalti",
+    //   description: "Secure digital payment gateway for Nepal.",
+    //   logoSvg:
+    //     '<svg viewBox="0 0 24 24" fill="white"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm3-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>',
+    //   logoBackgroundColor: "bg-purple-700",
+    //   defaultEnabled: true,
+    // },
   ],
   shipping: [
     {

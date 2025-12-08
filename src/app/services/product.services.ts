@@ -11,11 +11,6 @@ export const fetchProducts = async () => {
 };
 
 // Search Products by datasets like: title, sku, color, size
-// example api : /products/search?q=mobile&minPrice=200&maxPrice=300
-// Query: ?q=mobile&minPrice=200&maxPrice=300
-
-// Integrate the search api accordingly
-// Also prefetch the datasets and store them into the local storage or memoize the datasets for further enahancement of the website.
 export const fetchProductsBySearch = async (searchQuery: string) => {
   const res = await api.get(`/products/search`, {
     params: { q: searchQuery },

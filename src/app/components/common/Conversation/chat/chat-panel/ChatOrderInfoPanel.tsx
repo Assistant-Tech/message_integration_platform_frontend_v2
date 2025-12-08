@@ -1,9 +1,25 @@
-import React, { useState } from "react";
-import { Button, Input } from "@/app/components/ui";
+import React, { useEffect, useState } from "react";
 import { Heading } from "@/app/features/dashboard/admin/component/ui/";
-import { EllipsisVertical } from "lucide-react";
-import { ModalMessageBox } from "@/app/features/dashboard/admin/component/ui";
-import { AddProduct } from "@/app/features/dashboard/admin/component/";
+import { EllipsisVertical, ChevronLeft } from "lucide-react";
+import {
+  fetchCategories,
+  fetchProductByCategoryId,
+  getCategoryById,
+} from "@/app/services/category.services";
+import { fetchProductsById } from "@/app/services/product.services";
+import ProductSearchView from "@/app/features/dashboard/admin/component/product/ProductSearchView";
+import ProductDetailsView from "@/app/features/dashboard/admin/component/product/ProductDetailsView";
+import OrderModals from "@/app/features/dashboard/admin/component/order/OrderModals";
+import OrderFormView from "@/app/features/dashboard/admin/component/order/OrderFormView";
+import { Product } from "@/app/types/product.types";
+
+interface Category {
+  id: string;
+  title: string;
+  parentId: string | null;
+  slug: string;
+  description: string;
+}
 
 interface OrderFormData {
   product: string;
@@ -14,6 +30,7 @@ interface OrderFormData {
   expectedDelivery: string;
   totalAmount: string;
 }
+
 interface OrderInfoPanelProps {
   onSendOrderMessage: (msg: any) => void;
 }
@@ -21,9 +38,17 @@ interface OrderInfoPanelProps {
 const OrderInfoPanel: React.FC<OrderInfoPanelProps> = ({
   onSendOrderMessage,
 }) => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [view, setView] = useState<"form" | "search" | "details">("search");
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+    null,
+  );
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [quantity, setQuantity] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
 
   const [formData, setFormData] = useState<OrderFormData>({
     product: "",
@@ -86,194 +111,137 @@ const OrderInfoPanel: React.FC<OrderInfoPanelProps> = ({
   };
 
   const handleCancel = () => {
-    setFormData({
-      product: "",
+    setFormData((prev) => ({
+      ...prev,
       fullName: "",
       phoneNumber: "",
       deliveryCharge: "",
       paymentMethod: "",
       expectedDelivery: "",
-      totalAmount: "",
-    });
+    }));
   };
 
-  const handleOpenProductDialog = () => {
-    setIsOpen(true);
+  useEffect(() => {
+    const fetchCategory = async () => {
+      const res = await fetchCategories("");
+      setCategories(res);
+    };
+    fetchCategory();
+  }, [showConfirmModal]);
+
+  const handleOpenProductSearch = () => {
+    setView("search");
+    setSelectedCategory(null);
+    setSearchQuery("");
   };
+
+  const handleCategoryClick = (category: Category) => {
+    setSelectedCategory(category);
+    getCategoryById(category.id);
+    const products = fetchProductByCategoryId(category.id);
+    products.then((res) => setProducts(res));
+  };
+
+  const handleSelectProduct = async (productId: string) => {
+    const product = await fetchProductsById(productId);
+    setSelectedProduct(product);
+    setView("details");
+    setQuantity(1);
+  };
+
+  const handleAddProduct = () => {
+    if (!selectedProduct) return;
+
+    const price = selectedProduct.variants?.[0]?.price ?? 0;
+    const total = price * quantity;
+
+    setFormData((prev) => ({
+      ...prev,
+      product: selectedProduct.title,
+      totalAmount: String(total),
+    }));
+
+    setView("form");
+    setSelectedProduct(null);
+  };
+
+  const increment = () => setQuantity((q) => q + 1);
+  const decrement = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
+
+  const filteredProducts = products.filter((p) =>
+    p.title.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
 
   return (
-    <aside className="w-96 bg-white overflow-y-auto border-l border-grey-light">
+    <aside className="w-2xl bg-white overflow-y-auto border-l border-grey-light">
       <div className="flex justify-between items-center border-b border-grey-light py-[15.2px] px-4">
-        <Heading title="Order Info" className="text-grey-medium" />
+        <div className="flex items-center gap-2">
+          {view !== "search" && (
+            <button
+              onClick={() => {
+                if (view === "details") setView("search");
+                if (view === "form") setView("details");
+              }}
+            >
+              <ChevronLeft size={24} color="grey" className="cursor-pointer" />
+            </button>
+          )}
+          <Heading
+            title={
+              view === "form"
+                ? "Order Info"
+                : view === "search"
+                  ? "Add Product"
+                  : "Product Details"
+            }
+            className="text-grey-medium"
+          />
+        </div>
         <EllipsisVertical size={24} color="black" />
       </div>
 
+      {/* Form Section */}
       <div className="p-6">
-        <h1 className="body-bold-16 text-grey-medium pb-2 border-b border-grey-light">
-          Create Order
-        </h1>
-
-        {/* Product Search */}
-        <div className="flex flex-col py-3">
-          <h2 className="body-medium-16 text-grey pb-1">Product</h2>
-
-          <Input
-            name="product"
-            placeholder="Search"
-            onClick={handleOpenProductDialog}
-            className="w-full py-3 border border-grey-light rounded-lg"
-          />
-        </div>
-
-        {/* Full Name */}
-        <div className="flex flex-col py-3">
-          <h2 className="body-medium-16 text-grey pb-1">Full Name</h2>
-          <Input
-            name="fullName"
-            value={formData.fullName}
-            type="text"
-            placeholder="Enter full name"
+        {view === "form" && (
+          <OrderFormView
+            formData={formData}
             onChange={handleChange}
-            className="w-full py-3 border border-grey-light rounded-lg"
+            onOpenSearch={handleOpenProductSearch}
+            onCancel={handleCancel}
+            onSubmit={handleSubmit}
           />
-        </div>
+        )}
 
-        {/* Phone Number */}
-        <div className="flex flex-col py-3">
-          <h2 className="body-medium-16 text-grey pb-1">Phone Number</h2>
-          <Input
-            name="phoneNumber"
-            value={formData.phoneNumber}
-            type="text"
-            placeholder="Enter phone number"
-            onChange={handleChange}
-            className="w-full py-3 border border-grey-light rounded-lg"
+        {view === "search" && (
+          <ProductSearchView
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            categories={categories}
+            selectedCategory={selectedCategory}
+            onCategoryClick={handleCategoryClick}
+            products={filteredProducts}
+            onSelectProduct={handleSelectProduct}
           />
-        </div>
+        )}
 
-        {/* Total Amount */}
-        <div className="flex flex-col py-3">
-          <h2 className="body-medium-16 text-grey pb-1">Total Amount</h2>
-          <Input
-            name="totalAmount"
-            value={formData.totalAmount}
-            type="number"
-            placeholder="Enter total amount"
-            onChange={handleChange}
-            className="w-full py-3 border border-grey-light rounded-lg"
+        {view === "details" && selectedProduct && (
+          <ProductDetailsView
+            product={selectedProduct}
+            quantity={quantity}
+            increment={increment}
+            decrement={decrement}
+            onAdd={handleAddProduct}
           />
-        </div>
+        )}
 
-        {/* Delivery Charge */}
-        <div className="flex flex-col py-3">
-          <h2 className="body-medium-16 text-grey pb-1">Delivery Charge</h2>
-          <Input
-            name="deliveryCharge"
-            value={formData.deliveryCharge}
-            type="text"
-            placeholder="Enter delivery charge"
-            onChange={handleChange}
-            className="w-full py-3 border border-grey-light rounded-lg"
-          />
-        </div>
-
-        {/* Payment Method */}
-        <div className="flex flex-col py-3">
-          <h2 className="body-medium-16 text-grey pb-1">Payment Method</h2>
-          <select
-            name="paymentMethod"
-            value={formData.paymentMethod}
-            onChange={handleChange}
-            className="w-full py-3 px-4 border border-grey-light text-grey rounded-lg"
-          >
-            <option value="">Select payment method</option>
-            <option value="stripe">Stripe</option>
-            <option value="khalti">Khalti</option>
-            <option value="esewa">Esewa</option>
-            <option value="cash">Cash On Delivery</option>
-          </select>
-        </div>
-
-        {/* Expected Delivery */}
-        <div className="flex flex-col py-3">
-          <h2 className="body-medium-16 text-grey pb-1">Expected Delivery</h2>
-          <select
-            name="expectedDelivery"
-            value={formData.expectedDelivery}
-            onChange={handleChange}
-            className="w-full py-3 px-4 border border-grey-light text-grey rounded-lg"
-          >
-            <option value="">Select expected delivery</option>
-            <option value="1-day">1 Day</option>
-            <option value="3-days">3 Days</option>
-            <option value="week">1 Week</option>
-          </select>
-        </div>
-
-        {/* Totals - These should be calculated dynamically if needed */}
-        <div className="flex flex-col p-3 bg-grey-light rounded-xl text-grey-medium my-2">
-          <div className="flex justify-between">
-            <h1>Total Amount</h1>
-            <p>Rs. {formData.totalAmount || "0.0"}</p>
-          </div>
-          <div className="flex justify-between">
-            <h1>Delivery Charge</h1>
-            <p>Rs. {formData.deliveryCharge || "0.0"}</p>
-          </div>
-          <div className="flex justify-between">
-            <h5>Total</h5>
-            <p>
-              Rs.{" "}
-              {(Number(formData.totalAmount) || 0) +
-                (Number(formData.deliveryCharge) || 0)}
-            </p>
-          </div>
-        </div>
-
-        {/* Buttons */}
-        <div className="w-full flex justify-end gap-2 pt-4">
-          <Button
-            label="Cancel"
-            onClick={handleCancel}
-            variant="none"
-            className="w-full bg-grey hover:bg-grey-medium text-white p-4"
-          />
-          <Button
-            label="Confirm Order"
-            onClick={handleSubmit}
-            variant="primary"
-            className="px-5 w-full"
-          />
-        </div>
-      </div>
-
-      {/* Product Dialog Box */}
-      <AddProduct isOpen={isOpen} onClose={() => setIsOpen(false)} />
-
-      {/* Modal: Confirm Order */}
-      {showConfirmModal && (
-        <ModalMessageBox
-          type="success"
-          title="Confirm Order?"
-          description="Are you sure you want to place this order?"
-          confirmLabel="Yes, Confirm"
-          cancelLabel="Cancel"
-          onCancel={() => setShowConfirmModal(false)}
+        <OrderModals
+          showConfirm={showConfirmModal}
+          showSuccess={showSuccessModal}
           onConfirm={confirmOrder}
+          onCancel={() => setShowConfirmModal(false)}
+          onSuccess={closeSuccessModal}
         />
-      )}
-
-      {/* Modal: Success */}
-      {showSuccessModal && (
-        <ModalMessageBox
-          type="success"
-          title="Order Placed!"
-          description="Your order has been successfully submitted."
-          confirmLabel="OK"
-          onCancel={closeSuccessModal}
-          onConfirm={closeSuccessModal}
-        />
-      )}
+      </div>
     </aside>
   );
 };

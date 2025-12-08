@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 import { Heading } from "@/app/features/dashboard/admin/component/ui";
 import { fetchProductsById } from "@/app/services/product.services";
-import SelectedImage from "@/app/components/common/SelectedImage";
+import { SelectedImage } from "@/app/components/common/SelectedImage";
 import Loading from "@/app/components/common/Loading";
 import { Product } from "@/app/types/product.types";
 import { Breadcrumb } from "@/app/components/ui";

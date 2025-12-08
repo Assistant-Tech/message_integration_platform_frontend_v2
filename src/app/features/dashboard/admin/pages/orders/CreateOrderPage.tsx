@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
 import { ChevronDown, Search } from "lucide-react";
-
 import { Breadcrumb, Button, Input } from "@/app/components/ui";
 import { Heading } from "@/app/features/dashboard/admin/component/ui";
 import {
@@ -9,9 +8,11 @@ import {
   PaymentMethods,
   SelectAllCustomer,
 } from "@/app/features/dashboard/admin/component/";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/app/store/auth.store";
+import { fetchProducts } from "@/app/services/product.services";
+import { createOrder } from "@/app/services/order.services";
 
 interface OrderFormValues {
   customer: string;
@@ -23,17 +24,88 @@ interface OrderFormValues {
   paymentMethod: string;
 }
 
+interface SelectedItem {
+  productId: string;
+  variantId: string;
+  quantity: number;
+}
+
 const CreateOrderPage = () => {
   const { register, handleSubmit, reset } = useForm<OrderFormValues>();
+
   const navigate = useNavigate();
   const tenantSlug = useAuthStore((s) => s.tenantSlug);
+
+  const [products, setProducts] = useState<any[]>([]);
+  // console.log("🚀 ~ CreateOrderPage ~ products:", products);
+  const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const [isProductModalOpen, setProductModalOpen] = useState(false);
   const [isSelectAllCustomerModalOpen, setIsSelectAllCustomerModalOpen] =
     useState<boolean>(false);
 
-  const onSubmit = (data: OrderFormValues) => {
-    console.log("Order Form Data:", data);
+  // ✅ FETCH PRODUCTS
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const data = await fetchProducts();
+        setProducts(data);
+      } catch (err) {
+        console.error("Product fetch failed", err);
+      }
+    };
+    loadProducts();
+  }, []);
+
+  const handleAddProduct = (payload: {
+    productId: string;
+    variantId: string;
+    quantity: number;
+  }) => {
+    setSelectedItems((prev) => [...prev, payload]);
+  };
+
+  // ✅ SUBMIT ORDER
+  const onSubmit = async (data: OrderFormValues) => {
+    if (selectedItems.length === 0) {
+      alert("Please add at least one product");
+      return;
+    }
+
+    const payload = {
+      channel: "WHATSAPP",
+      items: selectedItems,
+      shippingDetails: {
+        customerName: data.fullName,
+        contactInfo: {
+          phone: data.phone,
+          email: data.email,
+        },
+        shippingAddress: data.location,
+      },
+      discount: 0,
+      tax: 0,
+      metadata: {
+        source: "admin_panel",
+        notes: "Order created from dashboard",
+      },
+    };
+
+    try {
+      setLoading(true);
+
+      const res = await createOrder(payload);
+      console.log("✅ Order Created:", res.data);
+
+      reset();
+      navigate(`/${tenantSlug}/admin/orders`);
+    } catch (error: any) {
+      console.error("❌ Order creation failed:", error.response?.data || error);
+      alert(error.response?.data?.message || "Order creation failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleBack = () => {
@@ -56,13 +128,14 @@ const CreateOrderPage = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="grid grid-cols-1 md:grid-cols-3 gap-6"
       >
-        {/* Left Column */}
+        {/* ✅ LEFT COLUMN */}
         <div className="md:col-span-2 space-y-6">
-          {/* Add Product Section */}
+          {/* ✅ ADD PRODUCT */}
           <div className="border border-grey-light rounded-md">
-            <h3 className="h5-bold-16 text-grey px-8 py-4 rounded-t-lg  bg-base-white">
+            <h3 className="h5-bold-16 text-grey px-8 py-4 bg-base-white">
               Add Product
             </h3>
+
             <div className="w-full px-8 py-6">
               <div className="flex gap-2">
                 <Input
@@ -76,120 +149,85 @@ const CreateOrderPage = () => {
                   onClick={() => setProductModalOpen(true)}
                 />
               </div>
-              <div className="flex justify-between mt-2 text-grey label-bold-14 pt-4">
-                <span>Product</span>
-                <span>Qty.</span>
-                <span>Total</span>
+
+              {/* ✅ SELECTED PRODUCTS */}
+              <div className="mt-6 space-y-2">
+                {selectedItems.map((item, index) => (
+                  <div key={index} className="flex justify-between text-grey">
+                    <span>{item.productId}</span>
+                    <span>Qty: {item.quantity}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
 
-          {/* Customer Info */}
+          {/* ✅ CUSTOMER INFO */}
           <div className="border border-grey-light rounded-md">
-            <h3 className="h5-bold-16 text-grey px-8 py-4 rounded-t-lg  bg-base-white">
+            <h3 className="h5-bold-16 text-grey px-8 py-4 bg-base-white">
               Customer Information
             </h3>
-            <div className="w-full px-8 py-6">
-              <div className="space-y-4 pt-4">
-                <label
-                  htmlFor="customer"
-                  className="body-medium-16 text-grey-medium pb-1"
-                >
-                  Select Customer
-                </label>
-                <Input
-                  iconLeft={<Search size={20} color="grey" />}
-                  {...register("customer")}
-                  placeholder="Select customer"
-                  onClick={() => setIsSelectAllCustomerModalOpen(true)}
-                />
-                <label
-                  htmlFor="fullName"
-                  className="body-medium-16 text-grey-medium pb-1"
-                >
-                  Full Name
-                </label>
-                <Input
-                  {...register("fullName")}
-                  placeholder="Enter full name"
-                />
-                <label
-                  htmlFor="phone"
-                  className="body-medium-16 text-grey-medium pb-1"
-                >
-                  Phone Number
-                </label>
-                <Input
-                  {...register("phone")}
-                  placeholder="Enter phone number"
-                />
-                <label
-                  htmlFor="email"
-                  className="body-medium-16 text-grey-medium pb-1"
-                >
-                  E-mail Address
-                </label>
-                <Input
-                  {...register("email")}
-                  placeholder="Enter email address"
-                />
-                <label
-                  htmlFor="location="
-                  className="body-medium-16 text-grey-medium pb-1"
-                >
-                  Location
-                </label>
-                <Input
-                  {...register("location")}
-                  placeholder="Enter the location"
-                />
 
-                <div className="relative">
-                  <label
-                    htmlFor="exp_delivery"
-                    className="body-medium-16 text-grey-medium"
-                  >
-                    Expected Delivery
-                  </label>
-                  <Input
-                    {...register("expectedDelivery")}
-                    placeholder="Select expected delivery"
-                  />
-                  <ChevronDown
-                    className="absolute top-12 right-3 transform -translate-y-1/2 text-grey"
-                    size={20}
-                  />
-                </div>
+            <div className="w-full px-8 py-6 space-y-4">
+              {/* <Input
+                iconLeft={<Search size={20} />}
+                {...register("customer")}
+                placeholder="Select customer"
+                onClick={() => setIsSelectAllCustomerModalOpen(true)}
+              /> */}
+
+              <Input {...register("fullName")} placeholder="Full Name" />
+              <Input {...register("phone")} placeholder="Phone" />
+              <Input {...register("email")} placeholder="Email" />
+              <Input {...register("location")} placeholder="Location" />
+
+              {/* Order Notes */}
+              <textarea
+                name="orderNotes"
+                placeholder="Order Notes"
+                className="w-full px-4 py-3 sm:py-2 min-h-[48px] border rounded-lg outline-none transition-all body-regular-16 text-grey-medium"
+              />
+
+              <div className="relative">
+                <Input
+                  {...register("expectedDelivery")}
+                  placeholder="Expected Delivery"
+                />
+                <ChevronDown className="absolute top-1/2 right-3 -translate-y-1/2" />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Right Column */}
+        {/* ✅ RIGHT COLUMN */}
         <div className="space-y-6">
-          {/* Payment Details */}
           <PaymentDetails />
-          {/* Payment Method */}
           <PaymentMethods />
-          {/* Action Buttons */}
+
           <div className="flex items-center justify-end gap-4">
             <Button
-              label=" Clear All"
+              type="button"
+              label="Clear All"
               onClick={() => reset()}
               variant="outlined"
             />
-            <Button label="Save Order" />
+
+            <Button
+              type="submit"
+              label={loading ? "Saving..." : "Save Order"}
+            />
           </div>
         </div>
       </form>
 
-      {/* Add Product Component */}
+      {/* ✅ PASS CALLBACK TO PRODUCT MODAL */}
       <AddProduct
         isOpen={isProductModalOpen}
         onClose={() => setProductModalOpen(false)}
+        products={products}
+        onAddProduct={handleAddProduct}
       />
 
-      {/* Select all the Customers */}
       <SelectAllCustomer
         isOpen={isSelectAllCustomerModalOpen}
         onClose={() => setIsSelectAllCustomerModalOpen(false)}

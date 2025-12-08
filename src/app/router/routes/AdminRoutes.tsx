@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import { lazy } from "react";
 import { APP_ROUTES } from "@/app/constants/routes";
-
+import StripeApiSettings from "@/app/features/dashboard/admin/component/integrations/StripeApiSettings";
 
 const AdminLayout = lazy(
   () => import("@/app/components/layout/dashboard-layouts/AdminLayout"),
@@ -214,6 +214,10 @@ const AdminRoutes = () => {
         <Route
           path={APP_ROUTES.ADMIN.SETTINGS_INTEGRATION_SETTINGS}
           element={<IntegrationPage />}
+        />
+        <Route
+          path={APP_ROUTES.ADMIN.SETTINGS_STRIPE}
+          element={<StripeApiSettings />}
         />
       </Route>
     </Routes>

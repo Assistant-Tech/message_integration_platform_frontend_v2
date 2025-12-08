@@ -4,7 +4,7 @@ import { Breadcrumb, Button } from "@/app/components/ui";
 import { Heading } from "@/app/features/dashboard/admin/component/ui/";
 import Loading from "@/app/components/common/Loading";
 import { useAuthStore } from "@/app/store/auth.store";
-import { ArrowLeft, Save } from "lucide-react";
+import { Save } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
