@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/app/store/auth.store";
 import { fetchProducts } from "@/app/services/product.services";
 import { createOrder } from "@/app/services/order.services";
+import { getStripePaymentLink } from "@/app/services/stripe.services";
 
 interface OrderFormValues {
   customer: string;
@@ -37,9 +38,13 @@ const CreateOrderPage = () => {
   const tenantSlug = useAuthStore((s) => s.tenantSlug);
 
   const [products, setProducts] = useState<any[]>([]);
-  // console.log("🚀 ~ CreateOrderPage ~ products:", products);
+  const [messages, setMessages] = useState<any[]>([]);
   const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const addLocalMessage = (msg: any) => {
+    setMessages((prev) => [...prev, msg]);
+  };
 
   const [isProductModalOpen, setProductModalOpen] = useState(false);
   const [isSelectAllCustomerModalOpen, setIsSelectAllCustomerModalOpen] =
@@ -66,7 +71,6 @@ const CreateOrderPage = () => {
     setSelectedItems((prev) => [...prev, payload]);
   };
 
-  // ✅ SUBMIT ORDER
   const onSubmit = async (data: OrderFormValues) => {
     if (selectedItems.length === 0) {
       alert("Please add at least one product");
@@ -96,7 +100,22 @@ const CreateOrderPage = () => {
       setLoading(true);
 
       const res = await createOrder(payload);
-      console.log("✅ Order Created:", res.data);
+      const orderId = res.data.id;
+
+      const paymentLinkData = await getStripePaymentLink(orderId);
+      addLocalMessage({
+        _id: crypto.randomUUID(),
+        type: "payment-link",
+        content: {
+          url: paymentLinkData.paymentLink,
+        },
+        createdAt: new Date().toISOString(),
+        sender: "admin",
+      });
+
+      if (paymentLinkData.success) {
+        console.log("Payment Link:", paymentLinkData.paymentLink);
+      }
 
       reset();
       navigate(`/${tenantSlug}/admin/orders`);
@@ -150,7 +169,6 @@ const CreateOrderPage = () => {
                 />
               </div>
 
-              {/* ✅ SELECTED PRODUCTS */}
               <div className="mt-6 space-y-2">
                 {selectedItems.map((item, index) => (
                   <div key={index} className="flex justify-between text-grey">
@@ -169,13 +187,6 @@ const CreateOrderPage = () => {
             </h3>
 
             <div className="w-full px-8 py-6 space-y-4">
-              {/* <Input
-                iconLeft={<Search size={20} />}
-                {...register("customer")}
-                placeholder="Select customer"
-                onClick={() => setIsSelectAllCustomerModalOpen(true)}
-              /> */}
-
               <Input {...register("fullName")} placeholder="Full Name" />
               <Input {...register("phone")} placeholder="Phone" />
               <Input {...register("email")} placeholder="Email" />

@@ -206,12 +206,12 @@ const ChatPanel = () => {
         }}
       />
 
-      {isOrderNotesOpen && (
+      {/* {isOrderNotesOpen && (
         <ChatOrderNotesPanel
           onClose={() => setIsOrderNotesOpen(false)}
           conversationId={selectedConversationId}
         />
-      )}
+      )} */}
 
       {isOrderInfoOpen && (
         <ChatOrderInfoPanel

@@ -76,7 +76,8 @@ const ChatFeed = forwardRef<HTMLDivElement, { messages: any[] }>(
     // ------------------------
     const renderProductDetailsMessage = (msg: any) => {
       const d = msg.content.data;
-      console.log("🚀 ~ renderProductDetailsMessage ~ d:", d);
+
+      const isMine = msg.sender === "You"; // <-- check sender
 
       return (
         <motion.div
@@ -84,8 +85,10 @@ const ChatFeed = forwardRef<HTMLDivElement, { messages: any[] }>(
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           className={cn(
-            "w-full max-w-xl p-4 rounded-2xl",
-            "bg-primary text-white",
+            "w-full max-w-xl flex flex-col justify-end p-4 rounded-2xl",
+            isMine
+              ? "ml-auto bg-primary text-white"
+              : "bg-white text-grey border border-grey-light",
           )}
         >
           <h3 className="text-base font-bold mb-3 flex items-center gap-2">
@@ -120,7 +123,7 @@ const ChatFeed = forwardRef<HTMLDivElement, { messages: any[] }>(
             <div className="mt-3">
               <img
                 src={d.image}
-                alt={d.name}
+                alt={d.title}
                 className="rounded-xl w-full max-h-64 object-cover"
               />
             </div>
@@ -161,6 +164,44 @@ const ChatFeed = forwardRef<HTMLDivElement, { messages: any[] }>(
     );
 
     // ------------------------
+    // PAYMENT CHAT MESSAGE
+    // ------------------------
+    const renderPaymentLinkMessage = (msg: any) => {
+      const link = msg.content?.url;
+
+      return (
+        <motion.div
+          key={msg._id}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className={cn(
+            "ml-auto w-full max-w-xl p-4 rounded-2xl bg-primary text-white",
+          )}
+        >
+          <h3 className="text-base font-bold mb-3 flex items-center gap-2">
+            💳 Payment Link
+          </h3>
+
+          <p className="text-sm">
+            Please complete your payment using the link below:
+          </p>
+
+          <a
+            href={link}
+            target="_blank"
+            className="block mt-3 underline underline-offset-4 font-medium bg-white text-green-700 p-2 rounded-lg text-center"
+          >
+            Pay Now
+          </a>
+
+          <span className="text-xs opacity-70 block text-right mt-2">
+            {format(new Date(msg.createdAt), "p")}
+          </span>
+        </motion.div>
+      );
+    };
+
+    // ------------------------
     // MAIN RENDER
     // ------------------------
     return (
@@ -178,6 +219,8 @@ const ChatFeed = forwardRef<HTMLDivElement, { messages: any[] }>(
                   return renderOrderMessage(msg);
                 case "product-details":
                   return renderProductDetailsMessage(msg);
+                case "payment-link":
+                  return renderPaymentLinkMessage(msg);
                 default:
                   return renderDefaultMessage(msg);
               }
