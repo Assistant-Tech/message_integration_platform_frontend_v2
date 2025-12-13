@@ -142,7 +142,6 @@ export default function OrderTable({
                   try {
                     const config = await checkStripeConfiguration();
 
-                    // 🟩 FIX STRIPE CONFIG CHECK
                     const isConfigured = config?.data?.isConfigured;
 
                     if (!isConfigured) {
@@ -152,7 +151,6 @@ export default function OrderTable({
                       return;
                     }
 
-                    // 🟩 FIX PAYMENT CHECK
                     if (!isPaid) {
                       toast.error(
                         "Order is not paid yet. Cannot generate shipping label.",

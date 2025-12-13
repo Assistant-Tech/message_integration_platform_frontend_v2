@@ -25,7 +25,7 @@ const DashboardPreview: React.FC = () => {
   );
 
   return (
-    <div ref={containerRef} className="relative pb-32 bg-primary-light -z-50">
+    <div ref={containerRef} className="relative pb-32 -z-50">
       <div className="relative">
         <motion.div
           ref={ref}

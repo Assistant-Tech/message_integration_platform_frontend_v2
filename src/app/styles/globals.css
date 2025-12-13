@@ -49,86 +49,80 @@ img {
 
 @theme {
   /* Breakpoints */
-  --breakpoint-mobile: 480px; /* Mobile devices (phones) */
-  --breakpoint-tablet: 768px; /* Tablets (iPad, etc.) */
-  --breakpoint-desktop: 1024px; /* Desktop computers */
-  --breakpoint-large: 1440px; /* Large desktop/monitors */
+  --breakpoint-mobile: 480px;
+  --breakpoint-tablet: 768px;
+  --breakpoint-desktop: 1024px;
+  --breakpoint-large: 1440px;
 
   /* Font families */
   --font-sans: "Nunito Sans", ui-sans-serif, system-ui, sans-serif;
   --font-nunito: "Nunito Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-meri: "Merriweather", ui-sans-serif, system-ui, sans-serif;
+  --font-meri: "Merriweather", ui-serif, system-ui, serif;
 
   /* Custom gradient */
   --custom-gradient: linear-gradient(to bottom, #1cb496 8%, #169078 81.5%);
 
-  /*PrimaryColor*/
-  --color-primary-light: #e4f7f3;
+  /* ----------------------------------- */
+  /* PRIMARY COLOR PALETTE (#2E5E99)     */
+  /* ----------------------------------- */
+  --color-primary-light: #7ba4f0;
+  --color-primary: #2e5e99; /* MAIN PRIMARY */
+  --color-primary-dark: #0d2440;
   --color-primary-inactive: #a1e0d4;
-  --color-primary: #1cb496;
-  --color-primary-dark: #169078;
-  --color-white: #ffffff;
 
-  /* Secondary Color */
+  /* Secondary */
   --color-secondary-light: #fef3e6;
-  --color-secondary-inactive: #f9cf99;
   --color-secondary: #f08700;
   --color-secondary-dark: #c06c00;
+  --color-secondary-inactive: #f9cf99;
 
-  /* Text Color */
+  /* Text Colors */
   --color-base-white: #f8f9fa;
+  --color-grey-light: #e3e3e3;
   --color-grey-medium: #666666;
   --color-grey: #333333;
   --color-base-black: #03120f;
-  --color-primary: #1cb496;
-  --color-secondary: #f08700;
 
-  /* Border color */
-  --color-grey-light: #e3e3e3;
-
-  /* Success color */
+  /* Success */
   --color-success-light: #dbf7ea;
   --color-success: #009951;
   --color-success-dark: #006b38;
 
-  /* Warning color */
+  /* Warning */
   --color-warning-light: #fff3d1;
   --color-warning: #ffc21a;
   --color-warning-dark: #daa000;
 
-  /* Danger color */
+  /* Danger */
   --color-danger-light: #f8cac7;
   --color-danger: #b3261e;
   --color-danger-dark: #8d0800;
 
-  /* Information color */
+  /* Information */
   --color-information-light: #e6f2fc;
   --color-information: #007be5;
   --color-information-dark: #004a89;
 }
 
-/* Scroll bar hide */
+/* Scrollbar Hide */
 .scrollbar-hide {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
 
-/* Global CSS or in your tailwind config file */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px; /* Set the width of the scrollbar */
+  width: 8px;
 }
-
 ::-webkit-scrollbar-thumb {
-  background-color: #68dac5; /* Replace with your bg-primary color */
+  background-color: #68dac5;
   border-radius: 8px;
 }
-
 ::-webkit-scrollbar-track {
-  background-color: #1cb496; /* Replace with your bg-primary-dark color */
+  background-color: #1cb496;
   border-radius: 8px;
 }
 

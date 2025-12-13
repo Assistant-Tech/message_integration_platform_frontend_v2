@@ -12,7 +12,7 @@ import { DASHBOARD_IMAGE_URL_MOBILE } from "@/app/constants/image-cloudinary";
 const HeroSection: React.FC = () => {
   return (
     <section
-      className="relative z-10 mt-20 bg-primary-light rounded-4xl overflow-hidden"
+      className="relative z-10 mt-20 bg-primary-light/40 rounded-4xl overflow-hidden"
       id="hero"
     >
       {/* Background abstract shapes - reduced animation complexity */}

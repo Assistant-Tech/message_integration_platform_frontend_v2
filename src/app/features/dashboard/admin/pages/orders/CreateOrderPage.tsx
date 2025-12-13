@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
-import { ChevronDown, Search } from "lucide-react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ChevronDown } from "lucide-react";
 import { Breadcrumb, Button, Input } from "@/app/components/ui";
 import { Heading } from "@/app/features/dashboard/admin/component/ui";
 import {
@@ -14,16 +15,10 @@ import { useAuthStore } from "@/app/store/auth.store";
 import { fetchProducts } from "@/app/services/product.services";
 import { createOrder } from "@/app/services/order.services";
 import { getStripePaymentLink } from "@/app/services/stripe.services";
-
-interface OrderFormValues {
-  customer: string;
-  fullName: string;
-  phone: string;
-  email: string;
-  location: string;
-  expectedDelivery: string;
-  paymentMethod: string;
-}
+import {
+  orderFormSchema,
+  OrderFormValues,
+} from "@/app/schemas/createOrder.schema";
 
 interface SelectedItem {
   productId: string;
@@ -32,11 +27,18 @@ interface SelectedItem {
 }
 
 const CreateOrderPage = () => {
-  const { register, handleSubmit, reset } = useForm<OrderFormValues>();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<OrderFormValues>({
+    resolver: zodResolver(orderFormSchema),
+    mode: "onBlur",
+  });
 
   const navigate = useNavigate();
   const tenantSlug = useAuthStore((s) => s.tenantSlug);
-
   const [products, setProducts] = useState<any[]>([]);
   const [messages, setMessages] = useState<any[]>([]);
   const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([]);
@@ -50,7 +52,6 @@ const CreateOrderPage = () => {
   const [isSelectAllCustomerModalOpen, setIsSelectAllCustomerModalOpen] =
     useState<boolean>(false);
 
-  // ✅ FETCH PRODUCTS
   useEffect(() => {
     const loadProducts = async () => {
       try {
@@ -92,17 +93,16 @@ const CreateOrderPage = () => {
       tax: 0,
       metadata: {
         source: "admin_panel",
-        notes: "Order created from dashboard",
+        notes: data.orderNotes || "Order created from dashboard",
       },
     };
 
     try {
       setLoading(true);
-
       const res = await createOrder(payload);
       const orderId = res.data.id;
-
       const paymentLinkData = await getStripePaymentLink(orderId);
+
       addLocalMessage({
         _id: crypto.randomUUID(),
         type: "payment-link",
@@ -154,7 +154,6 @@ const CreateOrderPage = () => {
             <h3 className="h5-bold-16 text-grey px-8 py-4 bg-base-white">
               Add Product
             </h3>
-
             <div className="w-full px-8 py-6">
               <div className="flex gap-2">
                 <Input
@@ -168,7 +167,6 @@ const CreateOrderPage = () => {
                   onClick={() => setProductModalOpen(true)}
                 />
               </div>
-
               <div className="mt-6 space-y-2">
                 {selectedItems.map((item, index) => (
                   <div key={index} className="flex justify-between text-grey">
@@ -185,26 +183,89 @@ const CreateOrderPage = () => {
             <h3 className="h5-bold-16 text-grey px-8 py-4 bg-base-white">
               Customer Information
             </h3>
-
             <div className="w-full px-8 py-6 space-y-4">
-              <Input {...register("fullName")} placeholder="Full Name" />
-              <Input {...register("phone")} placeholder="Phone" />
-              <Input {...register("email")} placeholder="Email" />
-              <Input {...register("location")} placeholder="Location" />
+              <div>
+                <Input
+                  {...register("fullName")}
+                  placeholder="Full Name"
+                  className={errors.fullName ? "border-danger" : ""}
+                />
+                {errors.fullName && (
+                  <p className="text-danger text-sm mt-1">
+                    {errors.fullName.message}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <Input
+                  {...register("phone")}
+                  placeholder="Phone"
+                  className={errors.phone ? "border-danger" : ""}
+                />
+                {errors.phone && (
+                  <p className="text-danger text-sm mt-1">
+                    {errors.phone.message}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <Input
+                  {...register("email")}
+                  placeholder="Email"
+                  type="email"
+                  className={errors.email ? "border-danger" : ""}
+                />
+                {errors.email && (
+                  <p className="text-danger text-sm mt-1">
+                    {errors.email.message}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <Input
+                  {...register("location")}
+                  placeholder="Location"
+                  className={errors.location ? "border-danger" : ""}
+                />
+                {errors.location && (
+                  <p className="text-danger text-sm mt-1">
+                    {errors.location.message}
+                  </p>
+                )}
+              </div>
 
               {/* Order Notes */}
-              <textarea
-                name="orderNotes"
-                placeholder="Order Notes"
-                className="w-full px-4 py-3 sm:py-2 min-h-[48px] border rounded-lg outline-none transition-all body-regular-16 text-grey-medium"
-              />
+              <div>
+                <textarea
+                  {...register("orderNotes")}
+                  placeholder="Order Notes"
+                  className={`w-full px-4 py-3 sm:py-2 min-h-[48px] border rounded-lg outline-none transition-all body-regular-16 text-grey-medium ${
+                    errors.orderNotes ? "border-danger" : ""
+                  }`}
+                />
+                {errors.orderNotes && (
+                  <p className="text-danger text-sm mt-1">
+                    {errors.orderNotes.message}
+                  </p>
+                )}
+              </div>
 
               <div className="relative">
                 <Input
                   {...register("expectedDelivery")}
                   placeholder="Expected Delivery"
+                  type="date"
+                  className={errors.expectedDelivery ? "border-danger" : ""}
                 />
-                <ChevronDown className="absolute top-1/2 right-3 -translate-y-1/2" />
+                <ChevronDown className="absolute top-1/2 right-3 -translate-y-1/2 pointer-events-none" />
+                {errors.expectedDelivery && (
+                  <p className="text-danger text-sm mt-1">
+                    {errors.expectedDelivery.message}
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -214,7 +275,6 @@ const CreateOrderPage = () => {
         <div className="space-y-6">
           <PaymentDetails />
           <PaymentMethods />
-
           <div className="flex items-center justify-end gap-4">
             <Button
               type="button"
@@ -222,10 +282,10 @@ const CreateOrderPage = () => {
               onClick={() => reset()}
               variant="outlined"
             />
-
             <Button
               type="submit"
               label={loading ? "Saving..." : "Save Order"}
+              disabled={loading}
             />
           </div>
         </div>
@@ -238,7 +298,6 @@ const CreateOrderPage = () => {
         products={products}
         onAddProduct={handleAddProduct}
       />
-
       <SelectAllCustomer
         isOpen={isSelectAllCustomerModalOpen}
         onClose={() => setIsSelectAllCustomerModalOpen(false)}

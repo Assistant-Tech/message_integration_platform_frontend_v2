@@ -50,7 +50,7 @@ const DynamicToggle: React.FC<DynamicToggleProps> = ({
             onClick={() => handleToggle(option)}
             className={cn(
               "relative flex items-center justify-center px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap",
-              "min-w-[100px]", // keeps consistent width
+              "min-w-[100px]",
             )}
           >
             {isSelected && (
@@ -74,7 +74,7 @@ const DynamicToggle: React.FC<DynamicToggleProps> = ({
                     "text-xs font-medium px-2 py-0.5 rounded-lg",
                     isSelected
                       ? "text-black bg-white"
-                      : "text-primary bg-primary-light border border-primary",
+                      : "text-white bg-primary-light border border-primary",
                   )}
                 >
                   {option.extraLabel}

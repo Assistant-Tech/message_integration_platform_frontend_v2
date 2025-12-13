@@ -1,4 +1,10 @@
-import { Info, Package, PackageSearch, UsersRoundIcon } from "lucide-react";
+import {
+  Info,
+  Package,
+  PackageSearch,
+  Search,
+  UsersRoundIcon,
+} from "lucide-react";
 
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { TooltipProvider } from "../../../Tooltip";
@@ -69,7 +75,7 @@ const ChatHeader = ({
                 onClick={isOrderInfoOpen}
                 className="p-2 hover:bg-grey-light rounded-lg transition-colors"
               >
-                <PackageSearch size={20} className="text-grey-medium" />
+                <Search size={20} className="text-grey-medium" />
               </button>
             </Tooltip.Trigger>
             <Tooltip.Content
