@@ -49,8 +49,8 @@ const Testimonials: React.FC<TestimonialsProps> = ({
             textColor="text-white"
             textStyle="body-italic-bold-16"
           />
-          <h2 className="h2-bold-40 text-grey">Hear From Our Clients</h2>
-          <p className="h4-regular-24 text-grey-medium max-w-md mx-auto lg:mx-0">
+          <h2 className="h2-bold-40 text-white">Hear From Our Clients</h2>
+          <p className="h4-regular-24 text-white max-w-md mx-auto lg:mx-0">
             Our clients speak for us. Their success stories are proof of the
             impact we deliver.
           </p>

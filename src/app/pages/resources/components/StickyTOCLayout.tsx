@@ -115,8 +115,8 @@ const StickyTOCLayout: React.FC<StickyTOCLayoutProps> = ({
                           ${(item.level || 1) === 3 ? "ml-8" : ""}
                           ${
                             activeSection === item.id
-                              ? "bg-primary-light text-primary font-medium"
-                              : "text-grey-medium hover:text-primary hover:bg-primary-light"
+                              ? "bg-primary-light text-white font-medium"
+                              : "text-white hover:text-primary hover:bg-primary-light"
                           }
                         `}
                       >

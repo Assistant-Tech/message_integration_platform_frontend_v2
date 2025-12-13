@@ -80,7 +80,7 @@ const CollapsibleSidebar = () => {
                     className={`flex items-center justify-between p-3 rounded-lg transition-colors group cursor-pointer ${
                       isActive
                         ? "bg-primary-dark text-white"
-                        : "text-primary-light hover:bg-primary-dark hover:text-white"
+                        : "text-white hover:bg-primary-dark hover:text-white"
                     }`}
                     onClick={() => {
                       if (item.hasSubmenu) {

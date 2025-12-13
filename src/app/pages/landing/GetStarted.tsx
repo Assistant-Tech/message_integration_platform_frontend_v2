@@ -6,7 +6,7 @@ import { Circle } from "lucide-react";
 
 const GetStarted = () => {
   return (
-    <section className="relative w-full overflow-hidden bg-primary-dark flex items-end justify-center pt-16 md:pt-20 lg:pt-24 pb-0 px-4">
+    <section className="relative w-full overflow-hidden bg-primary flex items-end justify-center pt-16 md:pt-20 lg:pt-24 pb-0 px-4">
       {/* Background elements */}
       <motion.img
         src={logo}
