@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import logo from "@/app/assets/logo.svg";
+import logo from "@/app/assets/white-icons/assist.svg";
 import { Circle } from "lucide-react";
 
 const GetStarted = () => {

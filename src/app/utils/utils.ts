@@ -13,14 +13,14 @@ import {
   Zap,
 } from "lucide-react";
 
-import crm from "@/app/assets/greenIcons/crm.svg";
-import bot from "@/app/assets/greenIcons/bot.svg";
-import unified from "@/app/assets/greenIcons/unified.svg";
-import bulk from "@/app/assets/greenIcons/bulk.svg";
-import blog from "@/app/assets/greenIcons/blogs.svg";
-import video from "@/app/assets/greenIcons/videos.svg";
-import faq from "@/app/assets/greenIcons/faq.svg";
-import support from "@/app/assets/greenIcons/support.svg";
+import crm from "@/app/assets/white-icons/crm.svg";
+import chat from "@/app/assets/white-icons/chat.svg";
+import unified from "@/app/assets/white-icons/unifiedmsg.svg";
+import bulk from "@/app/assets/white-icons/bulk.svg";
+import blog from "@/app/assets/white-icons/blog.svg";
+import video from "@/app/assets/white-icons/videos.svg";
+import faq from "@/app/assets/white-icons/faq.svg";
+import support from "@/app/assets/white-icons/support.svg";
 
 export interface DropdownItem {
   name: string;
@@ -54,7 +54,7 @@ export const navigation: NavigationItem[] = [
         name: "Chatbot",
         href: APP_ROUTES.PUBLIC.CHATBOT,
         description: "AI-powered customer support",
-        icon: bot,
+        icon: chat,
       },
       {
         name: "Unified Messaging",
@@ -211,14 +211,14 @@ export const featureCards: FeatureCard[] = [
     description:
       "No more switching between apps! Brings all your messages together in one place, so you can reply faster and stay organized.",
     icon: MessageSquare,
-    iconColor: "#1cb496",
+    iconColor: "#2E5E99",
     animate: true,
   },
   {
     title: "Team Work Made Easy",
     description:
       "Have a team? Assign chats to the right person so customers always get a fast reply. No more missed messages or double replies.",
-    iconColor: "#1cb496",
+    iconColor: "#2E5E99",
     icon: Zap,
     animate: true,
   },
@@ -226,7 +226,7 @@ export const featureCards: FeatureCard[] = [
     title: "You Know What`s Working",
     description:
       "Get simple reports showing how many messages you’ve handled, how quickly you’re replying, and how your team is doing.",
-    iconColor: "#1cb496",
+    iconColor: "#2E5E99",
     icon: Shield,
     animate: true,
   },
@@ -234,7 +234,7 @@ export const featureCards: FeatureCard[] = [
     title: "Your Data is Safe",
     description:
       "Assistant uses strong security measures to keep your conversations private and protected. You’re in control.",
-    iconColor: "#1cb496",
+    iconColor: "#2E5E99",
     icon: Users,
     animate: true,
   },
@@ -691,5 +691,3 @@ export const teamMembers: TeamMember[] = [
     ],
   },
 ];
-
-

@@ -65,10 +65,10 @@ img {
   /* ----------------------------------- */
   /* PRIMARY COLOR PALETTE (#2E5E99)     */
   /* ----------------------------------- */
-  --color-primary-light: #7ba4f0;
+  --color-primary-light: #e7f0fa;
   --color-primary: #2e5e99; /* MAIN PRIMARY */
   --color-primary-dark: #0d2440;
-  --color-primary-inactive: #a1e0d4;
+  --color-primary-inactive: #7ba4d0;
 
   /* Secondary */
   --color-secondary-light: #fef3e6;
