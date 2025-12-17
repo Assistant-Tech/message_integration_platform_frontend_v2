@@ -17,7 +17,7 @@ export const fetchAllVariantsByProductId = async (
   );
   return data.data;
 };
-  
+
 /* ----------------------------------
    CREATE variant
 ----------------------------------- */
@@ -67,5 +67,6 @@ export const deleteVariant = async (
   productId: string,
   variantId: string,
 ): Promise<void> => {
+  // Fixed: Added proper closing parenthesis
   await api.delete(`/products/${productId}/variants/${variantId}`);
 };

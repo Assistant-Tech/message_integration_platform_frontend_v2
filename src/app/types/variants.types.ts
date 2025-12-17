@@ -10,12 +10,12 @@ export type VariantInventory = {
 
 // Details Variants
 export type Variant = {
-  _id: string;
+  id: string;
   productId: string;
   title: string;
   sku: string;
   price: number;
-  attributes: VariantAttribute[];
+  attributes: VariantAttribute;
   inventory: VariantInventory;
   createdAt: string;
   updatedAt: string;
@@ -34,8 +34,7 @@ export type UpdateVariantPayload = Partial<{
   sku: string;
   price: number;
   compareAtPrice: number;
-  attributes: VariantAttribute[];
-  isActive: boolean;
+  attributes: VariantAttribute;
 }>;
 
 export type UpdateVariantInventoryPayload = {

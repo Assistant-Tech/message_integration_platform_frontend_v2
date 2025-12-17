@@ -5,54 +5,89 @@ import { useState, useMemo } from "react";
 import {
   AddVariant,
   VariantTable,
+  EditVariant,
 } from "@/app/features/dashboard/admin/component/";
 import DataTableToolbar, {
   FilterConfig,
   SortOption,
 } from "@/app/features/dashboard/admin/component/ui/Data-toolbar";
-import { useVariant } from "@/app/hooks/useVariants";
+import {
+  useVariant,
+  useCreateVariant,
+  useUpdateVariant,
+  useDeleteVariant,
+} from "@/app/hooks/useVariants";
 import { useProducts } from "@/app/hooks/useProducts";
 import { Loading } from "@/app/components/common";
-import { CreateVariantPayload } from "@/app/types/variants.types";
+import {
+  CreateVariantPayload,
+  UpdateVariantPayload,
+  Variant,
+} from "@/app/types/variants.types";
 import { toast } from "sonner";
 
 const ProductVariants = () => {
   const { data: allProduct = [], isLoading: isLoadingProducts } = useProducts();
-  
+
   // Get the first product's ID, or null if no products
   const firstProductId = allProduct.length > 0 ? allProduct[0].id : null;
-  
-  const { 
-    data: variantData = [], 
-    isLoading: isLoadingVariants,
-    refetch: refetchVariants 
-  } = useVariant(firstProductId || "");
+
+  const { data: variantData = [], isLoading: isLoadingVariants } = useVariant(
+    firstProductId || "",
+  );
+
+  const createVariantMutation = useCreateVariant(firstProductId || "");
+  const updateVariantMutation = useUpdateVariant(firstProductId || "");
+  const deleteVariantMutation = useDeleteVariant(firstProductId || "");
 
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [showVariantModal, setShowVariantModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
   const [visibilityFilter, setVisibilityFilter] = useState("");
 
   const handleAddVariant = async (newVariant: CreateVariantPayload) => {
-    try {
-      if (!firstProductId) {
-        toast.error("No product selected");
-        return;
-      }
+    if (!firstProductId) {
+      toast.error("No product selected");
+      return;
+    }
 
-      // Fix: Use the correct product ID from the first product
-      const { createVariant } = await import("@/app/services/variants.services");
-      const res = await createVariant(firstProductId, newVariant);
-      
-      console.log("🚀 ~ handleAddVariant ~ res:", res);
-      toast.success("Variant created successfully");
-      
-      // Refetch variants after creation
-      refetchVariants();
+    try {
+      await createVariantMutation.mutateAsync(newVariant);
       setShowVariantModal(false);
     } catch (error) {
       console.error("Failed to create variant:", error);
-      toast.error("Failed to create variant");
+    }
+  };
+
+  const handleEditVariant = (variant: Variant) => {
+    setSelectedVariant(variant);
+    setShowEditModal(true);
+  };
+
+  const handleUpdateVariant = async (
+    variantId: string,
+    payload: UpdateVariantPayload,
+  ) => {
+    try {
+      await updateVariantMutation.mutateAsync({ variantId, payload });
+      setShowEditModal(false);
+      setSelectedVariant(null);
+    } catch (error) {
+      console.error("Failed to update variant:", error);
+    }
+  };
+
+  const handleDeleteVariant = async (variantId: string) => {
+    if (!confirm("Are you sure you want to delete this variant?")) {
+      return;
+    }
+
+    try {
+      await deleteVariantMutation.mutateAsync(variantId);
+    } catch (error) {
+      console.error("Failed to delete variant:", error);
     }
   };
 
@@ -134,6 +169,7 @@ const ProductVariants = () => {
     );
   }
 
+  // console.log("🚀 ~ ProductVariants ~ filteredData:", filteredData);
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
@@ -157,6 +193,19 @@ const ProductVariants = () => {
         onAdd={handleAddVariant}
       />
 
+      {/* Edit Variant Modal */}
+      {selectedVariant && (
+        <EditVariant
+          isOpen={showEditModal}
+          onClose={() => {
+            setShowEditModal(false);
+            setSelectedVariant(null);
+          }}
+          variant={selectedVariant}
+          onUpdate={handleUpdateVariant}
+        />
+      )}
+
       {/* Toolbar */}
       <DataTableToolbar
         search={search}
@@ -169,7 +218,11 @@ const ProductVariants = () => {
       />
 
       {/* Variant Table */}
-      <VariantTable data={filteredData} />
+      <VariantTable
+        data={filteredData}
+        onEdit={handleEditVariant}
+        onDelete={handleDeleteVariant}
+      />
     </div>
   );
 };
