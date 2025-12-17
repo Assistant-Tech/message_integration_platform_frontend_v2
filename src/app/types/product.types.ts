@@ -81,19 +81,6 @@ export interface CategoryTableProps {
 
 /*
 ─────────────────────────────────────────────────────────────────────────────
- 📦 ▶ Variant Type utils
- ─────────────────────────────────────────────────────────────────────────────
-*/
-export interface Variant {
-  name: string;
-  visibility: boolean;
-  action: string;
-}
-export interface VariantTableProps {
-  data: Variant[];
-}
-/*
-─────────────────────────────────────────────────────────────────────────────
  📦 ▶ Inventory Type utils
  ─────────────────────────────────────────────────────────────────────────────
 */

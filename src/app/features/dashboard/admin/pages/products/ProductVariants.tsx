@@ -6,33 +6,54 @@ import {
   AddVariant,
   VariantTable,
 } from "@/app/features/dashboard/admin/component/";
-import { Variant } from "@/app/types/product.types";
 import DataTableToolbar, {
   FilterConfig,
   SortOption,
 } from "@/app/features/dashboard/admin/component/ui/Data-toolbar";
+import { useVariant } from "@/app/hooks/useVariants";
+import { useProducts } from "@/app/hooks/useProducts";
+import { Loading } from "@/app/components/common";
+import { CreateVariantPayload } from "@/app/types/variants.types";
+import { toast } from "sonner";
 
 const ProductVariants = () => {
+  const { data: allProduct = [], isLoading: isLoadingProducts } = useProducts();
+  
+  // Get the first product's ID, or null if no products
+  const firstProductId = allProduct.length > 0 ? allProduct[0].id : null;
+  
+  const { 
+    data: variantData = [], 
+    isLoading: isLoadingVariants,
+    refetch: refetchVariants 
+  } = useVariant(firstProductId || "");
+
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [showVariantModal, setShowVariantModal] = useState(false);
   const [visibilityFilter, setVisibilityFilter] = useState("");
 
-  const [variantData, setVariantData] = useState<Variant[]>([
-    { name: "Price", visibility: true, action: "" },
-    { name: "Quantity", visibility: true, action: "" },
-  ]);
+  const handleAddVariant = async (newVariant: CreateVariantPayload) => {
+    try {
+      if (!firstProductId) {
+        toast.error("No product selected");
+        return;
+      }
 
-  const handleAddVariant = (newVariant: string) => {
-    console.log("New variant added:", newVariant);
-  };
-
-  const handleSaveVariants = (variants: string[]) => {
-    const updated = variants.map((v) => {
-      const existing = variantData.find((item) => item.name === v);
-      return existing || { name: v, visibility: true, action: "" };
-    });
-    setVariantData(updated);
+      // Fix: Use the correct product ID from the first product
+      const { createVariant } = await import("@/app/services/variants.services");
+      const res = await createVariant(firstProductId, newVariant);
+      
+      console.log("🚀 ~ handleAddVariant ~ res:", res);
+      toast.success("Variant created successfully");
+      
+      // Refetch variants after creation
+      refetchVariants();
+      setShowVariantModal(false);
+    } catch (error) {
+      console.error("Failed to create variant:", error);
+      toast.error("Failed to create variant");
+    }
   };
 
   // Sorting options
@@ -64,7 +85,7 @@ const ProductVariants = () => {
     // Search
     if (search) {
       temp = temp.filter((v) =>
-        v.name.toLowerCase().includes(search.toLowerCase()),
+        v.title.toLowerCase().includes(search.toLowerCase()),
       );
     }
 
@@ -77,19 +98,41 @@ const ProductVariants = () => {
     // Sorting
     switch (sortBy) {
       case "oldest":
-        temp = [...temp].reverse(); // safe copy
+        temp = [...temp].reverse();
         break;
       case "name-asc":
-        temp = [...temp].sort((a, b) => a.name.localeCompare(b.name));
+        temp = [...temp].sort((a, b) => a.title.localeCompare(b.title));
         break;
       case "name-desc":
-        temp = [...temp].sort((a, b) => b.name.localeCompare(a.name));
+        temp = [...temp].sort((a, b) => b.title.localeCompare(a.title));
         break;
-      // case "newest": do nothing (already newest first)
+      case "newest":
+      default:
+        // Already sorted by newest (assuming API returns newest first)
+        break;
     }
 
     return temp;
   }, [variantData, search, visibilityFilter, sortBy]);
+
+  // Loading state
+  if (isLoadingProducts || isLoadingVariants) {
+    return <Loading />;
+  }
+
+  // No products state
+  if (!firstProductId) {
+    return (
+      <div className="p-6 space-y-6">
+        <div className="w-full flex flex-col items-center justify-center min-h-[400px]">
+          <p className="text-gray-500 text-lg">No products available</p>
+          <p className="text-gray-400 text-sm mt-2">
+            Please create a product first before adding variants
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 space-y-6">
@@ -105,14 +148,14 @@ const ProductVariants = () => {
           IconLeft={<Plus size={16} />}
           onClick={() => setShowVariantModal(true)}
         />
-
-        <AddVariant
-          isOpen={showVariantModal}
-          onClose={() => setShowVariantModal(false)}
-          onAdd={handleAddVariant}
-          onSave={handleSaveVariants}
-        />
       </div>
+
+      {/* Add Variant Modal */}
+      <AddVariant
+        isOpen={showVariantModal}
+        onClose={() => setShowVariantModal(false)}
+        onAdd={handleAddVariant}
+      />
 
       {/* Toolbar */}
       <DataTableToolbar
