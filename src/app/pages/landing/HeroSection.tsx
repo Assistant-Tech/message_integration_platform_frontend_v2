@@ -5,7 +5,7 @@ import {
   DashboardPreview,
   SocialIcons,
 } from "@/app/components/common/";
-import logo from "@/app/assets/logo.svg";
+import logo from "@/app/assets/white-icons/chat.svg";
 import { Circle } from "lucide-react";
 import { DASHBOARD_IMAGE_URL_MOBILE } from "@/app/constants/image-cloudinary";
 
@@ -23,7 +23,7 @@ const HeroSection: React.FC = () => {
           animate={{ opacity: 0.4 }}
           transition={{ duration: 1, delay: 0.5 }}
         >
-          <Circle className="w-24 h-24 md:w-24 md:h-24" color="teal" />
+          <Circle className="w-24 h-24 md:w-24 md:h-24" color="#2E5E99" />
         </motion.div>
 
         <motion.div
@@ -60,7 +60,7 @@ const HeroSection: React.FC = () => {
         <img
           src={DASHBOARD_IMAGE_URL_MOBILE}
           srcSet="
-            https://res.cloudinary.com/dtoqwn0gx/image/upload/v1754284164/dash1_nvbxo9.png 300w,
+            https://res.cloudinary.com/dtoqwn0gx/image/upload/v1765931633/dashboard2_taupix.png 300w,
           "
           sizes="(max-width: 480px) 100vw, 50vw"
           alt="Dashboard 1"

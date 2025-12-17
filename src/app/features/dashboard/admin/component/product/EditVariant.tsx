@@ -23,16 +23,15 @@ const EditVariant: React.FC<EditVariantProps> = ({
 }) => {
   const [price, setPrice] = useState<number>(variant.price);
   const [sku, setSku] = useState<string>(variant.sku || "");
-  const [attributes, setAttributes] = useState<VariantAttribute>({
-    color: "",
-    size: "",
-  });
+  const [attributes, setAttributes] = useState<VariantAttribute>(
+    variant.attributes || { color: "", size: "" },
+  );
 
   // Update state when variant changes
   useEffect(() => {
     setPrice(variant.price);
     setSku(variant.sku || "");
-    setAttributes(variant.attributes || {});
+    setAttributes(variant.attributes || { color: "", size: "" });
   }, [variant]);
 
   if (!isOpen) return null;
@@ -48,10 +47,10 @@ const EditVariant: React.FC<EditVariantProps> = ({
   };
 
   const updateAttribute = (field: keyof VariantAttribute, value: string) => {
-    setAttributes((prev) => ({
-      ...prev,
+    setAttributes({
+      ...attributes,
       [field]: value,
-    }));
+    });
   };
 
   return (
@@ -91,19 +90,17 @@ const EditVariant: React.FC<EditVariantProps> = ({
           {/* Attributes */}
           <div className="space-y-2">
             <label className="text-sm font-medium">Attributes</label>
-
             <div className="grid grid-cols-2 gap-2">
               <Input
                 aria-label="color"
                 placeholder="Color"
-                value={attributes.color}
+                value={attributes.color || ""}
                 onChange={(e) => updateAttribute("color", e.target.value)}
               />
-
               <Input
                 aria-label="size"
                 placeholder="Size"
-                value={attributes.size}
+                value={attributes.size || ""}
                 onChange={(e) => updateAttribute("size", e.target.value)}
               />
             </div>

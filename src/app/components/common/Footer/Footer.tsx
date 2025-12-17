@@ -49,7 +49,7 @@ const Footer = () => {
               transition={{ duration: 0.5 }}
               className="flex items-center pb-4"
             >
-              <Logo />
+              <Logo variant="white" />
             </motion.div>
 
             <p className="body-bold-16 pb-4 text-white">

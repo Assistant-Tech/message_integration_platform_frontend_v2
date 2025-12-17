@@ -69,6 +69,8 @@ img {
   --color-primary: #2e5e99; /* MAIN PRIMARY */
   --color-primary-dark: #0d2440;
   --color-primary-inactive: #7ba4d0;
+  /* oklch */
+  /* bg-primary/10 */
 
   /* Secondary */
   --color-secondary-light: #fef3e6;
@@ -118,11 +120,11 @@ img {
   width: 8px;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: #68dac5;
+  background-color: #2e5e99;
   border-radius: 8px;
 }
 ::-webkit-scrollbar-track {
-  background-color: #1cb496;
+  background-color: #e7f0fa;
   border-radius: 8px;
 }
 

@@ -43,7 +43,7 @@ const OrderManagement: React.FC = () => {
                   <motion.div
                     animate={{
                       backgroundColor:
-                        isDone || isActive ? "#1cb496" : "#e3e3e3",
+                        isDone || isActive ? "#2E5E99" : "#e3e3e3",
                       scale: isActive ? 1.5 : 1,
                     }}
                     transition={{ duration: 0.3 }}

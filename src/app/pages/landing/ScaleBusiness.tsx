@@ -98,7 +98,7 @@ const ScaleBusiness: React.FC = () => {
                   whileHover={{ x: 8, transition: { duration: 0.2 } }}
                 >
                   <div className="flex-shrink-0 mt-1">
-                    <div className="w-6 h-6 rounded-full bg-teal-100 flex items-center justify-center group-hover:bg-teal-200 transition-colors duration-200">
+                    <div className="w-6 h-6 rounded-full bg-primary-light flex items-center justify-center group-hover:bg-primary-inactive transition-colors duration-200">
                       <Check className="w-4 h-4 text-primary" />
                     </div>
                   </div>

@@ -15,8 +15,8 @@ export const DASHBOARD_IMAGE_URL_MOBILE = `${BASE_URL}/v1765931633/dashboard_dn7
 
 // Logos
 export const LOGO_FAB_ICON_URL = `${BASE_URL}/v1751347732/fab_c5aoyj.png`;
-export const LOGO_WHITE_URL = `${BASE_URL}/v1755418244/white-logo_oxdple.png`;
-export const LOGO_NORMAL_URL = `${BASE_URL}/v1751347733/Chatblix_Logo_xtkjmp.png`;
+export const LOGO_WHITE_URL = `${BASE_URL}/v1765951144/chatblix-white-logo_mvva3b.png`;
+export const LOGO_NORMAL_URL = `${BASE_URL}/v1765951230/main-chatblix-logo_dwrrjm.png`;
 
 // Payments
 export const KHALTI_IMAGE_URL = `${BASE_URL}/v1753920905/khalti_xsudv7.webp`;

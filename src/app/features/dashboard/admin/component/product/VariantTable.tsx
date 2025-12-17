@@ -35,32 +35,44 @@ const VariantTable: React.FC<VariantTableProps> = ({
           const maxLen = 8;
           const displayValue =
             fullId.length > maxLen ? fullId.slice(0, maxLen) + "..." : fullId;
-          return <span>{displayValue}</span>;
+          return <span className="font-mono text-sm">{displayValue}</span>;
         },
       },
       {
         accessorKey: "title",
         header: "Name",
-        cell: (info) => <span>{info.getValue() as string}</span>,
+        cell: (info) => (
+          <span className="font-medium">{info.getValue() as string}</span>
+        ),
       },
       {
         accessorKey: "price",
         header: "Price",
-        cell: (info) => <span>₹{info.getValue() as number}</span>,
+        cell: (info) => (
+          <span className="font-semibold">₹{info.getValue() as number}</span>
+        ),
       },
       {
         accessorKey: "sku",
         header: "SKU",
-        cell: (info) => <span>{(info.getValue() as string) || "N/A"}</span>,
+        cell: (info) => (
+          <span className="font-mono text-sm">
+            {(info.getValue() as string) || "N/A"}
+          </span>
+        ),
       },
       {
         accessorKey: "inventory.stock",
         header: "Stock",
         cell: (info) => {
           const stock = info.getValue() as number;
-          const isLowStock = info.row.original.inventory.lowStock;
+          const isLowStock = info.row.original.inventory?.lowStock;
           return (
-            <span className={isLowStock ? "text-danger font-semibold" : ""}>
+            <span
+              className={
+                isLowStock ? "text-danger font-semibold" : "font-semibold"
+              }
+            >
               {stock}
             </span>
           );
@@ -70,18 +82,18 @@ const VariantTable: React.FC<VariantTableProps> = ({
         accessorKey: "attributes",
         header: "Attributes",
         cell: (info) => {
-          const attributes = info.getValue() as Record<
-            string,
-            string | undefined
-          >;
+          const attributes = info.getValue() as any;
 
+          // Handle case where attributes might be undefined or null
+          if (!attributes) return <span>-</span>;
+
+          // attributes is a single object, not an array
           return (
-            <div className="flex flex-col gap-1">
-              <span className="text-xs">
-                {attributes.color && `Color: ${attributes.color}`}
-                {attributes.color && attributes.size && " | "}
-                {attributes.size && `Size: ${attributes.size}`}
-              </span>
+            <div className="flex items-center gap-2 text-xs">
+              {attributes.color && <span>Color: {attributes.color}</span>}
+              {attributes.color && attributes.size && <span>|</span>}
+              {attributes.size && <span>Size: {attributes.size}</span>}
+              {!attributes.color && !attributes.size && <span>-</span>}
             </div>
           );
         },
@@ -92,7 +104,7 @@ const VariantTable: React.FC<VariantTableProps> = ({
         cell: () => (
           <button
             onClick={handleRedirectToInventory}
-            className="text-primary hover:text-primary-dark cursor-pointer underline"
+            className="text-primary hover:text-primary-dark cursor-pointer underline text-sm"
           >
             View Inventory
           </button>

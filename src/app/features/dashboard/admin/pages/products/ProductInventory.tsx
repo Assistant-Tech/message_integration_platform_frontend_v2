@@ -5,17 +5,35 @@ import { Plus } from "lucide-react";
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { InventoryTable } from "@/app/features/dashboard/admin/component/";
-import { Inventory, Size } from "@/app/types/product.types";
 import DataTableToolbar, {
   FilterConfig,
   SortOption,
 } from "../../component/ui/Data-toolbar";
+import { useProducts } from "@/app/hooks/useProducts";
+import { useVariant } from "@/app/hooks/useVariants";
+import { Loading } from "@/app/components/common";
+import { Variant } from "@/app/types/variants.types";
+
+// Transform variant data into inventory format
+interface InventoryData extends Variant {
+  productName: string;
+  productImage?: string;
+}
 
 const ProductInventory = () => {
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [stockFilter, setStockFilter] = useState("");
   const navigate = useNavigate();
+
+  // Fetch products and variants
+  const { data: allProducts = [], isLoading: isLoadingProducts } =
+    useProducts();
+  const firstProductId = allProducts.length > 0 ? allProducts[0].id : null;
+
+  const { data: variantData = [], isLoading: isLoadingVariants } = useVariant(
+    firstProductId || "",
+  );
 
   const handleCreateNewOrder = () => {
     navigate(APP_ROUTES.ADMIN.ORDERS_CREATE);
@@ -27,6 +45,8 @@ const ProductInventory = () => {
     { label: "Oldest", value: "oldest" },
     { label: "Price: Low to High", value: "price-asc" },
     { label: "Price: High to Low", value: "price-desc" },
+    { label: "Stock: Low to High", value: "stock-asc" },
+    { label: "Stock: High to Low", value: "stock-desc" },
   ];
 
   // Filter options
@@ -38,73 +58,94 @@ const ProductInventory = () => {
       options: [
         { label: "All", value: "" },
         { label: "In Stock", value: "true" },
+        { label: "Low Stock", value: "low" },
         { label: "Out of Stock", value: "false" },
       ],
     },
   ];
 
-  // Filter and sort data
-  const filteredData = useMemo(() => {
-    // MOCK DATASETS - moved inside useMemo
-    const inventoryMock: Inventory[] = [
-      {
-        name: {
-          productImage:
-            "https://m.media-amazon.com/images/I/61GfWyQax7L._AC_UL1500_.jpg",
-          productName: "Cotton Plain T-shirt Round Neck",
-          productSubName: "Nike Daily Wear",
-        },
-        color: "Black",
-        size: Size.small,
-        quantity: 2,
-        price: 800,
-        stock: true,
-      },
-      {
-        name: {
-          productImage:
-            "https://m.media-amazon.com/images/I/61GfWyQax7L._AC_UL1500_.jpg",
-          productName: "Sports Shoes",
-        },
-        color: "Black",
-        size: Size.medium,
-        quantity: 2,
-        price: 800,
-        stock: true,
-      },
-    ];
+  // Transform and filter data
+  const inventoryData = useMemo((): InventoryData[] => {
+    if (!allProducts.length || !variantData.length) return [];
 
-    let temp = [...inventoryMock];
+    return variantData.map((variant) => {
+      const product = allProducts.find((p: any) => p.id === variant.productId);
+      return {
+        ...variant,
+        productName: product?.title || "Unknown Product",
+        productImage: product?.images?.[0]?.url,
+      };
+    });
+  }, [allProducts, variantData]);
+
+  const filteredData = useMemo(() => {
+    let temp = [...inventoryData];
 
     // Search
     if (search) {
-      temp = temp.filter((i) =>
-        i.name.productName.toLowerCase().includes(search.toLowerCase()),
+      temp = temp.filter(
+        (i) =>
+          i.productName.toLowerCase().includes(search.toLowerCase()) ||
+          i.title.toLowerCase().includes(search.toLowerCase()) ||
+          i.sku?.toLowerCase().includes(search.toLowerCase()),
       );
     }
 
     // Stock filter
     if (stockFilter) {
-      const inStock = stockFilter === "true";
-      temp = temp.filter((i) => i.stock === inStock);
+      if (stockFilter === "true") {
+        temp = temp.filter(
+          (i) => i.inventory.stock > 0 && !i.inventory.lowStock,
+        );
+      } else if (stockFilter === "low") {
+        temp = temp.filter((i) => i.inventory.lowStock);
+      } else if (stockFilter === "false") {
+        temp = temp.filter((i) => i.inventory.stock === 0);
+      }
     }
 
     // Sorting
     switch (sortBy) {
       case "oldest":
-        temp = temp.reverse();
+        temp = [...temp].reverse();
         break;
       case "price-asc":
-        temp = temp.sort((a, b) => a.price - b.price);
+        temp = [...temp].sort((a, b) => a.price - b.price);
         break;
       case "price-desc":
-        temp = temp.sort((a, b) => b.price - a.price);
+        temp = [...temp].sort((a, b) => b.price - a.price);
         break;
-      // case "newest": do nothing (already newest first)
+      case "stock-asc":
+        temp = [...temp].sort((a, b) => a.inventory.stock - b.inventory.stock);
+        break;
+      case "stock-desc":
+        temp = [...temp].sort((a, b) => b.inventory.stock - a.inventory.stock);
+        break;
+      case "newest":
+      default:
+        // Already sorted by newest
+        break;
     }
 
     return temp;
-  }, [search, stockFilter, sortBy]);
+  }, [inventoryData, search, stockFilter, sortBy]);
+
+  if (isLoadingProducts || isLoadingVariants) {
+    return <Loading />;
+  }
+
+  if (!firstProductId || inventoryData.length === 0) {
+    return (
+      <div className="p-6 space-y-6">
+        <div className="w-full flex flex-col items-center justify-center min-h-[400px]">
+          <p className="text-gray-500 text-lg">No inventory data available</p>
+          <p className="text-gray-400 text-sm mt-2">
+            Please create products and variants first
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 space-y-6">
