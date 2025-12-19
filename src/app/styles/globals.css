@@ -65,25 +65,24 @@ img {
   /* ----------------------------------- */
   /* PRIMARY COLOR PALETTE (#2E5E99)     */
   /* ----------------------------------- */
-  --color-primary-light: #e7f0fa;
-  --color-primary: #2e5e99; /* MAIN PRIMARY */
-  --color-primary-dark: #0d2440;
-  --color-primary-inactive: #7ba4d0;
-  /* oklch */
-  /* bg-primary/10 */
+  --color-primary-light: oklch(94% 0.02 240);
+  --color-primary: oklch(45% 0.12 250); /* MAIN PRIMARY */
+  --color-primary-dark: oklch(18% 0.06 250);
+  --color-primary-inactive: oklch(70% 0.08 245);
+  /* bg-primary/10 would be: oklch(45% 0.12 250 / 0.1) */
 
   /* Secondary */
-  --color-secondary-light: #fef3e6;
-  --color-secondary: #f08700;
-  --color-secondary-dark: #c06c00;
-  --color-secondary-inactive: #f9cf99;
+  --color-secondary-light: oklch(97% 0.03 75);
+  --color-secondary: oklch(68% 0.17 55);
+  --color-secondary-dark: oklch(56% 0.15 50);
+  --color-secondary-inactive: oklch(87% 0.08 65);
 
   /* Text Colors */
-  --color-base-white: #f8f9fa;
-  --color-grey-light: #e3e3e3;
-  --color-grey-medium: #666666;
-  --color-grey: #333333;
-  --color-base-black: #03120f;
+  --color-base-white: oklch(98% 0.002 240);
+  --color-grey-light: oklch(91% 0 0);
+  --color-grey-medium: oklch(48% 0 0);
+  --color-grey: oklch(25% 0 0);
+  --color-base-black: oklch(8% 0.02 180);
 
   /* Success */
   --color-success-light: #dbf7ea;

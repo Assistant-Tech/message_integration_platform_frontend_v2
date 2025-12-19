@@ -2,12 +2,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   fetchVariantInventory,
   updateVariantInventory,
-//   fetchAllInventoriesByProductId,
 } from "@/app/services/inventory.services";
 import { UpdateVariantInventoryPayload } from "@/app/types/variants.types";
 import { toast } from "sonner";
 
-// Fetch single variant inventory
 export const useVariantInventory = (productId: string, variantId: string) => {
   return useQuery({
     queryKey: ["inventory", productId, variantId],
@@ -16,16 +14,6 @@ export const useVariantInventory = (productId: string, variantId: string) => {
   });
 };
 
-// Fetch all inventories for a product
-// export const useProductInventories = (productId: string) => {
-//   return useQuery({
-//     queryKey: ["inventories", productId],
-//     queryFn: () => fetchAllInventoriesByProductId(productId),
-//     enabled: !!productId,
-//   });
-// };
-
-// Update variant inventory
 export const useUpdateVariantInventory = (
   productId: string,
   variantId: string,
@@ -35,20 +23,39 @@ export const useUpdateVariantInventory = (
   return useMutation({
     mutationFn: (payload: UpdateVariantInventoryPayload) =>
       updateVariantInventory(productId, variantId, payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["inventory", productId, variantId],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["inventories", productId],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["variants", productId],
-      });
+
+    onSuccess: (updatedInventory) => {
+      // 1️⃣ Update single variant inventory
+      queryClient.setQueryData(
+        ["inventory", productId, variantId],
+        updatedInventory,
+      );
+
+      // 2️⃣ Update variants list (THIS FIXES YOUR TABLE)
+      queryClient.setQueryData(
+        ["variants", productId],
+        (oldVariants: any[] | undefined) => {
+          if (!oldVariants) return oldVariants;
+
+          return oldVariants.map((variant) =>
+            variant.id === variantId
+              ? {
+                  ...variant,
+                  inventory: {
+                    ...variant.inventory,
+                    stock: updatedInventory.stock,
+                    lowStock: updatedInventory.lowStock,
+                  },
+                }
+              : variant,
+          );
+        },
+      );
+
       toast.success("Inventory updated successfully");
     },
-    onError: (error) => {
-      console.error("Update inventory error:", error);
+
+    onError: () => {
       toast.error("Failed to update inventory");
     },
   });

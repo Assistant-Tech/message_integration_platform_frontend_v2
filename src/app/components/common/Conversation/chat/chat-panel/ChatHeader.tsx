@@ -1,11 +1,4 @@
-import {
-  Info,
-  Package,
-  PackageSearch,
-  Search,
-  UsersRoundIcon,
-} from "lucide-react";
-
+import { Info, Package, ShoppingCart, UsersRoundIcon } from "lucide-react";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { TooltipProvider } from "../../../Tooltip";
 
@@ -33,24 +26,6 @@ const ChatHeader = ({
 
       <div className="flex justify-end items-center gap-1">
         <TooltipProvider>
-          {/* Order Notes */}
-          {/* <Tooltip.Root>
-            <Tooltip.Trigger asChild>
-              <button
-                onClick={isOrderNotesOpen}
-                className="p-2 py-px hover:bg-primary hover:text-white rounded-lg transition-colors border border-primary cursor-pointer"
-              >
-                Notes
-              </button>
-            </Tooltip.Trigger>
-            <Tooltip.Content
-              side="bottom"
-              className="rounded-md bg-grey text-white px-2 py-1 text-xs"
-            >
-              Order Notes
-            </Tooltip.Content>
-          </Tooltip.Root> */}
-
           {/* PRODUCT CATALOG */}
           <Tooltip.Root>
             <Tooltip.Trigger asChild>
@@ -68,6 +43,7 @@ const ChatHeader = ({
               Product Catalog
             </Tooltip.Content>
           </Tooltip.Root>
+
           {/* ORDER INFO */}
           <Tooltip.Root>
             <Tooltip.Trigger asChild>
@@ -75,7 +51,7 @@ const ChatHeader = ({
                 onClick={isOrderInfoOpen}
                 className="p-2 hover:bg-grey-light rounded-lg transition-colors"
               >
-                <Search size={20} className="text-grey-medium" />
+                <ShoppingCart size={20} className="text-grey-medium" />
               </button>
             </Tooltip.Trigger>
             <Tooltip.Content

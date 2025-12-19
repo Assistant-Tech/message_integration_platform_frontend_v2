@@ -233,7 +233,7 @@ export const featureCards: FeatureCard[] = [
   {
     title: "Your Data is Safe",
     description:
-      "Assistant uses strong security measures to keep your conversations private and protected. You’re in control.",
+      "Chatblix uses strong security measures to keep your conversations private and protected. You’re in control.",
     iconColor: "#2E5E99",
     icon: Users,
     animate: true,
@@ -250,7 +250,7 @@ export const featureCards: FeatureCard[] = [
     title: "24/7 Availability",
     description:
       "Never miss a customer message with round-the-clock monitoring and instant notifications.",
-    iconColor: "#1ABC9C",
+    iconColor: "#2E5E99",
     icon: Clock,
     animate: true,
   },

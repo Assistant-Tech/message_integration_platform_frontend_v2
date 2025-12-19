@@ -29,7 +29,7 @@ import { toast } from "sonner";
 const ProductVariants = () => {
   const { data: allProduct = [], isLoading: isLoadingProducts } = useProducts();
 
-  // Get the first product's ID, or null if no products
+  // First product (temporary logic)
   const firstProductId = allProduct.length > 0 ? allProduct[0].id : null;
 
   const { data: variantData = [], isLoading: isLoadingVariants } = useVariant(
@@ -44,8 +44,16 @@ const ProductVariants = () => {
   const [sortBy, setSortBy] = useState("newest");
   const [showVariantModal, setShowVariantModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
+  const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
+    null,
+  );
   const [visibilityFilter, setVisibilityFilter] = useState("");
+
+  // ✅ Derive selected variant safely
+  const selectedVariant = useMemo<Variant | null>(() => {
+    if (!selectedVariantId) return null;
+    return variantData.find((v) => v.id === selectedVariantId) ?? null;
+  }, [selectedVariantId, variantData]);
 
   const handleAddVariant = async (newVariant: CreateVariantPayload) => {
     if (!firstProductId) {
@@ -62,7 +70,7 @@ const ProductVariants = () => {
   };
 
   const handleEditVariant = (variant: Variant) => {
-    setSelectedVariant(variant);
+    setSelectedVariantId(variant.id);
     setShowEditModal(true);
   };
 
@@ -73,16 +81,14 @@ const ProductVariants = () => {
     try {
       await updateVariantMutation.mutateAsync({ variantId, payload });
       setShowEditModal(false);
-      setSelectedVariant(null);
+      setSelectedVariantId(null);
     } catch (error) {
       console.error("Failed to update variant:", error);
     }
   };
 
   const handleDeleteVariant = async (variantId: string) => {
-    if (!confirm("Are you sure you want to delete this variant?")) {
-      return;
-    }
+    if (!confirm("Are you sure you want to delete this variant?")) return;
 
     try {
       await deleteVariantMutation.mutateAsync(variantId);
@@ -99,7 +105,7 @@ const ProductVariants = () => {
     { label: "Name Z-A", value: "name-desc" },
   ];
 
-  // Filter options
+  // Filters
   const filters: FilterConfig[] = [
     {
       label: "Visibility",
@@ -113,69 +119,61 @@ const ProductVariants = () => {
     },
   ];
 
-  // Filter and sort data
+  // Filter + sort
   const filteredData = useMemo(() => {
     let temp = [...variantData];
 
-    // Search
     if (search) {
       temp = temp.filter((v) =>
         v.title.toLowerCase().includes(search.toLowerCase()),
       );
     }
 
-    // Visibility filter
     if (visibilityFilter) {
       const isVisible = visibilityFilter === "true";
       temp = temp.filter((v) => v.visibility === isVisible);
     }
 
-    // Sorting
     switch (sortBy) {
       case "oldest":
-        temp = [...temp].reverse();
+        temp.reverse();
         break;
       case "name-asc":
-        temp = [...temp].sort((a, b) => a.title.localeCompare(b.title));
+        temp.sort((a, b) => a.title.localeCompare(b.title));
         break;
       case "name-desc":
-        temp = [...temp].sort((a, b) => b.title.localeCompare(a.title));
+        temp.sort((a, b) => b.title.localeCompare(a.title));
         break;
-      case "newest":
       default:
-        // Already sorted by newest (assuming API returns newest first)
         break;
     }
 
     return temp;
   }, [variantData, search, visibilityFilter, sortBy]);
 
-  // Loading state
+  // Loading
   if (isLoadingProducts || isLoadingVariants) {
     return <Loading />;
   }
 
-  // No products state
+  // No products
   if (!firstProductId) {
     return (
-      <div className="p-6 space-y-6">
-        <div className="w-full flex flex-col items-center justify-center min-h-[400px]">
-          <p className="text-gray-500 text-lg">No products available</p>
-          <p className="text-gray-400 text-sm mt-2">
-            Please create a product first before adding variants
-          </p>
-        </div>
+      <div className="p-6 flex flex-col items-center justify-center min-h-[400px]">
+        <p className="text-gray-500 text-lg">No products available</p>
+        <p className="text-gray-400 text-sm mt-2">
+          Please create a product first before adding variants
+        </p>
       </div>
     );
   }
 
-  // console.log("🚀 ~ ProductVariants ~ filteredData:", filteredData);
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="w-full flex justify-between items-center">
-        <div className="flex flex-col items-start gap-2">
-          <Heading title="Products" align="left" className="text-base-black" />
+      <div className="flex justify-between items-center">
+        <div>
+          <Heading title="Products" align="left" />
           <h2 className="body-semi-bold-16 text-primary">Variants</h2>
         </div>
 
@@ -186,22 +184,22 @@ const ProductVariants = () => {
         />
       </div>
 
-      {/* Add Variant Modal */}
+      {/* Add Variant */}
       <AddVariant
         isOpen={showVariantModal}
         onClose={() => setShowVariantModal(false)}
         onAdd={handleAddVariant}
       />
 
-      {/* Edit Variant Modal */}
+      {/* Edit Variant */}
       {selectedVariant && (
         <EditVariant
           isOpen={showEditModal}
+          variant={selectedVariant}
           onClose={() => {
             setShowEditModal(false);
-            setSelectedVariant(null);
+            setSelectedVariantId(null);
           }}
-          variant={selectedVariant}
           onUpdate={handleUpdateVariant}
         />
       )}
@@ -214,10 +212,9 @@ const ProductVariants = () => {
         sortValue={sortBy}
         onSortChange={setSortBy}
         filters={filters}
-        onFilterClick={() => console.log("Open advanced filter modal")}
       />
 
-      {/* Variant Table */}
+      {/* Table */}
       <VariantTable
         data={filteredData}
         onEdit={handleEditVariant}

@@ -1,8 +1,7 @@
-import { ChevronLeft, Minus, Plus, Search, X } from "lucide-react";
+import { ChevronLeft, Minus, Plus, Search, Package } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { Input } from "@/app/components/ui";
-import { Heading } from "@/app/features/dashboard/admin/component/ui";
 import { cn } from "@/app/utils/cn";
 import {
   fetchCategories,
@@ -11,9 +10,9 @@ import {
 } from "@/app/services/category.services";
 import { fetchProductsById } from "@/app/services/product.services";
 import { Product } from "@/app/types/product.types";
+import { Button } from "@/app/components/ui";
 
 interface ChatSearchProductDetailsProps {
-  isOpen: boolean;
   onClose: () => void;
   onSendProduct: (data: any) => void;
 }
@@ -27,7 +26,6 @@ interface Category {
 }
 
 const ChatSearchProductDetails: React.FC<ChatSearchProductDetailsProps> = ({
-  isOpen,
   onClose,
   onSendProduct,
 }) => {
@@ -40,35 +38,50 @@ const ChatSearchProductDetails: React.FC<ChatSearchProductDetailsProps> = ({
   const [step, setStep] = useState<"selection" | "details">("selection");
   const [quantity, setQuantity] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!isOpen) return;
-
     const fetchCategory = async () => {
+      setLoading(true);
       try {
         const response = await fetchCategories("");
         setCategorydata(response || []);
       } catch (error) {
         console.error("Failed to fetch categories", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchCategory();
-  }, [isOpen]);
+  }, []);
 
   const handleCategoryClick = async (category: Category) => {
     setSelectedCategory(category);
     getCategoryById(category.id);
-
-    const result = await fetchProductByCategoryId(category.id);
-    setProducts(result || []);
+    setLoading(true);
+    try {
+      const result = await fetchProductByCategoryId(category.id);
+      setProducts(result || []);
+    } catch (error) {
+      console.error("Failed to fetch products", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSelectProduct = async (productId: string) => {
-    const product = await fetchProductsById(productId);
-    setSelectedProduct(product);
-    setStep("details");
-    setQuantity(1);
+    setLoading(true);
+    try {
+      const product = await fetchProductsById(productId);
+      setSelectedProduct(product);
+      setStep("details");
+      setQuantity(1);
+    } catch (error) {
+      console.error("Failed to fetch product details", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const increment = () => setQuantity((q) => q + 1);
@@ -78,77 +91,137 @@ const ChatSearchProductDetails: React.FC<ChatSearchProductDetailsProps> = ({
     p.title.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  if (!isOpen) return null;
+  const handleSendProduct = () => {
+    onSendProduct({
+      type: "product-details",
+      data: {
+        ...selectedProduct,
+        quantity,
+      },
+    });
+    onClose();
+    // Reset state
+    setStep("selection");
+    setSelectedCategory(null);
+    setSelectedProduct(null);
+    setQuantity(1);
+    setSearchQuery("");
+  };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-      <div className="max-w-2xl w-full p-8 bg-white rounded-2xl max-h-[90vh] overflow-y-auto">
-        {/* Header */}
-        <div className="flex justify-between mb-4">
-          <div className="flex justify-start gap-2 items-center">
-            {step === "details" && (
-              <button onClick={() => setStep("selection")}>
-                <ChevronLeft size={24} />
-              </button>
-            )}
-            <Heading title="Search Product Details" align="left" />
-          </div>
-          <X size={24} onClick={onClose} className="cursor-pointer" />
+    <div className="w-80 h-full border-l border-grey-light bg-white flex flex-col">
+      {/* Header */}
+      <div className="flex items-center justify-between p-4 border-b border-grey-light">
+        <div className="flex items-center gap-2">
+          {step === "details" && (
+            <button
+              onClick={() => setStep("selection")}
+              className="text-gray-500 hover:text-black transition"
+            >
+              <ChevronLeft size={20} />
+            </button>
+          )}
+          <h2 className="font-semibold text-lg text-gray-700">
+            {step === "selection" ? "Product Catalog" : "Product Details"}
+          </h2>
         </div>
+        <button
+          onClick={onClose}
+          className="text-gray-500 hover:text-black transition"
+        >
+          ✕
+        </button>
+      </div>
 
+      {/* Content */}
+      <div className="flex-1 overflow-y-auto p-4">
         {/* STEP 1: SELECTION */}
         {step === "selection" && (
           <>
-            <Input
-              placeholder="Search product..."
-              type="search"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              iconLeft={<Search size={20} />}
-            />
-
-            <h2 className="pt-4 text-grey">Category</h2>
-
-            <div className="grid grid-cols-3 gap-3 pt-2">
-              {categorydata.map((category) => (
-                <button
-                  key={category.id}
-                  onClick={() => handleCategoryClick(category)}
-                  className={cn(
-                    "px-3 py-2 rounded border border-light-grey hover:bg-primary hover:text-white",
-                    selectedCategory?.id === category.id
-                      ? "bg-primary text-white"
-                      : "bg-white border border-light-grey",
-                  )}
-                >
-                  {category.title}
-                </button>
-              ))}
+            {/* Search Input */}
+            <div className="mb-4">
+              <Input
+                placeholder="Search product..."
+                type="search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                iconLeft={<Search size={20} />}
+              />
             </div>
 
-            {/* ✅ REAL API PRODUCTS */}
+            {/* Categories */}
+            <div className="mb-4">
+              <h3 className="text-sm font-medium text-gray-700 mb-3">
+                Categories
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {loading && categorydata.length === 0 ? (
+                  <div className="col-span-2 text-center py-4 text-gray-400">
+                    Loading categories...
+                  </div>
+                ) : (
+                  categorydata.map((category) => (
+                    <button
+                      key={category.id}
+                      onClick={() => handleCategoryClick(category)}
+                      className={cn(
+                        "px-3 py-2 rounded-lg border text-sm transition-all",
+                        selectedCategory?.id === category.id
+                          ? "bg-primary text-white border-primary"
+                          : "bg-white border-light-grey hover:bg-gray-50",
+                      )}
+                    >
+                      {category.title}
+                    </button>
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* Products List */}
             {selectedCategory && (
               <>
-                <p className="text-sm mt-4">
-                  {filteredProducts.length} result(s) found for{" "}
-                  <b>{selectedCategory.title}</b>
-                </p>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-medium text-gray-700">
+                    Products
+                  </h3>
+                  <span className="text-xs text-gray-500">
+                    {filteredProducts.length} result(s)
+                  </span>
+                </div>
 
-                <div className="flex flex-col gap-3 mt-2">
-                  {filteredProducts.map((product) => (
-                    <div
-                      key={product.id}
-                      onClick={() => handleSelectProduct(product.id)}
-                      className="flex justify-between p-3 border border-light-grey rounded cursor-pointer hover:bg-grey-light"
-                    >
-                      <div>
-                        <p className="font-semibold">{product.title}</p>
-                        <p className="text-sm text-grey">
-                          Rs. {product.variants?.[0]?.price ?? 0}
-                        </p>
-                      </div>
+                <div className="space-y-2">
+                  {loading ? (
+                    <div className="text-center py-8 text-gray-400">
+                      Loading products...
                     </div>
-                  ))}
+                  ) : filteredProducts.length === 0 ? (
+                    <div className="text-center py-8 text-gray-400 flex flex-col items-center gap-2">
+                      <Package size={32} className="text-gray-300" />
+                      <p className="text-sm">No products found</p>
+                    </div>
+                  ) : (
+                    filteredProducts.map((product) => (
+                      <div
+                        key={product.id}
+                        onClick={() => handleSelectProduct(product.id)}
+                        className="flex justify-between items-center p-3 border border-light-grey rounded-lg cursor-pointer hover:border-primary hover:bg-gray-50 transition-all"
+                      >
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-gray-800 truncate text-sm">
+                            {product.title}
+                          </p>
+                          <p className="text-sm text-primary font-medium mt-1">
+                            Rs. {product.variants?.[0]?.price ?? 0}
+                          </p>
+                        </div>
+                        <ChevronLeft
+                          size={16}
+                          className="text-gray-400 rotate-180 flex-shrink-0"
+                        />
+                      </div>
+                    ))
+                  )}
                 </div>
               </>
             )}
@@ -157,40 +230,67 @@ const ChatSearchProductDetails: React.FC<ChatSearchProductDetailsProps> = ({
 
         {/* STEP 2: DETAILS */}
         {step === "details" && selectedProduct && (
-          <div>
-            <h3 className="font-bold">{selectedProduct.title}</h3>
-            <p className="text-primary">
-              Rs. {selectedProduct.variants?.[0]?.price ?? 0}
-            </p>
-
-            <div className="flex items-center gap-3 my-4">
-              <button onClick={decrement}>
-                <Minus />
-              </button>
-              <span>{quantity}</span>
-              <button onClick={increment}>
-                <Plus />
-              </button>
+          <div className="space-y-6">
+            {/* Product Info */}
+            <div className="pb-4 border-b border-grey-light">
+              <h3 className="text-lg font-bold text-gray-800 mb-2">
+                {selectedProduct.title}
+              </h3>
+              <p className="text-2xl font-semibold text-primary">
+                Rs. {selectedProduct.variants?.[0]?.price ?? 0}
+              </p>
             </div>
 
-            <button
-              className="w-full bg-primary text-white py-2 rounded"
-              onClick={() => {
-                onSendProduct({
-                  type: "product-details",
-                  data: {
-                    ...selectedProduct,
-                    quantity,
-                  },
-                });
-                onClose();
-              }}
-            >
-              Send Product Details
-            </button>
+            {/* Quantity Selector */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                Quantity
+              </label>
+              <div className="flex items-center justify-center gap-4 bg-gray-50 p-3 rounded-lg">
+                <button
+                  onClick={decrement}
+                  className="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-lg hover:bg-white transition-colors"
+                >
+                  <Minus size={18} />
+                </button>
+                <span className="text-2xl font-semibold min-w-[3rem] text-center">
+                  {quantity}
+                </span>
+                <button
+                  onClick={increment}
+                  className="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-lg hover:bg-white transition-colors"
+                >
+                  <Plus size={18} />
+                </button>
+              </div>
+            </div>
+
+            {/* Product Description */}
+            {selectedProduct.description && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Description
+                </label>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  {selectedProduct.description}
+                </p>
+              </div>
+            )}
           </div>
         )}
       </div>
+
+      {/* Footer - Send Button (only in details step) */}
+      {step === "details" && (
+        <div className="p-4 border-t border-grey-light">
+          <Button
+            label="Send Product Details"
+            onClick={handleSendProduct}
+            variant="primary"
+            className="w-full"
+          />
+        </div>
+      )}
     </div>
   );
 };

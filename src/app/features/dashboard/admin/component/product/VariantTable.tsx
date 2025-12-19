@@ -83,11 +83,8 @@ const VariantTable: React.FC<VariantTableProps> = ({
         header: "Attributes",
         cell: (info) => {
           const attributes = info.getValue() as any;
-
-          // Handle case where attributes might be undefined or null
           if (!attributes) return <span>-</span>;
 
-          // attributes is a single object, not an array
           return (
             <div className="flex items-center gap-2 text-xs">
               {attributes.color && <span>Color: {attributes.color}</span>}

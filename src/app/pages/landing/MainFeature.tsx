@@ -15,7 +15,7 @@ const MainFeature = () => {
           </div>
 
           <h1 className="h2-bold-40 pt-4 lg:text-left text-center text-grey">
-            What <span className="text-primary">Assistant</span> Helps You Do?
+            What <span className="text-primary">Chatblix</span> Helps You Do?
           </h1>
 
           <p className="h4-regular-24 text-grey-medium pt-4 text-center lg:text-left">

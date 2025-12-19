@@ -39,10 +39,10 @@ const GetStarted = () => {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white leading-snug">
-            Get Started with Assistant today.
+            Get Started with Chatblix today.
           </h2>
           <p className="text-base md:text-lg text-gray-200 max-w-md">
-            Try Assistant free for 14 days and discover how it can transform
+            Try Chatblix free for 14 days and discover how it can transform
             your workflow!
           </p>
           <motion.button
@@ -63,7 +63,7 @@ const GetStarted = () => {
         >
           <img
             src="https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920901/getstarted_juzd3p.png"
-            alt="Assistant Dashboard Mockup"
+            alt="Chatblix Dashboard Mockup"
             className="w-full h-auto object-contain rounded-xl md:rounded-2xl animate-float relative bottom-0"
           />
         </motion.div>

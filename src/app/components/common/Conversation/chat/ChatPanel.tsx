@@ -107,6 +107,40 @@ const ChatPanel = () => {
     }
   }, [incomingMessages, selectedConversationId]);
 
+  // Close all other drawers when one is opened
+  const closeAllDrawers = () => {
+    setIsOpenDetails(false);
+    setIsMembersPanelOpen(false);
+    setIsOrderInfoOpen(false);
+    setIsProductSearchOpen(false);
+    setIsOrderNotesOpen(false);
+  };
+
+  const handleToggleDetails = () => {
+    closeAllDrawers();
+    setIsOpenDetails(true);
+  };
+
+  const handleToggleMembers = () => {
+    closeAllDrawers();
+    setIsMembersPanelOpen(true);
+  };
+
+  const handleToggleOrderInfo = () => {
+    closeAllDrawers();
+    setIsOrderInfoOpen(true);
+  };
+
+  const handleToggleProductSearch = () => {
+    closeAllDrawers();
+    setIsProductSearchOpen(true);
+  };
+
+  const handleToggleOrderNotes = () => {
+    closeAllDrawers();
+    setIsOrderNotesOpen(true);
+  };
+
   const handleSend = () => {
     if (!message.trim() || !selectedConversationId) return;
 
@@ -175,11 +209,11 @@ const ChatPanel = () => {
         <ChatHeader
           conversation={conversation}
           members={members}
-          onToggleDetails={() => setIsOpenDetails((p) => !p)}
-          isMembersPanelOpen={() => setIsMembersPanelOpen((p) => !p)}
-          isOrderInfoOpen={() => setIsOrderInfoOpen((p) => !p)}
-          isProductSearchOpen={() => setIsProductSearchOpen((p) => !p)}
-          isOrderNotesOpen={() => setIsOrderNotesOpen((p) => !p)}
+          onToggleDetails={handleToggleDetails}
+          isMembersPanelOpen={handleToggleMembers}
+          isOrderInfoOpen={handleToggleOrderInfo}
+          isProductSearchOpen={handleToggleProductSearch}
+          isOrderNotesOpen={handleToggleOrderNotes}
         />
         <div className="flex-1 overflow-y-auto">
           <ChatFeed messages={localMessages} ref={messagesEndRef} />
@@ -191,20 +225,21 @@ const ChatPanel = () => {
         />
       </div>
 
-      <ChatSearchProductDetails
-        isOpen={isProductSearchOpen}
-        onClose={() => setIsProductSearchOpen(false)}
-        onSendProduct={(productMsg) => {
-          const newMsg = {
-            _id: crypto.randomUUID(),
-            sender: "You",
-            content: productMsg,
-            type: "product-details",
-            createdAt: new Date().toISOString(),
-          };
-          setLocalMessages((prev) => [...prev, newMsg]);
-        }}
-      />
+      {isProductSearchOpen && (
+        <ChatSearchProductDetails
+          onClose={() => setIsProductSearchOpen(false)}
+          onSendProduct={(productMsg) => {
+            const newMsg = {
+              _id: crypto.randomUUID(),
+              sender: "You",
+              content: productMsg,
+              type: "product-details",
+              createdAt: new Date().toISOString(),
+            };
+            setLocalMessages((prev) => [...prev, newMsg]);
+          }}
+        />
+      )}
 
       {/* {isOrderNotesOpen && (
         <ChatOrderNotesPanel
@@ -215,6 +250,7 @@ const ChatPanel = () => {
 
       {isOrderInfoOpen && (
         <ChatOrderInfoPanel
+          // onClose={() => setIsOrderInfoOpen(false)}
           onSendOrderMessage={(msg) => {
             setLocalMessages((prev) => [...prev, msg]);
           }}
@@ -223,6 +259,7 @@ const ChatPanel = () => {
 
       {isOpenDetails && (
         <ChatDetailsPanel
+          // onClose={() => setIsOpenDetails(false)}
           conversation={conversation}
           members={members}
           tenantUsers={tenantUsers}
@@ -236,7 +273,7 @@ const ChatPanel = () => {
         <ChatMembersDetailsPanel
           members={members}
           loading={membersLoading}
-          isMembersPanelOpen={() => setIsMembersPanelOpen(false)}
+          onMemberDetailsClose={() => setIsMembersPanelOpen(false)}
           onManage={() => setIsAddMemberDialogOpen(true)}
         />
       )}

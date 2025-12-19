@@ -56,6 +56,7 @@ export const useUpdateVariant = (productId: string) => {
       queryClient.invalidateQueries({ queryKey: ["variants", productId] });
       toast.success("Variant updated successfully");
     },
+
     onError: (error) => {
       console.error("Update variant error:", error);
       toast.error("Failed to update variant");

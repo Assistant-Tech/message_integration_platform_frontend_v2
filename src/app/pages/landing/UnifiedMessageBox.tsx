@@ -79,9 +79,9 @@ const UnifiedMessagingInbox = () => {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-center text-gray-600 text-lg lg:text-xl max-w-4xl mx-auto mb-12 leading-relaxed"
             >
-              Assistant ensures seamless connectivity, real-time
-              synchronization, security and smart automation while allowing all
-              messages to be managed on one single platform.
+              Chatblix ensures seamless connectivity, real-time synchronization,
+              security and smart automation while allowing all messages to be
+              managed on one single platform.
             </motion.p>
 
             {/* Social Icons Row */}

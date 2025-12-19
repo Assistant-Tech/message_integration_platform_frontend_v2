@@ -75,7 +75,7 @@ const ScaleBusiness: React.FC = () => {
 
             <motion.div variants={itemVariants}>
               <h1 className={cn("text-grey", "h2-semi-bold-40")}>
-                Who is <span className="text-primary">Assistant</span> for?
+                Who is <span className="text-primary">Chatblix</span> for?
               </h1>
             </motion.div>
 
@@ -83,7 +83,7 @@ const ScaleBusiness: React.FC = () => {
               className="h4-regular-24 text-grey-medium mx-auto lg:mx-0 max-w-xl"
               variants={itemVariants}
             >
-              If you talk to customers online, Assistant is for you.
+              If you talk to customers online, Chatblix is for you.
             </motion.p>
 
             <motion.div
@@ -113,8 +113,8 @@ const ScaleBusiness: React.FC = () => {
               <p className="body-regular-16 text-grey">
                 Whether you're running a one-person shop or managing a team,{" "}
                 <span className="text-primary">
-                  Assistant helps you reply faster, stay organized, and grow
-                  your business
+                  Chatblix helps you reply faster, stay organized, and grow your
+                  business
                 </span>
               </p>
             </motion.div>

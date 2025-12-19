@@ -10,7 +10,7 @@ import {
 const IntegrationPage = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("all");
-  const [activeCategory, setActiveCategory] = useState("communication");
+  const [activeCategory, setActiveCategory] = useState("communication"); // dyanmic ?provider
   const [integrationStates, setIntegrationStates] = useState<
     Record<string, boolean>
   >({});

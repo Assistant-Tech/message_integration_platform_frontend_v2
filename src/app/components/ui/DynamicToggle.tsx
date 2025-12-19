@@ -64,7 +64,7 @@ const DynamicToggle: React.FC<DynamicToggleProps> = ({
             <span
               className={cn(
                 "relative z-10 flex items-center gap-2",
-                isSelected ? "text-white" : "text-gray-500",
+                isSelected ? "text-white" : "text-grey",
               )}
             >
               <span>{option.label}</span>
