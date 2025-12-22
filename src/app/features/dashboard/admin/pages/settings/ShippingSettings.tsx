@@ -160,12 +160,10 @@ const ShippingSettings = () => {
     e.stopPropagation();
     setMenuOpen(null);
 
-    navigate("/tenant-example-1/admin/settings/integration", {
-      state: {
-        providerId: provider.id,
-        providerName: provider.name,
-      },
-    });
+    // Navigate to integration page with provider query parameter
+    navigate(
+      `/tenant-example-1/admin/settings/integration?provider=${provider.id}`,
+    );
   };
 
   const handleUnlink = (e: React.MouseEvent) => {

@@ -20,7 +20,7 @@ const ChatDetailsPanel = ({
   onEdit,
 }: ChatDetailsPanelProps) => {
   return (
-    <div className="w-96 border-l border-grey-light bg-white overflow-y-auto">
+    <div className="w-2xl border-l border-grey-light bg-white overflow-y-auto">
       {/* Header */}
       <div className="px-4 py-6 border-b border-grey-light flex items-center gap-2">
         <Users className="h-5 w-5 text-grey" />

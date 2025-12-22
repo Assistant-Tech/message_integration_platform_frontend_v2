@@ -34,7 +34,7 @@ export type UpdateVariantPayload = Partial<{
   sku: string;
   price: number;
   compareAtPrice: number;
-  attributes: VariantAttribute;
+  attributes: VariantAttribute; 
 }>;
 
 export type UpdateVariantInventoryPayload = {

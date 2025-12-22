@@ -136,19 +136,14 @@ const ProductVariants = () => {
 
     switch (sortBy) {
       case "oldest":
-        temp.reverse();
-        break;
+        return [...temp].reverse();
       case "name-asc":
-        temp.sort((a, b) => a.title.localeCompare(b.title));
-        break;
+        return [...temp].sort((a, b) => a.title.localeCompare(b.title));
       case "name-desc":
-        temp.sort((a, b) => b.title.localeCompare(a.title));
-        break;
+        return [...temp].sort((a, b) => b.title.localeCompare(a.title));
       default:
-        break;
+        return temp;
     }
-
-    return temp;
   }, [variantData, search, visibilityFilter, sortBy]);
 
   // Loading

@@ -24,39 +24,22 @@ export const useUpdateVariantInventory = (
     mutationFn: (payload: UpdateVariantInventoryPayload) =>
       updateVariantInventory(productId, variantId, payload),
 
-    onSuccess: (updatedInventory) => {
-      // 1️⃣ Update single variant inventory
-      queryClient.setQueryData(
-        ["inventory", productId, variantId],
-        updatedInventory,
-      );
-
-      // 2️⃣ Update variants list (THIS FIXES YOUR TABLE)
-      queryClient.setQueryData(
-        ["variants", productId],
-        (oldVariants: any[] | undefined) => {
-          if (!oldVariants) return oldVariants;
-
-          return oldVariants.map((variant) =>
-            variant.id === variantId
-              ? {
-                  ...variant,
-                  inventory: {
-                    ...variant.inventory,
-                    stock: updatedInventory.stock,
-                    lowStock: updatedInventory.lowStock,
-                  },
-                }
-              : variant,
-          );
-        },
-      );
+    onSuccess: async () => {
+      // 🔄 Refetch fresh data from backend
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ["variants", productId],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["inventory", productId, variantId],
+        }),
+      ]);
 
       toast.success("Inventory updated successfully");
     },
 
-    onError: () => {
-      toast.error("Failed to update inventory");
+    onError: (error: any) => {
+      toast.error(error?.message || "Failed to update inventory");
     },
   });
 };

@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import IntegrationCard from "./IntgerationCard";
 import {
   allIntegrations,
@@ -9,11 +9,24 @@ import {
 
 const IntegrationPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState("all");
-  const [activeCategory, setActiveCategory] = useState("communication"); // dyanmic ?provider
+  const [activeCategory, setActiveCategory] = useState("communication");
   const [integrationStates, setIntegrationStates] = useState<
     Record<string, boolean>
   >({});
+
+  // Check for provider parameter and set category to shipping
+  useEffect(() => {
+    const providerParam = searchParams.get("provider");
+    if (providerParam) {
+      // Switch to shipping category when provider parameter is present
+      setActiveCategory("shipping");
+
+      // Optional: Scroll to the specific provider integration card
+      // You could add logic here to highlight or focus the specific provider
+    }
+  }, [searchParams]);
 
   // Filter integrations based on active tab
   const getFilteredIntegrations = (category: string): Integration[] => {
@@ -55,6 +68,9 @@ const IntegrationPage = () => {
     { id: "active", label: "Active" },
     { id: "inactive", label: "Inactive" },
   ];
+
+  // Get provider from URL params for highlighting
+  const providerParam = searchParams.get("provider");
 
   return (
     <motion.section
@@ -105,24 +121,46 @@ const IntegrationPage = () => {
           ))}
         </div>
 
+        {/* Provider Info Banner (when coming from shipping settings) */}
+        {providerParam && activeCategory === "shipping" && (
+          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-sm text-blue-800">
+              Configure API key for{" "}
+              <span className="font-semibold">{providerParam}</span> provider
+            </p>
+          </div>
+        )}
+
         {/* Integrations Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {getFilteredIntegrations(activeCategory).map((integration) => (
-            <IntegrationCard
-              key={integration.id}
-              name={integration.name}
-              description={integration.description}
-              logoSvg={integration.logoSvg}
-              logoBackgroundColor={integration.logoBackgroundColor}
-              defaultEnabled={
-                integrationStates[integration.id] !== undefined
-                  ? integrationStates[integration.id]
-                  : integration.defaultEnabled
-              }
-              onToggle={(enabled) => handleToggle(integration.id, enabled)}
-              onViewIntegration={() => handleViewIntegration(integration.id)}
-            />
-          ))}
+          {getFilteredIntegrations(activeCategory).map((integration) => {
+            // Highlight the card if it matches the provider parameter
+            const isHighlighted =
+              providerParam && integration.id === providerParam;
+
+            return (
+              <div
+                key={integration.id}
+                className={`${isHighlighted ? "ring-2 ring-primary ring-offset-2 rounded-lg" : ""}`}
+              >
+                <IntegrationCard
+                  name={integration.name}
+                  description={integration.description}
+                  logoSvg={integration.logoSvg}
+                  logoBackgroundColor={integration.logoBackgroundColor}
+                  defaultEnabled={
+                    integrationStates[integration.id] !== undefined
+                      ? integrationStates[integration.id]
+                      : integration.defaultEnabled
+                  }
+                  onToggle={(enabled) => handleToggle(integration.id, enabled)}
+                  onViewIntegration={() =>
+                    handleViewIntegration(integration.id)
+                  }
+                />
+              </div>
+            );
+          })}
         </div>
 
         {/* Empty State */}

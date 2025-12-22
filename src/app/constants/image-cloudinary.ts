@@ -1,7 +1,7 @@
 const BASE_URL = import.meta.env.VITE_CLOUDINARY_BASE_URL as string;
 
 // Auth pages
-export const LOGIN_IMAGE_URL = `${BASE_URL}/v1756630890/loginImage_dhul1r.png`;
+export const LOGIN_IMAGE_URL = `${BASE_URL}/v1766274922/login_image_svzq0f.png`;
 export const REGISTER_IMAGE_URL = `${BASE_URL}/v1755078235/register_tmr4r8.png`;
 export const LOGIN_OTP_IMAGE_URL = `${BASE_URL}/v1756630890/loginImage_dhul1r.png`;
 

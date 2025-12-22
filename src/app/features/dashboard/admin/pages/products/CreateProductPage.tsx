@@ -6,7 +6,6 @@ import {
   ProductDescription,
   ProductVisibility,
   ActionButtons,
-  ProductVariants,
 } from "@/app/features/dashboard/admin/component/product/form";
 import { CreateProductData } from "@/app/types/product.types";
 import { Breadcrumb } from "@/app/components/ui";
@@ -17,6 +16,7 @@ import { useCreateProduct } from "@/app/hooks/useProducts";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { productSchema } from "@/app/schemas/createProduct.schema";
 import { APP_ROUTES } from "@/app/constants/routes";
+import ProductVariants from "./ProductVariants";
 
 const CreateProductPage: React.FC = () => {
   const navigate = useNavigate();
@@ -58,10 +58,7 @@ const CreateProductPage: React.FC = () => {
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "variants",
-  });
+  // const { fields, append, remove } = use
 
   const watchVisibility = watch("visibility");
 
@@ -118,10 +115,10 @@ const CreateProductPage: React.FC = () => {
 
         <div className="mt-6">
           <ProductVariants
-            register={register}
-            fields={fields}
-            append={append}
-            remove={remove}
+          // register={register}
+          // fields={fields}
+          // append={append}
+          // remove={remove}
           />
         </div>
 
