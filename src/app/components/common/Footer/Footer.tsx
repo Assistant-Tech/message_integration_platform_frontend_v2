@@ -71,7 +71,7 @@ const Footer = () => {
                   <div key={section}>
                     <button
                       onClick={() => toggleSection(section)}
-                      className="w-full flex justify-between items-center py-2 h4-bold-16 border-b border-gray-300"
+                      className="w-full flex justify-between items-center py-2 h4-bold-16 border-b border-grey-light text-primary-light"
                     >
                       <span className="capitalize">{section}</span>
                       <ChevronDown
@@ -96,7 +96,7 @@ const Footer = () => {
                                 <li key={index}>
                                   <a
                                     href={link.url}
-                                    className="text-grey transition-colors flex items-center text-sm"
+                                    className="text-primary-light transition-colors flex items-center text-sm"
                                   >
                                     {isContactSection &&
                                       "icon" in link &&

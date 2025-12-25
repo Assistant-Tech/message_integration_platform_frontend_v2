@@ -32,6 +32,7 @@ const InventoryTable: React.FC<InventoryTableProps> = ({ data }) => {
         header: "Product",
         cell: (info) => {
           const variant = info.row.original;
+          console.log("🚀 ~ InventoryTable ~ variant:", variant);
           return (
             <div className="flex items-center gap-3">
               {variant.productImage ? (

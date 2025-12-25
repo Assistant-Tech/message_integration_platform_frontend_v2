@@ -25,6 +25,7 @@ import {
   Variant,
 } from "@/app/types/variants.types";
 import { toast } from "sonner";
+import { GenericDialog } from "@/app/components/common";
 
 const ProductVariants = () => {
   const { data: allProduct = [], isLoading: isLoadingProducts } = useProducts();
@@ -48,6 +49,10 @@ const ProductVariants = () => {
     null,
   );
   const [visibilityFilter, setVisibilityFilter] = useState("");
+
+  // Delete dialog states
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [variantToDelete, setVariantToDelete] = useState<string | null>(null);
 
   // ✅ Derive selected variant safely
   const selectedVariant = useMemo<Variant | null>(() => {
@@ -87,11 +92,18 @@ const ProductVariants = () => {
     }
   };
 
-  const handleDeleteVariant = async (variantId: string) => {
-    if (!confirm("Are you sure you want to delete this variant?")) return;
+  const handleDeleteVariant = (variantId: string) => {
+    setVariantToDelete(variantId);
+    setOpenDeleteDialog(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!variantToDelete) return;
 
     try {
-      await deleteVariantMutation.mutateAsync(variantId);
+      await deleteVariantMutation.mutateAsync(variantToDelete);
+      setOpenDeleteDialog(false);
+      setVariantToDelete(null);
     } catch (error) {
       console.error("Failed to delete variant:", error);
     }
@@ -215,6 +227,35 @@ const ProductVariants = () => {
         onEdit={handleEditVariant}
         onDelete={handleDeleteVariant}
       />
+
+      {/* Delete Dialog */}
+      <GenericDialog
+        open={openDeleteDialog}
+        onClose={() => setOpenDeleteDialog(false)}
+        title="Delete Variant"
+        maxWidth="lg"
+      >
+        <p className="text-grey-medium mb-6">
+          Are you sure you want to delete this variant? This action cannot be
+          undone.
+        </p>
+        <div className="flex justify-end gap-3">
+          <button
+            className="px-4 py-2 border rounded-lg"
+            onClick={() => setOpenDeleteDialog(false)}
+            disabled={deleteVariantMutation.isPending}
+          >
+            Cancel
+          </button>
+          <button
+            className="px-4 py-2 bg-red-600 rounded-lg text-white"
+            onClick={confirmDelete}
+            disabled={deleteVariantMutation.isPending}
+          >
+            {deleteVariantMutation.isPending ? "Deleting..." : "Delete"}
+          </button>
+        </div>
+      </GenericDialog>
     </div>
   );
 };

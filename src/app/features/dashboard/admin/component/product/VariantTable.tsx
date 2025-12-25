@@ -49,7 +49,7 @@ const VariantTable: React.FC<VariantTableProps> = ({
         accessorKey: "price",
         header: "Price",
         cell: (info) => (
-          <span className="font-semibold">₹{info.getValue() as number}</span>
+          <span className="font-semibold">${info.getValue() as number}</span>
         ),
       },
       {

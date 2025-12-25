@@ -79,15 +79,14 @@ const ProductImages: React.FC<Props> = ({ setValue }) => {
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full">
               {previews.map((src, index) => (
                 <div
-                  key={index}
-                  className="group relative w-full h-72 bg-grey-light rounded-lg overflow-hidden"
+                  key="index"
+                  className="group relative w-full aspect-square rounded-lg overflow-hidden"
                 >
                   <img
                     src={src}
-                    alt={`preview-${index}`}
-                    className="w-72 h-72 object-cover"
+                    className="block absolute inset-0 w-full h-full! object-cover"
+                    alt="productImage"
                   />
-
                   {/* Remove button */}
                   <button
                     type="button"
@@ -98,7 +97,7 @@ const ProductImages: React.FC<Props> = ({ setValue }) => {
                   </button>
 
                   {/* Index badge */}
-                  <span className="absolute bottom-1 left-1 bg-primary/60 hover:bg-primary-dark cursor-pointer text-white rounded-full px-3 py-1">
+                  <span className="absolute bottom-1 left-1 bg-primary/80 cursor-pointer text-white rounded-full px-3 py-1">
                     {index === 0 ? "Main" : index + 1}
                   </span>
                 </div>

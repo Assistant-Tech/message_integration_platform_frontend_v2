@@ -8,7 +8,7 @@ import ProductSearchBar from "@/app/components/common/Search/ProductSearchBar";
 import { SortOption, Product } from "@/app/types/product.types";
 import { useProducts, useDeleteProduct } from "@/app/hooks/useProducts";
 import { APP_ROUTES } from "@/app/constants/routes";
-import Loading from "@/app/components/common/Loading";
+import { Loading } from "@/app/components/common/";
 import { useAuthStore } from "@/app/store/auth.store";
 import { GenericDialog } from "@/app/components/common";
 import { toast } from "sonner";

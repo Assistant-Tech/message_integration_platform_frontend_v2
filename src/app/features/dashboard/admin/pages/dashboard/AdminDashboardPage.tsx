@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/app/store/auth.store";
 import { useMfaStore } from "@/app/store/mfa.store";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
-import { LogOut, Users, Activity, TrendingUp, Database } from "lucide-react";
+import { Users, Activity, TrendingUp, Database } from "lucide-react";
 import RecoveryPhrasesModal from "../../component/mfa/RecoveryCodesModal";
 import { Loading } from "@/app/components/common";
 import {
@@ -33,8 +31,7 @@ ChartJS.register(
 );
 
 const AdminDashboard = () => {
-  const navigate = useNavigate();
-  const { user: profile, logout } = useAuthStore();
+  const { user: profile} = useAuthStore();
   const { recoveryPhrases } = useMfaStore();
   const [showRecoveryModal, setShowRecoveryModal] = useState(false);
 
@@ -43,12 +40,6 @@ const AdminDashboard = () => {
       setShowRecoveryModal(true);
     }
   }, [recoveryPhrases]);
-
-  const handleLogout = async () => {
-    await logout();
-    toast.success("Logged out successfully!");
-    navigate("/login", { replace: true });
-  };
 
   // Static data for charts
   const userGrowthData = {
@@ -170,13 +161,6 @@ const AdminDashboard = () => {
             <h1 className="text-4xl font-bold text-grey">Admin Dashboard</h1>
             <p className="text-grey mt-1">Welcome back, {profile.email}</p>
           </div>
-          <button
-            onClick={handleLogout}
-            className="px-6 py-2.5 bg-danger hover:bg-danger-dark text-white rounded-lg flex items-center gap-2 transition-colors hover:shadow-sm"
-          >
-            <LogOut size={18} />
-            Logout
-          </button>
         </div>
 
         {/* Stats Grid */}
@@ -223,10 +207,10 @@ const AdminDashboard = () => {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-gradient-to-br from-base-white to-information-light p-4 rounded-lg border border-information">
-              <p className="text-grey-medium text-sm font-medium mb-1">
-                User ID
+              <p className="text-grey-medium text-sm font-medium mb-1">Name</p>
+              <p className="text-grey font-semibold break-all">
+                {profile.name}
               </p>
-              <p className="text-grey font-semibold break-all">{profile.id}</p>
             </div>
             <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg border border-purple-200">
               <p className="text-grey-medium text-sm font-medium mb-1">

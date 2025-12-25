@@ -51,7 +51,7 @@ const ChatFeed = forwardRef<HTMLDivElement, { messages: any[] }>(
             </div>
             <div className="flex justify-between font-semibold">
               <span>Grand Total</span>
-              <span>Rs. {d.finalAmount}</span>
+              <span>Rs. {d.totalAmount}</span>
             </div>
           </div>
 
@@ -189,7 +189,7 @@ const ChatFeed = forwardRef<HTMLDivElement, { messages: any[] }>(
           <a
             href={link}
             target="_blank"
-            className="block mt-3 underline underline-offset-4 font-medium bg-white text-green-700 p-2 rounded-lg text-center"
+            className="block mt-3 underline underline-offset-4 font-medium bg-white text-primary-dark p-2 rounded-lg text-center"
           >
             Pay Now
           </a>

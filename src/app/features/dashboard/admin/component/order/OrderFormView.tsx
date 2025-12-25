@@ -8,7 +8,6 @@ interface OrderFormViewProps {
   onOpenSearch: () => void;
   onCancel: () => void;
   onSubmit: () => void;
-  onSendPaymentLink?: () => void;
 }
 
 const OrderFormView: React.FC<OrderFormViewProps> = ({
@@ -17,7 +16,6 @@ const OrderFormView: React.FC<OrderFormViewProps> = ({
   onOpenSearch,
   onCancel,
   onSubmit,
-  onSendPaymentLink,
 }) => {
   return (
     <>
@@ -102,13 +100,6 @@ const OrderFormView: React.FC<OrderFormViewProps> = ({
           className="w-full h-18"
         />
         <Button label="Confirm Order" onClick={onSubmit} className="w-full h-18" />
-        <Button
-          label="Send Payment"
-          type="button"
-          onClick={onSendPaymentLink}
-          variant="outlined"
-          className="w-full h-18"
-        />
       </div>
     </>
   );

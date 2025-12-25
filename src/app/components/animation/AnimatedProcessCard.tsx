@@ -13,7 +13,7 @@ const AnimatedProcessCard: React.FC<AnimatedProcessCardProps> = ({
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % processes.length);
-    }, 1500); 
+    }, 1500);
 
     return () => clearInterval(interval);
   }, [processes.length]);
@@ -32,15 +32,15 @@ const AnimatedProcessCard: React.FC<AnimatedProcessCardProps> = ({
                   x: 0,
                   scale: 1,
                   transition: {
-                    delay: index * 0.1, // Reduced from 0.3 to 0.1
-                    duration: 0.3, // Reduced from 0.5 to 0.3
+                    delay: index * 0.1,
+                    duration: 0.3,
                     ease: "easeOut",
                   },
                 }}
                 exit={{
                   opacity: 0,
                   scale: 0.8,
-                  transition: { duration: 0.2 }, // Reduced from 0.3 to 0.2
+                  transition: { duration: 0.2 },
                 }}
                 className="absolute top-0 left-0 bg-secondary text-white px-4 py-3 rounded-lg shadow-lg body-medium-16 whitespace-nowrap mb-2"
                 style={{

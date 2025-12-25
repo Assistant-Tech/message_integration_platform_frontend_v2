@@ -74,7 +74,7 @@ const DynamicToggle: React.FC<DynamicToggleProps> = ({
                     "text-xs font-medium px-2 py-0.5 rounded-lg",
                     isSelected
                       ? "text-black bg-white"
-                      : "text-white bg-primary-light border border-primary",
+                      : "text-primary bg-primary-light border border-primary",
                   )}
                 >
                   {option.extraLabel}

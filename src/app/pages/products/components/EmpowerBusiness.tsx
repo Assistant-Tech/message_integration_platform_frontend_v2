@@ -1,11 +1,11 @@
 import { motion } from "framer-motion";
-
 import { benefits, features } from "@/app/utils/product/product.config";
 import { cn } from "@/app/utils/cn";
-
 import { EmailSignupCTA } from "@/app/pages/products/components/";
+import crm from "@/app/content/json/crm.json";
 
 const EmpowerBusiness = () => {
+  const { empowerBusiness } = crm;
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-12 lg:gap-16 items-center mb-12 sm:mb-16 md:mb-20 lg:mb-24">
       {/* Left Content */}
@@ -17,17 +17,16 @@ const EmpowerBusiness = () => {
       >
         <div className="space-y-3 sm:space-y-4 md:space-y-6">
           <h1 className="h2-bold-40 text-base-black">
-            Empowering Your Business with Chatblix's
+            {empowerBusiness.heading.title}
             <span className="text-primary block sm:inline sm:ps-2">
-              <span className="block sm:inline">AI-Powered CRM Software</span>
+              <span className="block sm:inline">
+                {empowerBusiness.heading.highlight}
+              </span>
             </span>
           </h1>
 
           <p className="body-regular-16 text-grey-medium">
-            Chatblix's CRM software helps you respond to your customer inquiries
-            instantly and efficiently. It streamlines your company's workflow,
-            helps with customer retention and simultaneously reduces marketing
-            costs.
+            {empowerBusiness.description}
           </p>
         </div>
 

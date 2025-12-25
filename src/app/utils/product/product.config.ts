@@ -28,8 +28,8 @@ export interface BenefitProps {
 }
 
 // import images
-import clock from "@/app/assets/greenIcons/clock.svg";
-import essentials from "@/app/assets/greenIcons/essentials.svg";
+import clock from "@/app/assets/white-icons/chat.svg";
+import essentials from "@/app/assets/white-icons/crm.svg";
 
 // Pure data with component references
 export const features: FeatureProps[] = [

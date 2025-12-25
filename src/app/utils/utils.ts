@@ -506,8 +506,8 @@ export const footerLinks: FooterLinks = {
   ],
   contact: [
     {
-      name: "assistant@gmail.com",
-      url: "mailto:assistant@gmail.com",
+      name: "chatblix@info.com",
+      url: "chatblix@info.com",
       icon: Mail,
     },
     {
@@ -534,21 +534,21 @@ export const SocialFooter: SocialLink[] = [
   {
     name: "Instagram",
     src: instaBNW,
-    href: "https://wa.me/yourphonenumber",
+    href: "https://www.instagram.com/chatblix?igsh=MWI2dmN2dzV0OXA3Mw%3D%3D&utm_source=qr",
     color: "#25D366",
     size: 44,
   },
   {
     name: "LinkedIn",
     src: LinkBNW,
-    href: "https://wa.me/yourphonenumber",
+    href: "https://www.linkedin.com/company/chatblix/",
     color: "#25D366",
     size: 44,
   },
   {
-    name: "X",
+    name: "Tiktok",
     src: xBNW,
-    href: "https://wa.me/yourphonenumber",
+    href: "https://www.tiktok.com/@chatblix?_r=1&_t=ZS-92MQ98V9xkS",
     color: "#25D366",
     size: 44,
   },
@@ -592,7 +592,7 @@ export interface TeamMember {
 
 export const teamMembers: TeamMember[] = [
   {
-    name: "Rhonda Rhodes",
+    name: "Ram Kumar",
     title: "CEO",
     imageUrl:
       "https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",

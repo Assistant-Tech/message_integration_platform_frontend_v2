@@ -23,7 +23,7 @@ import {
   ChatOrderInfoPanel,
   ChatSearchProductDetails,
 } from "@/app/components/common/Conversation/chat/chat-panel";
-import ChatOrderNotesPanel from "./chat-panel/ChatNotesOrderPanel";
+// import ChatOrderNotesPanel from "./chat-panel/ChatNotesOrderPanel";
 
 const ChatPanel = () => {
   const {

@@ -8,7 +8,7 @@ import { useState } from "react";
 interface AddVariantProps {
   isOpen: boolean;
   onClose: () => void;
-  onAdd: (variant: CreateVariantPayload) => void;
+  onAdd: (variant: CreateVariantPayload) => Promise<void>;
 }
 
 const AddVariant: React.FC<AddVariantProps> = ({ isOpen, onClose, onAdd }) => {
@@ -18,12 +18,13 @@ const AddVariant: React.FC<AddVariantProps> = ({ isOpen, onClose, onAdd }) => {
   const [stock, setStock] = useState<number>(0);
   const [color, setColor] = useState("");
   const [size, setSize] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     const trimmedTitle = title.trim();
-    if (!trimmedTitle) return;
+    if (!trimmedTitle || isSubmitting) return;
 
     const payload: CreateVariantPayload = {
       title: trimmedTitle,
@@ -39,19 +40,39 @@ const AddVariant: React.FC<AddVariantProps> = ({ isOpen, onClose, onAdd }) => {
     };
     console.log("🚀 ~ handleAdd ~ payload:", payload);
 
-    setVariants((prev) => [...prev, payload]);
-    onAdd(payload);
+    setIsSubmitting(true);
+    try {
+      await onAdd(payload);
 
-    // reset form
+      // Add to local list for display
+      setVariants((prev) => [...prev, payload]);
+
+      // Reset form
+      setTitle("");
+      setPrice(0);
+      setStock(0);
+      setColor("");
+      setSize("");
+    } catch (error) {
+      console.error("Failed to add variant:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const removeVariant = (index: number) => {
+    setVariants((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleClose = () => {
+    // Reset all state when closing
+    setVariants([]);
     setTitle("");
     setPrice(0);
     setStock(0);
     setColor("");
     setSize("");
-  };
-
-  const removeVariant = (index: number) => {
-    setVariants((prev) => prev.filter((_, i) => i !== index));
+    onClose();
   };
 
   return (
@@ -60,7 +81,7 @@ const AddVariant: React.FC<AddVariantProps> = ({ isOpen, onClose, onAdd }) => {
         {/* Header */}
         <div className="flex justify-between items-center">
           <Heading title="Add Variant" align="left" />
-          <X size={24} onClick={onClose} className="cursor-pointer" />
+          <X size={24} onClick={handleClose} className="cursor-pointer" />
         </div>
 
         {/* Variant Form */}
@@ -112,37 +133,54 @@ const AddVariant: React.FC<AddVariantProps> = ({ isOpen, onClose, onAdd }) => {
           onClick={handleAdd}
           className={cn(
             "w-full bg-primary text-white py-2 rounded-md flex justify-center items-center gap-2",
-            !title.trim() && "opacity-50 cursor-not-allowed",
+            (!title.trim() || isSubmitting) && "opacity-50 cursor-not-allowed",
           )}
-          disabled={!title.trim()}
+          disabled={!title.trim() || isSubmitting}
         >
           <Plus size={18} />
-          Add Variant
+          {isSubmitting ? "Adding..." : "Add Variant"}
         </button>
 
         {/* Variant List */}
-        <div className="space-y-2">
-          {variants.map((variant, idx) => (
-            <div
-              key={idx}
-              className="flex items-center justify-between border px-3 py-2 rounded-md text-sm"
-            >
-              <div className="truncate">
-                <p className="font-medium">{variant.title}</p>
-                <p className="text-xs text-grey">
-                  ₹{variant.price} • Stock: {variant.inventory.stock}
-                </p>
-              </div>
-
-              <button
-                onClick={() => removeVariant(idx)}
-                className="text-grey-medium hover:text-danger"
+        {variants.length > 0 && (
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-gray-700">
+              Added Variants ({variants.length})
+            </p>
+            {variants.map((variant, idx) => (
+              <div
+                key={idx}
+                className="flex items-center justify-between border px-3 py-2 rounded-md text-sm bg-green-50 border-green-200"
               >
-                <Trash2 size={16} />
-              </button>
-            </div>
-          ))}
-        </div>
+                <div className="truncate">
+                  <p className="font-medium">{variant.title}</p>
+                  <p className="text-xs text-grey">
+                    ₹{variant.price} • Stock: {variant.inventory.stock}
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => removeVariant(idx)}
+                  className="text-grey-medium hover:text-danger"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Action Buttons */}
+        {variants.length > 0 && (
+          <div className="flex gap-3 pt-4 border-t">
+            <button
+              onClick={handleClose}
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+            >
+              Done
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

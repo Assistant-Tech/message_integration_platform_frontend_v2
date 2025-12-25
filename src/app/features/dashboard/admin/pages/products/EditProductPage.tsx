@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useProductById, useUpdateProduct } from "@/app/hooks/useProducts";
 import { Breadcrumb, Button } from "@/app/components/ui";
 import { Heading } from "@/app/features/dashboard/admin/component/ui/";
-import Loading from "@/app/components/common/Loading";
+import { Loading } from "@/app/components/common/";
 import { useAuthStore } from "@/app/store/auth.store";
 import { Save } from "lucide-react";
 import { useEffect, useState } from "react";
