@@ -11,6 +11,7 @@ import ProductSearchBar from "@/app/components/common/Search/ProductSearchBar";
 import { getOrders } from "@/app/services/order.services";
 import { buildOrderStats } from "@/app/utils/admin/order.config";
 import { Order } from "@/app/types/order.types";
+import { Loading } from "@/app/components/common";
 
 const sortingOptions = [
   { label: "Newest", value: "newest" },
@@ -46,11 +47,13 @@ const OrderPage = () => {
 
   // ✅ Memoized stats calculation
   const stats = useMemo(() => buildOrderStats(orders), [orders]);
-  console.log("🚀 ~ OrderPage ~ stats:", stats)
+  console.log("🚀 ~ OrderPage ~ stats:", stats);
 
   const handleCreateNewOrder = () => {
     navigate("createOrder");
   };
+
+  if (loading) return <Loading />;
 
   return (
     <div className="p-6 space-y-6">

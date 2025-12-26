@@ -2,7 +2,7 @@ import api from "@/app/services/api/axios";
 import { CreateCategoryProps } from "../types/category.types";
 
 // Fetch all the categories
-export const fetchCategories = async (query: any) => {
+export const fetchCategories = async (query?: any) => {
   try {
     const res = await api.get(`/categories?${query || ""}`);
     return res.data.data || res.data;

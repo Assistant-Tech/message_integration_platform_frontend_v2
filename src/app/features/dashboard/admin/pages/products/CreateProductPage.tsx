@@ -1,5 +1,5 @@
 import React from "react";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import {
   ProductInfo,
   ProductImages,
@@ -34,7 +34,6 @@ const CreateProductPage: React.FC = () => {
     handleSubmit,
     watch,
     setValue,
-    control,
     formState: { errors, isSubmitting },
     reset,
   } = useForm<CreateProductData>({

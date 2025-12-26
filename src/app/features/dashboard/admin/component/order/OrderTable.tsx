@@ -9,6 +9,7 @@ import CancelOrderModal from "../../pages/orders/CancelOrderModal";
 import ShippingLabelModal from "../../pages/orders/ShippingLabelModal";
 import { checkStripeConfiguration } from "@/app/services/stripe.services";
 import { toast } from "sonner";
+import { Loading } from "@/app/components/common";
 
 interface OrderTableProps {
   search: string;
@@ -261,6 +262,8 @@ export default function OrderTable({
 
     return filtered;
   }, [orders, search, sortBy, statusFilter]);
+
+  if (loading) return <Loading />;
 
   return (
     <>

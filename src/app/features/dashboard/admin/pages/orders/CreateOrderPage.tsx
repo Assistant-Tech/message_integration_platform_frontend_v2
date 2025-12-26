@@ -40,12 +40,12 @@ const CreateOrderPage = () => {
   const navigate = useNavigate();
   const tenantSlug = useAuthStore((s) => s.tenantSlug);
   const [products, setProducts] = useState<any[]>([]);
-  const [messages, setMessages] = useState<any[]>([]);
   const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([]);
   const [loading, setLoading] = useState(false);
 
   const addLocalMessage = (msg: any) => {
-    setMessages((prev) => [...prev, msg]);
+    // setMessages((prev) => [...prev, msg]);
+    console.log("Local Message Added:", msg);
   };
 
   const [isProductModalOpen, setProductModalOpen] = useState(false);

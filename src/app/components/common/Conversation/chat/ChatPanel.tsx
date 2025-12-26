@@ -34,9 +34,7 @@ const ChatPanel = () => {
 
   const { sendMessage, incomingMessages } = useChatSocket();
   const { tenantUsers, fetchTenantUsers } = useTenantStore();
-
-  // For notes
-  const [isOrderNotesOpen, setIsOrderNotesOpen] = useState<boolean>(false);
+  
   const [message, setMessage] = useState("");
   const [localMessages, setLocalMessages] = useState<any[]>([]);
   const [isOpenDetails, setIsOpenDetails] = useState(false);
@@ -113,7 +111,6 @@ const ChatPanel = () => {
     setIsMembersPanelOpen(false);
     setIsOrderInfoOpen(false);
     setIsProductSearchOpen(false);
-    setIsOrderNotesOpen(false);
   };
 
   const handleToggleDetails = () => {
@@ -138,7 +135,6 @@ const ChatPanel = () => {
 
   const handleToggleOrderNotes = () => {
     closeAllDrawers();
-    setIsOrderNotesOpen(true);
   };
 
   const handleSend = () => {

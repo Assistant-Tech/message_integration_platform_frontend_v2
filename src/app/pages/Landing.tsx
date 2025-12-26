@@ -64,7 +64,8 @@ const LandingContent = () => {
     { element: <ScaleBusiness /> },
     { element: <BuiltAssistant /> },
     { element: <OrderManagement /> },
-    { element: <MessageIntegrationFeatures /> },
+    { element: <MessageIntegrationFeatures />, useContainer: false },
+    { element: <Pricing /> },
     {
       element: (
         <Suspense fallback={<LoadingTestimonials />}>
@@ -73,7 +74,6 @@ const LandingContent = () => {
       ),
       useContainer: false,
     },
-    { element: <Pricing /> },
     { element: <FAQ variant="landing" /> },
     { element: <Footer />, useContainer: false },
   ];
