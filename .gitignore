@@ -6,14 +6,11 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-stats.html
 
 node_modules
 dist
 dist-ssr
 *.local
-.env
-.env.local
 
 # Editor directories and files
 .vscode/*
@@ -25,5 +22,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
-reports
