@@ -1,54 +1,62 @@
-# React + TypeScript + Vite
+# 🚀 CHATBLIX
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, scalable, and production-ready web application built with a strong focus on performance, maintainability, and user experience.  
+This project follows industry best practices and leverages a robust React ecosystem to deliver a clean and efficient frontend architecture.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Features
 
-## Expanding the ESLint configuration
+- ⚡ High-performance React application with TypeScript
+- 🎨 Modern and responsive UI using Tailwind CSS & Radix UI
+- 🧠 Global state management with Zustand
+- 🔄 Server-state management using TanStack Query
+- 📊 Data visualization with Chart.js
+- 📋 Powerful and flexible tables using TanStack Table
+- 🎞️ Smooth animations and transitions with Framer Motion
+- ✅ Type-safe form validation using Zod
+- 🔔 Elegant toast notifications using Sonner
+- 🌐 API communication handled via Axios
+- 📦 Fast and efficient package management with PNPM
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## 🛠️ Tech Stack
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Frontend
+- **React.js** – Component-based UI development
+- **TypeScript** – Static typing for scalable and maintainable code
+- **Tailwind CSS** – Utility-first CSS framework
+- **Radix UI** – Accessible and unstyled UI primitives
+- **Framer Motion** – Animations and transitions
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### State & Data
+- **Zustand** – Lightweight global state management
+- **@tanstack/query** – Server-state caching and synchronization
+- **@tanstack/table** – Advanced and flexible data tables
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+### Utilities
+- **Zod** – Schema-based validation
+- **Axios** – HTTP client for API requests
+- **Chart.js** – Interactive charts and graphs
+- **Sonner** – Modern toast notifications
+
+### Tooling
+- **PNPM** – Fast, disk-efficient package manager
+
+---
+
+## 📂 Project Structure
+
+```bash
+src/
+├── app/
+    ├── components/        # Reusable UI components
+    ├── pages/             # Page-level components
+    ├── hooks/             # Custom React hooks
+    ├── store/             # Zustand stores
+    ├── services/          # API services (Axios)
+    ├── schemas/           # Zod validation schemas
+    ├── utils/             # Utility functions
+    ├── styles/            # Global styles
+    └── main.tsx           # Application entry point

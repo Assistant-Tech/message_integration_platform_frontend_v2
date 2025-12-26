@@ -1,0 +1,156 @@
+{
+  "hero": {
+    "title": "Talk to All Your Customers in One Place",
+    "subtitle": "One clean, AI-powered app to manage all your chats — WhatsApp, Instagram, Facebook, Telegram, and more."
+  },
+
+  "features": {
+    "title": "What Chatblix Helps You Do?",
+    "subTitle": "Simple tools to manage customer messages, work with your team, and grow your business.",
+    "badge": "USE IT ANYWHERE, ANYTIME",
+    "featureData": [
+      {
+        "id": 0,
+        "title": "All Messages in One Inbox",
+        "description": "No more switching between apps! Brings all your messages together in one place, so you can reply faster and stay organized.",
+        "icon": "MessageSquare",
+        "iconColor": "#2E5E99",
+        "animate": true
+      },
+      {
+        "id": 1,
+        "title": "Team Work Made Easy",
+        "description": "Have a team? Assign chats to the right person so customers always get a fast reply. No more missed messages or double replies.",
+        "icon": "Zap",
+        "iconColor": "#2E5E99",
+        "animate": true
+      },
+      {
+        "id": 2,
+        "title": "Your Data is Safe",
+        "description": "Get simple reports showing how many messages you’ve handled, how quickly you’re replying, and how your team is doing.",
+        "icon": "Shield",
+        "iconColor": "#2E5E99",
+        "animate": true
+      },
+      {
+        "id": 3,
+        "title": "24/7 Availability",
+        "description": "Never miss a customer message with round-the-clock monitoring and instant notifications.",
+        "icon": "Clock",
+        "iconColor": "#2E5E99",
+        "animate": true
+      }
+    ]
+  },
+
+  "scaleBusiness": {
+    "badge": "Scale Your Business",
+    "title": "Who is Chatblix for?",
+    "highlight": "Chatblix",
+    "description": "If you talk to customers online, Chatblix is for you.",
+    "audienceFeatures": [
+      {
+        "id": 0,
+        "text": "Small business owners handling customer chats themselves"
+      },
+      {
+        "id": 1,
+        "text": "Growing teams managing conversations across multiple platforms"
+      },
+      {
+        "id": 2,
+        "text": "Online sellers responding to inquiries, orders, and payments"
+      },
+      {
+        "id": 3,
+        "text": "Service providers who want faster and more organized replies"
+      }
+    ],
+    "closingText": "Whether you're running a one-person shop or managing a team, Chatblix helps you reply faster, stay organized, and grow your business.",
+    "floatingIcons": [
+      {
+        "icon": "ShoppingBag",
+        "position": "top-left",
+        "animation": "float"
+      },
+      {
+        "icon": "CreditCard",
+        "position": "bottom-right",
+        "animation": "float"
+      }
+    ],
+    "sliderImages": [
+      {
+        "id": 0,
+        "name": "Scale",
+        "img": "https://res.cloudinary.com/demo/image/upload/v1616784721/cld-sample-3.jpg"
+      },
+      {
+        "id": 1,
+        "name": "Scale",
+        "img": "https://res.cloudinary.com/demo/image/upload/w_800/sample.jpg"
+      },
+      {
+        "id": 2,
+        "name": "Scale",
+        "img": "https://res.cloudinary.com/demo/image/upload/v1616784721/cld-sample-4.jpg"
+      },
+      {
+        "id": 3,
+        "name": "Scale",
+        "img": "https://res.cloudinary.com/demo/image/upload/w_800/sample.jpg"
+      },
+      {
+        "id": 4,
+        "name": "Scale",
+        "img": "https://res.cloudinary.com/demo/image/upload/v1616784721/cld-sample-3.jpg"
+      },
+      {
+        "id": 5,
+        "name": "Scale",
+        "img": "https://res.cloudinary.com/demo/image/upload/v1616784721/cld-sample-4.jpg"
+      }
+    ]
+  },
+
+  "chatbot": {
+    "title": "Create Your AI Chatbots in Minutes",
+    "subTitle": "Create chatbots for sales, support, and more. Build intelligent conversational experiences that engage your customers 24/7 with our powerful AI platform.",
+    "badge": "AI DRIVEN CHATBOTS"
+  },
+
+  "faq": {
+    "badge": "YOU ASK, WE ANSWER",
+    "title": "Frequently Asked Questions",
+    "subtitle": "Find answers to commonly asked questions in our platform",
+    "defaultOpenId": "item-1",
+    "items": [
+      {
+        "id": "item-1",
+        "question": "What message management features does your platform offer?",
+        "answer": "Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci lorem. Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, suscipit porttitor velit elementum non. Fusce nec pellentesque erat, id lobortis nunc."
+      },
+      {
+        "id": "item-2",
+        "question": "How secure is my data?",
+        "answer": "Fusce nec pellentesque erat, id lobortis nunc. Donec dui leo, ultrices quis. Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, suscipit porttitor velit elementum non."
+      },
+      {
+        "id": "item-3",
+        "question": "Can I customize user permissions?",
+        "answer": "Donec dui leo, ultrices quis turpis nec, sollicitudin sodales. Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, suscipit porttitor velit elementum non."
+      },
+      {
+        "id": "item-4",
+        "question": "Is the platform mobile-friendly?",
+        "answer": "Vivamus pulvinar commodo orci, suscipit porttitor velit elementum non. Vestibulum tempus imperdiet sem ac porttitor. Fusce nec pellentesque erat, id lobortis nunc."
+      },
+      {
+        "id": "item-5",
+        "question": "What kind of support is available?",
+        "answer": "Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, suscipit porttitor velit elementum non. Fusce nec pellentesque erat, id lobortis nunc."
+      }
+    ]
+  }
+}
