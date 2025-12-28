@@ -1,28 +1,31 @@
 import React from "react";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import {
   ProductInfo,
   ProductImages,
   ProductDescription,
   ProductVisibility,
   ActionButtons,
-  ProductVariants,
 } from "@/app/features/dashboard/admin/component/product/form";
 import { CreateProductData } from "@/app/types/product.types";
 import { Breadcrumb } from "@/app/components/ui";
 import { Heading } from "@/app/features/dashboard/admin/component/ui/";
-import { APP_ROUTES } from "@/app/constants/routes";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/app/store/auth.store";
 import { useCreateProduct } from "@/app/hooks/useProducts";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { productSchema } from "@/app/schemas/createProduct.schema";
+import { APP_ROUTES } from "@/app/constants/routes";
+import ProductVariants from "./ProductVariants";
 
 const CreateProductPage: React.FC = () => {
   const navigate = useNavigate();
   const tenantSlug = useAuthStore((s) => s.tenantSlug);
+  const handleBack = () => {
+    navigate(`/${tenantSlug}/admin/products/all`);
+  };
   const ProductsCrumbs = [
-    { label: "All Products", href: APP_ROUTES.ADMIN.PRODUCTS_ALL },
+    { label: "All Products", onClick: handleBack },
     { label: "Create Product" },
   ];
 
@@ -31,7 +34,6 @@ const CreateProductPage: React.FC = () => {
     handleSubmit,
     watch,
     setValue,
-    control,
     formState: { errors, isSubmitting },
     reset,
   } = useForm<CreateProductData>({
@@ -55,10 +57,7 @@ const CreateProductPage: React.FC = () => {
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "variants",
-  });
+  // const { fields, append, remove } = use
 
   const watchVisibility = watch("visibility");
 
@@ -66,6 +65,7 @@ const CreateProductPage: React.FC = () => {
 
   const onSubmit = async (data: CreateProductData) => {
     try {
+      console.log("🚀 ~ onSubmit ~ data:", data);
       mutate(data);
       reset();
       navigate(`/${tenantSlug}/admin/${APP_ROUTES.ADMIN.PRODUCTS_ALL}`);
@@ -114,10 +114,10 @@ const CreateProductPage: React.FC = () => {
 
         <div className="mt-6">
           <ProductVariants
-            register={register}
-            fields={fields}
-            append={append}
-            remove={remove}
+          // register={register}
+          // fields={fields}
+          // append={append}
+          // remove={remove}
           />
         </div>
 

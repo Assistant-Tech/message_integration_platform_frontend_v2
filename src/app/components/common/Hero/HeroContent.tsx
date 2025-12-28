@@ -1,17 +1,20 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/app/components/ui";
+import landing from "@/app/content/json/landing.json";
+
+const { hero } = landing;
 
 const HeroContent: React.FC = () => {
   return (
     <div className="text-center space-y-4 pt-16 z-auto">
-      <motion.h1 
+      <motion.h1
         className="bold-64 text-base-black pb-4"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
       >
-        Talk to All Your Customers in One Place
+        {hero.title}
       </motion.h1>
 
       <motion.p
@@ -20,8 +23,7 @@ const HeroContent: React.FC = () => {
         transition={{ duration: 0.5, delay: 0.2 }}
         className="h4-regular-24 text-base-black mb-4 mx-auto"
       >
-        Just one clean, easy AI powered app to manage all your chats — WhatsApp,
-        Instagram, Facebook, Telegram, and more.
+        {hero.subtitle}
       </motion.p>
       <motion.div
         initial={{ opacity: 0, y: 10 }}

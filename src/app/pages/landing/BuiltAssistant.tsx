@@ -13,7 +13,7 @@ const BuiltAssistant: React.FC = () => {
         {/* Header Section */}
         <div className="max-w-4xl mb-8">
           <Badge
-            title="Why We Built Assistant"
+            title="Why We Built Chatblix"
             textStyle="body-italic-bold-16"
           />
           <h1 className="h2-bold-40 py-4 text-grey">

@@ -23,7 +23,7 @@ const ChatMembersDetailsPanel = ({
   };
 
   return (
-    <div className="w-80 h-full border-l border-grey-light bg-white flex flex-col">
+    <div className="w-2xl h-full border-l border-grey-light bg-white flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-grey-light">
         <h2 className="font-semibold text-lg text-gray-700">Members</h2>

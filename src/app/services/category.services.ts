@@ -2,12 +2,20 @@ import api from "@/app/services/api/axios";
 import { CreateCategoryProps } from "../types/category.types";
 
 // Fetch all the categories
-export const fetchCategories = async () => {
+export const fetchCategories = async (query?: any) => {
   try {
-    const res = await api.get(
-      "/categories?page=1&limit=20&order=desc&includeChildren=true",
-    );
-    // Return the data array from the response
+    const res = await api.get(`/categories?${query || ""}`);
+    return res.data.data || res.data;
+  } catch (err: any) {
+    console.error("Error while fetching category: ", err);
+    throw err;
+  }
+};
+
+// Fetch all the products by categoryId
+export const fetchProductByCategoryId = async (categoryId: string) => {
+  try {
+    const res = await api.get(`/categories/${categoryId}/products`);
     return res.data.data || res.data;
   } catch (err: any) {
     console.error("Error while fetching category: ", err);

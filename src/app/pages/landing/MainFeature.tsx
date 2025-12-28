@@ -3,7 +3,7 @@ import { featureCards } from "@/app/utils/utils";
 
 const MainFeature = () => {
   return (
-    <section id="feature" className="pt-20">
+    <section id="feature" className="pt-20 mb-20">
       <div className="flex flex-col lg:flex-row justify-between items-center gap-16">
         {/* Typography Section */}
         <div className="lg:w-1/2 w-full">
@@ -15,7 +15,7 @@ const MainFeature = () => {
           </div>
 
           <h1 className="h2-bold-40 pt-4 lg:text-left text-center text-grey">
-            What <span className="text-primary">Assistant</span> Helps You Do?
+            What <span className="text-primary">Chatblix</span> Helps You Do?
           </h1>
 
           <p className="h4-regular-24 text-grey-medium pt-4 text-center lg:text-left">

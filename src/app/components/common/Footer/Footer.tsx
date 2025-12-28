@@ -37,7 +37,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-primary-light pt-10 w-full" id="footer-observer">
+    <footer className="bg-primary pt-10 w-full" id="footer-observer">
       <div className="w-full max-w-[1600px] mx-auto px-6 md:px-12 lg:px-4 pb-10">
         {/* Top */}
         <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-x-40">
@@ -49,10 +49,10 @@ const Footer = () => {
               transition={{ duration: 0.5 }}
               className="flex items-center pb-4"
             >
-              <Logo />
+              <Logo variant="white" />
             </motion.div>
 
-            <p className="body-bold-16 pb-4 text-grey">
+            <p className="body-bold-16 pb-4 text-white">
               Let's Make Customer Conversations Simple
             </p>
 
@@ -71,7 +71,7 @@ const Footer = () => {
                   <div key={section}>
                     <button
                       onClick={() => toggleSection(section)}
-                      className="w-full flex justify-between items-center py-2 h4-bold-16 border-b border-gray-300"
+                      className="w-full flex justify-between items-center py-2 h4-bold-16 border-b border-grey-light text-primary-light"
                     >
                       <span className="capitalize">{section}</span>
                       <ChevronDown
@@ -96,7 +96,7 @@ const Footer = () => {
                                 <li key={index}>
                                   <a
                                     href={link.url}
-                                    className="text-grey transition-colors flex items-center text-sm"
+                                    className="text-primary-light transition-colors flex items-center text-sm"
                                   >
                                     {isContactSection &&
                                       "icon" in link &&
@@ -128,7 +128,7 @@ const Footer = () => {
                     variants={containerVariants}
                     aria-label={section}
                   >
-                    <h3 className="body-bold-16 capitalize text-base-black mb-4">
+                    <h3 className="body-bold-16 capitalize text-white mb-4">
                       {section}
                     </h3>
                     <ul className="space-y-4">
@@ -137,7 +137,7 @@ const Footer = () => {
                           <li key={index}>
                             <a
                               href={link.url}
-                              className="text-grey-medium hover:text-grey transition-colors flex items-center h5-regular-16"
+                              className="text-white transition-colors flex items-center h5-regular-16"
                             >
                               {"icon" in link && link.icon && (
                                 <link.icon className="mr-2" />
@@ -157,7 +157,7 @@ const Footer = () => {
       </div>
 
       {/* Bottom */}
-      <div className="bg-primary text-white flex flex-col md:flex-row justify-between items-center gap-4 px-4 md:px-40 py-6">
+      <div className="bg-primary-dark text-white flex flex-col md:flex-row justify-between items-center gap-4 px-4 md:px-40 py-6">
         {/* Copyright */}
         <motion.p
           initial={{ opacity: 0 }}

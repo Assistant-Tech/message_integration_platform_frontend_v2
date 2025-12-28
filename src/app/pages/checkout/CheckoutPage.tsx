@@ -444,13 +444,13 @@ const CheckoutPage = () => {
                         }}
                         className={`w-full h-full border rounded-xl py-4 px-6 text-center cursor-pointer relative ${
                           isSelected
-                            ? "bg-primary text-white border-primary"
+                            ? "bg-primary-light text-white border-primary-light"
                             : "bg-white border-primary text-primary"
                         }`}
                       >
                         <span className="button-semi-bold-16">{label}</span>
                         {type === "BILL_YEARLY" && (
-                          <div className="label-regular-16 mt-1">
+                          <div className="label-regular-16 mt-1 text-white">
                             (Save 10%)
                           </div>
                         )}

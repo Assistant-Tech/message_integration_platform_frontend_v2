@@ -117,7 +117,7 @@ const DropdownMenu = ({ items, isVisible }: DropdownMenuProps) => {
               {/* Bottom Stripe */}
               <div className="bg-primary-light body-regular-16 text-grey py-4">
                 <div className="max-w-[1700px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 flex justify-between items-center">
-                  <div className="flex gap-8">
+                  <div className="flex gap-8 text-primary-dark cursor-pointer">
                     <span>Terms&nbsp;and&nbsp;Conditions</span>
                     <span>Help&nbsp;Center</span>
                   </div>

@@ -81,19 +81,6 @@ export interface CategoryTableProps {
 
 /*
 ─────────────────────────────────────────────────────────────────────────────
- 📦 ▶ Variant Type utils
- ─────────────────────────────────────────────────────────────────────────────
-*/
-export interface Variant {
-  name: string;
-  visibility: boolean;
-  action: string;
-}
-export interface VariantTableProps {
-  data: Variant[];
-}
-/*
-─────────────────────────────────────────────────────────────────────────────
  📦 ▶ Inventory Type utils
  ─────────────────────────────────────────────────────────────────────────────
 */
@@ -128,13 +115,15 @@ export interface InventoryTableProps {
  ─────────────────────────────────────────────────────────────────────────────
 */
 export interface ProductVariant {
+  id?: string;
   title: string;
+  sku?: string;
   price: number;
   attributes: {
     color: string;
     size: string;
   };
-  inventory: {
+  inventory?: {
     stock: number;
     lowStock: boolean;
   };
@@ -179,7 +168,6 @@ export interface CreateProductData {
 
   images?: File[];
 }
-
 
 // Sorting datasets
 export type SortOption = {

@@ -1,7 +1,27 @@
 import { Product } from "@/app/types/product.types";
 import { useState } from "react";
 
-const SelectedImage = ({ product }: { product: Product }) => {
+export const SelectedImageForProduct = ({ product }: { product: Product }) => {
+  const image = product.images?.[0]?.url;
+  const fullUrl = `http://localhost:3000${image}`;
+  return (
+    <>
+      {image ? (
+        <img
+          src={fullUrl}
+          alt={product.title}
+          className="w-full h-32 object-cover"
+        />
+      ) : (
+        <div className="w-full h-32 bg-grey-light flex items-center justify-center">
+          <span className="text-grey text-sm">No Image</span>
+        </div>
+      )}
+    </>
+  );
+};
+
+export const SelectedImage = ({ product }: { product: Product }) => {
   const images = product.images.map((img) => ({
     ...img,
     fullUrl: `http://localhost:3000${img.url}`,
@@ -45,5 +65,3 @@ const SelectedImage = ({ product }: { product: Product }) => {
     </div>
   );
 };
-
-export default SelectedImage;

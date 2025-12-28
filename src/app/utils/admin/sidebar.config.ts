@@ -117,6 +117,11 @@ export const sidebarItems: SidebarItem[] = [
         roles: ["TENANT_ADMIN"],
       },
       {
+        label: "Integration Settings",
+        href: APP_ROUTES.ADMIN.SETTINGS_INTEGRATION_SETTINGS,
+        roles: ["TENANT_ADMIN"],
+      },
+      {
         label: "Role Management",
         href: APP_ROUTES.ADMIN.SETTINGS_ROLE_MANAGEMENT,
         roles: ["TENANT_ADMIN"],

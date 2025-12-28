@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from "react";
 import { Input } from "@/app/components/ui";
-import chatbotlogo from "@/app/assets/icons/chatbotlogo.svg";
 
 const ChatBotPanel = () => {
   const [messages, setMessages] = useState<string[]>([
@@ -25,12 +24,13 @@ const ChatBotPanel = () => {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="bg-primary text-white p-4 h4-bold-24 flex items-center justify-start gap-4">
+      <div className="bg-primary flex items-center justify-center h-12 w-full">
         <img
-          src={chatbotlogo}
-          className="w-14 h-14 border-2 border-white rounded-full"
+          src={
+            "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1765931581/logo_xyvjbg.png"
+          }
+          className="w-24 h-24"
         />
-        ChatBlix Bot
       </div>
       <div className="flex-1 overflow-y-auto p-4 space-y-2">
         {messages.map((msg, i) => (

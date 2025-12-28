@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { X } from "lucide-react";
-import chatbotlogo from "@/app/assets/icons/chatbotlogo.svg";
 import { AnimatePresence, motion } from "framer-motion";
 import ChatBotPanel from "@/app/components/common/ChatbotPanel";
 
@@ -11,16 +9,13 @@ const ChatToggleButton = () => {
     <>
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-16 right-6 z-50 rounded-full bg-primary text-white shadow-lg hover:bg-primary/90 transition cursor-pointer"
+        className="fixed bottom-16 right-6 z-50 rounded-full text-grey-medium hover:shadow-sm hover:scale-105 hover:shadow-primary-dark transition cursor-pointer"
         aria-label="Toggle ChatBot"
       >
-        {open ? (
-          <div className="p-4">
-            <X className="w-10 h-10" />
-          </div>
-        ) : (
-          <img src={chatbotlogo} className="w-[72px] h-[72px]" />
-        )}
+        <img
+          src={`https://res.cloudinary.com/dtoqwn0gx/image/upload/v1765951638/chat-bubble_sqo5oe.png`}
+          className="w-[72px] h-[72px]"
+        />
       </button>
 
       <AnimatePresence>

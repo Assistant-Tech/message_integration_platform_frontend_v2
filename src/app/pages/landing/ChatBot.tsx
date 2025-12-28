@@ -123,7 +123,7 @@ const ChatBot: React.FC = () => {
               className="flex flex-wrap gap-4 md:gap-6 pt-6 md:pt-8 justify-center md:justify-center lg:justify-start"
             >
               <div className="text-center min-w-[80px] md:min-w-[90px]">
-                <div className="text-xl md:text-2xl font-bold text-primary-inactive">
+                <div className="text-xl md:text-2xl font-bold text-primary">
                   10k+
                 </div>
                 <div className="text-xs md:text-sm text-primary-dark">
@@ -131,7 +131,7 @@ const ChatBot: React.FC = () => {
                 </div>
               </div>
               <div className="text-center min-w-[80px] md:min-w-[90px]">
-                <div className="text-xl md:text-2xl font-bold text-primary-inactive">
+                <div className="text-xl md:text-2xl font-bold text-primary">
                   99.9%
                 </div>
                 <div className="text-xs md:text-sm text-primary-dark">
@@ -139,7 +139,7 @@ const ChatBot: React.FC = () => {
                 </div>
               </div>
               <div className="text-center min-w-[80px] md:min-w-[90px]">
-                <div className="text-xl md:text-2xl font-bold text-primary-inactive">
+                <div className="text-xl md:text-2xl font-bold text-primary">
                   24/7
                 </div>
                 <div className="text-xs md:text-sm text-primary-dark">

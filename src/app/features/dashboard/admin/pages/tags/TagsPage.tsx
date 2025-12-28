@@ -97,7 +97,7 @@ const TagsPage = () => {
       </div>
 
       {/* Stats */}
-      <OrderStats />
+      <OrderStats stats={[]} />
 
       {/* Table */}
       <TagTable data={tags} />

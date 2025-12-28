@@ -1,9 +1,16 @@
 import { Route, Routes } from "react-router-dom";
 import { lazy } from "react";
 import { APP_ROUTES } from "@/app/constants/routes";
+import StripeApiSettings from "@/app/features/dashboard/admin/component/integrations/StripeApiSettings";
 
 const AdminLayout = lazy(
   () => import("@/app/components/layout/dashboard-layouts/AdminLayout"),
+);
+const IntegrationPage = lazy(
+  () =>
+    import(
+      "@/app/features/dashboard/admin/component/integrations/IntegrationPage"
+    ),
 );
 const EditProductPage = lazy(
   () => import("@/app/features/dashboard/admin/pages/products/EditProductPage"),
@@ -29,6 +36,9 @@ const OrderPage = lazy(
 );
 const CreateOrderPage = lazy(
   () => import("@/app/features/dashboard/admin/pages/orders/CreateOrderPage"),
+);
+const OrderDetailsPage = lazy(
+  () => import("@/app/features/dashboard/admin/pages/orders/OrderDetailsPage"),
 );
 const TagsPage = lazy(
   () => import("@/app/features/dashboard/admin/pages/tags/TagsPage"),
@@ -123,6 +133,11 @@ const AdminRoutes = () => {
           path={APP_ROUTES.ADMIN.ORDERS_CREATE}
           element={<CreateOrderPage />}
         />
+        <Route
+          path={APP_ROUTES.ADMIN.ORDERS_DETAILS}
+          element={<OrderDetailsPage />}
+        />
+
         <Route path={APP_ROUTES.ADMIN.TAGS} element={<TagsPage />} />
         <Route path={APP_ROUTES.ADMIN.ANALYTICS} element={<AnalyticsPage />} />
         <Route path={APP_ROUTES.ADMIN.SETTINGS} element={<SettingsPage />} />
@@ -194,6 +209,16 @@ const AdminRoutes = () => {
           element={<EditProductPage />}
         />
         <Route path={APP_ROUTES.ADMIN.CHECKOUT} element={<CheckoutPage />} />
+
+        {/* Integration Settings */}
+        <Route
+          path={APP_ROUTES.ADMIN.SETTINGS_INTEGRATION_SETTINGS}
+          element={<IntegrationPage />}
+        />
+        <Route
+          path={APP_ROUTES.ADMIN.SETTINGS_STRIPE}
+          element={<StripeApiSettings />}
+        />
       </Route>
     </Routes>
   );

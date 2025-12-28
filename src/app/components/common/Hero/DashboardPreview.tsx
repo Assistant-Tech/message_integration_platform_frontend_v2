@@ -25,7 +25,7 @@ const DashboardPreview: React.FC = () => {
   );
 
   return (
-    <div ref={containerRef} className="relative pb-32 bg-primary-light -z-50">
+    <div ref={containerRef} className="relative pb-32 -z-50">
       <div className="relative">
         <motion.div
           ref={ref}
@@ -54,7 +54,7 @@ const DashboardPreview: React.FC = () => {
               <img
                 src={DASHBOARD_IMAGE_URL}
                 srcSet="
-                  https://res.cloudinary.com/dtoqwn0gx/image/upload/v1754284164/dash1_nvbxo9.png 600w,
+                  https://res.cloudinary.com/dtoqwn0gx/image/upload/v1765931633/dashboard2_taupix.png 600w,
                 "
                 sizes="(max-width: 768px) 100vw, 50vw"
                 loading="eager"
@@ -83,7 +83,7 @@ const DashboardPreview: React.FC = () => {
               <img
                 src={DASHBOARD_IMAGE_URL_2}
                 srcSet="
-                  https://res.cloudinary.com/dtoqwn0gx/image/upload/v1754284165/dash2_nzxj83.png 600w,
+                  https://res.cloudinary.com/dtoqwn0gx/image/upload/v1765931633/dashboard_dn71id.png 600w,
                 "
                 sizes="(max-width: 768px) 100vw, 40vw"
                 alt="Dashboard 2"

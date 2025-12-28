@@ -10,12 +10,12 @@ export { default as ChatWidget } from "./ChatWidget";
 export { default as MessageTemplateSettings } from "./MessageTemplateSettings";
 
 //ORDER
-export { default as OrderPannel } from "./OrderPannel";
 export { default as OrderTable } from "./order/OrderTable";
 export { default as OrderStats } from "./order/OrderStats";
 export { default as AddProduct } from "./product/AddProduct";
 export { default as AddCategory } from "./product/AddCategory";
 export { default as AddVariant } from "./product/AddVariant";
+export { default as EditVariant } from "./product/EditVariant";
 
 // PAYMENT
 export { default as PaymentDetails } from "./payment/PaymentDetails";

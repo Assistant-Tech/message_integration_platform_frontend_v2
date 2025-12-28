@@ -46,7 +46,7 @@ const ProductCategory = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetchCategories();
+      const response = await fetchCategories("includeProducts=true");
 
       const dataArray = Array.isArray(response)
         ? response
@@ -55,7 +55,7 @@ const ProductCategory = () => {
       const transformedData: Category[] = dataArray.map((item: any) => ({
         id: item.id,
         name: item.title,
-        products: item._count?.children || 0,
+        products: item._count?.products || 0,
         visibility: true,
         action: "",
       }));

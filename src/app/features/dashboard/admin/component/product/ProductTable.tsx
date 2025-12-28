@@ -38,9 +38,9 @@ const ProductTable: React.FC<ExtendedProductTableProps> = ({
             <div className="flex items-center gap-3">
               <div className="bg-grey-light w-16 h-16 rounded-md overflow-hidden">
                 <img
-                  src={`http://localhost:3000${primaryImage}`}
+                  src={`https://api.chatblix.com${primaryImage}`}
                   alt={row.title}
-                  className="object-cover w-full h-full"
+                  className="object-cover w-full h-full!"
                 />
               </div>
               <span className="body-medium-16 text-grey-medium">

@@ -1,5 +1,6 @@
 import { Input } from "@/app/components/ui";
 import { Heading } from "@/app/features/dashboard/admin/component/ui";
+import { CreateVariantPayload } from "@/app/types/variants.types";
 import { cn } from "@/app/utils/cn";
 import { Plus, X, Trash2 } from "lucide-react";
 import { useState } from "react";
@@ -7,39 +8,70 @@ import { useState } from "react";
 interface AddVariantProps {
   isOpen: boolean;
   onClose: () => void;
-  onAdd: (variant: string) => void;
-  onSave: (variants: string[]) => void;
+  onAdd: (variant: CreateVariantPayload) => Promise<void>;
 }
 
-const defaultVariants = ["Price", "Quantity"];
-
-const AddVariant: React.FC<AddVariantProps> = ({
-  isOpen,
-  onClose,
-  onAdd,
-  onSave,
-}) => {
-  const [variants, setVariants] = useState<string[]>(defaultVariants);
-  const [newVariant, setNewVariant] = useState("");
+const AddVariant: React.FC<AddVariantProps> = ({ isOpen, onClose, onAdd }) => {
+  const [variants, setVariants] = useState<CreateVariantPayload[]>([]);
+  const [title, setTitle] = useState("");
+  const [price, setPrice] = useState<number>(0);
+  const [stock, setStock] = useState<number>(0);
+  const [color, setColor] = useState("");
+  const [size, setSize] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleAdd = () => {
-    const trimmed = newVariant.trim();
-    if (trimmed && !variants.includes(trimmed)) {
-      const updated = [...variants, trimmed];
-      setVariants(updated);
-      onAdd(trimmed);
-      setNewVariant("");
+  const handleAdd = async () => {
+    const trimmedTitle = title.trim();
+    if (!trimmedTitle || isSubmitting) return;
+
+    const payload: CreateVariantPayload = {
+      title: trimmedTitle,
+      price,
+      attributes: {
+        color,
+        size,
+      },
+      inventory: {
+        stock,
+        lowStock: stock <= 5,
+      },
+    };
+    console.log("🚀 ~ handleAdd ~ payload:", payload);
+
+    setIsSubmitting(true);
+    try {
+      await onAdd(payload);
+
+      // Add to local list for display
+      setVariants((prev) => [...prev, payload]);
+
+      // Reset form
+      setTitle("");
+      setPrice(0);
+      setStock(0);
+      setColor("");
+      setSize("");
+    } catch (error) {
+      console.error("Failed to add variant:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const removeVariant = (variant: string) => {
-    setVariants((prev) => prev.filter((v) => v !== variant));
+  const removeVariant = (index: number) => {
+    setVariants((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleSave = () => {
-    onSave(variants);
+  const handleClose = () => {
+    // Reset all state when closing
+    setVariants([]);
+    setTitle("");
+    setPrice(0);
+    setStock(0);
+    setColor("");
+    setSize("");
     onClose();
   };
 
@@ -48,62 +80,107 @@ const AddVariant: React.FC<AddVariantProps> = ({
       <div className="max-w-lg w-full p-8 bg-white rounded-2xl max-h-[90vh] overflow-y-auto space-y-4">
         {/* Header */}
         <div className="flex justify-between items-center">
-          <Heading
-            title="Add Variant"
-            align="left"
-            className="text-base-black"
-          />
-          <X size={24} onClick={onClose} className="cursor-pointer" />
+          <Heading title="Add Variant" align="left" />
+          <X size={24} onClick={handleClose} className="cursor-pointer" />
         </div>
 
-        {/* Input */}
-        <div className="flex gap-3">
+        {/* Variant Form */}
+        <div className="grid grid-cols-1 gap-3">
           <Input
-            name="variant"
-            placeholder="Enter new variant"
-            value={newVariant}
-            onChange={(e) => setNewVariant(e.target.value)}
-            className="w-full"
+            label="Variant Title"
+            aria-label="variant-title"
+            placeholder="Variant Title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           />
-          <button
-            onClick={handleAdd}
-            className={cn(
-              "bg-primary text-white px-4 rounded-md",
-              newVariant.trim() === "" && "opacity-50 cursor-not-allowed",
-            )}
-            disabled={newVariant.trim() === ""}
-          >
-            <Plus size={18} />
-          </button>
+
+          <Input
+            label="Variant Price"
+            aria-label="variant-price"
+            type="number"
+            placeholder="Price"
+            value={price}
+            onChange={(e) => setPrice(Number(e.target.value))}
+          />
+
+          <Input
+            label="Variant Color"
+            aria-label="variant-color"
+            placeholder="Color"
+            value={color}
+            onChange={(e) => setColor(e.target.value)}
+          />
+
+          <Input
+            label="Variant Size"
+            aria-label="variant-size"
+            placeholder="Size"
+            value={size}
+            onChange={(e) => setSize(e.target.value)}
+          />
+
+          <Input
+            label="Variant Stock"
+            aria-label="variant-stock"
+            type="number"
+            placeholder="Stock"
+            value={stock}
+            onChange={(e) => setStock(Number(e.target.value))}
+          />
         </div>
+
+        <button
+          onClick={handleAdd}
+          className={cn(
+            "w-full bg-primary text-white py-2 rounded-md flex justify-center items-center gap-2",
+            (!title.trim() || isSubmitting) && "opacity-50 cursor-not-allowed",
+          )}
+          disabled={!title.trim() || isSubmitting}
+        >
+          <Plus size={18} />
+          {isSubmitting ? "Adding..." : "Add Variant"}
+        </button>
 
         {/* Variant List */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {variants.map((variant, idx) => (
-            <div
-              key={idx}
-              className="flex items-center justify-between border border-grey-light px-3 py-2 rounded-md text-sm text-grey bg-grey-soft"
-            >
-              <span className="truncate">{variant}</span>
-              <button
-                onClick={() => removeVariant(variant)}
-                className="text-grey-medium hover:text-danger ml-2"
+        {variants.length > 0 && (
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-gray-700">
+              Added Variants ({variants.length})
+            </p>
+            {variants.map((variant, idx) => (
+              <div
+                key={idx}
+                className="flex items-center justify-between border px-3 py-2 rounded-md text-sm bg-green-50 border-green-200"
               >
-                <Trash2 size={16} />
-              </button>
-            </div>
-          ))}
-        </div>
+                <div className="truncate">
+                  <p className="font-medium">{variant.title}</p>
+                  <p className="text-xs text-grey">
+                    ₹{variant.price} • Stock: {variant.inventory.stock}
+                  </p>
+                </div>
 
-        {/* Save Button */}
-        <div className="flex justify-end">
-          <button
-            onClick={handleSave}
-            className="bg-primary text-white px-6 py-2 rounded-md"
-          >
-            Save
-          </button>
-        </div>
+                <button
+                  onClick={() => removeVariant(idx)}
+                  className="text-grey-medium hover:text-danger"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Action Buttons */}
+        {variants.length > 0 && (
+          <div className="flex gap-3 pt-4 border-t">
+            <button
+              onClick={handleClose}
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+            >
+              Done
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

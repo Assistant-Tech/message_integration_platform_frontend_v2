@@ -39,7 +39,7 @@ const Testimonials: React.FC<TestimonialsProps> = ({
   }, [autoScroll, autoScrollInterval, goToNext, total]);
 
   return (
-    <section id="testimonials" className="bg-primary-light py-10 px-4 md:px-8 mb-8">
+    <section id="testimonials" className="bg-primary-inactive py-10 px-4 md:px-8 mb-8">
       <div className="max-w-[1600px] mx-auto flex flex-col lg:flex-row gap-12 items-start">
         {/* Header Section */}
         <div className="lg:w-1/2 w-full text-center lg:text-left space-y-4 pt-10">
@@ -49,8 +49,8 @@ const Testimonials: React.FC<TestimonialsProps> = ({
             textColor="text-white"
             textStyle="body-italic-bold-16"
           />
-          <h2 className="h2-bold-40 text-grey">Hear From Our Clients</h2>
-          <p className="h4-regular-24 text-grey-medium max-w-md mx-auto lg:mx-0">
+          <h2 className="h2-bold-40 text-white">Hear From Our Clients</h2>
+          <p className="h4-regular-24 text-white max-w-md mx-auto lg:mx-0">
             Our clients speak for us. Their success stories are proof of the
             impact we deliver.
           </p>

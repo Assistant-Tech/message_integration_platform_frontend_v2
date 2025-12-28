@@ -68,7 +68,7 @@ const WhatWeOffer = () => {
                 Whether you’re running a one-person shop or managing a team,
                 <span className="body-bold-16 text-primary">
                   {" "}
-                  Assistant helps you reply faster, stay organized, and grow
+                  Chatblix helps you reply faster, stay organized, and grow
                   your business
                 </span>
               </p>

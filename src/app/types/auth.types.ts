@@ -10,6 +10,7 @@ export interface Tenant {
 // --- User ---
 export interface User {
   id: string;
+  name: string;
   email: string;
   avatar: string | null;
   isVerified: boolean;

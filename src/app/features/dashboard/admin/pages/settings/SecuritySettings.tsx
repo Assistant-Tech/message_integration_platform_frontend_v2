@@ -45,7 +45,7 @@ const SecuritySettings = () => {
 
       {/* Tabs */}
       <motion.div
-        className="w-full flex items-center border-b border-grey-light mb-6 bg-white rounded-t-lg"
+        className="w-full flex items-center border-b border-grey-light mb-6 bg-base-white rounded-t-lg"
         variants={itemVariants}
       >
         <button

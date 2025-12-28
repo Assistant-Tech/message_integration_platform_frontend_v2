@@ -22,6 +22,10 @@ import { useBanner } from "@/app/context/BannerContext";
 import { useWindowSize } from "react-use";
 import ChatToggleButton from "@/app/components/common/ChatToggleButton";
 
+const MessageIntegrationFeatures = lazy(
+  () => import("@/app/components/common/Hero/MessageIntegrationFeatures"),
+);
+
 // Lazy load heavy components
 const ChatBot = lazy(() => import("@/app/pages/landing/ChatBot"));
 const Testimonials = lazy(() => import("@/app/pages/landing/Testimonials"));
@@ -60,6 +64,8 @@ const LandingContent = () => {
     { element: <ScaleBusiness /> },
     { element: <BuiltAssistant /> },
     { element: <OrderManagement /> },
+    { element: <MessageIntegrationFeatures />, useContainer: false },
+    { element: <Pricing /> },
     {
       element: (
         <Suspense fallback={<LoadingTestimonials />}>
@@ -68,7 +74,6 @@ const LandingContent = () => {
       ),
       useContainer: false,
     },
-    { element: <Pricing /> },
     { element: <FAQ variant="landing" /> },
     { element: <Footer />, useContainer: false },
   ];
