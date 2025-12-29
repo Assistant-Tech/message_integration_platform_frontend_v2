@@ -8,7 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import {
   registerSchema,
   RegisterFormData,
-} from "@/app/features/auth/schemas/registerSchema";
+} from "@/app/features/auth/schemas/register.schema";
 import { Agreement, Button, Input } from "@/app/components/ui";
 import CheckItem from "@/app/features/auth/components/ui/CheckItem";
 import { EyeIcon, EyeOffIcon } from "lucide-react";

@@ -9,7 +9,7 @@ import fb from "@/app/assets/icons/fb.svg";
 import {
   LoginFormData,
   loginSchema,
-} from "@/app/features/auth/schemas/loginSchema";
+} from "@/app/features/auth/schemas/login.schema";
 import { Agreement, Button, Input } from "@/app/components/ui";
 import CheckItem from "@/app/features/auth/components/ui/CheckItem";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
