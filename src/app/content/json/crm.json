@@ -60,6 +60,26 @@
     "image": {
       "src": "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
       "alt": "CRM Dashboard"
+    },
+
+    "scale": {
+      "title": "Scale Your Business",
+      "description": "Whether you're a startup or an enterprise, our AI-enabled CRM helps take your business to the next level with intelligent automation and insights.",
+      "features": [
+        {
+          "title": "Online store owners who want to reply fast on social media"
+        },
+        {
+          "title": "Small businesses that want to support customers better"
+        },
+        {
+          "title": "Big enterprises looking for efficiency, control and long-term value"
+        }
+      ]
+    },
+    "smart": {
+      "title": "Smart Solutions for Businesses of All Sizes",
+      "description": "Our AI-enabled CRM software focuses on providing smart solutions like sales, marketing and customer support, for businesses of all sizes and supports a sustainable business model."
     }
   }
 }

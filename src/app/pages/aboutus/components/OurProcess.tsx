@@ -92,7 +92,7 @@ const OurProcess: React.FC<OurProcessProps> = ({ sectionSubtitle, steps }) => {
         <path
           d="M 0 150 C 300 50, 900 250, 1200 150"
           fill="none"
-          stroke="#10b981"
+          stroke="#2E5E99"
           strokeWidth="2"
           strokeDasharray="5,10"
           strokeLinecap="round"

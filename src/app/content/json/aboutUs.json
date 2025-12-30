@@ -1,0 +1,34 @@
+{
+  "aboutData": {
+    "title": "Talk to All Your Customers in One Place",
+    "description": "Just one clean, easy AI powered app to manage all your chats — WhatsApp, Instagram, Facebook, Telegram, and more.",
+    "featureData": [
+      {
+        "id": 0,
+        "title": "Online store owners who want to reply fast on social mediax"
+      },
+      {
+        "id": 1,
+        "title": "Small businesses that want to support customers better"
+      },
+      {
+        "id": 2,
+        "title": "Big enterprises looking for efficiency, control and long-term value."
+      }
+    ],
+    "companies": [
+      { "companyName": "TechCorp Solutions" },
+      { "companyName": "Digital Dynamics" },
+      { "companyName": "Innovation Labs" },
+      { "companyName": "Future Systems" },
+      { "companyName": "Cloud Ventures" }
+    ],
+
+    "offer": {
+      "title": "Products Designed for You",
+      "description": " Explore our product suite to see how we can help your business. These are the tools our customers use every day to stay organized and grow with ease.",
+      "sub-description": "Whether you’re running a one-person shop or managing a team, ",
+      "highlight-sub-description": "Chatblix helps you reply faster, stay organized, and grow your business"
+    }
+  }
+}
