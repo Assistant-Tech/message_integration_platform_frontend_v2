@@ -26,10 +26,8 @@ test.describe("Login Page", () => {
     await page.getByLabel("Password").fill("Password123!");
     await page.getByRole("button", { name: "Sign In", exact: true }).click();
 
-    // Wait for redirect and check URL pattern
     await expect(page).toHaveURL(/\/[^/]+\/admin\/dashboard$/);
 
-    // Extract tenant slug if needed
     const url = page.url();
     const slugMatch = url.match(/\/([^/]+)\/admin\/dashboard$/);
     expect(slugMatch).not.toBeNull();

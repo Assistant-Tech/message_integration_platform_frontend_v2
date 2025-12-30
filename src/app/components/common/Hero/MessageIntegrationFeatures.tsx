@@ -318,7 +318,7 @@ const MessageIntegrationFeatures = () => {
 
   return (
     <div className="min-h-screen bg-primary-light/40 py-10 px-4 sm:px-6 lg:px-8 mb-8">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-[1600px] mx-auto">
         {/* Header */}
         <div className="text-center mb-16">
           <div className="inline-block mb-4">
