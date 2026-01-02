@@ -7,20 +7,11 @@ import { useNotificationStore } from "@/app/store/notification.store";
 import { User } from "@/app/types/auth.types";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/app/constants/queryKeys";
-// import { useAuthStore } from "@/app/store/auth.store";
 
 const ProfileSettings = () => {
-  // Tarika -1
   const queryClient = useQueryClient();
   const user = queryClient.getQueryData<User>(QUERY_KEYS.CURRENT_USER);
-  console.log("🚀 ~ ProfileSettings ~ user:", user)
   console.log(useQueryClient().getQueryCache().getAll());
-
-  // Tarika - 2
-  // const user = useAuthStore((state) => state.user);
-  // console.log("🚀 ~ ProfileSettings ~ user:", user)
-
-  // Debuging garne tarika in React-Query
 
   const [showPassword, setShowPassword] = useState(false);
 
