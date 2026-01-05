@@ -49,6 +49,17 @@ const CheckEmail = lazy(() => import("@/app/features/auth/pages/CheckEmail"));
 const OnboardingForm = lazy(
   () => import("@/app/features/auth/pages/onboarding/steps/OnboardingForm"),
 );
+const ChatbotPage = lazy(
+  () => import("@/app/pages/products/chatbot/ChatbotPage"),
+);
+
+const UnifiedMessagePage = lazy(
+  () => import("@/app/pages/products/unified-messaging/UnifiedMessagePage"),
+);
+
+const BulkMessagingPage = lazy(
+  () => import("@/app/pages/products/bulk-messaging/BulkMessagingPage"),
+);
 
 const PublicRoutes = () => {
   return (
@@ -60,8 +71,11 @@ const PublicRoutes = () => {
           path={APP_ROUTES.PUBLIC.PRODUCTS_OVERVIEW}
           element={<ProductLayout />}
         >
+          <Route path={APP_ROUTES.PUBLIC.CHATBOT} element={<ChatbotPage />} />
+          <Route path={APP_ROUTES.PUBLIC.UNIFIED_MESSAGE} element={<UnifiedMessagePage />} />
           <Route index element={<Product />} />
           <Route path={APP_ROUTES.PUBLIC.CRM} element={<CRM />} />
+          <Route path={APP_ROUTES.PUBLIC.BULK_MESSAGING} element={<BulkMessagingPage />} /> 
         </Route>
 
         <Route

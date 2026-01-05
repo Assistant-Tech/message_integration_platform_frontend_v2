@@ -11,7 +11,6 @@ import { QUERY_KEYS } from "@/app/constants/queryKeys";
 const ProfileSettings = () => {
   const queryClient = useQueryClient();
   const user = queryClient.getQueryData<User>(QUERY_KEYS.CURRENT_USER);
-  console.log(useQueryClient().getQueryCache().getAll());
 
   const [showPassword, setShowPassword] = useState(false);
 

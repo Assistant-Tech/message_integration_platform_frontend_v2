@@ -4,7 +4,7 @@ import { featureCards } from "@/app/utils/utils";
 const MainFeature = () => {
   return (
     <section id="feature" className="pt-20 mb-20">
-      <div className="flex flex-col lg:flex-row justify-between items-center gap-16">
+      <div className="flex flex-col xl:flex-row justify-between items-center gap-16">
         {/* Typography Section */}
         <div className="lg:w-1/2 w-full">
           <div className="flex lg:justify-start justify-center">

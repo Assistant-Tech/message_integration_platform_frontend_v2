@@ -19,4 +19,18 @@ test.describe("Registration Flow", () => {
 
     await expect(page).toHaveURL(/\/register/, { timeout: 10000 });
   });
+
+
+  test("should successfully register with valid details", async ({
+    page,
+  }) => {
+    await page.getByLabel(/full name/i).fill("John Doe");
+    await page.getByLabel(/email/i).fill("john.doe@example.com");
+    await page.getByLabel(/^password$/i).fill("Password123!");
+    await page.getByLabel(/confirm password/i).fill("Password123!");
+
+    await page.locator('button[type="submit"]').first().click();
+
+    await expect(page).toHaveURL(/\/register/, { timeout: 10000 });
+  });
 });
