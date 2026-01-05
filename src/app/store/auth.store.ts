@@ -94,6 +94,8 @@ export const useAuthStore = create<AuthState>()(
             isVerified: false,
           });
           return { message: res.message, email };
+        } catch (error) {
+          throw error;
         } finally {
           set({ isloading: false });
         }

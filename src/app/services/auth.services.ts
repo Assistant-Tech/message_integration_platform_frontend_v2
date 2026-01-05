@@ -70,11 +70,16 @@ export const signup = async (
 
     const res = await api.post(url, { name, email, password });
     return res.data;
-  } catch (error) {
-    throw handleApiError(error);
+  } catch (error: any) {
+    // Extract the server-side error message
+    const errorMessage =
+      error.response?.data?.message || "Something went wrong";
+
+    console.log("🚀 ~ signup ~ error message:", errorMessage);
+
+    throw new Error(errorMessage);
   }
 };
-
 /**
  * Handles the email verification API call.
  */
@@ -110,8 +115,13 @@ export const login = async (email: string, password: string) => {
   try {
     const res = await api.post("/auth/login", { email, password });
     return res.data;
-  } catch (error) {
-    throw handleApiError(error);
+  } catch (error: any) {
+    const errorMessage =
+      error.response?.data?.message || "Something went wrong";
+
+    console.log("🚀 ~ signup ~ error message:", errorMessage);
+
+    throw new Error(errorMessage);
   }
 };
 /**

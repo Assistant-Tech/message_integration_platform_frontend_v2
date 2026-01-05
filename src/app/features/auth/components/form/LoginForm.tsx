@@ -226,7 +226,7 @@ const LoginForm = () => {
                     condition={passwordChecks.maxLength}
                   />
                   <CheckItem
-                    label="Contains a letter"
+                    label="Contains a capital letter"
                     condition={passwordChecks.hasLetter}
                   />
                   <CheckItem
