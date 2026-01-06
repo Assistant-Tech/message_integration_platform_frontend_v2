@@ -15,6 +15,7 @@ const ChatInput = ({ message, onChange, onSend }: any) => {
         value={message}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={handleKeyDown}
+        data-testid="chat-input"
         placeholder="Type a message..."
         rows={1}
         className="flex-1 resize-none border border-grey-light rounded-lg px-3 py-2 text-grey focus:outline-none focus:ring-2 focus:ring-information max-h-32"

@@ -38,6 +38,7 @@ const ChatSidebarFilters = ({
 
     <div className="px-4 py-3">
       <Input
+        data-testid="conversation-search"
         placeholder="Search conversations..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
