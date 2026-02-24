@@ -1,7 +1,6 @@
 // import { test, expect } from "@playwright/test";
 
-// const BASE_URL =
-//   "http://localhost:5173/tenant-example-1/admin/conversation";
+// const BASE_URL = "http://localhost:5173/tenant-example-1/admin/conversation";
 
 // test.describe("Internal Conversation Page (E2E)", () => {
 //   test.beforeEach(async ({ page }) => {
@@ -130,9 +129,7 @@
 
 //     await page.getByRole("button", { name: /send/i }).click();
 
-//     await expect(
-//       page.getByText("Hello from Playwright"),
-//     ).toBeVisible();
+//     await expect(page.getByText("Hello from Playwright")).toBeVisible();
 //   });
 
 //   test("opens conversation details panel", async ({ page }) => {
@@ -140,9 +137,7 @@
 
 //     await page.getByRole("button", { name: /details/i }).click();
 
-//     await expect(
-//       page.getByText(/conversation details/i),
-//     ).toBeVisible();
+//     await expect(page.getByText(/conversation details/i)).toBeVisible();
 //   });
 
 //   test("updates conversation title", async ({ page }) => {
@@ -155,9 +150,7 @@
 
 //     await page.getByRole("button", { name: /update/i }).click();
 
-//     await expect(
-//       page.getByText("Updated Chat"),
-//     ).toBeVisible();
+//     await expect(page.getByText("Updated Chat")).toBeVisible();
 //   });
 
 //   test("creates a new conversation from sidebar", async ({ page }) => {
@@ -166,17 +159,13 @@
 //     await page.getByPlaceholder(/title/i).fill("New Conversation");
 //     await page.getByRole("button", { name: /create/i }).click();
 
-//     await expect(
-//       page.getByText("New Conversation"),
-//     ).toBeVisible();
+//     await expect(page.getByText("New Conversation")).toBeVisible();
 //   });
 
 //   test("search filters conversations", async ({ page }) => {
 //     await page.getByPlaceholder(/search/i).fill("nothing");
 
-//     await expect(
-//       page.getByText("Support Chat"),
-//     ).not.toBeVisible();
+//     await expect(page.getByText("Support Chat")).not.toBeVisible();
 //   });
 
 //   test("enters delete mode and deletes conversation", async ({ page }) => {
@@ -185,8 +174,6 @@
 //     await page.getByText("Support Chat").click();
 //     await page.getByRole("button", { name: /confirm/i }).click();
 
-//     await expect(
-//       page.getByText("Support Chat"),
-//     ).not.toBeVisible();
+//     await expect(page.getByText("Support Chat")).not.toBeVisible();
 //   });
 // });

@@ -75,8 +75,6 @@ export const signup = async (
     const errorMessage =
       error.response?.data?.message || "Something went wrong";
 
-    console.log("🚀 ~ signup ~ error message:", errorMessage);
-
     throw new Error(errorMessage);
   }
 };
@@ -118,8 +116,6 @@ export const login = async (email: string, password: string) => {
   } catch (error: any) {
     const errorMessage =
       error.response?.data?.message || "Something went wrong";
-
-    console.log("🚀 ~ signup ~ error message:", errorMessage);
 
     throw new Error(errorMessage);
   }

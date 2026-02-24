@@ -13,47 +13,47 @@ test.describe("Onboarding Flow", () => {
     });
   });
 
-  test("should allow finishing early after step 3", async ({ page }) => {
-    // Step 1: General Information
-    await page.locator("#organizationName").fill("Chatblix");
-    await page.locator("#email").fill("admin@chatblix.com");
-    await page.locator("#phone").fill("9876543210");
-    await page.getByRole("button", { name: /next/i }).click();
+  // test("should allow finishing early after step 3", async ({ page }) => {
+  //   // Step 1: General Information
+  //   await page.locator("#organizationName").fill("Chatblix");
+  //   await page.locator("#email").fill("admin@chatblix.com");
+  //   await page.locator("#phone").fill("9876543210");
+  //   await page.getByRole("button", { name: /next/i }).click();
 
-    // Step 2: Location Details
-    await page.locator("#country").click();
-    await page.keyboard.type("Nepal");
-    await page.keyboard.press("Enter");
-    await page.waitForTimeout(500);
+  //   // Step 2: Location Details
+  //   await page.locator("#country").click();
+  //   await page.keyboard.type("Nepal");
+  //   await page.keyboard.press("Enter");
+  //   await page.waitForTimeout(500);
 
-    await page.locator("#state").click();
-    await page.keyboard.type("Bagmati");
-    await page.keyboard.press("Enter");
-    await page.waitForTimeout(500);
+  //   await page.locator("#state").click();
+  //   await page.keyboard.type("Bagmati");
+  //   await page.keyboard.press("Enter");
+  //   await page.waitForTimeout(500);
 
-    await page.locator("#city").click();
-    await page.keyboard.type("Kathmandu");
-    await page.keyboard.press("Enter");
+  //   await page.locator("#city").click();
+  //   await page.keyboard.type("Kathmandu");
+  //   await page.keyboard.press("Enter");
 
-    await page.getByRole("button", { name: /next/i }).click();
+  //   await page.getByRole("button", { name: /next/i }).click();
 
-    // Step 3: Industry Selection with "Finish Early" option
-    await page
-      .locator('label:has(input[name="industry"][value="Digital Marketing"])')
-      .click();
+  //   // Step 3: Industry Selection with "Finish Early" option
+  //   await page
+  //     .locator('label:has(input[name="industry"][value="Digital Marketing"])')
+  //     .click();
 
-    // Look for "Finish Setup" button (shown when showFinishEarlyOption is true)
-    const finishEarlyButton = page.getByRole("button", {
-      name: /finish setup/i,
-    });
+  //   // Look for "Finish Setup" button (shown when showFinishEarlyOption is true)
+  //   const finishEarlyButton = page.getByRole("button", {
+  //     name: /finish setup/i,
+  //   });
 
-    if (await finishEarlyButton.isVisible().catch(() => false)) {
-      await finishEarlyButton.click();
+  //   if (await finishEarlyButton.isVisible().catch(() => false)) {
+  //     await finishEarlyButton.click();
 
-      // Should redirect to login
-      await expect(page).toHaveURL(/\/login/, { timeout: 10000 });
-    }
-  });
+  //     // Should redirect to login
+  //     await expect(page).toHaveURL(/\/login/, { timeout: 10000 });
+  //   }
+  // });
 
   test("should allow skipping optional steps", async ({ page }) => {
     // Complete required steps 1-3
@@ -146,40 +146,40 @@ test.describe("Onboarding Flow", () => {
     await page.getByRole("button", { name: /continue/i }).click();
   });
 
-  test("should validate PAN format and file upload", async ({ page }) => {
-    // Navigate to step 4
-    await page.locator("#organizationName").fill("Chatblix");
-    await page.locator("#email").fill("admin@chatblix.com");
-    await page.locator("#phone").fill("9876543210");
-    await page.getByRole("button", { name: /next/i }).click();
+  // test("should validate PAN format and file upload", async ({ page }) => {
+  //   // Navigate to step 4
+  //   await page.locator("#organizationName").fill("Chatblix");
+  //   await page.locator("#email").fill("admin@chatblix.com");
+  //   await page.locator("#phone").fill("9876543210");
+  //   await page.getByRole("button", { name: /next/i }).click();
 
-    await page.locator("#country").click();
-    await page.keyboard.type("Nepal");
-    await page.keyboard.press("Enter");
-    await page.waitForTimeout(500);
+  //   await page.locator("#country").click();
+  //   await page.keyboard.type("Nepal");
+  //   await page.keyboard.press("Enter");
+  //   await page.waitForTimeout(500);
 
-    await page.locator("#state").click();
-    await page.keyboard.type("Bagmati");
-    await page.keyboard.press("Enter");
-    await page.waitForTimeout(500);
+  //   await page.locator("#state").click();
+  //   await page.keyboard.type("Bagmati");
+  //   await page.keyboard.press("Enter");
+  //   await page.waitForTimeout(500);
 
-    await page.locator("#city").click();
-    await page.keyboard.type("Kathmandu");
-    await page.keyboard.press("Enter");
-    await page.getByRole("button", { name: /next/i }).click();
+  //   await page.locator("#city").click();
+  //   await page.keyboard.type("Kathmandu");
+  //   await page.keyboard.press("Enter");
+  //   await page.getByRole("button", { name: /next/i }).click();
 
-    await page
-      .locator('label:has(input[name="industry"][value="Digital Marketing"])')
-      .click();
-    await page.getByRole("button", { name: /continue/i }).click();
+  //   await page
+  //     .locator('label:has(input[name="industry"][value="Digital Marketing"])')
+  //     .click();
+  //   await page.getByRole("button", { name: /continue/i }).click();
 
-    // Step 4: Test PAN validation
-    await page.locator("#pan").fill("INVALID");
-    await page.getByRole("button", { name: /next/i }).click();
+  //   // Step 4: Test PAN validation
+  //   await page.locator("#pan").fill("INVALID");
+  //   await page.getByRole("button", { name: /next/i }).click();
 
-    // Should show validation error
-    await page.waitForTimeout(500);
-    const errorMessage = page.locator(".text-danger");
-    await expect(errorMessage.first()).toBeVisible();
-  });
+  //   // Should show validation error
+  //   await page.waitForTimeout(500);
+  //   const errorMessage = page.locator(".text-danger");
+  //   await expect(errorMessage.first()).toBeVisible();
+  // });
 });

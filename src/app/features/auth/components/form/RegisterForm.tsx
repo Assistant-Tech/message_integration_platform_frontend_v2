@@ -44,7 +44,8 @@ const RegisterForm = () => {
   const passwordChecks = {
     minLength: password.length >= 6,
     maxLength: password.length <= 64,
-    hasLetter: /[A-Za-z]/.test(password),
+    hasUppercase: /[A-Z]/.test(password),
+    hasLowercase: /[a-z]/.test(password),
     hasNumber: /\d/.test(password),
     hasSpecialChar: /[@$!%*?&]/.test(password),
   };
@@ -135,8 +136,12 @@ const RegisterForm = () => {
                 condition={passwordChecks.maxLength}
               />
               <CheckItem
-                label="Contains a letter"
-                condition={passwordChecks.hasLetter}
+                label="Contains an uppercase letter"
+                condition={passwordChecks.hasUppercase}
+              />
+              <CheckItem
+                label="Contains a lowercase letter"
+                condition={passwordChecks.hasLowercase}
               />
               <CheckItem
                 label="Contains a number"
