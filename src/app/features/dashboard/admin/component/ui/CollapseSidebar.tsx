@@ -15,12 +15,12 @@ import {
 } from "@/app/components/common/Tooltip";
 import { sidebarItems } from "@/app/utils/admin/sidebar.config";
 import { CollapsedLogo, Logo } from "@/app/components/ui";
-import { useAuthStore } from "@/app/store/auth.store";
+import { useCurrentUser } from "@/app/hooks/query/useAuthQuery";
 
 const CollapsibleSidebar = () => {
   const { slug } = useParams();
   const location = useLocation();
-  const user = useAuthStore((s) => s.user);
+  const { data: user } = useCurrentUser();
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedMenu, setExpandedMenu] = useState<string | null>(null);
@@ -35,11 +35,11 @@ const CollapsibleSidebar = () => {
 
   return (
     <TooltipProvider delayDuration={100}>
-      <div className="flex h-screen bg-grey-light">
+      <div className="flex bg-grey-light h-full min-h-0">
         <aside
           className={`bg-primary text-white transition-all duration-300 ease-in-out ${
             isCollapsed ? "w-20" : "w-64"
-          } flex flex-col`}
+          } flex flex-col h-full`}
         >
           {/* Sidebar Header */}
           <div className="p-4 border-primary-dark relative">

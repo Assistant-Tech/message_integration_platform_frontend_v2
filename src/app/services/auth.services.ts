@@ -159,13 +159,20 @@ export const regenerateRecovery = async () => {
 
 /**
  * Handles the access token refresh API call.
+ * Returns { accessToken, csrfToken } on success.
  */
-export const refreshAccessTokenAPI = async () => {
+export const refreshAccessTokenAPI = async (): Promise<{
+  accessToken: string | null;
+  csrfToken: string | null;
+}> => {
   try {
     const res = await api.get("/auth/refresh");
-    const accessToken = res.data?.data?.accessToken ?? null;
-    // console.log("🚀 ~ refreshAccessToken ~ data:", data);
-    return accessToken;
+    const data = res.data?.data ?? res.data;
+
+    return {
+      accessToken: data?.accessToken ?? null,
+      csrfToken: data?.csrfToken ?? null,
+    };
   } catch (error) {
     throw handleApiError(error);
   }

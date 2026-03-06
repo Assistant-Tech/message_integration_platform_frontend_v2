@@ -1,12 +1,13 @@
 import { useAuthStore } from "@/app/store/auth.store";
+import { useLogout } from "@/app/hooks/query/useAuthQuery";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 import { LogOut } from "lucide-react";
 import { useMemo, useEffect } from "react";
 
 const UserDashboard = () => {
   const navigate = useNavigate();
-  const { user, isloading, logout } = useAuthStore();
+  const { user, isloading } = useAuthStore();
+  const logoutMutation = useLogout();
 
   useEffect(() => {
     if (!isloading && !user) {
@@ -15,9 +16,11 @@ const UserDashboard = () => {
   }, [isloading, user, navigate]);
 
   const handleLogout = () => {
-    logout();
-    toast.success("Logged out successfully!");
-    navigate("/login");
+    logoutMutation.mutate(undefined, {
+      onSuccess: () => {
+        navigate("/login");
+      },
+    });
   };
 
   // const handleAutoTokenRefresh = async () => {

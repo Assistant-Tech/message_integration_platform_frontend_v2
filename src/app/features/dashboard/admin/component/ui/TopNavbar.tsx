@@ -1,21 +1,22 @@
 import { Input } from "@/app/components/ui";
 import { ChevronDown, HelpCircle, Search } from "lucide-react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { useAuthStore } from "@/app/store/auth.store";
+import { useLogout } from "@/app/hooks/query/useAuthQuery";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 import { APP_ROUTES } from "@/app/constants/routes";
 import NotificationDropdown from "@/app/components/common/Notification/NotificationDropDown";
 
 const TopNavbar = () => {
-  const { logout } = useAuthStore();
+  const logoutMutation = useLogout();
 
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout();
-    toast.success("Logged out successfully!");
-    navigate("/login");
+    logoutMutation.mutate(undefined, {
+      onSuccess: () => {
+        navigate("/login");
+      },
+    });
   };
   return (
     <header className="w-full bg-base-white border-b border-grey-light h-auto flex items-center px-6 py-4 justify-between">

@@ -44,6 +44,7 @@
     "@tanstack/react-query-devtools": "^5.76.1",
     "@tanstack/react-query-persist-client": "^5.90.7",
     "@tanstack/react-table": "^8.21.3",
+    "@vitejs/plugin-basic-ssl": "^2.1.4",
     "axios": "^1.9.0",
     "chart.js": "^4.5.1",
     "class-variance-authority": "^0.7.1",
