@@ -1,11 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
-import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronDown,
-  ChevronUp,
-} from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 import {
   TooltipProvider,
@@ -22,7 +17,8 @@ const CollapsibleSidebar = () => {
   const location = useLocation();
   const { data: user } = useCurrentUser();
 
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  // const [isCollapsed, setIsCollapsed] = useState(false);
+  const isCollapsed = true;
   const [expandedMenu, setExpandedMenu] = useState<string | null>(null);
 
   const toggleMenu = (label: string) => {
@@ -52,7 +48,7 @@ const CollapsibleSidebar = () => {
             </div>
 
             {/* Collapse Toggle */}
-            <div className="absolute top-5 -right-5">
+            {/* <div className="absolute top-5 -right-5">
               <button
                 onClick={() => setIsCollapsed((prev) => !prev)}
                 className="bg-base-white rounded-full text-primary p-2 cursor-pointer"
@@ -63,7 +59,7 @@ const CollapsibleSidebar = () => {
                   <ChevronLeft className="w-5 h-5" />
                 )}
               </button>
-            </div>
+            </div> */}
           </div>
 
           {/* Sidebar Navigation */}

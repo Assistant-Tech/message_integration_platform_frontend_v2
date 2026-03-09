@@ -13,14 +13,16 @@ const ConversationPage = () => {
   useChatSocket();
 
   return (
-    <div className="flex h-full bg-base-white">
+    <div className="flex h-full">
       <ChatLayout>
         <Suspense fallback={<div className="p-4">Loading chat...</div>}>
-          <div className="w-full max-w-sm border-r border-grey-light bg-white h-full overflow-y-auto">
-            <ChatSidebar />
-          </div>
-          <div className="flex-1 bg-white h-full overflow-hidden">
-            <ChatPanel />
+          <div className="flex h-full w-full overflow-hidden">
+            <div className="h-full w-full max-w-sm overflow-y-auto border-r border-grey-light bg-base-white/90">
+              <ChatSidebar />
+            </div>
+            <div className="min-w-0 flex-1 overflow-hidden bg-base-white">
+              <ChatPanel />
+            </div>
           </div>
         </Suspense>
       </ChatLayout>

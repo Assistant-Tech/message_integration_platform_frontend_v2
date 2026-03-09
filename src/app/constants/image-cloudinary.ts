@@ -14,7 +14,7 @@ export const DASHBOARD_IMAGE_URL_2 = `${BASE_URL}/v1765931633/dashboard_dn71id.p
 export const DASHBOARD_IMAGE_URL_MOBILE = `${BASE_URL}/v1765931633/dashboard_dn71id.png`;
 
 // Logos
-export const LOGO_FAB_ICON_URL = `${BASE_URL}/v1751347732/fab_c5aoyj.png`;
+export const LOGO_FAB_ICON_URL = `${BASE_URL}/v1765951027/chat-bubble_vgyi4f.png`;
 export const LOGO_WHITE_URL = `${BASE_URL}/v1765951144/chatblix-white-logo_mvva3b.png`;
 export const LOGO_NORMAL_URL = `${BASE_URL}/v1765951230/main-chatblix-logo_dwrrjm.png`;
 

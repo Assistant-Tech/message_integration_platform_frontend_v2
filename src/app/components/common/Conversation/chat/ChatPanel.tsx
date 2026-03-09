@@ -1,5 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { Loader2 } from "lucide-react";
+import {
+  Info,
+  Loader2,
+  Package,
+  ShoppingCart,
+  UsersRoundIcon,
+} from "lucide-react";
 import { toast } from "sonner";
 
 import { useChatSocket } from "@/app/socket/useInternalChatSocket";
@@ -15,7 +21,6 @@ import { useTenantStore } from "@/app/store/tenant.store";
 import {
   ChatDetailsPanel,
   ChatFeed,
-  ChatHeader,
   ChatInput,
   EditConversationDialog,
   ManageMembersDialog,
@@ -23,6 +28,7 @@ import {
   ChatOrderInfoPanel,
   ChatSearchProductDetails,
 } from "@/app/components/common/Conversation/chat/chat-panel";
+import { TopNavbar } from "@/app/features/dashboard/admin/component/ui";
 // import ChatOrderNotesPanel from "./chat-panel/ChatNotesOrderPanel";
 
 const ChatPanel = () => {
@@ -34,7 +40,7 @@ const ChatPanel = () => {
 
   const { sendMessage, incomingMessages } = useChatSocket();
   const { tenantUsers, fetchTenantUsers } = useTenantStore();
-  
+
   const [message, setMessage] = useState("");
   const [localMessages, setLocalMessages] = useState<any[]>([]);
   const [isOpenDetails, setIsOpenDetails] = useState(false);
@@ -45,6 +51,7 @@ const ChatPanel = () => {
   const [title, setTitle] = useState("");
   const [priority, setPriority] = useState("normal");
   const [isMembersPanelOpen, setIsMembersPanelOpen] = useState(false);
+  const [messageSearch, setMessageSearch] = useState("");
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -81,6 +88,20 @@ const ChatPanel = () => {
 
   const conversation = conversationFromStore || conversationData?.data;
   const members = membersData?.data || [];
+  const filteredMessages = localMessages.filter((msg) => {
+    if (!messageSearch.trim()) return true;
+
+    const query = messageSearch.toLowerCase().trim();
+    const content =
+      typeof msg.content === "string"
+        ? msg.content
+        : JSON.stringify(msg.content || "");
+
+    return (
+      content.toLowerCase().includes(query) ||
+      (msg.sender || "").toLowerCase().includes(query)
+    );
+  });
 
   useEffect(() => {
     if (conversationData?.data && !conversationFromStore) {
@@ -114,23 +135,27 @@ const ChatPanel = () => {
   };
 
   const handleToggleDetails = () => {
+    const nextState = !isOpenDetails;
     closeAllDrawers();
-    setIsOpenDetails(true);
+    setIsOpenDetails(nextState);
   };
 
   const handleToggleMembers = () => {
+    const nextState = !isMembersPanelOpen;
     closeAllDrawers();
-    setIsMembersPanelOpen(true);
+    setIsMembersPanelOpen(nextState);
   };
 
   const handleToggleOrderInfo = () => {
+    const nextState = !isOrderInfoOpen;
     closeAllDrawers();
-    setIsOrderInfoOpen(true);
+    setIsOrderInfoOpen(nextState);
   };
 
   const handleToggleProductSearch = () => {
+    const nextState = !isProductSearchOpen;
     closeAllDrawers();
-    setIsProductSearchOpen(true);
+    setIsProductSearchOpen(nextState);
   };
 
   const handleToggleOrderNotes = () => {
@@ -200,25 +225,80 @@ const ChatPanel = () => {
     );
 
   return (
-    <div className="flex flex-1 h-full w-full bg-white border border-grey-light overflow-hidden">
-      <div className="relative flex flex-col w-full h-full bg-white">
-        <ChatHeader
-          conversation={conversation}
-          members={members}
-          onToggleDetails={handleToggleDetails}
-          isMembersPanelOpen={handleToggleMembers}
-          isOrderInfoOpen={handleToggleOrderInfo}
-          isProductSearchOpen={handleToggleProductSearch}
-          isOrderNotesOpen={handleToggleOrderNotes}
+    <div className="flex h-full w-full overflow-hidden bg-primary-light/20">
+      <div className="relative flex h-full w-full min-w-0 flex-col overflow-hidden bg-base-white">
+        <TopNavbar
+          title={conversation?.title || "Pharah House"}
+          subtitle={`${conversation?.type || "Internal"} • ${members?.length || 0} members`}
+          // searchPlaceholder={`Search in ${conversation?.title || "conversation"}`}
+          // searchValue={messageSearch}
+          // onSearchChange={setMessageSearch}
+          leadingContent={
+            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary-light text-sm font-semibold text-primary shadow-sm">
+              {(conversation?.title || "PH")
+                .split(" ")
+                .filter(Boolean)
+                .slice(0, 2)
+                .map((part: string) => part[0]?.toUpperCase())
+                .join("") || "PH"}
+            </div>
+          }
+          actions={[
+            {
+              label: "Catalog",
+              icon: Package,
+              onClick: handleToggleProductSearch,
+              isActive: isProductSearchOpen,
+            },
+            {
+              label: "Order",
+              icon: ShoppingCart,
+              onClick: handleToggleOrderInfo,
+              isActive: isOrderInfoOpen,
+            },
+            {
+              label: `Members (${members?.length || 0})`,
+              icon: UsersRoundIcon,
+              onClick: handleToggleMembers,
+              isActive: isMembersPanelOpen,
+            },
+            {
+              label: "Details",
+              icon: Info,
+              onClick: handleToggleDetails,
+              isActive: isOpenDetails,
+            },
+          ]}
         />
-        <div className="flex-1 overflow-y-auto">
-          <ChatFeed messages={localMessages} ref={messagesEndRef} />
+        <div className="min-h-0 flex-1 overflow-y-auto bg-primary-light/30">
+          <ChatFeed messages={filteredMessages} ref={messagesEndRef} />
         </div>
         <ChatInput
           message={message}
           onChange={setMessage}
           onSend={handleSend}
         />
+
+        {isOpenDetails && (
+          <>
+            <button
+              type="button"
+              aria-label="Close details drawer overlay"
+              className="absolute inset-0 z-10 bg-primary-dark/5 backdrop-blur-[1px]"
+              onClick={() => setIsOpenDetails(false)}
+            />
+            <div className="absolute inset-y-0 right-0 z-20 w-full max-w-[380px] border-l border-grey-light bg-base-white shadow-sm">
+              <ChatDetailsPanel
+                onClose={() => setIsOpenDetails(false)}
+                conversation={conversation}
+                members={members}
+                membersLoading={membersLoading}
+                onEdit={() => setIsEditDialogOpen(true)}
+                onManage={() => setIsAddMemberDialogOpen(true)}
+              />
+            </div>
+          </>
+        )}
       </div>
 
       {isProductSearchOpen && (
@@ -246,22 +326,9 @@ const ChatPanel = () => {
 
       {isOrderInfoOpen && (
         <ChatOrderInfoPanel
-          // onClose={() => setIsOrderInfoOpen(false)}
           onSendOrderMessage={(msg) => {
             setLocalMessages((prev) => [...prev, msg]);
           }}
-        />
-      )}
-
-      {isOpenDetails && (
-        <ChatDetailsPanel
-          // onClose={() => setIsOpenDetails(false)}
-          conversation={conversation}
-          members={members}
-          tenantUsers={tenantUsers}
-          membersLoading={membersLoading}
-          onEdit={() => setIsEditDialogOpen(true)}
-          onManage={() => setIsAddMemberDialogOpen(true)}
         />
       )}
 
