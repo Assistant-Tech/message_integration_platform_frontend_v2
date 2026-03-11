@@ -1,16 +1,18 @@
 import { APP_ROUTES } from "@/app/constants/routes";
 import {
-  MessageSquare,
   LayoutDashboard,
-  Hash,
   Bot,
   BarChart3,
   Tag,
   ShoppingBag,
   ShoppingCart,
-  Settings,
   LucideIcon,
 } from "lucide-react";
+
+// SVG icon imports (used as <img> src on the dark sidebar)
+import conversationsIconUrl from "@/app/assets/dashboard-icons/Conversations Icon.svg";
+import connectionsIconUrl from "@/app/assets/dashboard-icons/Connections Icon.svg";
+import settingsIconUrl from "@/app/assets/dashboard-icons/Settings Icon.svg";
 
 export interface SidebarSubItem {
   label: string;
@@ -20,7 +22,8 @@ export interface SidebarSubItem {
 
 export interface SidebarItem {
   label: string;
-  icon: LucideIcon;
+  /** A Lucide component OR an SVG URL string imported via Vite */
+  icon: LucideIcon | string;
   href: string;
   hasSubmenu?: boolean;
   roles?: string[];
@@ -36,13 +39,13 @@ export const sidebarItems: SidebarItem[] = [
   },
   {
     label: "Conversation",
-    icon: MessageSquare,
+    icon: conversationsIconUrl,
     href: APP_ROUTES.ADMIN.CONVERSATION,
     roles: ["TENANT_ADMIN", "MEMBER"],
   },
   {
     label: "Channels",
-    icon: Hash,
+    icon: connectionsIconUrl,
     href: APP_ROUTES.ADMIN.CHANNEL,
     roles: ["TENANT_ADMIN"],
   },
@@ -101,7 +104,7 @@ export const sidebarItems: SidebarItem[] = [
   },
   {
     label: "Settings",
-    icon: Settings,
+    icon: settingsIconUrl,
     href: APP_ROUTES.ADMIN.SETTINGS,
     hasSubmenu: true,
     roles: ["TENANT_ADMIN", "MEMBER"],

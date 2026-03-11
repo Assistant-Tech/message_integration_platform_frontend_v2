@@ -3,11 +3,12 @@ import type React from "react";
 import { ChevronDown, HelpCircle } from "lucide-react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useLogout } from "@/app/hooks/query/useAuthQuery";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { APP_ROUTES } from "@/app/constants/routes";
 import NotificationDropdown from "@/app/components/common/Notification/NotificationDropDown";
 import { useAuthStore } from "@/app/store/auth.store";
 import { cn } from "@/app/utils/cn";
+import { getAvatarUrl } from "@/app/utils/avatar";
 
 interface TopNavbarAction {
   label: string;
@@ -17,7 +18,7 @@ interface TopNavbarAction {
 }
 
 interface TopNavbarProps {
-  title?: string;
+  title?: React.ReactNode;
   subtitle?: string;
   // searchPlaceholder?: string;
   // searchValue?: string;
@@ -38,6 +39,118 @@ const getInitials = (value?: string) =>
     .map((part) => part[0]?.toUpperCase())
     .join("") || "JD";
 
+const getRouteMeta = (pathname: string) => {
+  const routes = [
+    {
+      match: /\/admin\/dashboard$/,
+      title: "Dashboard",
+      subtitle: "Overview of your workspace and activity",
+    },
+    {
+      match: /\/conversation$/,
+      title: "Conversations",
+      subtitle: "Manage inbound customer messages across channels",
+    },
+    {
+      match: /\/channel$/,
+      title: "Channels",
+      subtitle: "Coordinate internal and external channel discussions",
+    },
+    {
+      match: /\/chatbot$/,
+      title: "Chatbot",
+      subtitle: "Configure automated replies and bot experiences",
+    },
+    {
+      match: /\/orders$/,
+      title: "Orders",
+      subtitle: "Track and manage customer orders",
+    },
+    {
+      match: /\/tags$/,
+      title: "Tags",
+      subtitle: "Organize conversations with reusable labels",
+    },
+    {
+      match: /\/analytics$/,
+      title: "Analytics",
+      subtitle: "Review performance and engagement trends",
+    },
+    {
+      match: /\/settings\/profile$/,
+      title: "Profile Settings",
+      subtitle: "Manage account details and preferences",
+    },
+    {
+      match: /\/settings\/company$/,
+      title: "Company Settings",
+      subtitle: "Update workspace and business information",
+    },
+    {
+      match: /\/settings\/security$/,
+      title: "Security Settings",
+      subtitle: "Control authentication and access safeguards",
+    },
+    {
+      match: /\/settings\/notifications$/,
+      title: "Notification Settings",
+      subtitle: "Choose when and how alerts are delivered",
+    },
+    {
+      match: /\/settings\/role-management$/,
+      title: "Role Management",
+      subtitle: "Assign permissions and manage workspace access",
+    },
+    {
+      match: /\/settings\/chat_settings$/,
+      title: "Chat Settings",
+      subtitle: "Adjust conversation defaults and chat behavior",
+    },
+    {
+      match: /\/settings\/shipping$/,
+      title: "Shipping Settings",
+      subtitle: "Configure delivery options and fulfilment rules",
+    },
+    {
+      match: /\/settings\/subscription/,
+      title: "Subscription",
+      subtitle: "Review billing, plans, and renewals",
+    },
+    {
+      match: /\/settings\/integration/,
+      title: "Integrations",
+      subtitle: "Connect external services and APIs",
+    },
+    {
+      match: /\/products/,
+      title: "Products",
+      subtitle: "Manage catalog items, variants, and inventory",
+    },
+    {
+      match: /\/checkout$/,
+      title: "Checkout",
+      subtitle: "Review payment and order completion details",
+    },
+    {
+      match: /\/dashboard\/settings\/profile$/,
+      title: "Profile Settings",
+      subtitle: "Manage account details and preferences",
+    },
+    {
+      match: /\/dashboard$/,
+      title: "Dashboard",
+      subtitle: "Overview of your workspace and activity",
+    },
+  ];
+
+  return (
+    routes.find((route) => route.match.test(pathname)) ?? {
+      title: "Workspace",
+      subtitle: "Manage your day-to-day operations",
+    }
+  );
+};
+
 const TopNavbar = ({
   title,
   subtitle,
@@ -53,8 +166,11 @@ const TopNavbar = ({
 }: TopNavbarProps) => {
   const logoutMutation = useLogout();
   const user = useAuthStore((state) => state.user);
+  const location = useLocation();
+  const { slug } = useParams();
 
   const navigate = useNavigate();
+  const routeMeta = getRouteMeta(location.pathname);
 
   const handleLogout = () => {
     logoutMutation.mutate(undefined, {
@@ -67,11 +183,19 @@ const TopNavbar = ({
   const userName = user?.name || user?.email?.split("@")[0] || "Jane Doe";
   const userRole = user?.roleType || "Admin";
   const navbarActions = actions;
+  const resolvedTitle = title ?? routeMeta.title;
+  const resolvedSubtitle = subtitle ?? routeMeta.subtitle;
+  const isPlainTitle = typeof resolvedTitle === "string";
+  const profileRoute = slug
+    ? user?.roleType === "MEMBER"
+      ? `/${slug}/dashboard/settings/profile`
+      : `/${slug}/admin/${APP_ROUTES.ADMIN.SETTINGS_PROFILE}`
+    : APP_ROUTES.ADMIN.SETTINGS_PROFILE;
 
   return (
     <header
       className={cn(
-        "w-full border-b border-grey-light bg-primary-light/60 px-6 py-2",
+        "w-full border-b border-grey-light bg-primary-light/60 px-12 py-2",
         className,
       )}
     >
@@ -79,15 +203,24 @@ const TopNavbar = ({
         <div className="flex min-w-0 flex-1 items-center gap-4">
           {leadingContent}
 
-          {(title || subtitle) && (
+          {(resolvedTitle || resolvedSubtitle) && (
             <div className="min-w-0 shrink-0">
-              {title && (
-                <h2 className="truncate text-lg font-semibold text-grey">
-                  {title}
+              {resolvedTitle && (
+                <h2
+                  className={cn(
+                    "text-lg font-semibold text-grey",
+                    isPlainTitle
+                      ? "truncate"
+                      : "flex flex-wrap items-center gap-2",
+                  )}
+                >
+                  {resolvedTitle}
                 </h2>
               )}
-              {subtitle && (
-                <p className="truncate text-sm text-grey-medium">{subtitle}</p>
+              {resolvedSubtitle && (
+                <p className="truncate text-sm text-grey-medium">
+                  {resolvedSubtitle}
+                </p>
               )}
             </div>
           )}
@@ -137,9 +270,9 @@ const TopNavbar = ({
             <DropdownMenu.Root>
               <DropdownMenu.Trigger asChild>
                 <button className="flex items-center gap-3 rounded-full border border-grey-light bg-base-white px-3 py-2 text-left transition-colors hover:bg-primary-light">
-                  {user?.avatar ? (
+                  {user ? (
                     <img
-                      src={user.avatar}
+                      src={getAvatarUrl(user.avatar)}
                       alt={userName}
                       className="h-10 w-10 rounded-full object-cover"
                     />
@@ -165,7 +298,7 @@ const TopNavbar = ({
                 align="end"
                 className="z-50 min-w-[180px] rounded-2xl border border-grey-light bg-base-white p-2 shadow-sm"
               >
-                <Link to={APP_ROUTES.ADMIN.SETTINGS_PROFILE}>
+                <Link to={profileRoute}>
                   <DropdownMenu.Item className="rounded-xl px-4 py-2 text-sm text-grey outline-none transition-colors hover:bg-primary-light">
                     Profile
                   </DropdownMenu.Item>

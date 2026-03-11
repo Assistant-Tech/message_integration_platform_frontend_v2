@@ -19,12 +19,15 @@ const AdminDashboardPage = lazy(
   () =>
     import("@/app/features/dashboard/admin/pages/dashboard/AdminDashboardPage"),
 );
-const ConversationPage = lazy(
-  () =>
-    import(
-      "@/app/features/dashboard/admin/pages/conversation/ConversationPage"
-    ),
+const InboxPage = lazy(
+  () => import("@/app/features/dashboard/admin/pages/conversation/InboxPage"),
 );
+// const CustomerConversationPage = lazy(
+//   () =>
+//     import(
+//       "@/app/features/dashboard/admin/pages/conversation/CustomerConversationPage"
+//     ),
+// );
 const ChatbotPage = lazy(
   () => import("@/app/features/dashboard/admin/pages/chatbot/ChatbotPage"),
 );
@@ -122,10 +125,11 @@ const AdminRoutes = () => {
           path={APP_ROUTES.ADMIN.DASHBOARD}
           element={<AdminDashboardPage />}
         />
-        <Route
-          path={APP_ROUTES.ADMIN.CONVERSATION}
-          element={<ConversationPage />}
-        />
+        <Route path={APP_ROUTES.ADMIN.CONVERSATION} element={<InboxPage />} />
+        {/* <Route
+          path={APP_ROUTES.ADMIN.CUSTOMER_CONVERSATION}
+          element={<CustomerConversationPage />}
+        /> */}
         <Route path={APP_ROUTES.ADMIN.CHATBOT} element={<ChatbotPage />} />
         <Route path={APP_ROUTES.ADMIN.CHANNEL} element={<ChannelPage />} />
         <Route path={APP_ROUTES.ADMIN.ORDERS} element={<OrderPage />} />

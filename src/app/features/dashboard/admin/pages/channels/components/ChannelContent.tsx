@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Send, Smile, Paperclip, MoreVertical, Pin, Info } from "lucide-react";
 import { Button } from "@/app/components/ui";
 import { TopNavbar } from "@/app/features/dashboard/admin/component/ui";
+import { getAvatarUrl } from "@/app/utils/avatar";
 
 interface Message {
   id: string;
@@ -127,14 +128,11 @@ const ChannelContent: React.FC<ChannelContentProps> = ({
               >
                 <div className="flex gap-3">
                   <div className="h-10 w-10 flex items-center justify-center rounded-full bg-primary text-white font-bold">
-                    {message.userAvatar ? (
-                      <img
-                        src={message.userAvatar}
-                        className="rounded-full w-full h-full object-cover"
-                      />
-                    ) : (
-                      message.userName.charAt(0).toUpperCase()
-                    )}
+                    <img
+                      src={getAvatarUrl(message.userAvatar)}
+                      alt={message.userName}
+                      className="rounded-full w-full h-full object-cover"
+                    />
                   </div>
 
                   <div className="flex-1">

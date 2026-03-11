@@ -110,11 +110,7 @@ export const navigation: NavigationItem[] = [
 ─────────────────────────────────────────────────────────────────────────────
  📦 ▶ Hero data utils
  ─────────────────────────────────────────────────────────────────────────────
-*/
-import WhatsAppIcon from "@/app/assets/icons/whatsapp.svg";
-import FacebookIcon from "@/app/assets/icons/fb.svg";
-import InstagramIcon from "@/app/assets/icons/insta.svg";
-import TelegramIcon from "@/app/assets/icons/telegram.svg";
+ */
 import X from "@/app/assets/icons/x.svg";
 import Tiktok from "@/app/assets/icons/tiktok.svg";
 import viber from "@/app/assets/icons/viber.svg";
@@ -122,7 +118,6 @@ import viber from "@/app/assets/icons/viber.svg";
 export const SOCIAL_LINKS_CONFIG = [
   {
     name: "Facebook",
-    src: FacebookIcon,
     href: "https://facebook.com/yourprofile",
     color: "#1877F2",
     size: 42,
@@ -132,7 +127,6 @@ export const SOCIAL_LINKS_CONFIG = [
   },
   {
     name: "Instagram",
-    src: InstagramIcon,
     href: "https://instagram.com/yourprofile",
     color: "#E4405F",
     size: 36,
@@ -152,7 +146,6 @@ export const SOCIAL_LINKS_CONFIG = [
   },
   {
     name: "Telegram",
-    src: TelegramIcon,
     href: "https://t.me/yourusername",
     color: "#0088cc",
     size: 42,
@@ -182,7 +175,6 @@ export const SOCIAL_LINKS_CONFIG = [
   },
   {
     name: "WhatsApp",
-    src: WhatsAppIcon,
     href: "https://wa.me/yourphonenumber",
     color: "#25D366",
     size: 44,

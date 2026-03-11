@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
-import ChannelSidebar from "./components/ChannelSidebar";
-import ChannelContent from "./components/ChannelContent";
-import ChannelDetails from "./components/ChannelDetails";
-import CreateChannelModal from "./components/CreateChannelModal";
+import {
+  ChannelSidebar,
+  ChannelContent,
+  ChannelDetails,
+  CreateChannelModal,
+} from "@/app/features/dashboard/admin/pages/channels";
 import {
   type ChannelAddMemberSubmitPayload,
   type ChannelInviteCandidate,
@@ -15,6 +17,7 @@ import {
 } from "@/app/services/internal-channels.services";
 import { useTenantUsers } from "@/app/hooks/query/useTenantQuery";
 import { useAddConversationMembers } from "@/app/socket/conversation/useInternalConversation";
+import { buildInviteCode, mapRole, mapStatus } from "@/app/utils/helper";
 // Mock data for demonstration
 const MOCK_MESSAGES = [
   {
@@ -114,37 +117,6 @@ interface Channel {
   unreadCount?: number;
   isPrivate?: boolean;
 }
-
-const buildInviteCode = (channelId: string, title: string) => {
-  const sanitizedTitle = title.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
-  const titlePart = sanitizedTitle.slice(0, 6).padEnd(6, "X");
-  const idPart = channelId
-    .replace(/[^a-zA-Z0-9]/g, "")
-    .slice(-6)
-    .toUpperCase();
-
-  return `${titlePart}-${idPart || "SERVER"}`;
-};
-
-const mapRole = (roleType?: string) => {
-  if (roleType === "TENANT_ADMIN") {
-    return "admin" as const;
-  }
-
-  if (roleType?.includes("MOD")) {
-    return "moderator" as const;
-  }
-
-  return "member" as const;
-};
-
-const mapStatus = (status?: string) => {
-  if (status === "ONLINE") {
-    return "online" as const;
-  }
-
-  return "offline" as const;
-};
 
 const ChannelPage = () => {
   const [channels, setChannels] = useState<Channel[]>([]);
@@ -338,7 +310,7 @@ const ChannelPage = () => {
             status: mapStatus(tenantUser.user.status),
           };
         })
-        .filter(Boolean)
+        .filter((member): member is (typeof MOCK_MEMBERS)[0] => Boolean(member))
     : [];
 
   const resolvedMembers =
@@ -362,7 +334,10 @@ const ChannelPage = () => {
 
       if (unresolved.length > 0) {
         toast.info(
-          `Share code ${buildInviteCode(selectedChannelId, selectedChannel?.title ?? "channel")} with ${unresolved.length} unmatched invite${unresolved.length === 1 ? "" : "s"}.`,
+          `Share code ${buildInviteCode(
+            selectedChannelId,
+            selectedChannel?.title ?? "channel",
+          )} with ${unresolved.length} unmatched invite${unresolved.length === 1 ? "" : "s"}.`,
         );
       }
     } catch (error) {

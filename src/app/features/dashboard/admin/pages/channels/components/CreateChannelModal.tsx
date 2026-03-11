@@ -89,16 +89,16 @@ const CreateChannelModal: React.FC<CreateChannelModalProps> = ({
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
           transition={{ duration: 0.2 }}
-          className="relative z-10 w-full max-w-md bg-white dark:bg-gray-800 rounded-lg shadow-2xl"
+          className="relative z-10 w-full max-w-md not-odd:not-odd:rounded-lg shadow-2xl"
         >
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-            <h2 className="text-xl font-bold text-gray-800 dark:text-white">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-bold text-grey dark:text-white">
               Create Channel
             </h2>
             <button
               onClick={onClose}
-              className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+              className="text-grey-medium hover:text-grey-medium dark:hover:text-grey-light transition-colors"
             >
               <X className="h-5 w-5" />
             </button>
@@ -122,7 +122,7 @@ const CreateChannelModal: React.FC<CreateChannelModalProps> = ({
 
             {/* Channel Type */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 block">
+              <label className="text-sm font-medium text-grey-medium dark:text-grey-light block">
                 Channel Type
               </label>
               <div className="grid grid-cols-2 gap-2">
@@ -169,7 +169,7 @@ const CreateChannelModal: React.FC<CreateChannelModalProps> = ({
                       "flex items-center justify-center gap-2 p-3 rounded-md border-2 transition-all",
                       channelType === type.value
                         ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300"
-                        : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 text-gray-700 dark:text-gray-300",
+                        : "border-grey-light dark:border-grey-medium hover:border-grey-light dark:hover:border-grey-medium text-grey-medium dark:text-grey-light",
                     )}
                   >
                     {type.icon}
@@ -183,12 +183,12 @@ const CreateChannelModal: React.FC<CreateChannelModalProps> = ({
             <div className="space-y-2">
               <label
                 htmlFor="channelName"
-                className="text-sm font-medium text-gray-700 dark:text-gray-300 block"
+                className="text-sm font-medium text-grey-medium dark:text-grey-light block"
               >
                 Channel Name
               </label>
               <div className="relative">
-                <Hash className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Hash className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-grey-light" />
                 <Input
                   id="channelName"
                   type="text"
@@ -198,29 +198,29 @@ const CreateChannelModal: React.FC<CreateChannelModalProps> = ({
                     setError("");
                   }}
                   placeholder="e.g., general-chat"
-                  className="pl-10 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  className="pl-10 dark:bg-grey-medium dark:border-grey-medium dark:text-white"
                 />
               </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
+              <p className="text-xs text-grey-medium dark:text-grey-light">
                 Use lowercase letters, numbers, and hyphens
               </p>
             </div>
 
             {/* Privacy Toggle */}
-            <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-md">
+            <div className="flex items-center justify-between p-3 bg-base-white dark:bg-grey-medium/50 rounded-md">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-white dark:bg-gray-600 rounded-md">
+                <div className="p-2 bg-white dark:bg-grey-medium rounded-md">
                   {isPrivate ? (
-                    <Lock className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+                    <Lock className="h-5 w-5 text-grey-medium dark:text-grey-light" />
                   ) : (
-                    <Hash className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+                    <Hash className="h-5 w-5 text-grey-medium dark:text-grey-light" />
                   )}
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-800 dark:text-white">
+                  <p className="text-sm font-medium text-grey dark:text-white">
                     {isPrivate ? "Private Channel" : "Public Channel"}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                  <p className="text-xs text-grey-medium dark:text-grey-light">
                     {isPrivate
                       ? "Only invited members can access"
                       : "Everyone can access"}
@@ -231,7 +231,9 @@ const CreateChannelModal: React.FC<CreateChannelModalProps> = ({
                 onClick={() => setIsPrivate(!isPrivate)}
                 className={cn(
                   "relative w-12 h-6 rounded-full transition-colors",
-                  isPrivate ? "bg-blue-600" : "bg-gray-300 dark:bg-gray-600",
+                  isPrivate
+                    ? "bg-blue-600"
+                    : "bg-grey-light dark:bg-grey-medium",
                 )}
               >
                 <motion.div
@@ -244,13 +246,13 @@ const CreateChannelModal: React.FC<CreateChannelModalProps> = ({
 
             {/* Priority */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 block">
+              <label className="text-sm font-medium text-grey-medium dark:text-grey-light block">
                 Priority Level
               </label>
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-grey-light dark:border-grey-medium rounded-md bg-white dark:bg-grey-medium text-grey dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="normal">Normal</option>
                 <option value="high">High</option>
@@ -261,14 +263,14 @@ const CreateChannelModal: React.FC<CreateChannelModalProps> = ({
             {/* Members Selection (for private channels) */}
             {isPrivate && availableUsers.length > 0 && (
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 block">
+                <label className="text-sm font-medium text-grey-medium dark:text-grey-light block">
                   Invite Members ({selectedUsers.length} selected)
                 </label>
-                <div className="max-h-40 overflow-y-auto border border-gray-300 dark:border-gray-600 rounded-md">
+                <div className="max-h-40 overflow-y-auto border border-grey-light dark:border-grey-medium rounded-md">
                   {availableUsers.map((user) => (
                     <label
                       key={user.id}
-                      className="flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer transition-colors"
+                      className="flex items-center gap-3 p-3 hover:bg-base-white dark:hover:bg-grey-medium/50 cursor-pointer transition-colors"
                     >
                       <input
                         type="checkbox"
@@ -277,10 +279,10 @@ const CreateChannelModal: React.FC<CreateChannelModalProps> = ({
                         className="form-checkbox h-4 w-4 text-blue-600 rounded focus:ring-blue-500"
                       />
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-800 dark:text-white">
+                        <p className="text-sm font-medium text-grey dark:text-white">
                           {user.name}
                         </p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                        <p className="text-xs text-grey-medium dark:text-grey-light">
                           {user.email}
                         </p>
                       </div>
@@ -292,11 +294,11 @@ const CreateChannelModal: React.FC<CreateChannelModalProps> = ({
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 dark:border-gray-700">
+          <div className="flex items-center justify-end gap-3 p-6 border-t border-grey-light dark:border-grey-medium">
             <Button
               onClick={onClose}
               variant="outlined"
-              className="dark:border-gray-600 dark:text-gray-300"
+              className="dark:border-grey-medium dark:text-grey-light"
             >
               Cancel
             </Button>

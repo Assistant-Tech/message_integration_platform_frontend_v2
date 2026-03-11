@@ -4,8 +4,9 @@ import { X, Plus, CirclePlus } from "lucide-react";
 import { Button, Input } from "@/app/components/ui";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { Channel } from "@/app/types/channel.types";
 
-const tags = [
+const defaultTags = [
   "Bought",
   "Delivered",
   "Queries & FAQ's",
@@ -18,11 +19,12 @@ const tags = [
 interface ChannelCreateDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onCreate: (channel: Channel) => void;
 }
 
 interface FormValues {
   channelName: string;
-  size: number;
+  size: "small" | "medium" | "large";
   visibility: "public" | "private";
   tags: string[];
 }
@@ -44,12 +46,15 @@ const FormField = ({
     {children}
   </div>
 );
+
 const ChannelCreateDialog = ({
   open,
   onOpenChange,
+  onCreate,
 }: ChannelCreateDialogProps) => {
   const [showInput, setShowInput] = useState(false);
   const [newTag, setNewTag] = useState("");
+  const [availableTags, setAvailableTags] = useState(defaultTags);
 
   const { register, handleSubmit, setValue, watch, reset } =
     useForm<FormValues>({
@@ -59,8 +64,7 @@ const ChannelCreateDialog = ({
       },
     });
 
-  const selectedTags = watch("tags");
-  const size = watch("size");
+  const selectedTags = watch("tags") || [];
 
   const toggleTag = (tag: string) => {
     const updated = selectedTags.includes(tag)
@@ -73,13 +77,23 @@ const ChannelCreateDialog = ({
   const handleAddTag = () => {
     if (!newTag.trim()) return;
 
+    setAvailableTags((prev) => [...prev, newTag]);
     setValue("tags", [...selectedTags, newTag]);
+
     setNewTag("");
     setShowInput(false);
   };
 
   const onSubmit = (data: FormValues) => {
-    console.log("Channel Data:", data);
+    const newChannel: Channel = {
+      id: crypto.randomUUID(),
+      name: data.channelName,
+      type: data.visibility === "private" ? "private" : "text",
+      size: data.size,
+      tags: data.tags,
+    };
+
+    onCreate(newChannel);
 
     reset();
     onOpenChange(false);
@@ -107,7 +121,7 @@ const ChannelCreateDialog = ({
                 className="fixed z-50 left-1/2 top-1/2 w-full max-w-xl -translate-x-1/2 -translate-y-1/2 rounded-md bg-white p-6 shadow-lg"
               >
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                  {/* Header */}
+                  {/* HEADER */}
                   <div className="flex justify-between items-center border-b border-grey-light pb-4">
                     <Dialog.Title className="h4-bold-24 text-grey">
                       Create Channel
@@ -120,36 +134,30 @@ const ChannelCreateDialog = ({
                     </Dialog.Close>
                   </div>
 
-                  {/* Form Fields */}
-                  <div className="grid md:grid-cols-1 gap-4">
-                    <Input
-                      required
-                      label="Channel Name"
-                      placeholder="Enter channel name"
-                      {...register("channelName", { required: true })}
-                    />
-                    <FormField label="Channel Size" required>
-                      <select
-                        id="size"
-                        defaultValue=""
-                        className={`w-full rounded-md border border-grey-light px-3 py-2 label-regular-14 ${
-                          !size ? "text-grey-medium" : "text-black"
-                        }`}
-                        {...register("size", { required: true })}
-                      >
-                        <option value="" disabled hidden>
-                          Select Channel Size
-                        </option>
-                        <option value="small">Small (1-10 members)</option>
-                        <option value="medium">Medium (11-50 members)</option>
-                        <option value="large">Large (51+ members)</option>
-                      </select>
-                    </FormField>
-                  </div>
+                  {/* CHANNEL NAME */}
+                  <Input
+                    required
+                    label="Channel Name"
+                    placeholder="Enter channel name"
+                    {...register("channelName", { required: true })}
+                  />
 
-                  {/* Visibility */}
-                  <FormField label="Visibility" required>
-                    <div className="flex gap-6 label-regular-14">
+                  {/* SIZE */}
+                  <FormField label="Channel Size" required>
+                    <select
+                      className="w-full rounded-md border border-grey-light px-3 py-2 label-regular-14"
+                      {...register("size", { required: true })}
+                    >
+                      <option value="">Select Channel Size</option>
+                      <option value="small">Small (1-10 members)</option>
+                      <option value="medium">Medium (11-50 members)</option>
+                      <option value="large">Large (51+ members)</option>
+                    </select>
+                  </FormField>
+
+                  {/* VISIBILITY */}
+                  <FormField label="Visibility">
+                    <div className="flex gap-6">
                       <label className="flex items-center gap-2">
                         <input
                           type="radio"
@@ -170,20 +178,20 @@ const ChannelCreateDialog = ({
                     </div>
                   </FormField>
 
-                  {/* Tags */}
+                  {/* TAGS */}
                   <FormField label="Tags">
                     <div className="grid grid-cols-3 gap-3">
-                      {tags.map((tag) => (
+                      {availableTags.map((tag) => (
                         <Button
                           key={tag}
                           variant="none"
                           type="button"
                           onClick={() => toggleTag(tag)}
-                          className={`px-3 py-2 text-black rounded-md border transition label-regular-14 cursor-pointer
+                          className={`px-3 py-2 text-black rounded-md border
                           ${
                             selectedTags.includes(tag)
-                              ? "border border-information"
-                              : "border-grey-light hover:bg-grey-light"
+                              ? "border-information"
+                              : "border-grey-light"
                           }`}
                           label={tag}
                         />
@@ -191,7 +199,7 @@ const ChannelCreateDialog = ({
                     </div>
                   </FormField>
 
-                  {/* Add Tag */}
+                  {/* ADD TAG */}
                   <div>
                     {showInput ? (
                       <div className="flex gap-2">
@@ -220,8 +228,8 @@ const ChannelCreateDialog = ({
                     )}
                   </div>
 
-                  {/* Footer */}
-                  <div className="flex justify-between gap-2 pt-4 w-full">
+                  {/* FOOTER */}
+                  <div className="flex gap-2 pt-4">
                     <Dialog.Close asChild>
                       <Button
                         type="button"

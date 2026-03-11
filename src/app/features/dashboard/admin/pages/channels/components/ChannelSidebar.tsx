@@ -1,9 +1,10 @@
-import { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo, memo } from "react";
 import { motion } from "framer-motion";
 import { Hash, Users, Bell, Volume2, Settings, Plus } from "lucide-react";
+
 import { Button } from "@/app/components/ui";
 import { Channel } from "@/app/types/channel.types";
-import { useGroupedChannels } from "@/app/hooks/useGroupedChannels";
+
 import ChannelSection from "@/app/features/dashboard/admin/pages/channels/components/ChannelSection";
 import ChannelCreateDialog from "@/app/features/dashboard/admin/pages/channels/components/ChannelCreateDialog";
 
@@ -15,25 +16,68 @@ interface Props {
   onToggleCollapse: () => void;
 }
 
+type ChannelCategory = string;
+
+const categoryIcons: Record<string, React.ReactNode> = {
+  text: <Hash size={14} />,
+  social: <Users size={14} />,
+  private: <Hash size={14} />,
+};
+
 const ChannelSidebar = ({
   channels,
   selectedChannelId,
   onSelectChannel,
   isCollapsed,
-  onToggleCollapse: _onToggleCollapse,
 }: Props) => {
-  const [search] = useState("");
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [expanded, setExpanded] = useState({
-    text: true,
-    social: true,
-    private: true,
-  });
 
-  const grouped = useGroupedChannels(channels, search);
+  /**
+   * Temporary local state
+   * Replace later with React Query API
+   */
+  const [localChannels, setLocalChannels] = useState<Channel[]>(channels);
 
-  const toggle = useCallback((key: "text" | "social" | "private") => {
-    setExpanded((p) => ({ ...p, [key]: !p[key] }));
+  /**
+   * GROUP CHANNELS
+   */
+  const groupedChannels = useMemo(() => {
+    const grouped: Record<string, Channel[]> = {};
+
+    localChannels.forEach((channel) => {
+      const category = channel.type || "text";
+
+      if (!grouped[category]) grouped[category] = [];
+
+      grouped[category].push(channel);
+    });
+
+    return grouped;
+  }, [localChannels]);
+
+  /**
+   * EXPAND STATE
+   */
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+
+  const toggle = useCallback((key: ChannelCategory) => {
+    setExpanded((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  }, []);
+
+  /**
+   * CREATE CHANNEL
+   */
+  const handleCreateChannel = useCallback((newChannel: Channel) => {
+    setLocalChannels((prev) => [...prev, newChannel]);
+
+    /**
+     * FUTURE API
+     *
+     * createChannelMutation.mutate(newChannel)
+     */
   }, []);
 
   const openCreateDialog = useCallback(() => {
@@ -53,7 +97,7 @@ const ChannelSidebar = ({
         )}
       </div>
 
-      {/* Add new channel button*/}
+      {/* CREATE BUTTON */}
       {!isCollapsed && (
         <div className="px-3 mb-2">
           <Button
@@ -68,45 +112,23 @@ const ChannelSidebar = ({
 
       {/* CHANNEL LIST */}
       <div className="flex-1 overflow-y-auto px-2 custom-scrollbar">
-        <ChannelSection
-          title="Text Channels"
-          icon={<Hash size={14} />}
-          channels={grouped.text}
-          expanded={expanded.text}
-          collapsed={isCollapsed}
-          selectedId={selectedChannelId}
-          onToggle={() => toggle("text")}
-          onSelect={onSelectChannel}
-          onCreate={openCreateDialog}
-        />
-
-        <ChannelSection
-          title="Social Channels"
-          icon={<Users size={14} />}
-          channels={grouped.social}
-          expanded={expanded.social}
-          collapsed={isCollapsed}
-          selectedId={selectedChannelId}
-          onToggle={() => toggle("social")}
-          onSelect={onSelectChannel}
-          onCreate={openCreateDialog}
-        />
-
-        <ChannelSection
-          title="Private"
-          icon={<Hash size={14} />}
-          channels={grouped.private}
-          expanded={expanded.private}
-          collapsed={isCollapsed}
-          selectedId={selectedChannelId}
-          onToggle={() => toggle("private")}
-          onSelect={onSelectChannel}
-          onCreate={openCreateDialog}
-        />
+        {Object.entries(groupedChannels).map(([category, list]) => (
+          <ChannelSection
+            key={category}
+            title={`${category.charAt(0).toUpperCase()}${category.slice(1)} Channels`}
+            icon={categoryIcons[category] || <Hash size={14} />}
+            channels={list}
+            expanded={expanded[category] ?? true}
+            collapsed={isCollapsed}
+            selectedId={selectedChannelId}
+            onToggle={() => toggle(category)}
+            onSelect={onSelectChannel}
+            onCreate={openCreateDialog}
+          />
+        ))}
       </div>
 
       {/* FOOTER */}
-
       <div className="p-2 flex gap-2">
         <Button variant="none">
           <Bell size={16} />
@@ -124,9 +146,10 @@ const ChannelSidebar = ({
       <ChannelCreateDialog
         open={isCreateDialogOpen}
         onOpenChange={setIsCreateDialogOpen}
+        onCreate={handleCreateChannel}
       />
     </motion.div>
   );
 };
 
-export default ChannelSidebar;
+export default memo(ChannelSidebar);

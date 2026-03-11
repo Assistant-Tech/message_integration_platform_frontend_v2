@@ -1,9 +1,10 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { AnimatePresence, motion } from "framer-motion";
-import { Check, Copy, Hash, Mail, Search, UserPlus, X } from "lucide-react";
+import { Check, Copy, Hash, Mail, UserPlus, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button, Input } from "@/app/components/ui";
 import { cn } from "@/app/utils/cn";
+import { getAvatarUrl } from "@/app/utils/avatar";
 
 export interface ChannelInviteCandidate {
   id: string;
@@ -216,7 +217,7 @@ const ChannelAddMemberDialog = ({
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: 24, opacity: 0 }}
                 transition={{ duration: 0.2 }}
-                className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-1.5rem)] max-w-2xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-3xl border border-grey-light bg-white shadow-2xl"
+                className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-1.5rem)] max-w-2xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-3xl bg-white shadow-2xl"
               >
                 <div className="border-b border-grey-light bg-primary/90 px-6 py-5 text-white">
                   <div className="flex items-start justify-between gap-4">
@@ -270,7 +271,7 @@ const ChannelAddMemberDialog = ({
                             >
                               {entry.avatar ? (
                                 <img
-                                  src={entry.avatar}
+                                  src={getAvatarUrl(entry.avatar)}
                                   alt={entry.label}
                                   className="h-5 w-5 rounded-full object-cover"
                                 />
@@ -322,17 +323,11 @@ const ChannelAddMemberDialog = ({
                                 onClick={() => addResolvedUser(user)}
                                 className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left transition hover:bg-primary-light/50"
                               >
-                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-semibold text-white">
-                                  {user.avatar ? (
-                                    <img
-                                      src={user.avatar}
-                                      alt={user.name}
-                                      className="h-full w-full rounded-full object-cover"
-                                    />
-                                  ) : (
-                                    user.name.charAt(0).toUpperCase()
-                                  )}
-                                </div>
+                                <img
+                                  src={getAvatarUrl(user.avatar)}
+                                  alt={user.name}
+                                  className="h-10 w-10 rounded-full object-cover"
+                                />
                                 <div className="min-w-0 flex-1">
                                   <p className="truncate text-sm font-medium text-grey">
                                     {user.name}

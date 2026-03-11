@@ -17,7 +17,6 @@ interface Props {
 
 const ChannelSection = ({
   title,
-  // icon,
   channels,
   expanded,
   collapsed,
@@ -46,11 +45,12 @@ const ChannelSection = ({
 
         {!collapsed && (
           <Plus
-            size={14}
+            size={16}
             onClick={(e) => {
               e.stopPropagation();
               onCreate();
             }}
+            className="cursor-pointer"
           />
         )}
       </button>

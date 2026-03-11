@@ -1,3 +1,5 @@
+import { Platform } from "../features/dashboard/admin/pages/conversation/mockData/customerConversationMockData";
+
 /**
  * Extracts and formats features from a plan's features object into a readable array
  */
@@ -70,3 +72,76 @@ export const formatCurrency = (amount: number, currency: "NPR" | "USD") => {
     : `$${normalized.toFixed(2)}`;
 };
 
+// Channel Helpers
+export const buildInviteCode = (channelId: string, title: string) => {
+  const sanitizedTitle = title.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
+  const titlePart = sanitizedTitle.slice(0, 6).padEnd(6, "X");
+  const idPart = channelId
+    .replace(/[^a-zA-Z0-9]/g, "")
+    .slice(-6)
+    .toUpperCase();
+
+  return `${titlePart}-${idPart || "SERVER"}`;
+};
+
+export const mapRole = (roleType?: string) => {
+  if (roleType === "TENANT_ADMIN") {
+    return "admin" as const;
+  }
+
+  if (roleType?.includes("MOD")) {
+    return "moderator" as const;
+  }
+
+  return "member" as const;
+};
+
+export const mapStatus = (status?: string) => {
+  if (status === "ONLINE") {
+    return "online" as const;
+  }
+
+  return "offline" as const;
+};
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+type TabId = "all" | Platform;
+
+export const TABS: { id: TabId; label: string }[] = [
+  { id: "all", label: "All" },
+  { id: "instagram", label: "Instagram" },
+  { id: "facebook", label: "Facebook" },
+  { id: "whatsapp", label: "WhatsApp" },
+  { id: "tiktok", label: "TikTok" },
+];
+
+export const formatTimestamp = (iso: string): string => {
+  const date = new Date(iso);
+  const now = new Date("2026-03-10T14:24:00");
+  const diff = now.getTime() - date.getTime();
+  const ONE_DAY = 86_400_000;
+
+  if (diff < ONE_DAY) {
+    return date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  }
+
+  return date.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+};
+
+export const getInitials = (name: string): string => {
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0]?.toUpperCase() ?? "")
+    .join("");
+};

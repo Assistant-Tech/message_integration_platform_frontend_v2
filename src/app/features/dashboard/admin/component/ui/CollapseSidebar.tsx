@@ -1,3 +1,4 @@
+import type { LucideIcon } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { ChevronDown, ChevronUp } from "lucide-react";
@@ -9,16 +10,38 @@ import {
   TooltipTrigger,
 } from "@/app/components/common/Tooltip";
 import { sidebarItems } from "@/app/utils/admin/sidebar.config";
-import { CollapsedLogo, Logo } from "@/app/components/ui";
+import { Logo } from "@/app/components/ui";
 import { useCurrentUser } from "@/app/hooks/query/useAuthQuery";
+import ham from "@/app/assets/dashboard-icons/ham.svg";
+
+/** Renders either a Lucide component or an SVG <img> — both white on the dark sidebar */
+const SidebarIcon = ({
+  icon,
+  className = "w-5 h-5",
+}: {
+  icon: LucideIcon | string;
+  className?: string;
+}) => {
+  if (typeof icon === "string") {
+    return (
+      <img
+        src={icon}
+        className={`${className} brightness-0 invert`}
+        alt=""
+        aria-hidden
+      />
+    );
+  }
+  const Icon = icon;
+  return <Icon className={className} />;
+};
 
 const CollapsibleSidebar = () => {
   const { slug } = useParams();
   const location = useLocation();
   const { data: user } = useCurrentUser();
 
-  // const [isCollapsed, setIsCollapsed] = useState(false);
-  const isCollapsed = true;
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedMenu, setExpandedMenu] = useState<string | null>(null);
 
   const toggleMenu = (label: string) => {
@@ -40,33 +63,28 @@ const CollapsibleSidebar = () => {
           {/* Sidebar Header */}
           <div className="p-4 border-primary-dark relative">
             <div className="flex items-center justify-center px-2 space-x-3 pt-2">
-              {isCollapsed ? (
-                <CollapsedLogo />
-              ) : (
-                <Logo variant="white" isDashboard />
-              )}
+              <Logo collapsed={isCollapsed} variant="white" isDashboard />
             </div>
 
             {/* Collapse Toggle */}
-            {/* <div className="absolute top-5 -right-5">
+            <div className="absolute top-2 -right-12">
               <button
                 onClick={() => setIsCollapsed((prev) => !prev)}
-                className="bg-base-white rounded-full text-primary p-2 cursor-pointer"
+                className="bg-transparent rounded-full text-primary p-2 cursor-pointer"
               >
                 {isCollapsed ? (
-                  <ChevronRight className="w-5 h-5" />
+                  <img src={ham} className="w-8 h-8" />
                 ) : (
-                  <ChevronLeft className="w-5 h-5" />
+                  <img src={ham} className="w-8 h-8" />
                 )}
               </button>
-            </div> */}
+            </div>
           </div>
 
           {/* Sidebar Navigation */}
           <nav className="flex-1 p-4 overflow-y-auto [&::-webkit-scrollbar-thumb]:bg-primary [&::-webkit-scrollbar-track]:bg-primary-dark">
             <ul className="space-y-2">
               {filteredItems.map((item, index) => {
-                const Icon = item.icon;
                 const finalHref = `/${slug}/admin/${item.href}`;
                 const isActive = location.pathname.startsWith(finalHref);
                 const isExpanded = expandedMenu === item.label;
@@ -85,7 +103,7 @@ const CollapsibleSidebar = () => {
                     }}
                   >
                     <div className="flex items-center">
-                      <Icon className="w-5 h-5" />
+                      <SidebarIcon icon={item.icon} />
                       {!isCollapsed && (
                         <span className="ml-3 body-bold-16">{item.label}</span>
                       )}
