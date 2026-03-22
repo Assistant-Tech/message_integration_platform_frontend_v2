@@ -30,10 +30,10 @@ export const ConversationAvatar = ({
     <img
       src={getAvatarUrl()}
       alt={name}
-      className={cn("h-10 w-10 rounded-full object-cover", avatarColour(name))}
+      className={cn("h-12 w-12 rounded-full object-cover", avatarColour(name))}
     />
     <span className="absolute -bottom-0.5 -right-0.5 rounded-full ring-2 ring-base-white">
-      <PlatformIcon platform={platform} size={16} />
+      <PlatformIcon platform={platform} size={18} />
     </span>
   </div>
 );
