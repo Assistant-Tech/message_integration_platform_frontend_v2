@@ -4,8 +4,9 @@ import {
   Bot,
   BarChart3,
   Tag,
-  ShoppingBag,
-  ShoppingCart,
+  Contact,
+  // ShoppingBag,
+  // ShoppingCart,
   LucideIcon,
 } from "lucide-react";
 
@@ -38,10 +39,16 @@ export const sidebarItems: SidebarItem[] = [
     roles: ["TENANT_ADMIN", "MEMBER", "CUSTOM"],
   },
   {
-    label: "Conversation",
+    label: "Inbox",
     icon: conversationsIconUrl,
     href: APP_ROUTES.ADMIN.CONVERSATION,
     roles: ["TENANT_ADMIN", "MEMBER"],
+  },
+  {
+    label: "Contact",
+    icon: Contact,
+    href: APP_ROUTES.ADMIN.CONTACT,
+    roles: ["TENANT_ADMIN", "MEMBER", "CUSTOM"],
   },
   {
     label: "Channels",
@@ -50,7 +57,7 @@ export const sidebarItems: SidebarItem[] = [
     roles: ["TENANT_ADMIN"],
   },
   {
-    label: "Chatbot",
+    label: "Automation",
     icon: Bot,
     href: APP_ROUTES.ADMIN.CHATBOT,
     roles: ["TENANT_ADMIN"],
@@ -61,47 +68,48 @@ export const sidebarItems: SidebarItem[] = [
     href: APP_ROUTES.ADMIN.ANALYTICS,
     roles: ["TENANT_ADMIN"],
   },
-  {
-    label: "Tags",
-    icon: Tag,
-    href: APP_ROUTES.ADMIN.TAGS,
-    roles: ["TENANT_ADMIN"],
-  },
-  {
-    label: "Orders",
-    icon: ShoppingBag,
-    href: APP_ROUTES.ADMIN.ORDERS,
-    roles: ["TENANT_ADMIN"],
-  },
-  {
-    label: "Products",
-    icon: ShoppingCart,
-    href: APP_ROUTES.ADMIN.PRODUCTS,
-    hasSubmenu: true,
-    roles: ["TENANT_ADMIN"],
-    submenu: [
-      {
-        label: "All Products",
-        href: APP_ROUTES.ADMIN.PRODUCTS_ALL,
-        roles: ["TENANT_ADMIN"],
-      },
-      {
-        label: "Category",
-        href: APP_ROUTES.ADMIN.PRODUCTS_CATEGORY,
-        roles: ["TENANT_ADMIN"],
-      },
-      {
-        label: "Variants",
-        href: APP_ROUTES.ADMIN.PRODUCTS_VARIANTS,
-        roles: ["TENANT_ADMIN"],
-      },
-      {
-        label: "Inventory",
-        href: APP_ROUTES.ADMIN.PRODUCTS_INVENTORY,
-        roles: ["TENANT_ADMIN"],
-      },
-    ],
-  },
+  // {
+  //   label: "Tags",
+  //   icon: Tag,
+  //   href: APP_ROUTES.ADMIN.TAGS,
+  //   roles: ["TENANT_ADMIN"],
+  // },
+  // MVP 1: Orders and Products are excluded from the initial release.
+  // {
+  //   label: "Orders",
+  //   icon: ShoppingBag,
+  //   href: APP_ROUTES.ADMIN.ORDERS,
+  //   roles: ["TENANT_ADMIN"],
+  // },
+  // {
+  //   label: "Products",
+  //   icon: ShoppingCart,
+  //   href: APP_ROUTES.ADMIN.PRODUCTS,
+  //   hasSubmenu: true,
+  //   roles: ["TENANT_ADMIN"],
+  //   submenu: [
+  //     {
+  //       label: "All Products",
+  //       href: APP_ROUTES.ADMIN.PRODUCTS_ALL,
+  //       roles: ["TENANT_ADMIN"],
+  //     },
+  //     {
+  //       label: "Category",
+  //       href: APP_ROUTES.ADMIN.PRODUCTS_CATEGORY,
+  //       roles: ["TENANT_ADMIN"],
+  //     },
+  //     {
+  //       label: "Variants",
+  //       href: APP_ROUTES.ADMIN.PRODUCTS_VARIANTS,
+  //       roles: ["TENANT_ADMIN"],
+  //     },
+  //     {
+  //       label: "Inventory",
+  //       href: APP_ROUTES.ADMIN.PRODUCTS_INVENTORY,
+  //       roles: ["TENANT_ADMIN"],
+  //     },
+  //   ],
+  // },
   {
     label: "Settings",
     icon: settingsIconUrl,
@@ -110,25 +118,15 @@ export const sidebarItems: SidebarItem[] = [
     roles: ["TENANT_ADMIN", "MEMBER"],
     submenu: [
       {
-        label: "My Profile",
-        href: APP_ROUTES.ADMIN.SETTINGS_PROFILE,
-        roles: ["TENANT_ADMIN", "MEMBER"],
-      },
-      {
-        label: "Company Settings",
-        href: APP_ROUTES.ADMIN.SETTINGS_COMPANY,
-        roles: ["TENANT_ADMIN"],
-      },
-      {
         label: "Integration Settings",
         href: APP_ROUTES.ADMIN.SETTINGS_INTEGRATION_SETTINGS,
         roles: ["TENANT_ADMIN"],
       },
-      {
-        label: "Role Management",
-        href: APP_ROUTES.ADMIN.SETTINGS_ROLE_MANAGEMENT,
-        roles: ["TENANT_ADMIN"],
-      },
+      // {
+      //   label: "Role Management",
+      //   href: APP_ROUTES.ADMIN.SETTINGS_ROLE_MANAGEMENT,
+      //   roles: ["TENANT_ADMIN"],
+      // },
       {
         label: "Security Settings",
         href: APP_ROUTES.ADMIN.SETTINGS_SECURITY,
@@ -139,16 +137,11 @@ export const sidebarItems: SidebarItem[] = [
         href: APP_ROUTES.ADMIN.SETTINGS_CHAT_SETTINGS,
         roles: ["TENANT_ADMIN"],
       },
-      {
-        label: "Shipping",
-        href: APP_ROUTES.ADMIN.SETTINGS_SHIPPING,
-        roles: ["TENANT_ADMIN"],
-      },
-      {
-        label: "Subscription",
-        href: APP_ROUTES.ADMIN.SETTINGS_SUBSCRIPTION,
-        roles: ["TENANT_ADMIN"],
-      },
+      // {
+      //   label: "Shipping",
+      //   href: APP_ROUTES.ADMIN.SETTINGS_SHIPPING,
+      //   roles: ["TENANT_ADMIN"],
+      // },
     ],
   },
 ];

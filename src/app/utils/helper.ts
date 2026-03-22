@@ -145,3 +145,146 @@ export const getInitials = (name: string): string => {
     .map((w) => w[0]?.toUpperCase() ?? "")
     .join("");
 };
+
+// TOPNAV
+export const getRouteMeta = (pathname: string) => {
+  const routes = [
+    {
+      match: /\/admin\/dashboard$/,
+      title: "Dashboard",
+      subtitle: "Overview of your workspace and activity",
+    },
+    {
+      match: /\/conversation$/,
+      title: "Inbox",
+      subtitle: "Manage inbound customer messages across channels",
+    },
+    {
+      match: /\/contact$/,
+      title: "Contact",
+      subtitle: "Manage contact records and account details",
+    },
+    {
+      match: /\/channel$/,
+      title: "Channels",
+      subtitle: "Coordinate internal and external channel discussions",
+    },
+    {
+      match: /\/chatbot$/,
+      title: "Automation",
+      subtitle: "Configure automated replies and bot experiences",
+    },
+    {
+      match: /\/orders$/,
+      title: "Orders",
+      subtitle: "Track and manage customer orders",
+    },
+    {
+      match: /\/tags$/,
+      title: "Tags",
+      subtitle: "Organize conversations with reusable labels",
+    },
+    {
+      match: /\/analytics$/,
+      title: "Analytics",
+      subtitle: "Review performance and engagement trends",
+    },
+    {
+      match: /\/settings\/profile$/,
+      title: "Profile Settings",
+      subtitle: "Manage account details and preferences",
+    },
+    {
+      match: /\/settings\/company$/,
+      title: "Company Settings",
+      subtitle: "Update workspace and business information",
+    },
+    {
+      match: /\/settings\/security$/,
+      title: "Security Settings",
+      subtitle: "Control authentication and access safeguards",
+    },
+    {
+      match: /\/settings\/notifications$/,
+      title: "Notification Settings",
+      subtitle: "Choose when and how alerts are delivered",
+    },
+    {
+      match: /\/settings\/role-management$/,
+      title: "Role Management",
+      subtitle: "Assign permissions and manage workspace access",
+    },
+    {
+      match: /\/settings\/chat_settings$/,
+      title: "Chat Settings",
+      subtitle: "Adjust conversation defaults and chat behavior",
+    },
+    {
+      match: /\/settings\/shipping$/,
+      title: "Shipping Settings",
+      subtitle: "Configure delivery options and fulfilment rules",
+    },
+    {
+      match: /\/settings\/subscription/,
+      title: "Subscription",
+      subtitle: "Review billing, plans, and renewals",
+    },
+    {
+      match: /\/settings\/integration/,
+      title: "Integrations",
+      subtitle: "Connect external services and APIs",
+    },
+    {
+      match: /\/products/,
+      title: "Products",
+      subtitle: "Manage catalog items, variants, and inventory",
+    },
+    {
+      match: /\/checkout$/,
+      title: "Checkout",
+      subtitle: "Review payment and order completion details",
+    },
+    {
+      match: /\/dashboard\/settings\/profile$/,
+      title: "Profile Settings",
+      subtitle: "Manage account details and preferences",
+    },
+    {
+      match: /\/dashboard$/,
+      title: "Dashboard",
+      subtitle: "Overview of your workspace and activity",
+    },
+  ];
+
+  return (
+    routes.find((route) => route.match.test(pathname)) ?? {
+      title: "Workspace",
+      subtitle: "Manage your day-to-day operations",
+    }
+  );
+};
+
+// Channel Helpers
+export const getActiveCardClass = (provider: string): string => {
+  if (provider === "facebook") {
+    return "bg-gradient-to-br from-base-white via-information-light to-primary-light border-information";
+  }
+
+  if (provider === "instagram") {
+    return "bg-gradient-to-br from-base-white via-warning-light to-danger-light border-warning";
+  }
+
+  if (provider === "tiktok") {
+    return "bg-gradient-to-br from-grey via-grey to-danger border-grey";
+  }
+
+  return "bg-gradient-to-br from-base-white via-success-light to-primary-light border-success";
+};
+
+export const getActiveContentClass = (provider: string): string => {
+  return provider === "tiktok" ? "text-base-white" : "text-grey";
+};
+
+export const getActiveMutedClass = (provider: string): string => {
+  return provider === "tiktok" ? "text-grey-light" : "text-grey-medium";
+};

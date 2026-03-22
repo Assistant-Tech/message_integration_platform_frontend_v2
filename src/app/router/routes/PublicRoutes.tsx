@@ -18,6 +18,7 @@ const TermsCondition = lazy(
 );
 const Updates = lazy(() => import("@/app/pages/resources/support/Updates"));
 const AboutUs = lazy(() => import("@/app/pages/aboutus/AboutUs"));
+const Contact = lazy(() => import("@/app/pages/landing/Contact"));
 const PricingPage = lazy(() => import("@/app/pages/pricing/PricingPage"));
 const FAQPage = lazy(() => import("@/app/pages/faq/FAQPage"));
 const BlogPage = lazy(() => import("@/app/pages/blog/BlogPage"));
@@ -72,10 +73,16 @@ const PublicRoutes = () => {
           element={<ProductLayout />}
         >
           <Route path={APP_ROUTES.PUBLIC.CHATBOT} element={<ChatbotPage />} />
-          <Route path={APP_ROUTES.PUBLIC.UNIFIED_MESSAGE} element={<UnifiedMessagePage />} />
+          <Route
+            path={APP_ROUTES.PUBLIC.UNIFIED_MESSAGE}
+            element={<UnifiedMessagePage />}
+          />
           <Route index element={<Product />} />
           <Route path={APP_ROUTES.PUBLIC.CRM} element={<CRM />} />
-          <Route path={APP_ROUTES.PUBLIC.BULK_MESSAGING} element={<BulkMessagingPage />} /> 
+          <Route
+            path={APP_ROUTES.PUBLIC.BULK_MESSAGING}
+            element={<BulkMessagingPage />}
+          />
         </Route>
 
         <Route
@@ -100,6 +107,7 @@ const PublicRoutes = () => {
         </Route>
 
         <Route path={APP_ROUTES.PUBLIC.ABOUT} element={<AboutUs />} />
+        <Route path={APP_ROUTES.PUBLIC.CONTACT} element={<Contact />} />
         <Route path={APP_ROUTES.PUBLIC.PRICING} element={<PricingPage />} />
         <Route path={APP_ROUTES.PUBLIC.UNAUTHORIZED} element={<Forbidden />} />
         <Route path="*" element={<NotFound />} />

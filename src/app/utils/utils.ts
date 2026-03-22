@@ -51,7 +51,7 @@ export const navigation: NavigationItem[] = [
         icon: crm,
       },
       {
-        name: "Chatbot",
+        name: "Automation",
         href: APP_ROUTES.PUBLIC.CHATBOT,
         description: "AI-powered customer support",
         icon: chat,
@@ -104,6 +104,7 @@ export const navigation: NavigationItem[] = [
   },
   { id: 3, name: "About Us", href: "/aboutus" },
   { id: 4, name: "Pricing", href: "/pricing" },
+  { id: 5, name: "Contact", href: APP_ROUTES.PUBLIC.CONTACT },
 ];
 
 /*

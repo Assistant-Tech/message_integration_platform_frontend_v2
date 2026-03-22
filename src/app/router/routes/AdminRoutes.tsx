@@ -12,9 +12,6 @@ const IntegrationPage = lazy(
       "@/app/features/dashboard/admin/component/integrations/IntegrationPage"
     ),
 );
-const EditProductPage = lazy(
-  () => import("@/app/features/dashboard/admin/pages/products/EditProductPage"),
-);
 const AdminDashboardPage = lazy(
   () =>
     import("@/app/features/dashboard/admin/pages/dashboard/AdminDashboardPage"),
@@ -22,26 +19,14 @@ const AdminDashboardPage = lazy(
 const InboxPage = lazy(
   () => import("@/app/features/dashboard/admin/pages/conversation/InboxPage"),
 );
-// const CustomerConversationPage = lazy(
-//   () =>
-//     import(
-//       "@/app/features/dashboard/admin/pages/conversation/CustomerConversationPage"
-//     ),
-// );
+const ContactPage = lazy(
+  () => import("@/app/features/dashboard/admin/pages/contact/ContactAdminPage"),
+);
 const ChatbotPage = lazy(
   () => import("@/app/features/dashboard/admin/pages/chatbot/ChatbotPage"),
 );
 const ChannelPage = lazy(
   () => import("@/app/features/dashboard/admin/pages/channels/ChannelPage"),
-);
-const OrderPage = lazy(
-  () => import("@/app/features/dashboard/admin/pages/orders/OrderPage"),
-);
-const CreateOrderPage = lazy(
-  () => import("@/app/features/dashboard/admin/pages/orders/CreateOrderPage"),
-);
-const OrderDetailsPage = lazy(
-  () => import("@/app/features/dashboard/admin/pages/orders/OrderDetailsPage"),
 );
 const TagsPage = lazy(
   () => import("@/app/features/dashboard/admin/pages/tags/TagsPage"),
@@ -84,30 +69,6 @@ const SubscriptionSettings = lazy(
       "@/app/features/dashboard/admin/pages/settings/SubscriptionSettings"
     ),
 );
-const ProductPage = lazy(
-  () => import("@/app/features/dashboard/admin/pages/products/ProductPage"),
-);
-const AllProductsPage = lazy(
-  () => import("@/app/features/dashboard/admin/pages/products/AllProductsPage"),
-);
-const ProductCategory = lazy(
-  () => import("@/app/features/dashboard/admin/pages/products/ProductCategory"),
-);
-const ProductVariants = lazy(
-  () => import("@/app/features/dashboard/admin/pages/products/ProductVariants"),
-);
-const ProductInventory = lazy(
-  () =>
-    import("@/app/features/dashboard/admin/pages/products/ProductInventory"),
-);
-const CreateProductPage = lazy(
-  () =>
-    import("@/app/features/dashboard/admin/pages/products/CreateProductPage"),
-);
-const ProductDetailsPage = lazy(
-  () =>
-    import("@/app/features/dashboard/admin/pages/products/ProductDetailsPage"),
-);
 const BillingPage = lazy(
   () =>
     import(
@@ -126,22 +87,9 @@ const AdminRoutes = () => {
           element={<AdminDashboardPage />}
         />
         <Route path={APP_ROUTES.ADMIN.CONVERSATION} element={<InboxPage />} />
-        {/* <Route
-          path={APP_ROUTES.ADMIN.CUSTOMER_CONVERSATION}
-          element={<CustomerConversationPage />}
-        /> */}
+        <Route path={APP_ROUTES.ADMIN.CONTACT} element={<ContactPage />} />
         <Route path={APP_ROUTES.ADMIN.CHATBOT} element={<ChatbotPage />} />
         <Route path={APP_ROUTES.ADMIN.CHANNEL} element={<ChannelPage />} />
-        <Route path={APP_ROUTES.ADMIN.ORDERS} element={<OrderPage />} />
-        <Route
-          path={APP_ROUTES.ADMIN.ORDERS_CREATE}
-          element={<CreateOrderPage />}
-        />
-        <Route
-          path={APP_ROUTES.ADMIN.ORDERS_DETAILS}
-          element={<OrderDetailsPage />}
-        />
-
         <Route path={APP_ROUTES.ADMIN.TAGS} element={<TagsPage />} />
         <Route path={APP_ROUTES.ADMIN.ANALYTICS} element={<AnalyticsPage />} />
         <Route path={APP_ROUTES.ADMIN.SETTINGS} element={<SettingsPage />} />
@@ -182,39 +130,21 @@ const AdminRoutes = () => {
           element={<BillingPage />}
         />
 
-        {/* Product page routes */}
-        <Route path={APP_ROUTES.ADMIN.PRODUCTS} element={<ProductPage />} />
-        <Route
-          path={APP_ROUTES.ADMIN.PRODUCTS_ALL}
-          element={<AllProductsPage />}
-        />
-        <Route
-          path={APP_ROUTES.ADMIN.PRODUCTS_CATEGORY}
-          element={<ProductCategory />}
-        />
-        <Route
-          path={APP_ROUTES.ADMIN.PRODUCTS_VARIANTS}
-          element={<ProductVariants />}
-        />
-        <Route
-          path={APP_ROUTES.ADMIN.PRODUCTS_INVENTORY}
-          element={<ProductInventory />}
-        />
-        <Route
-          path={APP_ROUTES.ADMIN.PRODUCTS_CREATE}
-          element={<CreateProductPage />}
-        />
-        <Route
-          path={APP_ROUTES.ADMIN.PRODUCTS_DETAILS}
-          element={<ProductDetailsPage />}
-        />
-        <Route
-          path={APP_ROUTES.ADMIN.PRODUCTS_EDIT}
-          element={<EditProductPage />}
-        />
+        {/* MVP 1: Orders and products routes are disabled. */}
+        {/* <Route path={APP_ROUTES.ADMIN.ORDERS} element={<OrderPage />} /> */}
+        {/* <Route path={APP_ROUTES.ADMIN.ORDERS_CREATE} element={<CreateOrderPage />} /> */}
+        {/* <Route path={APP_ROUTES.ADMIN.ORDERS_DETAILS} element={<OrderDetailsPage />} /> */}
+        {/* <Route path={APP_ROUTES.ADMIN.PRODUCTS} element={<ProductPage />} /> */}
+        {/* <Route path={APP_ROUTES.ADMIN.PRODUCTS_ALL} element={<AllProductsPage />} /> */}
+        {/* <Route path={APP_ROUTES.ADMIN.PRODUCTS_CATEGORY} element={<ProductCategory />} /> */}
+        {/* <Route path={APP_ROUTES.ADMIN.PRODUCTS_VARIANTS} element={<ProductVariants />} /> */}
+        {/* <Route path={APP_ROUTES.ADMIN.PRODUCTS_INVENTORY} element={<ProductInventory />} /> */}
+        {/* <Route path={APP_ROUTES.ADMIN.PRODUCTS_CREATE} element={<CreateProductPage />} /> */}
+        {/* <Route path={APP_ROUTES.ADMIN.PRODUCTS_DETAILS} element={<ProductDetailsPage />} /> */}
+        {/* <Route path={APP_ROUTES.ADMIN.PRODUCTS_EDIT} element={<EditProductPage />} /> */}
+
         <Route path={APP_ROUTES.ADMIN.CHECKOUT} element={<CheckoutPage />} />
 
-        {/* Integration Settings */}
         <Route
           path={APP_ROUTES.ADMIN.SETTINGS_INTEGRATION_SETTINGS}
           element={<IntegrationPage />}
