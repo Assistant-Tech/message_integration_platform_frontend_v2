@@ -2,7 +2,7 @@
 
 export type Platform = "facebook" | "instagram" | "tiktok" | "whatsapp";
 export type ConversationStatus = "unassigned" | "assigned" | "resolved";
-export type LeadSource = "ads" | "organic" | "returning" | "referral";
+export type LeadSource = "ads" | "returning" | "referral";
 
 export interface ConversationMessage {
   _id: string;
@@ -11,6 +11,11 @@ export interface ConversationMessage {
   content: string;
   timestamp: string;
   type?: "text" | "image";
+  replyTo?: {
+    _id: string;
+    senderName: string;
+    content: string;
+  };
 }
 
 export interface CustomerConversation {
@@ -111,12 +116,12 @@ export const customerConversations: CustomerConversation[] = [
     _id: "ig-003",
     contactName: "Liam Torres",
     platform: "instagram",
-    leadSource: "organic",
+    // leadSource: "organic",
     lastMessage: "Thank you so much!",
     sentByAgent: false,
     timestamp: daysAgo(1),
     unreadCount: 0,
-    tags: ["Bought"],
+    // tags: ["Bought"],
     status: "assigned",
     assignedTo: "agent-2",
     messages: [
@@ -293,7 +298,7 @@ export const customerConversations: CustomerConversation[] = [
     _id: "tt-003",
     contactName: "Kyle Bennett",
     platform: "tiktok",
-    leadSource: "organic",
+    leadSource: "ads",
     lastMessage: "How long does shipping take?",
     sentByAgent: false,
     timestamp: minutesAgo(45),
@@ -467,14 +472,14 @@ export const TAG_STYLES: Record<string, string> = {
 
 export const LEAD_SOURCE_LABELS: Record<LeadSource, string> = {
   ads: "Ads",
-  organic: "Organic",
+  // organic: "Organic",
   returning: "Returning",
   referral: "Referral",
 };
 
 export const LEAD_SOURCE_STYLES: Record<LeadSource, string> = {
   ads: "border border-[#ffd39a] bg-[#fff1df] text-[#b86500]",
-  organic: "border border-emerald-200 bg-emerald-50 text-emerald-700",
+  // organic: "border border-emerald-200 bg-emerald-50 text-emerald-700",
   returning: "border border-blue-200 bg-blue-50 text-blue-700",
   referral: "border border-violet-200 bg-violet-50 text-violet-700",
 };
