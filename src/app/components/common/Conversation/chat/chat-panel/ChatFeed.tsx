@@ -3,8 +3,13 @@ import { motion } from "framer-motion";
 import { format } from "date-fns";
 import { cn } from "@/app/utils/cn";
 
-const ChatFeed = forwardRef<HTMLDivElement, { messages: any[] }>(
-  ({ messages }, ref) => {
+interface ChatFeedProps {
+  messages: any[];
+  members?: any[];
+}
+
+const ChatFeed = forwardRef<HTMLDivElement, ChatFeedProps>(
+  ({ messages, members = [] }, ref) => {
     const getInitials = (value?: string) =>
       value
         ?.split(" ")
@@ -14,6 +19,11 @@ const ChatFeed = forwardRef<HTMLDivElement, { messages: any[] }>(
         .join("") || "NA";
 
     const isOwnMessage = (msg: any) => msg.sender === "You";
+
+    const assignedNames = members
+      .map((member: any) => member?.name)
+      .filter(Boolean)
+      .join(", ");
 
     const getMessageCardClassName = (mine: boolean) =>
       cn(
@@ -66,10 +76,36 @@ const ChatFeed = forwardRef<HTMLDivElement, { messages: any[] }>(
       </div>
     );
 
+    const renderLastMessageAssignmentMeta = (msg: any, isLast: boolean) => {
+      if (!isLast) return null;
+
+      const sentBy = msg?.sender || "Unknown";
+      const respondedBy =
+        msg?.respondedBy ||
+        (msg?.sender === "You"
+          ? assignedNames || "Admin"
+          : msg?.sender || "Unknown");
+
+      return (
+        <div className="mt-3 border-t border-grey-light/50 pt-3 text-xs text-grey-medium">
+          <p>
+            <span className="font-semibold">Sent by:</span> {sentBy}
+          </p>
+          <p>
+            <span className="font-semibold">Assigned to:</span>{" "}
+            {assignedNames || "Not assigned"}
+          </p>
+          <p>
+            <span className="font-semibold">Responded by:</span> {respondedBy}
+          </p>
+        </div>
+      );
+    };
+
     // ------------------------
     // ORDER CONFIRMATION MESSAGE
     // ------------------------
-    const renderOrderMessage = (msg: any) => {
+    const renderOrderMessage = (msg: any, isLast: boolean) => {
       const d = msg.data;
       const mine = isOwnMessage(msg);
 
@@ -130,6 +166,8 @@ const ChatFeed = forwardRef<HTMLDivElement, { messages: any[] }>(
                 <b>Expected Delivery:</b> {d.expectedDelivery}
               </p>
             </div>
+
+            {renderLastMessageAssignmentMeta(msg, isLast)}
           </div>
         </motion.div>
       );
@@ -138,7 +176,7 @@ const ChatFeed = forwardRef<HTMLDivElement, { messages: any[] }>(
     // ------------------------
     // PRODUCT DETAILS MESSAGE
     // ------------------------
-    const renderProductDetailsMessage = (msg: any) => {
+    const renderProductDetailsMessage = (msg: any, isLast: boolean) => {
       const d = msg.content.data;
       const mine = isOwnMessage(msg);
 
@@ -189,6 +227,8 @@ const ChatFeed = forwardRef<HTMLDivElement, { messages: any[] }>(
                 />
               </div>
             )}
+
+            {renderLastMessageAssignmentMeta(msg, isLast)}
           </div>
         </motion.div>
       );
@@ -197,7 +237,7 @@ const ChatFeed = forwardRef<HTMLDivElement, { messages: any[] }>(
     // ------------------------
     // NORMAL CHAT MESSAGE
     // ------------------------
-    const renderDefaultMessage = (msg: any) => {
+    const renderDefaultMessage = (msg: any, isLast: boolean) => {
       const mine = isOwnMessage(msg);
 
       return (
@@ -212,6 +252,7 @@ const ChatFeed = forwardRef<HTMLDivElement, { messages: any[] }>(
             <p className="text-sm leading-6 whitespace-pre-wrap break-words">
               {msg.content}
             </p>
+            {renderLastMessageAssignmentMeta(msg, isLast)}
           </div>
         </motion.div>
       );
@@ -220,7 +261,7 @@ const ChatFeed = forwardRef<HTMLDivElement, { messages: any[] }>(
     // ------------------------
     // PAYMENT CHAT MESSAGE
     // ------------------------
-    const renderPaymentLinkMessage = (msg: any) => {
+    const renderPaymentLinkMessage = (msg: any, isLast: boolean) => {
       const link = msg.content?.url;
       const mine = isOwnMessage(msg);
 
@@ -255,6 +296,8 @@ const ChatFeed = forwardRef<HTMLDivElement, { messages: any[] }>(
             >
               Pay Now
             </a>
+
+            {renderLastMessageAssignmentMeta(msg, isLast)}
           </div>
         </motion.div>
       );
@@ -271,16 +314,18 @@ const ChatFeed = forwardRef<HTMLDivElement, { messages: any[] }>(
               No messages yet. Start the conversation!
             </div>
           ) : (
-            messages.map((msg) => {
+            messages.map((msg, index) => {
+              const isLast = index === messages.length - 1;
+
               switch (msg.type) {
                 case "order-confirmation":
-                  return renderOrderMessage(msg);
+                  return renderOrderMessage(msg, isLast);
                 case "product-details":
-                  return renderProductDetailsMessage(msg);
+                  return renderProductDetailsMessage(msg, isLast);
                 case "payment-link":
-                  return renderPaymentLinkMessage(msg);
+                  return renderPaymentLinkMessage(msg, isLast);
                 default:
-                  return renderDefaultMessage(msg);
+                  return renderDefaultMessage(msg, isLast);
               }
             })
           )}

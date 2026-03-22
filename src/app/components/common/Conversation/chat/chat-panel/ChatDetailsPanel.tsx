@@ -67,6 +67,14 @@ const ChatDetailsPanel = ({
     },
   ];
 
+  const assignedNames = (members || [])
+    .map((member: any) => member?.name)
+    .filter(Boolean);
+
+  const assignedLabel = assignedNames.length
+    ? assignedNames.join(", ")
+    : "Not assigned";
+
   return (
     <aside className="flex h-full flex-col overflow-y-auto bg-base-white">
       <div className="flex items-center justify-between border-b border-grey-light px-5 py-4">
@@ -75,9 +83,7 @@ const ChatDetailsPanel = ({
             <Users className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="text-base font-semibold text-grey">
-              Contact details
-            </h3>
+            <h3 className="label-semi-bold-14 text-grey">Contact details</h3>
             <p className="text-sm text-grey-medium">Drawer overview</p>
           </div>
         </div>
@@ -172,6 +178,12 @@ const ChatDetailsPanel = ({
                 {conversation?.lastMessage || "No message yet"}
               </dd>
             </div>
+            <div className="flex items-start justify-between gap-4">
+              <dt className="text-grey-medium">Assigned to</dt>
+              <dd className="max-w-[190px] text-right text-grey">
+                {assignedLabel}
+              </dd>
+            </div>
           </dl>
         </section>
 
@@ -218,6 +230,24 @@ const ChatDetailsPanel = ({
           ) : (
             <p className="mt-4 text-sm text-grey-medium">No members yet.</p>
           )}
+        </section>
+
+        <section className="rounded-[24px] border border-grey-light bg-base-white p-4">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <div>
+              <h4 className="text-sm font-semibold text-grey">Assign To</h4>
+              <p className="text-xs text-grey-medium">
+                Admin can assign members to this conversation
+              </p>
+            </div>
+            <Button
+              label="Assign Members"
+              onClick={onManage}
+              variant="outlined"
+            />
+          </div>
+
+          <p className="text-sm text-grey">{assignedLabel}</p>
         </section>
 
         <div className="flex flex-col gap-3 border-t border-grey-light pt-4">

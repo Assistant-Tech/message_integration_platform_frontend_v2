@@ -1,11 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  Info,
-  Loader2,
-  Package,
-  ShoppingCart,
-  UsersRoundIcon,
-} from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { useChatSocket } from "@/app/socket/useInternalChatSocket";
@@ -19,16 +13,16 @@ import {
 } from "@/app/socket/conversation/useInternalConversation";
 import { useTenantStore } from "@/app/store/tenant.store";
 import {
+  AssignMembersDrawer,
+  ChatHeader,
   ChatDetailsPanel,
   ChatFeed,
   ChatInput,
   EditConversationDialog,
-  ManageMembersDialog,
   ChatMembersDetailsPanel,
   ChatOrderInfoPanel,
   ChatSearchProductDetails,
 } from "@/app/components/common/Conversation/chat/chat-panel";
-import { TopNavbar } from "@/app/features/dashboard/admin/component/ui";
 // import ChatOrderNotesPanel from "./chat-panel/ChatNotesOrderPanel";
 
 const ChatPanel = () => {
@@ -44,7 +38,7 @@ const ChatPanel = () => {
   const [message, setMessage] = useState("");
   const [localMessages, setLocalMessages] = useState<any[]>([]);
   const [isOpenDetails, setIsOpenDetails] = useState(false);
-  const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState(false);
+  const [isAssignDrawerOpen, setIsAssignDrawerOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isOrderInfoOpen, setIsOrderInfoOpen] = useState(false);
   const [isProductSearchOpen, setIsProductSearchOpen] = useState(false);
@@ -130,6 +124,7 @@ const ChatPanel = () => {
   const closeAllDrawers = () => {
     setIsOpenDetails(false);
     setIsMembersPanelOpen(false);
+    setIsAssignDrawerOpen(false);
     setIsOrderInfoOpen(false);
     setIsProductSearchOpen(false);
   };
@@ -162,6 +157,12 @@ const ChatPanel = () => {
     closeAllDrawers();
   };
 
+  const handleToggleAssignDrawer = () => {
+    const nextState = !isAssignDrawerOpen;
+    closeAllDrawers();
+    setIsAssignDrawerOpen(nextState);
+  };
+
   const handleSend = () => {
     if (!message.trim() || !selectedConversationId) return;
 
@@ -191,22 +192,36 @@ const ChatPanel = () => {
     }
   };
 
-  const handleMemberToggle = async (
-    id: string,
-    checked: boolean,
-    name: string,
-  ) => {
+  const handleSaveMemberAssignment = async (nextSelectedIds: string[]) => {
+    const currentMemberIds = new Set((members || []).map((m: any) => m.id));
+    const nextMemberIds = new Set(nextSelectedIds);
+
+    const toAdd = nextSelectedIds.filter((id) => !currentMemberIds.has(id));
+    const toRemove = [...currentMemberIds].filter(
+      (id) => !nextMemberIds.has(id),
+    );
+
     try {
-      if (checked) {
-        await addMembersMutation.mutateAsync({ participants: [id] });
-        console.log(`${name} added`);
-      } else {
-        await removeMemberMutation.mutateAsync(id);
-        console.log(`${name} removed`);
-      }
+      await Promise.all([
+        ...toAdd.map((id) =>
+          addMembersMutation.mutateAsync({ participants: [id] }),
+        ),
+        ...toRemove.map((id) => removeMemberMutation.mutateAsync(id)),
+      ]);
+
+      toast.success("Members assignment updated");
+      setIsAssignDrawerOpen(false);
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Failed to update member");
+      toast.error(
+        err?.response?.data?.message || "Failed to save member assignment",
+      );
     }
+  };
+
+  const handleUpdateConversationTags = (tags: string[]) => {
+    if (!conversation) return;
+
+    updateConversationInStore({ ...conversation, tags });
   };
 
   if (!selectedConversationId)
@@ -227,51 +242,22 @@ const ChatPanel = () => {
   return (
     <div className="flex h-full w-full overflow-hidden bg-primary-light/20">
       <div className="relative flex h-full w-full min-w-0 flex-col overflow-hidden bg-base-white">
-        <TopNavbar
-          title={conversation?.title || "Pharah House"}
-          subtitle={`${conversation?.type || "Internal"} • ${members?.length || 0} members`}
-          // searchPlaceholder={`Search in ${conversation?.title || "conversation"}`}
-          // searchValue={messageSearch}
-          // onSearchChange={setMessageSearch}
-          leadingContent={
-            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary-light text-sm font-semibold text-primary shadow-sm">
-              {(conversation?.title || "PH")
-                .split(" ")
-                .filter(Boolean)
-                .slice(0, 2)
-                .map((part: string) => part[0]?.toUpperCase())
-                .join("") || "PH"}
-            </div>
-          }
-          actions={[
-            {
-              label: "Catalog",
-              icon: Package,
-              onClick: handleToggleProductSearch,
-              isActive: isProductSearchOpen,
-            },
-            {
-              label: "Order",
-              icon: ShoppingCart,
-              onClick: handleToggleOrderInfo,
-              isActive: isOrderInfoOpen,
-            },
-            {
-              label: `Members (${members?.length || 0})`,
-              icon: UsersRoundIcon,
-              onClick: handleToggleMembers,
-              isActive: isMembersPanelOpen,
-            },
-            {
-              label: "Details",
-              icon: Info,
-              onClick: handleToggleDetails,
-              isActive: isOpenDetails,
-            },
-          ]}
+        <ChatHeader
+          conversation={conversation}
+          members={members}
+          onToggleDetails={handleToggleDetails}
+          onToggleMembers={handleToggleMembers}
+          onToggleOrderInfo={handleToggleOrderInfo}
+          onToggleProductSearch={handleToggleProductSearch}
+          onToggleOrderNotes={handleToggleOrderNotes}
+          onUpdateTags={handleUpdateConversationTags}
         />
         <div className="min-h-0 flex-1 overflow-y-auto bg-primary-light/30">
-          <ChatFeed messages={filteredMessages} ref={messagesEndRef} />
+          <ChatFeed
+            messages={filteredMessages}
+            members={members}
+            ref={messagesEndRef}
+          />
         </div>
         <ChatInput
           message={message}
@@ -294,7 +280,33 @@ const ChatPanel = () => {
                 members={members}
                 membersLoading={membersLoading}
                 onEdit={() => setIsEditDialogOpen(true)}
-                onManage={() => setIsAddMemberDialogOpen(true)}
+                onManage={() => {
+                  setIsOpenDetails(false);
+                  setIsAssignDrawerOpen(true);
+                }}
+              />
+            </div>
+          </>
+        )}
+
+        {isAssignDrawerOpen && (
+          <>
+            <button
+              type="button"
+              aria-label="Close assign drawer overlay"
+              className="absolute inset-0 z-10 bg-primary-dark/5 backdrop-blur-[1px]"
+              onClick={() => setIsAssignDrawerOpen(false)}
+            />
+            <div className="absolute inset-y-0 right-0 z-20 w-full max-w-[420px]">
+              <AssignMembersDrawer
+                tenantUsers={tenantUsers}
+                members={members}
+                membersLoading={membersLoading}
+                isSaving={
+                  addMembersMutation.isPending || removeMemberMutation.isPending
+                }
+                onClose={() => setIsAssignDrawerOpen(false)}
+                onSave={handleSaveMemberAssignment}
               />
             </div>
           </>
@@ -337,18 +349,12 @@ const ChatPanel = () => {
           members={members}
           loading={membersLoading}
           onMemberDetailsClose={() => setIsMembersPanelOpen(false)}
-          onManage={() => setIsAddMemberDialogOpen(true)}
+          onManage={() => {
+            setIsMembersPanelOpen(false);
+            setIsAssignDrawerOpen(true);
+          }}
         />
       )}
-
-      <ManageMembersDialog
-        open={isAddMemberDialogOpen}
-        onClose={() => setIsAddMemberDialogOpen(false)}
-        tenantUsers={tenantUsers}
-        members={members}
-        onToggleMember={handleMemberToggle}
-        membersLoading={membersLoading}
-      />
 
       <EditConversationDialog
         open={isEditDialogOpen}
