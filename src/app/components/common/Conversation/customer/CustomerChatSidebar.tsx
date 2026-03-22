@@ -1,5 +1,11 @@
 import { useMemo, useState } from "react";
-import { Layers3, RotateCcw, Search, SlidersHorizontal } from "lucide-react";
+import {
+  ChevronDown,
+  Layers3,
+  RotateCcw,
+  Search,
+  SlidersHorizontal,
+} from "lucide-react";
 import PlatformIcon from "@/app/components/common/Conversation/customer/PlatformIcons";
 import {
   type CustomerConversation,
@@ -22,6 +28,8 @@ interface Props {
 }
 
 type QuickFilterId = "unread" | "priority" | "adReplies" | "followUp";
+type StatusFilter = "all" | "unassigned" | "assigned" | "resolved";
+type SortOption = "latest" | "oldest" | "name-asc" | "name-desc";
 
 const QUICK_FILTERS: Array<{
   id: QuickFilterId;
@@ -59,6 +67,9 @@ const CustomerChatSidebar = ({
   const [search, setSearch] = useState("");
   const [activeFilters, setActiveFilters] = useState<QuickFilterId[]>([]);
   const [isManageMode, setIsManageMode] = useState(false);
+  const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [sortBy, setSortBy] = useState<SortOption>("latest");
 
   const filtered = useMemo(() => {
     let list = [...conversations];
@@ -82,13 +93,32 @@ const CustomerChatSidebar = ({
       );
     }
 
-    list.sort(
-      (a, b) =>
-        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
-    );
+    if (statusFilter !== "all") {
+      list = list.filter(
+        (conversation) => conversation.status === statusFilter,
+      );
+    }
+
+    list.sort((a, b) => {
+      switch (sortBy) {
+        case "oldest":
+          return (
+            new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+          );
+        case "name-asc":
+          return a.contactName.localeCompare(b.contactName);
+        case "name-desc":
+          return b.contactName.localeCompare(a.contactName);
+        case "latest":
+        default:
+          return (
+            new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+          );
+      }
+    });
 
     return list;
-  }, [activeFilters, conversations, search]);
+  }, [activeFilters, conversations, search, statusFilter, sortBy]);
 
   const toggleFilter = (filterId: QuickFilterId) => {
     setActiveFilters((prev) =>
@@ -100,6 +130,8 @@ const CustomerChatSidebar = ({
 
   const clearFilters = () => {
     setActiveFilters([]);
+    setStatusFilter("all");
+    setSortBy("latest");
   };
 
   return (
@@ -134,35 +166,97 @@ const CustomerChatSidebar = ({
           </button>
         </div>
 
-        <div className="mt-3 flex items-center gap-2 overflow-x-auto pb-1">
-          {QUICK_FILTERS.map((filter) => {
-            const isActive = activeFilters.includes(filter.id);
-
-            return (
-              <button
-                key={filter.id}
-                type="button"
-                onClick={() => toggleFilter(filter.id)}
-                className={cn(
-                  "whitespace-nowrap rounded-lg border px-3 py-1.5 text-sm transition-colors cursor-pointer",
-                  isActive
-                    ? "border-primary bg-primary-light text-primary"
-                    : "border-transparent bg-grey-light/60 text-grey hover:bg-grey-light",
-                )}
-              >
-                {filter.label}
-              </button>
-            );
-          })}
-
+        <div className="mt-3">
           <button
             type="button"
-            onClick={clearFilters}
-            className="ml-auto inline-flex h-9 w-9 items-center justify-center rounded-lg border border-transparent bg-transparent text-grey-medium transition-colors hover:border-grey-light hover:bg-grey-light/60 hover:text-grey"
-            aria-label="Clear filters"
+            onClick={() => setIsFilterMenuOpen((prev) => !prev)}
+            className="flex w-full items-center justify-between rounded-lg border border-grey-light bg-white px-3 py-2 text-sm text-grey"
           >
-            <SlidersHorizontal className="h-4 w-4" />
+            <span className="flex items-center gap-2">
+              <SlidersHorizontal className="h-4 w-4" />
+              Filter
+            </span>
+            <span className="flex items-center gap-2 text-xs text-grey-medium">
+              {statusFilter} • {sortBy}
+              <ChevronDown
+                className={cn(
+                  "h-4 w-4 transition-transform",
+                  isFilterMenuOpen && "rotate-180",
+                )}
+              />
+            </span>
           </button>
+
+          {isFilterMenuOpen && (
+            <div className="mt-2 space-y-3 rounded-lg border border-grey-light bg-base-white p-3">
+              <div>
+                <p className="mb-2 text-xs text-grey-medium">Status</p>
+                <div className="flex flex-wrap gap-2">
+                  {(["all", "unassigned", "assigned", "resolved"] as const).map(
+                    (option) => (
+                      <button
+                        key={option}
+                        type="button"
+                        onClick={() => setStatusFilter(option)}
+                        className={cn(
+                          "rounded-full px-3 py-1.5 text-xs capitalize",
+                          statusFilter === option
+                            ? "bg-primary text-base-white"
+                            : "bg-primary-light text-primary",
+                        )}
+                      >
+                        {option}
+                      </button>
+                    ),
+                  )}
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-xs text-grey-medium">Sort by</span>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as SortOption)}
+                  className="h-9 rounded-md border border-grey-light bg-base-white px-2 text-sm text-grey outline-none focus:border-primary"
+                >
+                  <option value="latest">Latest</option>
+                  <option value="oldest">Oldest</option>
+                  <option value="name-asc">Name (A-Z)</option>
+                  <option value="name-desc">Name (Z-A)</option>
+                </select>
+              </div>
+
+              <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                {QUICK_FILTERS.map((filter) => {
+                  const isActive = activeFilters.includes(filter.id);
+
+                  return (
+                    <button
+                      key={filter.id}
+                      type="button"
+                      onClick={() => toggleFilter(filter.id)}
+                      className={cn(
+                        "whitespace-nowrap rounded-lg border px-3 py-1.5 text-xs transition-colors cursor-pointer",
+                        isActive
+                          ? "border-primary bg-primary-light text-primary"
+                          : "border-transparent bg-grey-light/60 text-grey hover:bg-grey-light",
+                      )}
+                    >
+                      {filter.label}
+                    </button>
+                  );
+                })}
+
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="ml-auto text-xs font-medium text-primary"
+                >
+                  Clear
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {(isManageMode || hiddenCount > 0) && (

@@ -29,7 +29,7 @@ const ConversationItem = ({
   return (
     <div
       className={cn(
-        "flex items-start gap-2 border-b border-grey-light px-4 py-3 transition-colors hover:bg-primary-light/50",
+        "flex h-22 items-start gap-2 border-b border-grey-light px-4 py-3 transition-colors hover:bg-primary-light/50",
         isSelected && "bg-primary-light",
       )}
     >
@@ -40,7 +40,7 @@ const ConversationItem = ({
       >
         <ConversationAvatar name={conv.contactName} platform={conv.platform} />
 
-        <div className="min-w-0 flex-1">
+        <div className="flex min-h-full min-w-0 flex-1 flex-col">
           {/* Name + timestamp */}
           <div className="flex items-center justify-between gap-2">
             <span className="truncate text-sm font-semibold text-grey">
@@ -62,31 +62,33 @@ const ConversationItem = ({
           </div>
 
           {/* Tags */}
-          {(conv.leadSource || (conv.tags && conv.tags.length > 0)) && (
-            <div className="mt-1.5 flex flex-wrap gap-1">
-              {conv.leadSource && (
-                <span
-                  className={cn(
-                    "rounded-full px-2 py-0.5 text-[10px] font-medium",
-                    LEAD_SOURCE_STYLES[conv.leadSource],
-                  )}
-                >
-                  {LEAD_SOURCE_LABELS[conv.leadSource]}
-                </span>
-              )}
-              {conv.tags?.map((tag: any) => (
-                <span
-                  key={tag}
-                  className={cn(
-                    "rounded-full px-2 py-0.5 text-[10px] font-medium",
-                    TAG_STYLES[tag] ?? "bg-grey-light text-grey",
-                  )}
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
+          <div className="mt-1.5 min-h-5">
+            {(conv.leadSource || (conv.tags && conv.tags.length > 0)) && (
+              <div className="flex flex-wrap gap-1">
+                {conv.leadSource && (
+                  <span
+                    className={cn(
+                      "rounded-full px-2 py-0.5 text-[10px] font-medium",
+                      LEAD_SOURCE_STYLES[conv.leadSource],
+                    )}
+                  >
+                    {LEAD_SOURCE_LABELS[conv.leadSource]}
+                  </span>
+                )}
+                {conv.tags?.map((tag: any) => (
+                  <span
+                    key={tag}
+                    className={cn(
+                      "rounded-full px-2 py-0.5 text-[10px] font-medium",
+                      TAG_STYLES[tag] ?? "bg-grey-light text-grey",
+                    )}
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </button>
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { CheckCheck, Info, Tag } from "lucide-react";
+import { CheckCheck, Info, Tag, UserPlus2 } from "lucide-react";
 import { cn } from "@/app/utils/cn";
 import { TopNavbar } from "@/app/features/dashboard/admin/component/ui";
 import type {
@@ -23,6 +23,9 @@ interface Props {
   onTagsClick?: (id: string) => void;
   onDetailsToggle?: () => void;
   isDetailsOpen?: boolean;
+  onAssignToggle?: () => void;
+  isAssignOpen?: boolean;
+  assignedMemberName?: string;
 }
 
 const CustomerChatPanel = ({
@@ -31,11 +34,17 @@ const CustomerChatPanel = ({
   onTagsClick,
   onDetailsToggle,
   isDetailsOpen = false,
+  onAssignToggle,
+  isAssignOpen = false,
+  assignedMemberName,
 }: Props) => {
   const [messages, setMessages] = useState<ConversationMessage[]>(
     conversation?.messages ?? [],
   );
   const [input, setInput] = useState("");
+  const [replyTarget, setReplyTarget] = useState<ConversationMessage | null>(
+    null,
+  );
   const endRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
@@ -45,6 +54,7 @@ const CustomerChatPanel = ({
   useEffect(() => {
     setMessages(conversation?.messages ?? []);
     setInput("");
+    setReplyTarget(null);
   }, [conversation?._id]);
 
   useEffect(() => {
@@ -65,10 +75,18 @@ const CustomerChatPanel = ({
       senderName: "You",
       content: input.trim(),
       timestamp: new Date().toISOString(),
+      replyTo: replyTarget
+        ? {
+            _id: replyTarget._id,
+            senderName: replyTarget.senderName,
+            content: replyTarget.content,
+          }
+        : undefined,
     };
 
     setMessages((prev) => [...prev, newMsg]);
     setInput("");
+    setReplyTarget(null);
   };
 
   if (!conversation) {
@@ -109,6 +127,7 @@ const CustomerChatPanel = ({
           </>
         }
         subtitle={getPlatformSubtitle(conversation)}
+        showSearch={false}
         showHelp={false}
         showNotifications={false}
         showProfileMenu={false}
@@ -126,6 +145,12 @@ const CustomerChatPanel = ({
             isActive: isDetailsOpen,
           },
           {
+            label: "Assign",
+            icon: UserPlus2,
+            onClick: onAssignToggle,
+            isActive: isAssignOpen,
+          },
+          {
             label: "Tags",
             icon: Tag,
             onClick: () => onTagsClick?.(conversation._id),
@@ -139,17 +164,30 @@ const CustomerChatPanel = ({
           },
         ]}
       />
-
       {/* ── Message Feed ── */}
-      <div className="min-h-0 flex-1 overflow-y-auto bg-primary-light/20 px-5 py-4">
+      <div className="min-h-0 flex-1 overflow-y-auto bg-white px-5 py-4">
         <div className="flex min-h-full flex-col justify-end gap-4">
-          {messages.map((msg) => (
-            <CustomerChatMessageBubble
-              key={msg._id}
-              message={msg}
-              contactName={conversation.contactName}
-            />
-          ))}
+          {messages.map((msg, index) => {
+            const isLastMessage = index === messages.length - 1;
+            const sentByLabel =
+              isLastMessage && msg.sender === "agent"
+                ? assignedMemberName || msg.senderName || "Member"
+                : undefined;
+
+            return (
+              <CustomerChatMessageBubble
+                key={msg._id}
+                message={msg}
+                contactName={conversation.contactName}
+                sentByLabel={sentByLabel}
+                onReply={
+                  msg.sender === "customer"
+                    ? () => setReplyTarget(msg)
+                    : undefined
+                }
+              />
+            );
+          })}
           <div ref={endRef} />
         </div>
       </div>
@@ -159,6 +197,8 @@ const CustomerChatPanel = ({
         value={input}
         onChange={setInput}
         onSend={handleSend}
+        replyTarget={replyTarget}
+        onClearReply={() => setReplyTarget(null)}
       />
     </div>
   );

@@ -11,6 +11,7 @@ import CustomerChatAvatar from "./CustomerChatAvatar";
 interface Props {
   conversation: CustomerConversation;
   onClose: () => void;
+  onAssignToggle?: () => void;
 }
 
 const formatDateTime = (value?: string) => {
@@ -35,12 +36,16 @@ const titleCase = (value?: string) => {
   return value.charAt(0).toUpperCase() + value.slice(1);
 };
 
-const CustomerDetailsDrawer = ({ conversation, onClose }: Props) => {
+const CustomerDetailsDrawer = ({
+  conversation,
+  onClose,
+  onAssignToggle,
+}: Props) => {
   const overview = [
     {
       label: "Platform",
       value: titleCase(conversation.platform),
-      tone: "bg-information-light text-information-dark",
+      tone: "",
     },
     {
       label: "Status",
@@ -55,7 +60,7 @@ const CustomerDetailsDrawer = ({ conversation, onClose }: Props) => {
     {
       label: "Unread",
       value: `${conversation.unreadCount ?? 0}`,
-      tone: "bg-primary-light text-primary",
+      tone: "",
     },
     {
       label: "Messages",
@@ -77,13 +82,11 @@ const CustomerDetailsDrawer = ({ conversation, onClose }: Props) => {
     <aside className="flex h-full flex-col overflow-y-auto bg-base-white">
       <div className="flex items-center justify-between border-b border-grey-light px-5 py-2.5">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary-light text-primary">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-grey-light text-grey">
             <Info className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="text-base font-semibold text-grey">
-              Customer details
-            </h3>
+            <h3 className="body-semi-bold-16 text-grey">Customer details</h3>
             <p className="text-sm text-grey-medium">Selected conversation</p>
           </div>
         </div>
@@ -113,7 +116,7 @@ const CustomerDetailsDrawer = ({ conversation, onClose }: Props) => {
               {conversation.leadSource && (
                 <span
                   className={cn(
-                    "inline-flex items-center rounded-full px-3 py-1 text-xs font-medium",
+                    "inline-flex items-center rounded-full px-3 py-1 label-regular-14",
                     LEAD_SOURCE_STYLES[conversation.leadSource],
                   )}
                 >
@@ -127,7 +130,7 @@ const CustomerDetailsDrawer = ({ conversation, onClose }: Props) => {
                 <span
                   key={tag}
                   className={cn(
-                    "inline-flex items-center rounded-full px-3 py-1 text-xs font-medium",
+                    "inline-flex items-center rounded-full px-3 py-1 label-regular-14",
                     conversation.tags?.length
                       ? (TAG_STYLES[tag] ?? "bg-grey-light text-grey")
                       : "bg-grey-light text-grey-medium",
@@ -141,7 +144,7 @@ const CustomerDetailsDrawer = ({ conversation, onClose }: Props) => {
         </section>
 
         <section>
-          <h4 className="mb-3 text-sm font-semibold uppercase tracking-[0.12em] text-grey-medium">
+          <h4 className="mb-3 label-regular-16 uppercase tracking-[0.12em] text-grey-medium">
             Overview
           </h4>
           <div className="grid grid-cols-2 gap-3">
@@ -155,7 +158,7 @@ const CustomerDetailsDrawer = ({ conversation, onClose }: Props) => {
                 </p>
                 <span
                   className={cn(
-                    "mt-3 inline-flex rounded-full px-3 py-1 text-sm font-semibold",
+                    "mt-3 inline-flex rounded-full px-3 py-1 label-regular-16",
                     item.tone,
                   )}
                 >
@@ -172,9 +175,7 @@ const CustomerDetailsDrawer = ({ conversation, onClose }: Props) => {
               <UserRound className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-grey">
-                Customer profile
-              </p>
+              <p className="label-regular-16 text-grey">Customer profile</p>
               <p className="text-xs text-grey-medium">
                 Snapshot from the selected thread
               </p>
@@ -203,10 +204,28 @@ const CustomerDetailsDrawer = ({ conversation, onClose }: Props) => {
           </dl>
         </section>
 
+        <section className="rounded-[24px] border border-grey-light bg-base-white p-4">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h4 className="label-regular-16 text-grey">Assign Section</h4>
+              <p className="text-xs text-grey-medium">
+                Open assign drawer to choose admin/member
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={onAssignToggle}
+              className="rounded-lg border border-grey-light px-3 py-1.5 text-xs font-semibold text-grey transition-colors hover:border-primary hover:text-primary"
+            >
+              Assign
+            </button>
+          </div>
+        </section>
+
         {/* <section className="rounded-[24px] border border-grey-light bg-base-white p-4">
           <div className="flex items-center justify-between">
             <div>
-              <h4 className="text-sm font-semibold text-grey">
+              <h4 className="label-regular-16 text-grey">
                 Conversation signals
               </h4>
               <p className="text-xs text-grey-medium">
@@ -220,7 +239,7 @@ const CustomerDetailsDrawer = ({ conversation, onClose }: Props) => {
 
           <div className="mt-4 space-y-3">
             <div className="rounded-[18px] border border-grey-light bg-primary-light/20 px-3 py-3">
-              <div className="flex items-center gap-2 text-sm font-semibold text-grey">
+              <div className="flex items-center gap-2 label-regular-16 text-grey">
                 <Clock3 className="h-4 w-4 text-primary" />
                 Last activity
               </div>
@@ -230,7 +249,7 @@ const CustomerDetailsDrawer = ({ conversation, onClose }: Props) => {
             </div>
 
             <div className="rounded-[18px] border border-grey-light bg-primary-light/20 px-3 py-3">
-              <div className="flex items-center gap-2 text-sm font-semibold text-grey">
+              <div className="flex items-center gap-2 label-regular-16 text-grey">
                 <Tag className="h-4 w-4 text-primary" />
                 Latest message
               </div>
