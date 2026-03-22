@@ -30,7 +30,7 @@ const AdminLayout = () => {
       <div className="flex flex-1 min-h-0">
         <CollapseSidebar />
         <div className="flex flex-col flex-1 overflow-hidden">
-          <TopNavbar />
+          <TopNavbar showProfileMenu={false} />
           <main className="overflow-auto flex-1">
             <SubscriptionListener />
             <Outlet />
