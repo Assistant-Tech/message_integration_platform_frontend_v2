@@ -1,428 +1,581 @@
-import { useCallback, useEffect, useState } from "react";
-import { AnimatePresence } from "framer-motion";
-import { toast } from "sonner";
+import { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import * as Dialog from "@radix-ui/react-dialog";
+import { Pencil, Trash2, X } from "lucide-react";
+import api from "@/app/services/api/axios";
 import {
-  ChannelSidebar,
-  ChannelContent,
-  ChannelDetails,
-  CreateChannelModal,
-} from "@/app/features/dashboard/admin/pages/channels";
+  allIntegrations,
+  type Integration,
+} from "@/app/utils/integration/integration.config";
+import { Button } from "@/app/components/ui";
 import {
-  type ChannelAddMemberSubmitPayload,
-  type ChannelInviteCandidate,
-} from "./components/ChannelAddMember";
-import {
-  getAllInternalChannels,
-  createInternalChannel,
-} from "@/app/services/internal-channels.services";
-import { useTenantUsers } from "@/app/hooks/query/useTenantQuery";
-import { useAddConversationMembers } from "@/app/socket/conversation/useInternalConversation";
-import { buildInviteCode, mapRole, mapStatus } from "@/app/utils/helper";
-// Mock data for demonstration
-const MOCK_MESSAGES = [
-  {
-    id: "1",
-    userId: "user-1",
-    userName: "John Doe",
-    userAvatar: "",
-    content: "Hey everyone! Welcome to the channel.",
-    timestamp: new Date(Date.now() - 3600000),
-  },
-  {
-    id: "2",
-    userId: "user-2",
-    userName: "Jane Smith",
-    userAvatar: "",
-    content: "Thanks! Excited to be here 🎉",
-    timestamp: new Date(Date.now() - 3000000),
-  },
-  {
-    id: "3",
-    userId: "user-1",
-    userName: "John Doe",
-    userAvatar: "",
-    content: "Let's discuss the upcoming project timeline.",
-    timestamp: new Date(Date.now() - 2400000),
-  },
-  {
-    id: "4",
-    userId: "current-user-id",
-    userName: "You",
-    userAvatar: "",
-    content: "Sounds good! I'll prepare the presentation.",
-    timestamp: new Date(Date.now() - 1800000),
-  },
-  {
-    id: "5",
-    userId: "user-3",
-    userName: "Mike Johnson",
-    userAvatar: "",
-    content: "I can help with the technical documentation.",
-    timestamp: new Date(Date.now() - 900000),
-  },
-];
+  getActiveCardClass,
+  getActiveContentClass,
+  getActiveMutedClass,
+} from "@/app/utils/helper";
 
-const MOCK_MEMBERS = [
-  {
-    id: "user-1",
-    name: "John Doe",
-    email: "john.doe@example.com",
-    role: "admin" as const,
-    status: "online" as const,
-  },
-  {
-    id: "user-2",
-    name: "Jane Smith",
-    email: "jane.smith@example.com",
-    role: "moderator" as const,
-    status: "online" as const,
-  },
-  {
-    id: "user-3",
-    name: "Mike Johnson",
-    email: "mike.johnson@example.com",
-    role: "member" as const,
-    status: "online" as const,
-  },
-  {
-    id: "user-4",
-    name: "Sarah Williams",
-    email: "sarah.w@example.com",
-    role: "member" as const,
-    status: "away" as const,
-  },
-  {
-    id: "user-5",
-    name: "Tom Brown",
-    email: "tom.brown@example.com",
-    role: "member" as const,
-    status: "offline" as const,
-  },
-];
+type IntegrationRecord = Record<string, unknown>;
 
-const MOCK_AVAILABLE_USERS = [
-  { id: "user-6", name: "Alice Cooper", email: "alice@example.com" },
-  { id: "user-7", name: "Bob Dylan", email: "bob@example.com" },
-  { id: "user-8", name: "Charlie Parker", email: "charlie@example.com" },
-];
+const supportedProviders = ["whatsapp", "facebook", "instagram", "tiktok"];
 
-interface Channel {
-  _id: string;
-  title: string;
-  type: "internal" | "whatsapp" | "facebook" | "instagram";
-  channel: "internal" | "external";
-  isDefault: boolean;
-  priority: string;
-  participants: string[];
-  unreadCount?: number;
-  isPrivate?: boolean;
+const providerAliases: Record<string, string[]> = {
+  whatsapp: ["whatsapp", "whatsappbusiness", "wa"],
+  facebook: ["facebook", "fb", "meta"],
+  instagram: ["instagram", "ig"],
+  tiktok: ["tiktok", "tt"],
+};
+
+const normalize = (value: unknown): string =>
+  String(value ?? "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+
+const extractCandidateStrings = (item: IntegrationRecord): string[] => {
+  const directFields = [
+    item.provider,
+    item.platform,
+    item.channel,
+    item.name,
+    item.id,
+    item.type,
+  ];
+
+  const nestedProvider =
+    (item.integration as IntegrationRecord | undefined)?.provider ??
+    (item.metadata as IntegrationRecord | undefined)?.provider;
+
+  return [...directFields, nestedProvider]
+    .filter(Boolean)
+    .map((entry) => normalize(entry));
+};
+
+const hasPageSignal = (item: IntegrationRecord): boolean => {
+  const pages = item.pages;
+  if (Array.isArray(pages) && pages.length > 0) {
+    return true;
+  }
+
+  const pageKeys = [
+    "pageId",
+    "page_id",
+    "pageName",
+    "page_name",
+    "phoneNumberId",
+    "phone_number_id",
+    "businessAccountId",
+    "business_account_id",
+  ];
+
+  return pageKeys.some((key) => {
+    const value = item[key];
+    return value !== undefined && value !== null && String(value).trim() !== "";
+  });
+};
+
+const hasProviderPage = (
+  provider: string,
+  integrations: IntegrationRecord[],
+): boolean => {
+  const aliases = providerAliases[provider] ?? [provider];
+
+  const matched = integrations.filter((integration) => {
+    const candidates = extractCandidateStrings(integration);
+
+    return candidates.some((candidate) =>
+      aliases.some((alias) => candidate.includes(alias)),
+    );
+  });
+
+  if (matched.length === 0) {
+    return false;
+  }
+
+  // Fallback to provider presence because different backends expose page fields differently.
+  return matched.some(hasPageSignal) || matched.length > 0;
+};
+
+interface AddedPage {
+  id: string;
+  provider: string;
+  pageName: string;
+  pageId: string;
+  description: string;
 }
 
 const ChannelPage = () => {
-  const [channels, setChannels] = useState<Channel[]>([]);
-  const [selectedChannelId, setSelectedChannelId] = useState<string | null>(
-    null,
+  const [isAddPageOpen, setIsAddPageOpen] = useState(false);
+  const [editingProvider, setEditingProvider] = useState<string | null>(null);
+  const [addedPages, setAddedPages] = useState<AddedPage[]>([]);
+  const [newProvider, setNewProvider] = useState("whatsapp");
+  const [newPageName, setNewPageName] = useState("");
+  const [newPageId, setNewPageId] = useState("");
+  const [newDescription, setNewDescription] = useState("");
+  const [disconnectedProviders, setDisconnectedProviders] = useState<string[]>(
+    [],
   );
-  const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(false);
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [messages, setMessages] = useState(MOCK_MESSAGES);
-  const { data: tenantUsersResponse } = useTenantUsers();
-  const addMembersMutation = useAddConversationMembers(selectedChannelId ?? "");
-
-  // Fetch channels on mount
-  const fetchChannels = useCallback(async () => {
-    try {
-      setLoading(true);
-      const response = await getAllInternalChannels();
-
-      if (response && Array.isArray(response)) {
-        setChannels(response);
-
-        // Select first channel by default
-        if (response.length > 0 && !selectedChannelId) {
-          setSelectedChannelId(response[0]._id);
-        }
-      } else {
-        // Fallback to mock data if API fails
-        const mockChannels: Channel[] = [
-          {
-            _id: "1",
-            title: "general",
-            type: "internal",
-            channel: "internal",
-            isDefault: true,
-            priority: "normal",
-            participants: ["user-1", "user-2", "user-3"],
-            unreadCount: 3,
-            isPrivate: false,
-          },
-          {
-            _id: "2",
-            title: "announcements",
-            type: "internal",
-            channel: "internal",
-            isDefault: false,
-            priority: "high",
-            participants: ["user-1", "user-2"],
-            unreadCount: 0,
-            isPrivate: false,
-          },
-          {
-            _id: "3",
-            title: "whatsapp-support",
-            type: "whatsapp",
-            channel: "external",
-            isDefault: false,
-            priority: "normal",
-            participants: ["user-1"],
-            unreadCount: 12,
-            isPrivate: false,
-          },
-          {
-            _id: "4",
-            title: "facebook-marketing",
-            type: "facebook",
-            channel: "external",
-            isDefault: false,
-            priority: "normal",
-            participants: ["user-2"],
-            unreadCount: 0,
-            isPrivate: false,
-          },
-          {
-            _id: "5",
-            title: "private-discussions",
-            type: "internal",
-            channel: "internal",
-            isDefault: false,
-            priority: "high",
-            participants: ["user-1", "user-2"],
-            unreadCount: 1,
-            isPrivate: true,
-          },
-        ];
-        setChannels(mockChannels);
-        if (mockChannels.length > 0 && !selectedChannelId && mockChannels[0]) {
-          setSelectedChannelId(mockChannels[0]._id);
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching channels:", error);
-      toast.error("Failed to load channels");
-    } finally {
-      setLoading(false);
-    }
-  }, [selectedChannelId]);
+  const [tenantIntegrations, setTenantIntegrations] = useState<
+    IntegrationRecord[]
+  >([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [providerToDelete, setProviderToDelete] = useState<string | null>(null);
 
   useEffect(() => {
-    void fetchChannels();
-  }, [fetchChannels]);
+    let isMounted = true;
 
-  const handleCreateChannel = async (data: {
-    title: string;
-    type: "internal" | "whatsapp" | "facebook" | "instagram";
-    isPrivate: boolean;
-    priority: string;
-    participants: string[];
-  }) => {
-    try {
-      const payload = {
-        title: data.title,
-        type: data.type,
-        channel:
-          data.type === "internal"
-            ? "internal"
-            : ("external" as "internal" | "external"),
-        isDefault: false,
-        priority: data.priority,
-        participants: data.participants,
-      };
+    const fetchIntegrations = async () => {
+      try {
+        const response = await api.get("/tenant/integrations");
+        const data = response?.data?.data;
 
-      const response = await createInternalChannel(payload);
+        if (!isMounted) {
+          return;
+        }
 
-      if (response) {
-        toast.success("Channel created successfully!");
-        fetchChannels(); // Refresh the channels list
+        if (Array.isArray(data)) {
+          setTenantIntegrations(data as IntegrationRecord[]);
+        } else {
+          setTenantIntegrations([]);
+        }
+      } catch {
+        if (isMounted) {
+          setTenantIntegrations([]);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
-    } catch (error) {
-      console.error("Error creating channel:", error);
-      toast.error("Failed to create channel");
-    }
-  };
-
-  const handleSendMessage = (content: string, attachments?: File[]) => {
-    const newMessage = {
-      id: `msg-${Date.now()}`,
-      userId: "current-user-id",
-      userName: "You",
-      userAvatar: "",
-      content,
-      timestamp: new Date(),
-      attachments: attachments?.map((file) => ({
-        type: file.type,
-        url: URL.createObjectURL(file),
-        name: file.name,
-      })),
     };
 
-    setMessages([...messages, newMessage]);
-    // toast.success("Message sent!");
-  };
+    fetchIntegrations();
 
-  const selectedChannel = channels.find((ch) => ch._id === selectedChannelId);
-  const tenantUsers = tenantUsersResponse?.data ?? [];
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
-  const availableInviteUsers: ChannelInviteCandidate[] =
-    tenantUsers.length > 0
-      ? tenantUsers.map((item) => ({
-          id: item.user.id,
-          name: item.user.name,
-          email: item.user.email,
-          avatar: null,
-          username: item.user.name,
-        }))
-      : [...MOCK_MEMBERS, ...MOCK_AVAILABLE_USERS].map((user) => ({
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          avatar: null,
-          username: user.name,
-        }));
+  const communicationCards = useMemo<Integration[]>(() => {
+    const communicationIntegrations = allIntegrations.communication ?? [];
 
-  const channelMembers = selectedChannel
-    ? selectedChannel.participants
-        .map((participantId) => {
-          const tenantUser = tenantUsers.find(
-            (item) => item.user.id === participantId,
-          );
+    return communicationIntegrations.filter(
+      (integration) =>
+        supportedProviders.includes(integration.id) &&
+        hasProviderPage(integration.id, tenantIntegrations),
+    );
+  }, [tenantIntegrations]);
 
-          if (!tenantUser) {
-            return MOCK_MEMBERS.find((member) => member.id === participantId);
-          }
+  const connectedProviderIds = useMemo(() => {
+    const autoConnected = new Set(communicationCards.map((card) => card.id));
+    for (const page of addedPages) {
+      autoConnected.add(page.provider);
+    }
+    for (const provider of disconnectedProviders) {
+      autoConnected.delete(provider);
+    }
+    return autoConnected;
+  }, [communicationCards, addedPages, disconnectedProviders]);
 
-          return {
-            id: tenantUser.user.id,
-            name: tenantUser.user.name,
-            email: tenantUser.user.email,
-            role: mapRole(tenantUser.role?.type),
-            status: mapStatus(tenantUser.user.status),
-          };
-        })
-        .filter((member): member is (typeof MOCK_MEMBERS)[0] => Boolean(member))
-    : [];
+  const providerCards = useMemo(() => {
+    const communicationIntegrations = allIntegrations.communication ?? [];
 
-  const resolvedMembers =
-    channelMembers.length > 0 ? channelMembers : MOCK_MEMBERS;
+    return supportedProviders
+      .map((providerId) => {
+        const integration = communicationIntegrations.find(
+          (item) => item.id === providerId,
+        );
+        if (!integration) {
+          return null;
+        }
 
-  const handleAddMembers = async ({
-    userIds,
-    unresolved,
-  }: ChannelAddMemberSubmitPayload) => {
-    if (!selectedChannelId) {
-      toast.error("Select a channel before adding members.");
+        const manualPage = addedPages
+          .slice()
+          .reverse()
+          .find((page) => page.provider === providerId);
+        const isConnected = connectedProviderIds.has(providerId);
+
+        return {
+          ...integration,
+          isConnected,
+          details: manualPage
+            ? {
+                pageName: manualPage.pageName,
+                pageId: manualPage.pageId,
+                description: manualPage.description,
+              }
+            : null,
+        };
+      })
+      .filter((card): card is NonNullable<typeof card> => Boolean(card));
+  }, [addedPages, connectedProviderIds]);
+
+  const handleAddPage = () => {
+    if (!newProvider || !newPageName.trim() || !newPageId.trim()) {
       return;
     }
 
-    try {
-      await addMembersMutation.mutateAsync({ participants: userIds });
-      await fetchChannels();
-      toast.success(
-        `${userIds.length} member${userIds.length === 1 ? "" : "s"} added to ${selectedChannel?.title ?? "channel"}.`,
+    setAddedPages((prev) => {
+      const pagePayload: AddedPage = {
+        id: `${newProvider}-${Date.now()}`,
+        provider: newProvider,
+        pageName: newPageName.trim(),
+        pageId: newPageId.trim(),
+        description: newDescription.trim(),
+      };
+
+      const existingIndex = prev.findIndex(
+        (item) => item.provider === newProvider,
       );
 
-      if (unresolved.length > 0) {
-        toast.info(
-          `Share code ${buildInviteCode(
-            selectedChannelId,
-            selectedChannel?.title ?? "channel",
-          )} with ${unresolved.length} unmatched invite${unresolved.length === 1 ? "" : "s"}.`,
-        );
+      if (existingIndex >= 0) {
+        const existingItem = prev[existingIndex];
+        if (!existingItem) {
+          return [...prev, pagePayload];
+        }
+        const next = [...prev];
+        next[existingIndex] = { ...pagePayload, id: existingItem.id };
+        return next;
       }
-    } catch (error) {
-      console.error("Error adding members:", error);
-      toast.error("Failed to add members to the channel");
-      throw error;
-    }
+
+      return [...prev, pagePayload];
+    });
+
+    setDisconnectedProviders((prev) =>
+      prev.filter((item) => item !== newProvider),
+    );
+
+    setNewPageName("");
+    setNewPageId("");
+    setNewDescription("");
+    setEditingProvider(null);
+    setIsAddPageOpen(false);
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-gray-50 dark:bg-gray-900">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-12 h-12 border-4 border-information border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-grey-medium dark:text-grey">Loading channels...</p>
-        </div>
-      </div>
+  const openConnectDialog = (provider: string) => {
+    setEditingProvider(null);
+    setNewProvider(provider);
+    setNewPageName("");
+    setNewPageId("");
+    setNewDescription("");
+    setIsAddPageOpen(true);
+  };
+
+  const openEditDialog = (provider: string) => {
+    const existing = addedPages.find((page) => page.provider === provider);
+
+    setEditingProvider(provider);
+    setNewProvider(provider);
+    setNewPageName(existing?.pageName ?? "");
+    setNewPageId(existing?.pageId ?? "");
+    setNewDescription(existing?.description ?? "");
+    setIsAddPageOpen(true);
+  };
+
+  const handleDeleteProvider = (provider: string) => {
+    setAddedPages((prev) => prev.filter((page) => page.provider !== provider));
+    setDisconnectedProviders((prev) =>
+      prev.includes(provider) ? prev : [...prev, provider],
     );
-  }
+  };
+
+  const confirmDeleteProvider = () => {
+    if (!providerToDelete) {
+      return;
+    }
+
+    handleDeleteProvider(providerToDelete);
+    setProviderToDelete(null);
+  };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="flex flex-1 overflow-hidden">
-        {/* Channel Sidebar */}
-        <ChannelSidebar
-          channels={channels}
-          selectedChannelId={selectedChannelId}
-          onSelectChannel={setSelectedChannelId}
-          isCollapsed={isSidebarCollapsed}
-          onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-        />
-
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col min-w-0">
-          {selectedChannel ? (
-            <ChannelContent
-              channelTitle={selectedChannel.title}
-              channelType={selectedChannel.type}
-              messages={messages}
-              onSendMessage={handleSendMessage}
-              onToggleDetails={() => setIsDetailsPanelOpen(!isDetailsPanelOpen)}
-            />
-          ) : (
-            <div className="flex items-center justify-center h-full">
-              <div className="text-center">
-                <h2 className="text-2xl font-bold text-gray-400 mb-2">
-                  No Channel Selected
-                </h2>
-                <p className="text-gray-500">
-                  Select a channel from the sidebar to start chatting
-                </p>
-              </div>
+    <motion.section
+      className="flex flex-col h-full px-2 py-4 min-h-screen"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+    >
+      <div className="w-full px-6 py-2">
+        <div className="mb-6 rounded-xl border border-grey-light bg-primary-light pt-4 px-6">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h3 className="text-lg font-semibold text-grey">
+                Connected communication pages
+              </h3>
+              <p className="mt-1 text-sm text-grey-medium">
+                Only channels with active pages are shown below for WhatsApp,
+                Facebook, Instagram, and TikTok.
+              </p>
             </div>
-          )}
+            <div className="rounded-lg bg-base-white px-3 py-2 mt-2 text-sm font-semibold text-primary whitespace-nowrap">
+              {connectedProviderIds.size} connected
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <Dialog.Root open={isAddPageOpen} onOpenChange={setIsAddPageOpen}>
+              <Dialog.Portal>
+                <Dialog.Overlay className="fixed inset-0 z-40 bg-base-black/40" />
+                <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[min(720px,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-base-white p-6 shadow-2xl">
+                  <div className="mb-5 flex items-center justify-between gap-4 pb-4">
+                    <div>
+                      <Dialog.Title className="text-xl font-semibold text-grey">
+                        {editingProvider
+                          ? "Edit Communication Page"
+                          : "Add Communication Page"}
+                      </Dialog.Title>
+                      <Dialog.Description className="mt-1 text-sm text-grey-medium">
+                        Fill page details for UI testing. Auto-fetch from Meta
+                        profile can be added later.
+                      </Dialog.Description>
+                    </div>
+
+                    <Dialog.Close asChild>
+                      <button
+                        type="button"
+                        className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-grey-light text-grey-medium hover:bg-grey-light"
+                        aria-label="Close add page dialog"
+                      >
+                        <X size={16} />
+                      </button>
+                    </Dialog.Close>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-grey-medium">
+                        Platform
+                      </label>
+                      <select
+                        value={newProvider}
+                        onChange={(event) => setNewProvider(event.target.value)}
+                        className="h-10 w-full rounded-lg border border-grey-light bg-base-white px-3 text-sm text-grey outline-none focus:border-primary"
+                      >
+                        {supportedProviders.map((provider) => (
+                          <option key={provider} value={provider}>
+                            {provider.charAt(0).toUpperCase() +
+                              provider.slice(1)}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-grey-medium">
+                        Page Name
+                      </label>
+                      <input
+                        value={newPageName}
+                        onChange={(event) => setNewPageName(event.target.value)}
+                        placeholder="e.g. Brand Support"
+                        className="h-10 w-full rounded-lg border border-grey-light bg-base-white px-3 text-sm text-grey outline-none focus:border-primary"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-grey-medium">
+                        Page ID
+                      </label>
+                      <input
+                        value={newPageId}
+                        onChange={(event) => setNewPageId(event.target.value)}
+                        placeholder="e.g. page_12345"
+                        className="h-10 w-full rounded-lg border border-grey-light bg-base-white px-3 text-sm text-grey outline-none focus:border-primary"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-grey-medium">
+                        Description
+                      </label>
+                      <input
+                        value={newDescription}
+                        onChange={(event) =>
+                          setNewDescription(event.target.value)
+                        }
+                        placeholder="Short descriptive note"
+                        className="h-10 w-full rounded-lg border border-grey-light bg-base-white px-3 text-sm text-grey outline-none focus:border-primary"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mt-4 flex justify-end">
+                    <Button
+                      label={editingProvider ? "Save Changes" : "Connect"}
+                      onClick={handleAddPage}
+                      variant="primary"
+                    />
+                  </div>
+                </Dialog.Content>
+              </Dialog.Portal>
+            </Dialog.Root>
+          </div>
         </div>
 
-        {/* Details Drawer */}
-        <AnimatePresence>
-          {isDetailsPanelOpen && selectedChannel && (
-            <ChannelDetails
-              channelId={selectedChannel._id}
-              channelTitle={selectedChannel.title}
-              channelDescription="A channel for team discussions and updates"
-              members={resolvedMembers}
-              availableUsers={availableInviteUsers}
-              inviteCode={buildInviteCode(
-                selectedChannel._id,
-                selectedChannel.title,
-              )}
-              onClose={() => setIsDetailsPanelOpen(false)}
-              onAddMembers={handleAddMembers}
-              addMembersPending={addMembersMutation.isPending}
-            />
-          )}
-        </AnimatePresence>
-      </div>
+        {isLoading && (
+          <div className="mb-4 rounded-xl border border-grey-light bg-base-white p-4 text-sm text-grey-medium">
+            Checking connected pages...
+          </div>
+        )}
 
-      {/* Create Channel Modal */}
-      <CreateChannelModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        onCreate={handleCreateChannel}
-        availableUsers={MOCK_AVAILABLE_USERS}
-      />
-    </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {providerCards.map((card) => (
+            <div
+              key={card.id}
+              className={`group h-full rounded-xl border p-6 flex flex-col transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
+                card.isConnected
+                  ? getActiveCardClass(card.id)
+                  : "bg-base-white border-grey-light"
+              }`}
+            >
+              {/* Top Section */}
+              <div className="flex items-start justify-between gap-3 mb-4">
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`w-12 h-12 ${card.logoBackgroundColor} rounded-xl flex items-center justify-center p-2 shadow-sm`}
+                  >
+                    <div
+                      className="w-full h-full"
+                      dangerouslySetInnerHTML={{ __html: card.logoSvg }}
+                    />
+                  </div>
+
+                  <div>
+                    <h3
+                      className={`label-semi-bold-14 ${
+                        card.isConnected
+                          ? getActiveContentClass(card.id)
+                          : "text-grey"
+                      }`}
+                    >
+                      {card.name}
+                    </h3>
+                    <p
+                      className={`text-xs ${
+                        card.isConnected
+                          ? getActiveMutedClass(card.id)
+                          : "text-grey-medium"
+                      }`}
+                    >
+                      {card.id}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Button
+                    label=""
+                    onClick={() => openEditDialog(card.id)}
+                    disabled={!card.isConnected}
+                    IconLeft={<Pencil size={14} />}
+                    variant="none"
+                    className="h-8 w-8 min-h-0 rounded-full border border-grey-light bg-base-white/90 ps-2 text-grey-medium enabled:hover:bg-base-white disabled:opacity-40 disabled:cursor-not-allowed"
+                    aria-label={`Edit ${card.name}`}
+                    title="Edit"
+                  />
+                  <Button
+                    label=""
+                    onClick={() => setProviderToDelete(card.id)}
+                    disabled={!card.isConnected}
+                    IconLeft={<Trash2 size={14} />}
+                    variant="none"
+                    className="h-8 w-8 min-h-0 rounded-full border border-danger-light bg-base-white/90 ps-2 text-danger enabled:hover:bg-danger-light/40 disabled:opacity-40 disabled:cursor-not-allowed"
+                    aria-label={`Delete ${card.name}`}
+                    title="Delete"
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <span
+                  className={`rounded-full px-2.5 py-1 label-regular-14 ${
+                    card.isConnected
+                      ? card.id === "tiktok"
+                        ? "bg-base-white/20 text-base-white"
+                        : "bg-success-light text-success-dark"
+                      : "bg-grey-light text-grey-medium"
+                  }`}
+                >
+                  {card.isConnected ? "Connected" : "Not connected"}
+                </span>
+              </div>
+
+              {/* Description (flex grow keeps cards equal height) */}
+              <p
+                className={`body-regular-16 mb-4 flex-1 ${
+                  card.isConnected ? getActiveMutedClass(card.id) : "text-grey"
+                }`}
+              >
+                {card.isConnected
+                  ? card.details?.description ||
+                    `${card.description} Page connected and ready to use.`
+                  : `${card.description} Connect this page to start showcasing conversations.`}
+              </p>
+
+              {/* Bottom Section */}
+              {card.isConnected ? (
+                <div className="space-y-3 mt-auto">
+                  <div
+                    className={`rounded-lg px-3 py-2 text-xs ${
+                      card.id === "tiktok"
+                        ? "border border-grey-medium bg-base-black/30 text-grey-light"
+                        : "border border-base-white/70 bg-base-white/70 text-grey"
+                    }`}
+                  >
+                    <p>
+                      <span className="font-semibold">Page:</span>{" "}
+                      {card.details?.pageName || "Connected page"}
+                    </p>
+                    <p>
+                      <span className="font-semibold">Page ID:</span>{" "}
+                      {card.details?.pageId || "Fetched from profile"}
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="mt-auto">
+                  <Button
+                    label="Connect"
+                    onClick={() => openConnectDialog(card.id)}
+                    variant="primary"
+                  />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <Dialog.Root
+          open={Boolean(providerToDelete)}
+          onOpenChange={(open) => {
+            if (!open) {
+              setProviderToDelete(null);
+            }
+          }}
+        >
+          <Dialog.Portal>
+            <Dialog.Overlay className="fixed inset-0 z-40 bg-base-black/40" />
+            <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[min(480px,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-base-white p-6 shadow-2xl">
+              <Dialog.Title className="text-lg font-semibold text-grey">
+                Delete connected page?
+              </Dialog.Title>
+              <Dialog.Description className="mt-2 text-sm text-grey-medium">
+                This will remove the page from this card. You can reconnect it
+                later by using the Connect button.
+              </Dialog.Description>
+
+              <div className="mt-6 flex justify-end gap-3">
+                <Dialog.Close asChild>
+                  <Button label="Cancel" variant="outlined" />
+                </Dialog.Close>
+                <Button
+                  label="Delete"
+                  variant="danger"
+                  onClick={confirmDeleteProvider}
+                />
+              </div>
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog.Root>
+      </div>
+    </motion.section>
   );
 };
 
