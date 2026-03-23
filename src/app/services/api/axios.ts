@@ -12,8 +12,10 @@ interface RetriableAxiosRequestConfig extends InternalAxiosRequestConfig {
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL_TEST,
   withCredentials: true,
+
   headers: {
     "Content-Type": "application/json",
+    "Allow-access-control-origin": "true",
   },
 });
 

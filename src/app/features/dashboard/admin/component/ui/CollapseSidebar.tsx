@@ -18,7 +18,7 @@ import {
   TooltipTrigger,
 } from "@/app/components/common/Tooltip";
 import { sidebarItems } from "@/app/utils/admin/sidebar.config";
-import { Button, Logo } from "@/app/components/ui";
+import { Logo } from "@/app/components/ui";
 import { APP_ROUTES } from "@/app/constants/routes";
 import { useCurrentUser } from "@/app/hooks/query/useAuthQuery";
 import { useLogout } from "@/app/hooks/query/useAuthQuery";
@@ -80,7 +80,6 @@ const CollapsibleSidebar = () => {
   const filteredItems = sidebarItems.filter((item) =>
     item.roles?.includes(user?.roleType ?? ""),
   );
-  const canAccessSubscription = user?.roleType === "TENANT_ADMIN";
 
   const planName = "Pro Plan";
   const userName = user?.name || user?.email?.split("@")[0] || "User";
@@ -254,7 +253,8 @@ const CollapsibleSidebar = () => {
             </ul>
           </nav>
 
-          <div className="mt-auto border-t border-base-white px-4 pb-4 pt-3 space-y-1">
+          <hr className="mx-4" />
+          <div>
             {isCollapsed ? (
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -282,10 +282,7 @@ const CollapsibleSidebar = () => {
               <>
                 <DropdownMenu.Root>
                   <DropdownMenu.Trigger asChild>
-                    <button
-                      type="button"
-                      className="group relative w-full flex items-center gap-3 overflow-hidden rounded-lg p-3 text-left text-white transition-all duration-300 hover:bg-primary-dark hover:scale-105 hover:shadow-xl active:scale-95"
-                    >
+                    <div className="group relative w-full flex items-center gap-3 px-2 py-1 my-2 overflow-hidden rounded-lg text-left text-white ">
                       <span
                         className="absolute inset-0 -translate-x-[110%] skew-x-[-13deg] bg-white/25 transition-discrete duration-1000 group-hover:translate-x-[45%]"
                         aria-hidden
@@ -294,27 +291,27 @@ const CollapsibleSidebar = () => {
                         <img
                           src={getAvatarUrl(user.avatar)}
                           alt={userName}
-                          className="relative z-10 h-10 w-10 rounded-full object-cover"
+                          className="relative z-10 h-8 w-8 rounded-full object-cover"
                         />
                       ) : (
                         <div className="relative z-10 h-10 w-10 rounded-full bg-white/60" />
                       )}
+
                       <div className="relative z-10 min-w-0 flex-1">
                         <p className="truncate body-bold-16">{userName}</p>
-                        <p className="truncate text-xs text-grey-light">
-                          {userRole}
-                        </p>
+                        <p className="text-xs">{planName}</p>
                       </div>
                       <ChevronUp size={18} className="relative z-10" />
-                    </button>
+                    </div>
                   </DropdownMenu.Trigger>
 
                   <DropdownMenu.Portal>
                     <DropdownMenu.Content
                       side="top"
-                      align="start"
-                      sideOffset={8}
-                      className="z-50 min-w-[200px] rounded-2xl border border-white/20 bg-white/70 backdrop-blur-xl p-2 shadow-xl
+                      align="end"
+                      sideOffset={20}
+                      alignOffset={10}
+                      className="z-50 min-w-[200px] rounded-2xl border border-white/20 bg-base-white backdrop-blur-xl p-2 shadow-xl
                                data-[state=open]:animate-in data-[state=closed]:animate-out
                                data-[state=open]:fade-in data-[state=closed]:fade-out
                                data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95
@@ -332,20 +329,15 @@ const CollapsibleSidebar = () => {
                       >
                         Logout
                       </DropdownMenu.Item>
+                      <DropdownMenu.Item
+                        className="rounded-xl px-4 py-2 text-sm text-information outline-none transition-all hover:bg-information-light cursor-pointer"
+                        onClick={handleLogout}
+                      >
+                        Upgrade
+                      </DropdownMenu.Item>
                     </DropdownMenu.Content>
                   </DropdownMenu.Portal>
                 </DropdownMenu.Root>
-
-                {canAccessSubscription && (
-                  <div className="flex items-center justify-between rounded-lg p-3 text-white">
-                    <Button
-                      variant="none"
-                      className="rounded-md border border-white/30 px-3 py-1 transition-colors hover:bg-primary-dark"
-                      label="Upgrade"
-                    />
-                    <p className="body-bold-16">{planName}</p>
-                  </div>
-                )}
               </>
             )}
           </div>

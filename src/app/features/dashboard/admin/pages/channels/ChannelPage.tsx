@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import * as Dialog from "@radix-ui/react-dialog";
-import { Pencil, Trash2, X } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import api from "@/app/services/api/axios";
 import {
   allIntegrations,
@@ -14,86 +14,6 @@ import {
   getActiveMutedClass,
 } from "@/app/utils/helper";
 
-type IntegrationRecord = Record<string, unknown>;
-
-const supportedProviders = ["whatsapp", "facebook", "instagram", "tiktok"];
-
-const providerAliases: Record<string, string[]> = {
-  whatsapp: ["whatsapp", "whatsappbusiness", "wa"],
-  facebook: ["facebook", "fb", "meta"],
-  instagram: ["instagram", "ig"],
-  tiktok: ["tiktok", "tt"],
-};
-
-const normalize = (value: unknown): string =>
-  String(value ?? "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]/g, "");
-
-const extractCandidateStrings = (item: IntegrationRecord): string[] => {
-  const directFields = [
-    item.provider,
-    item.platform,
-    item.channel,
-    item.name,
-    item.id,
-    item.type,
-  ];
-
-  const nestedProvider =
-    (item.integration as IntegrationRecord | undefined)?.provider ??
-    (item.metadata as IntegrationRecord | undefined)?.provider;
-
-  return [...directFields, nestedProvider]
-    .filter(Boolean)
-    .map((entry) => normalize(entry));
-};
-
-const hasPageSignal = (item: IntegrationRecord): boolean => {
-  const pages = item.pages;
-  if (Array.isArray(pages) && pages.length > 0) {
-    return true;
-  }
-
-  const pageKeys = [
-    "pageId",
-    "page_id",
-    "pageName",
-    "page_name",
-    "phoneNumberId",
-    "phone_number_id",
-    "businessAccountId",
-    "business_account_id",
-  ];
-
-  return pageKeys.some((key) => {
-    const value = item[key];
-    return value !== undefined && value !== null && String(value).trim() !== "";
-  });
-};
-
-const hasProviderPage = (
-  provider: string,
-  integrations: IntegrationRecord[],
-): boolean => {
-  const aliases = providerAliases[provider] ?? [provider];
-
-  const matched = integrations.filter((integration) => {
-    const candidates = extractCandidateStrings(integration);
-
-    return candidates.some((candidate) =>
-      aliases.some((alias) => candidate.includes(alias)),
-    );
-  });
-
-  if (matched.length === 0) {
-    return false;
-  }
-
-  // Fallback to provider presence because different backends expose page fields differently.
-  return matched.some(hasPageSignal) || matched.length > 0;
-};
-
 interface AddedPage {
   id: string;
   provider: string;
@@ -103,13 +23,14 @@ interface AddedPage {
 }
 
 const ChannelPage = () => {
-  const [isAddPageOpen, setIsAddPageOpen] = useState(false);
-  const [editingProvider, setEditingProvider] = useState<string | null>(null);
+  const handlePlatformOauth = async (platform: string) => {
+    console.log(platform);
+    if (platform === "facebook") {
+      const url = await api.get("/meta/oauth");
+      window.location.href = url.data.data.oauthUrl;
+    }
+  };
   const [addedPages, setAddedPages] = useState<AddedPage[]>([]);
-  const [newProvider, setNewProvider] = useState("whatsapp");
-  const [newPageName, setNewPageName] = useState("");
-  const [newPageId, setNewPageId] = useState("");
-  const [newDescription, setNewDescription] = useState("");
   const [disconnectedProviders, setDisconnectedProviders] = useState<string[]>(
     [],
   );
@@ -208,84 +129,6 @@ const ChannelPage = () => {
       .filter((card): card is NonNullable<typeof card> => Boolean(card));
   }, [addedPages, connectedProviderIds]);
 
-  const handleAddPage = () => {
-    if (!newProvider || !newPageName.trim() || !newPageId.trim()) {
-      return;
-    }
-
-    setAddedPages((prev) => {
-      const pagePayload: AddedPage = {
-        id: `${newProvider}-${Date.now()}`,
-        provider: newProvider,
-        pageName: newPageName.trim(),
-        pageId: newPageId.trim(),
-        description: newDescription.trim(),
-      };
-
-      const existingIndex = prev.findIndex(
-        (item) => item.provider === newProvider,
-      );
-
-      if (existingIndex >= 0) {
-        const existingItem = prev[existingIndex];
-        if (!existingItem) {
-          return [...prev, pagePayload];
-        }
-        const next = [...prev];
-        next[existingIndex] = { ...pagePayload, id: existingItem.id };
-        return next;
-      }
-
-      return [...prev, pagePayload];
-    });
-
-    setDisconnectedProviders((prev) =>
-      prev.filter((item) => item !== newProvider),
-    );
-
-    setNewPageName("");
-    setNewPageId("");
-    setNewDescription("");
-    setEditingProvider(null);
-    setIsAddPageOpen(false);
-  };
-
-  const openConnectDialog = (provider: string) => {
-    setEditingProvider(null);
-    setNewProvider(provider);
-    setNewPageName("");
-    setNewPageId("");
-    setNewDescription("");
-    setIsAddPageOpen(true);
-  };
-
-  const openEditDialog = (provider: string) => {
-    const existing = addedPages.find((page) => page.provider === provider);
-
-    setEditingProvider(provider);
-    setNewProvider(provider);
-    setNewPageName(existing?.pageName ?? "");
-    setNewPageId(existing?.pageId ?? "");
-    setNewDescription(existing?.description ?? "");
-    setIsAddPageOpen(true);
-  };
-
-  const handleDeleteProvider = (provider: string) => {
-    setAddedPages((prev) => prev.filter((page) => page.provider !== provider));
-    setDisconnectedProviders((prev) =>
-      prev.includes(provider) ? prev : [...prev, provider],
-    );
-  };
-
-  const confirmDeleteProvider = () => {
-    if (!providerToDelete) {
-      return;
-    }
-
-    handleDeleteProvider(providerToDelete);
-    setProviderToDelete(null);
-  };
-
   return (
     <motion.section
       className="flex flex-col h-full px-2 py-4 min-h-screen"
@@ -296,7 +139,7 @@ const ChannelPage = () => {
         <div className="mb-6 rounded-xl border border-grey-light bg-primary-light pt-4 px-6">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <h3 className="text-lg font-semibold text-grey">
+              <h3 className="body-bold-16 pb-4 text-grey">
                 Connected communication pages
               </h3>
               <p className="mt-1 text-sm text-grey-medium">
@@ -307,105 +150,6 @@ const ChannelPage = () => {
             <div className="rounded-lg bg-base-white px-3 py-2 mt-2 text-sm font-semibold text-primary whitespace-nowrap">
               {connectedProviderIds.size} connected
             </div>
-          </div>
-
-          <div className="mt-4">
-            <Dialog.Root open={isAddPageOpen} onOpenChange={setIsAddPageOpen}>
-              <Dialog.Portal>
-                <Dialog.Overlay className="fixed inset-0 z-40 bg-base-black/40" />
-                <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[min(720px,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-base-white p-6 shadow-2xl">
-                  <div className="mb-5 flex items-center justify-between gap-4 pb-4">
-                    <div>
-                      <Dialog.Title className="text-xl font-semibold text-grey">
-                        {editingProvider
-                          ? "Edit Communication Page"
-                          : "Add Communication Page"}
-                      </Dialog.Title>
-                      <Dialog.Description className="mt-1 text-sm text-grey-medium">
-                        Fill page details for UI testing. Auto-fetch from Meta
-                        profile can be added later.
-                      </Dialog.Description>
-                    </div>
-
-                    <Dialog.Close asChild>
-                      <button
-                        type="button"
-                        className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-grey-light text-grey-medium hover:bg-grey-light"
-                        aria-label="Close add page dialog"
-                      >
-                        <X size={16} />
-                      </button>
-                    </Dialog.Close>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div>
-                      <label className="mb-1 block text-xs font-medium text-grey-medium">
-                        Platform
-                      </label>
-                      <select
-                        value={newProvider}
-                        onChange={(event) => setNewProvider(event.target.value)}
-                        className="h-10 w-full rounded-lg border border-grey-light bg-base-white px-3 text-sm text-grey outline-none focus:border-primary"
-                      >
-                        {supportedProviders.map((provider) => (
-                          <option key={provider} value={provider}>
-                            {provider.charAt(0).toUpperCase() +
-                              provider.slice(1)}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="mb-1 block text-xs font-medium text-grey-medium">
-                        Page Name
-                      </label>
-                      <input
-                        value={newPageName}
-                        onChange={(event) => setNewPageName(event.target.value)}
-                        placeholder="e.g. Brand Support"
-                        className="h-10 w-full rounded-lg border border-grey-light bg-base-white px-3 text-sm text-grey outline-none focus:border-primary"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="mb-1 block text-xs font-medium text-grey-medium">
-                        Page ID
-                      </label>
-                      <input
-                        value={newPageId}
-                        onChange={(event) => setNewPageId(event.target.value)}
-                        placeholder="e.g. page_12345"
-                        className="h-10 w-full rounded-lg border border-grey-light bg-base-white px-3 text-sm text-grey outline-none focus:border-primary"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="mb-1 block text-xs font-medium text-grey-medium">
-                        Description
-                      </label>
-                      <input
-                        value={newDescription}
-                        onChange={(event) =>
-                          setNewDescription(event.target.value)
-                        }
-                        placeholder="Short descriptive note"
-                        className="h-10 w-full rounded-lg border border-grey-light bg-base-white px-3 text-sm text-grey outline-none focus:border-primary"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="mt-4 flex justify-end">
-                    <Button
-                      label={editingProvider ? "Save Changes" : "Connect"}
-                      onClick={handleAddPage}
-                      variant="primary"
-                    />
-                  </div>
-                </Dialog.Content>
-              </Dialog.Portal>
-            </Dialog.Root>
           </div>
         </div>
 
@@ -462,7 +206,7 @@ const ChannelPage = () => {
                 <div className="flex items-center gap-2">
                   <Button
                     label=""
-                    onClick={() => openEditDialog(card.id)}
+                    // onClick={() => openEditDialog(card.id)}
                     disabled={!card.isConnected}
                     IconLeft={<Pencil size={14} />}
                     variant="none"
@@ -533,7 +277,7 @@ const ChannelPage = () => {
                 <div className="mt-auto">
                   <Button
                     label="Connect"
-                    onClick={() => openConnectDialog(card.id)}
+                    onClick={() => handlePlatformOauth(card.id)}
                     variant="primary"
                   />
                 </div>
@@ -568,7 +312,7 @@ const ChannelPage = () => {
                 <Button
                   label="Delete"
                   variant="danger"
-                  onClick={confirmDeleteProvider}
+                  // onClick={confirmDeleteProvider}
                 />
               </div>
             </Dialog.Content>
@@ -580,3 +324,83 @@ const ChannelPage = () => {
 };
 
 export default ChannelPage;
+
+type IntegrationRecord = Record<string, unknown>;
+
+const supportedProviders = ["whatsapp", "facebook", "instagram", "tiktok"];
+
+const providerAliases: Record<string, string[]> = {
+  whatsapp: ["whatsapp", "whatsappbusiness", "wa"],
+  facebook: ["facebook", "fb", "meta"],
+  instagram: ["instagram", "ig"],
+  tiktok: ["tiktok", "tt"],
+};
+
+const normalize = (value: unknown): string =>
+  String(value ?? "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+
+const extractCandidateStrings = (item: IntegrationRecord): string[] => {
+  const directFields = [
+    item.provider,
+    item.platform,
+    item.channel,
+    item.name,
+    item.id,
+    item.type,
+  ];
+
+  const nestedProvider =
+    (item.integration as IntegrationRecord | undefined)?.provider ??
+    (item.metadata as IntegrationRecord | undefined)?.provider;
+
+  return [...directFields, nestedProvider]
+    .filter(Boolean)
+    .map((entry) => normalize(entry));
+};
+
+const hasPageSignal = (item: IntegrationRecord): boolean => {
+  const pages = item.pages;
+  if (Array.isArray(pages) && pages.length > 0) {
+    return true;
+  }
+
+  const pageKeys = [
+    "pageId",
+    "page_id",
+    "pageName",
+    "page_name",
+    "phoneNumberId",
+    "phone_number_id",
+    "businessAccountId",
+    "business_account_id",
+  ];
+
+  return pageKeys.some((key) => {
+    const value = item[key];
+    return value !== undefined && value !== null && String(value).trim() !== "";
+  });
+};
+
+const hasProviderPage = (
+  provider: string,
+  integrations: IntegrationRecord[],
+): boolean => {
+  const aliases = providerAliases[provider] ?? [provider];
+
+  const matched = integrations.filter((integration) => {
+    const candidates = extractCandidateStrings(integration);
+
+    return candidates.some((candidate) =>
+      aliases.some((alias) => candidate.includes(alias)),
+    );
+  });
+
+  if (matched.length === 0) {
+    return false;
+  }
+
+  // Fallback to provider presence because different backends expose page fields differently.
+  return matched.some(hasPageSignal) || matched.length > 0;
+};
