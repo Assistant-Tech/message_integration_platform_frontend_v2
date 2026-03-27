@@ -1,9 +1,0 @@
-export { default as ProfileSettings } from "@/app/features/dashboard/admin/pages/settings/ProfileSettings";
-export { default as CompanySettings } from "@/app/features/dashboard/admin/pages/settings/CompanySettings";
-export { default as SecuritySettings } from "@/app/features/dashboard/admin/pages/settings/SecuritySettings";
-export { default as RoleManagement } from "@/app/features/dashboard/admin/pages/settings/RoleManagement";
-export { default as ChatSettings } from "@/app/features/dashboard/admin/pages/settings/ChatSettings";
-export { default as ShippingSettings } from "@/app/features/dashboard/admin/pages/settings/ShippingSettings";
-export { default as SubscriptionSettings } from "@/app/features/dashboard/admin/pages/settings/SubscriptionSettings";
-export { default as NotificationSettings } from "@/app/features/dashboard/admin/pages/settings/NotificationSettings";
-export { default as TenantSettings } from "@/app/features/dashboard/admin/pages/settings/TenantSettings";
