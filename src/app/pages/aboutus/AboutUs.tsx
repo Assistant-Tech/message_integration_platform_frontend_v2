@@ -19,9 +19,9 @@ import {
   WhatWeOffer,
 } from "@/app/pages/aboutus/components";
 
-import clock from "@/app/assets/white-icons/chat.svg";
-import essentials from "@/app/assets/white-icons/support.svg";
-import about from "@/app/content/json/aboutUs.json";
+import { companies, features } from "@/app/utils/utils";
+import clock from "@/app/assets/greenIcons/clock.svg";
+import essentials from "@/app/assets/greenIcons/essentials.svg";
 
 // Lazy loaded
 const GetStarted = lazy(() => import("@/app/pages/landing/GetStarted"));
@@ -37,7 +37,6 @@ import { motion } from "framer-motion";
 import { Button } from "@/app/components/ui";
 
 const About = () => {
-  const { aboutData } = about;
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -104,18 +103,19 @@ const About = () => {
           {/* Left */}
           <motion.div variants={itemVariants} className="space-y-8 max-w-xl">
             <motion.h2 variants={itemVariants} className="h3-bold-32 text-grey">
-              {aboutData.title}
+              Talk to All Your Customers in One Place
             </motion.h2>
 
             <motion.p
               variants={itemVariants}
               className="h5-regular-16 text-grey-medium"
             >
-              {aboutData.description}
+              Just one clean, easy AI powered app to manage all your chats —
+              WhatsApp, Instagram, Facebook, Telegram, and more.
             </motion.p>
 
             <motion.div variants={itemVariants} className="space-y-4">
-              {aboutData.featureData.map(({ title }, index) => (
+              {features.map((feature, index) => (
                 <motion.div
                   key={index}
                   variants={itemVariants}
@@ -124,7 +124,7 @@ const About = () => {
                   <div className="w-6 h-6 bg-primary-light rounded-full flex items-center justify-center mt-0.5">
                     <Check className="w-4 h-4 text-primary" />
                   </div>
-                  <p className="body-regular-16 text-grey-medium">{title}</p>
+                  <p className="body-regular-16 text-grey-medium">{feature}</p>
                 </motion.div>
               ))}
             </motion.div>
@@ -185,13 +185,13 @@ const About = () => {
         <div className="relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] w-screen py-10">
           <Marquee speed={30}>
             <div className="flex">
-              {aboutData.companies.map(({ companyName }, index) => (
-                <CompanyLogo key={index} name={companyName} index={index} />
+              {companies.map((company, index) => (
+                <CompanyLogo key={index} name={company} index={index} />
               ))}
-              {aboutData.companies.map(({ companyName }, index) => (
+              {companies.map((company, index) => (
                 <CompanyLogo
                   key={`dupe-${index}`}
-                  name={companyName}
+                  name={company}
                   index={index}
                 />
               ))}

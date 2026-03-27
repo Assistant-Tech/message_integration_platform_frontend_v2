@@ -45,7 +45,7 @@ const ConversationalImpact = () => {
               <Sparkles className="text-primary w-6 h-6 mb-2 mx-auto" />
               <h3 className="body-regular-16 text-grey-medium">{stat.value}</h3>
               <p className="h5-bold-16 text-grey">{stat.label}</p>
-              <p className="h5-semi-bold-16 text-grey-medium">{stat.desc}</p>
+              <p className="h5-semi-bold-16 text-grey-light">{stat.desc}</p>
             </motion.div>
           ))}
         </div>

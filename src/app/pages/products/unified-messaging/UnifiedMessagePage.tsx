@@ -8,6 +8,7 @@ import {
   MessageIntegrationShowcase,
   UnifiedMessageHeader,
 } from "@/app/pages/products/components/";
+import ScaleYourBusiness from "../components/ScaleYourBusiness";
 import { Breadcrumb } from "@/app/components/ui";
 import { FAQ } from "@/app/components/common";
 
@@ -18,7 +19,7 @@ const UnifiedMessagePage: React.FC = () => {
   ];
 
   return (
-    <div className="w-full bg-white mt-16 sm:mt-20 md:mt-24 px-2">
+    <div className="bg-white mt-16 sm:mt-20 md:mt-24 px-4 sm:px-6 lg:px-px">
       <div>
         {/* Breadcrumb Section */}
         <motion.div
@@ -35,6 +36,9 @@ const UnifiedMessagePage: React.FC = () => {
 
         {/* UnifedMesasgeFeature */}
         <MessageIntegrationShowcase />
+
+        {/* SCALE YOUR BUSINESS SECTION */}
+        <ScaleYourBusiness />
 
         {/* GET STARTED */}
         <div className="relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] w-screen">

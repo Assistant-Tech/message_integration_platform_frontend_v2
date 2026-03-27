@@ -14,7 +14,7 @@ import { FAQ } from "@/app/components/common";
 const BulkMessagingPage: React.FC = () => {
   const UnifiedMessageBreadCrumbs = [
     { label: "Products", href: APP_ROUTES.PUBLIC.PRODUCTS_OVERVIEW },
-    { label: "Bulk Messaging Clients" },
+    { label: "Unified Message" },
   ];
 
   return (

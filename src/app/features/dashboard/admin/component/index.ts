@@ -3,6 +3,7 @@ export { default as SelectAllCustomer } from "./SelectAllCustomer";
 export { default as GenericTable } from "./table/GenericTable";
 
 //OTHERS
+export { default as ChatPannel } from "../../../../components/common/Conversation/chat/ChatPanel";
 export { default as DetailsPanel } from "./DetailsPannel";
 export { default as ChatPreview } from "./ChatPreview";
 export { default as ChatWidget } from "./ChatWidget";

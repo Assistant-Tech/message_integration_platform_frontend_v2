@@ -58,7 +58,7 @@ const AllProductsPage = () => {
   const products = Array.isArray(allProduct) ? allProduct : [];
 
   const handleCreateNewProduct = () => {
-    navigate(`/app/${tenantSlug}/admin/${APP_ROUTES.ADMIN.PRODUCTS_CREATE}`);
+    navigate(`/${tenantSlug}/admin/${APP_ROUTES.ADMIN.PRODUCTS_CREATE}`);
   };
 
   const sortingOptions: SortOption[] = [
@@ -107,11 +107,11 @@ const AllProductsPage = () => {
   }, [products, search, statusFilter, category, sortBy]);
 
   const handleViewDetails = (product: Product) => {
-    navigate(`/app/${tenantSlug}/admin/products/all/details/${product.id}`);
+    navigate(`/${tenantSlug}/admin/products/all/details/${product.id}`);
   };
 
   const handleEdit = (product: Product) => {
-    navigate(`/app/${tenantSlug}/admin/products/edit/${product.id}`);
+    navigate(`/${tenantSlug}/admin/products/edit/${product.id}`);
   };
 
   const handleDelete = (productId: string) => {

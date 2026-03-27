@@ -76,7 +76,7 @@ const Product = () => {
               <Button
                 label="Book a Demo"
                 variant="outlined"
-                // redirectTo="/demo"
+                redirectTo="/demo"
                 className="px-2 py-3"
               />
             </motion.div>

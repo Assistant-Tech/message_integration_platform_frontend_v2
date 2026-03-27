@@ -5,12 +5,11 @@ import app from "@/app/assets/icons/app.svg";
 import Section from "@/app/components/layout/Section";
 import { ArrowUpRight } from "lucide-react";
 
-import crm from "@/app/assets/white-icons/crm.svg";
-import unified from "@/app/assets/white-icons/unifiedmsg.svg";
-import chatbot from "@/app/assets/white-icons/chat.svg";
-import bulk from "@/app/assets/white-icons/bulk.svg";
+import crm from "@/app/assets/greenIcons/crm.svg";
+import unified from "@/app/assets/greenIcons/unified.svg";
+import chatbot from "@/app/assets/greenIcons/bot.svg";
+import bulk from "@/app/assets/greenIcons/bulk.svg";
 import { Link } from "react-router-dom";
-import aboutUs from "@/app/content/json/aboutUs.json";
 
 const products = [
   {
@@ -40,7 +39,6 @@ const products = [
 ];
 
 const WhatWeOffer = () => {
-  const { aboutData } = aboutUs;
   const storeLinks = [
     { img: app, label: "App Store" },
     { img: play, label: "Google Play" },
@@ -59,15 +57,19 @@ const WhatWeOffer = () => {
                 textStyle="body-italic-bold-16"
               />
               <h1 className="h3-bold-32 text-base-black">
-                {aboutData.offer.title}
+                Products Designed for You
               </h1>
               <p className="body-regular-16 text-grey-medium">
-                {aboutData.offer.description}
+                Explore our product suite to see how we can help your business.
+                These are the tools our customers use every day to stay
+                organized and grow with ease.
               </p>
               <p className="body-regular-16 text-grey-medium">
-                {aboutData.offer["sub-description"]}
+                Whether you’re running a one-person shop or managing a team,
                 <span className="body-bold-16 text-primary">
-                  {aboutData.offer["highlight-sub-description"]}
+                  {" "}
+                  Chatblix helps you reply faster, stay organized, and grow
+                  your business
                 </span>
               </p>
             </div>

@@ -42,7 +42,7 @@ const AnimatedProcessCard: React.FC<AnimatedProcessCardProps> = ({
                   scale: 0.8,
                   transition: { duration: 0.2 },
                 }}
-                className="absolute top-0 left-6 bg-secondary text-white px-4 py-3 rounded-lg shadow-lg body-medium-16 whitespace-nowrap mb-2"
+                className="absolute top-0 left-0 bg-secondary text-white px-4 py-3 rounded-lg shadow-lg body-medium-16 whitespace-nowrap mb-2"
                 style={{
                   zIndex: processes.length - index,
                   top: `${index * 60}px`,

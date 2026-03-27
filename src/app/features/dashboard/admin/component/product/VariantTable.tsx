@@ -22,7 +22,7 @@ const VariantTable: React.FC<VariantTableProps> = ({
   const navigate = useNavigate();
 
   const handleRedirectToInventory = () => {
-    navigate(`/app/${tenantSlug}/admin/${APP_ROUTES.ADMIN.PRODUCTS_INVENTORY}`);
+    navigate(`/${tenantSlug}/admin/${APP_ROUTES.ADMIN.PRODUCTS_INVENTORY}`);
   };
 
   const columns = useMemo<ColumnDef<Variant>[]>(

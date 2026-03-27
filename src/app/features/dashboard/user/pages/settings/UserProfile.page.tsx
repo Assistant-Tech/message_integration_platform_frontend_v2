@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { Edit, Eye, EyeOff, Save, X } from "lucide-react";
 import { Input, Button } from "@/app/components/ui";
 import { useAuthStore } from "@/app/store/auth.store";
-import { getAvatarUrl } from "@/app/utils/avatar";
 
 const UserProfileSettings = () => {
   const { user } = useAuthStore();
@@ -124,7 +123,10 @@ const UserProfileSettings = () => {
       >
         <figure className="flex-shrink-0">
           <motion.img
-            src={getAvatarUrl(user.avatar)}
+            src={
+              user.avatar ||
+              "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1755768117/pfp_tko8va.jpg"
+            }
             alt="Profile Picture"
             className="w-20 h-20 rounded-full object-cover"
             whileHover={{ scale: 1.05 }}

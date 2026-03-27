@@ -63,7 +63,7 @@ const IntegrationCard = ({
               </svg>
             )}
           </div>
-          <h2 className="label-semi-bold-14 text-gray-900">{name}</h2>
+          <h2 className="text-base font-semibold text-gray-900">{name}</h2>
         </div>
 
         {/* Toggle Switch */}

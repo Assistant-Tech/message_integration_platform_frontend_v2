@@ -38,7 +38,9 @@ const SecuritySettings = () => {
         variants={itemVariants}
       >
         <h1 className="text-2xl font-bold text-grey mb-2">Settings</h1>
-        <h2 className="label-semi-bold-14 text-primary">Security Settings</h2>
+        <h2 className="text-base font-semibold text-primary">
+          Security Settings
+        </h2>
       </motion.article>
 
       {/* Tabs */}

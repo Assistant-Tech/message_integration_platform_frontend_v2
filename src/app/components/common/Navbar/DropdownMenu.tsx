@@ -45,7 +45,7 @@ const DropdownMenu = ({ items, isVisible }: DropdownMenuProps) => {
                   {/* ---------- left column ---------- */}
                   <div className="flex flex-col flex-1 min-w-0">
                     <article className="flex flex-col items-start">
-                      <Link to={APP_ROUTES.APP.ROOT(items.name)}>
+                      <Link to={APP_ROUTES.PUBLIC.SLUG(items.name)}>
                         <h1 className="h4-bold-24 text-primary">
                           {items.name}
                         </h1>
@@ -126,7 +126,7 @@ const DropdownMenu = ({ items, isVisible }: DropdownMenuProps) => {
                     variant="secondary"
                     IconRight={<ArrowUpRight size={24} />}
                     className="flex justify-center items-center"
-                    // redirectTo="/demo"
+                    redirectTo="/demo"
                   />
                 </div>
               </div>

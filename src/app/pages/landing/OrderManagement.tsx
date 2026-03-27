@@ -157,7 +157,7 @@ const OrderManagement: React.FC = () => {
               <Button
                 label="Book a Demo"
                 variant="outlined"
-                // redirectTo="/demo"
+                redirectTo="/demo"
                 className="px-3 py-2"
               />
             </div>

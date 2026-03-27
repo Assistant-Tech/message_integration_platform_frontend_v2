@@ -38,13 +38,10 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             ? "tel"
             : "text");
 
-    const inputId =
-      props.id || `input-${label?.replace(/\s+/g, "-").toLowerCase()}`;
-
     return (
       <div className="flex flex-col gap-1 w-full">
         {label && (
-          <label htmlFor={inputId} className="body-bold-16 text-grey">
+          <label className="body-bold-16 text-grey">
             {label}
             {required && <span className="text-red-500"> *</span>}
           </label>
@@ -56,7 +53,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             </span>
           )}
           <input
-            id={inputId}
             type={inputType}
             placeholder={placeholder}
             className={cn(

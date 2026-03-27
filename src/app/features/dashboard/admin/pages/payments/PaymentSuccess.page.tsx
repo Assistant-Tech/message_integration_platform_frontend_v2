@@ -23,11 +23,11 @@ const PaymentSuccessPage = () => {
   }
 
   const goToInvoices = () => {
-    navigate(`/app/${tenantSlug}/subscription/confirmation`);
+    navigate(`/${tenantSlug}/subscription/confirmation`);
   };
 
   const goToDashboard = () => {
-    navigate(`/app/${tenantSlug}/admin/dashboard`);
+    navigate(`/${tenantSlug}/admin/dashboard`);
   };
 
   return (

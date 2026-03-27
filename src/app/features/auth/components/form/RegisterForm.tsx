@@ -1,18 +1,20 @@
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import {
   registerSchema,
   RegisterFormData,
-} from "@/app/features/auth/schemas/register.schema";
+} from "@/app/features/auth/schemas/registerSchema";
 import { Agreement, Button, Input } from "@/app/components/ui";
 import CheckItem from "@/app/features/auth/components/ui/CheckItem";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 
-import { useSignup } from "@/app/hooks/query/useAuthQuery";
+import { useAuthStore } from "@/app/store/auth.store";
+import { handleApiError } from "@/app/utils/handlerApiError";
 // import { APP_ROUTES } from "@/app/constants/routes";
 
 const RegisterForm = () => {
@@ -24,7 +26,8 @@ const RegisterForm = () => {
   const params = new URLSearchParams(location.search);
   const invitationToken = params.get("accept-invitation");
 
-  const signupMutation = useSignup();
+  const isAuthenticating = useAuthStore((s) => s.isloading);
+  const signUp = useAuthStore((s) => s.signup);
 
   const {
     register,
@@ -41,33 +44,36 @@ const RegisterForm = () => {
   const passwordChecks = {
     minLength: password.length >= 6,
     maxLength: password.length <= 64,
-    hasUppercase: /[A-Z]/.test(password),
-    hasLowercase: /[a-z]/.test(password),
+    hasLetter: /[A-Za-z]/.test(password),
     hasNumber: /\d/.test(password),
     hasSpecialChar: /[@$!%*?&]/.test(password),
   };
 
   const onSubmit = async (data: RegisterFormData) => {
-    signupMutation.mutate(
-      {
-        name: data.name,
-        email: data.email,
-        password: data.password,
-        invitationToken: invitationToken || undefined,
-      },
-      {
-        onSuccess: () => {
-          reset();
-          if (invitationToken) {
-            // pachi implementation
-            // navigate(APP_ROUTES.USER.DASHBOARD)
-            navigate("/check-email", { state: { email: data.email } });
-          } else {
-            navigate("/check-email", { state: { email: data.email } });
-          }
-        },
-      },
-    );
+    try {
+      const res = await signUp(
+        data.name,
+        data.email,
+        data.password,
+        invitationToken || "",
+      );
+
+      toast.success(res?.message || "Registration Successful!");
+      reset();
+
+      if (invitationToken) {
+        // pachi implementation
+        // navigate(APP_ROUTES.USER.DASHBOARD)
+        navigate("/check-email", { state: { email: data.email } });
+      } else {
+        navigate("/check-email", { state: { email: data.email } });
+      }
+    } catch (error) {
+      const parsedError = handleApiError(error);
+      toast.error(
+        parsedError.message || "Registration failed. Please try again.",
+      );
+    }
   };
 
   return (
@@ -129,12 +135,8 @@ const RegisterForm = () => {
                 condition={passwordChecks.maxLength}
               />
               <CheckItem
-                label="Contains an uppercase letter"
-                condition={passwordChecks.hasUppercase}
-              />
-              <CheckItem
-                label="Contains a lowercase letter"
-                condition={passwordChecks.hasLowercase}
+                label="Contains a letter"
+                condition={passwordChecks.hasLetter}
               />
               <CheckItem
                 label="Contains a number"
@@ -162,12 +164,10 @@ const RegisterForm = () => {
       </div>
 
       <Button
-        label={
-          signupMutation.isPending ? "Creating Account..." : "Create Account"
-        }
+        label={isAuthenticating ? "Creating Account..." : "Create Account"}
         type="submit"
         className="w-full"
-        disabled={signupMutation.isPending}
+        disabled={isAuthenticating}
       />
     </form>
   );

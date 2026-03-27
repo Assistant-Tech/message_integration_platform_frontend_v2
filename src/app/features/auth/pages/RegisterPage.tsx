@@ -43,7 +43,7 @@ const RegisterPage = () => {
             <h2 className="h5-medium-16 text-grey-medium">
               Let’s get you started,
             </h2>
-            <p className="mb-4 h3-bold-32 text-base-black">
+            <p className="mt-2 h3-bold-32 text-base-black">
               Create your account
             </p>
           </div>

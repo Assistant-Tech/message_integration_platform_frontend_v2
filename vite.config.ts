@@ -23,7 +23,6 @@ export default defineConfig({
   server: {
     port: 3000,
     open: true,
-    allowedHosts: ["rachele-paleaceous-ethyl.ngrok-free.dev"],
   },
   build: {
     outDir: "dist",

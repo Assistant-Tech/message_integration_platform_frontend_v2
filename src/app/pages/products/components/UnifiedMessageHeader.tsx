@@ -11,7 +11,7 @@ const stats = [
 
 const UnifiedMessageHeader = () => {
   return (
-    <section className="relative overflow-hidden pb-10">
+    <section className="relative overflow-hidden pb-20">
       <div className="relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left Content */}

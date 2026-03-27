@@ -1,5 +1,5 @@
 import { Input, Logo, Button } from "@/app/components/ui";
-// import { useAuthStore } from "@/app/store/auth.store";
+import { useAuthStore } from "@/app/store/auth.store";
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
@@ -8,7 +8,7 @@ import { REGISTER_IMAGE_URL } from "@/app/constants/image-cloudinary";
 const AcceptInvitation = () => {
   const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
-  // const signup = useAuthStore((state) => state.signup);
+  const signup = useAuthStore((state) => state.signup);
 
   const [form, setForm] = useState({
     name: "",
@@ -30,8 +30,8 @@ const AcceptInvitation = () => {
         setError("Invalid or missing invitation token.");
         return;
       }
-      // const res = await signup(form.name, form.email, form.password, token);
-      // console.log("Invitation accepted:", res);
+      const res = await signup(form.name, form.email, form.password, token);
+      console.log("Invitation accepted:", res);
 
       // redirect to dashboard
       navigate("/login");

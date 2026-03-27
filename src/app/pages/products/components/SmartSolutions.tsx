@@ -2,19 +2,19 @@ import { SmartCard } from "@/app/components/ui";
 import { smartCardData } from "@/app/utils/product/product.config";
 import { Flex } from "@radix-ui/themes";
 import { motion } from "framer-motion";
-import crm from "@/app/content/json/crm.json";
 
 const SmartSolutions = () => {
-  const { empowerBusiness } = crm;
   return (
     <Flex direction={"column"} justify={"center"} className="py-8 md:py-24">
       {/* Typo Section */}
       <motion.article>
         <motion.h1 className="h2-bold-40 text-base-black text-center pb-4">
-          {empowerBusiness.smart.title}
+          Smart Solutions for Businesses of All Sizes
         </motion.h1>
         <motion.p className="body-regular-16 text-grey text-center pb-6">
-          {empowerBusiness.smart.description}
+          Our AI-enabled CRM software focuses on providing smart solutions like
+          sales, marketing and customer support, for businesses of all sizes and
+          supports a sustainable business model.
         </motion.p>
       </motion.article>
       {/* Grided Cards Section */}

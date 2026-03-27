@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BellRing, Settings } from "lucide-react";
+import { MapPin, Settings, Shield } from "lucide-react";
 import { Badge, Button } from "@/app/components/ui";
 
 const MessageIntegrationFeatures = () => {
@@ -95,11 +95,11 @@ const MessageIntegrationFeatures = () => {
             </div>
           </div>
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-            <div className="px-2 py-1  bg-white rounded text-xs font-medium shadow">
-              📱 Mobile App
+            <div className="px-2 py-1 bg-white rounded text-xs font-medium shadow">
+              📱 Portrait
             </div>
             <div className="px-2 py-1 bg-white rounded text-xs font-medium shadow">
-              💻 Website
+              💻 Landscape
             </div>
           </div>
         </div>
@@ -118,24 +118,52 @@ const MessageIntegrationFeatures = () => {
               isHovered ? "scale-105" : "scale-100"
             }`}
           >
-            <img src="https://res.cloudinary.com/dtoqwn0gx/image/upload/v1767094077/feature-message-integration_ppgmrb.png" />
+            {/* Language selector mockup */}
+            <div className="bg-white rounded-lg shadow-lg p-4 mb-3">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center text-white text-sm">
+                  🌐
+                </div>
+                <div className="text-xs font-medium">REGIONS</div>
+              </div>
+              <div className="space-y-2">
+                {[
+                  { flag: "🇺🇸", name: "English", bar: "w-full" },
+                  { flag: "🇫🇷", name: "French", bar: "w-4/5" },
+                  { flag: "🇩🇪", name: "German", bar: "w-3/4" },
+                  { flag: "🇦🇪", name: "Arabic", bar: "w-2/3" },
+                ].map((lang, i) => (
+                  <div
+                    key={i}
+                    className={`flex items-center gap-2 transition-all duration-500 ${
+                      isHovered
+                        ? "translate-x-0 opacity-100"
+                        : "-translate-x-4 opacity-70"
+                    }`}
+                    style={{ transitionDelay: `${i * 100}ms` }}
+                  >
+                    <span className="text-lg">{lang.flag}</span>
+                    <div className="flex-1">
+                      <div
+                        className={`h-1.5 bg-green-400 rounded-full ${lang.bar}`}
+                      ></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       ),
     },
     {
       id: 4,
-      title: "Automate your follow ups",
+      title: "Localized Content",
       description:
-        "Never forget a client again. Automated reminders, tasks, and smart notifications keep you ahead.",
+        "Deliver personalized content based on user location, preferences, and local trends.",
       color: "from-orange-500 to-orange-600",
       visual: (isHovered: any) => (
-        <div className="relative h-48 shadow shadow-grey-light rounded-xl p-8 overflow-hidden">
-          <img
-            src="https://res.cloudinary.com/dtoqwn0gx/image/upload/v1767095379/dot-bg_aaqgyw.jpg"
-            alt="dotted-bg-cloudinary.svg"
-            className="absolute inset-0"
-          />
+        <div className="relative h-48 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-6 overflow-hidden">
           <div
             className={`absolute inset-0 opacity-10 transition-transform duration-1000 ${
               isHovered ? "scale-110" : "scale-100"
@@ -147,26 +175,14 @@ const MessageIntegrationFeatures = () => {
             <div className="relative">
               {/* Center location pin */}
               <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center shadow-lg">
-                <BellRing className="w-8 h-8 text-white" />
+                <MapPin className="w-8 h-8 text-white" />
               </div>
               {/* Floating content cards */}
               {[
-                {
-                  icon: "📰",
-                  label: "How much is it?",
-                  pos: "-top-10 -left-36",
-                },
-                { icon: "🌤️", label: "PP please", pos: "-top-8 -right-32" },
-                {
-                  icon: "🚌",
-                  label: "Price of this product",
-                  pos: "-bottom-8 -left-48",
-                },
-                {
-                  icon: "🎭",
-                  label: "Events ",
-                  pos: "-bottom-8 -right-20",
-                },
+                { icon: "📰", label: "News", pos: "-top-8 -left-8" },
+                { icon: "🌤️", label: "Weather", pos: "-top-8 -right-8" },
+                { icon: "🚌", label: "Transit", pos: "-bottom-8 -left-8" },
+                { icon: "🎭", label: "Events", pos: "-bottom-8 -right-8" },
               ].map((item, i) => (
                 <div
                   key={i}
@@ -251,9 +267,9 @@ const MessageIntegrationFeatures = () => {
     },
     {
       id: 6,
-      title: "Plug in your socials",
+      title: "Licence-cleared Infotainment Content",
       description:
-        "Access your messages, legally from trusted partners like Facebook, Whatsapp, Tiktok & other many more.",
+        "Access premium, legally-cleared content from trusted partners like Reuters, AFP, and PA Media.",
       color: "from-indigo-500 to-indigo-600",
       visual: (isHovered: any) => (
         <div className="relative h-48 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-6 overflow-hidden">
@@ -261,13 +277,38 @@ const MessageIntegrationFeatures = () => {
             {/* Center shield */}
             <div
               className={`relative transition-all duration-700 ${
-                isHovered ? "scale-70" : "scale-100"
+                isHovered ? "scale-110" : "scale-100"
               }`}
             >
-              <img
-                src="https://res.cloudinary.com/dtoqwn0gx/image/upload/v1767094894/Messenge-integration-animation_hjdw1a.png"
-                alt="sprial-message.cloudinary.svg"
-              />
+              <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl rotate-3">
+                <Shield className="w-10 h-10 text-white" />
+              </div>
+              {/* Orbiting logos */}
+              {[
+                { name: "REUTERS", angle: 0 },
+                { name: "PA media", angle: 120 },
+                { name: "belga", angle: 240 },
+              ].map((partner, i) => {
+                const radius = 60;
+                const angleOffset = isHovered ? 360 : 0;
+                const angle = ((partner.angle + angleOffset) * Math.PI) / 180;
+                const x = Math.cos(angle) * radius;
+                const y = Math.sin(angle) * radius;
+
+                return (
+                  <div
+                    key={i}
+                    className="absolute top-1/2 left-1/2 transition-all duration-1000"
+                    style={{
+                      transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
+                    }}
+                  >
+                    <div className="bg-white rounded-lg shadow-lg px-3 py-1.5 text-xs font-bold text-gray-700 whitespace-nowrap">
+                      {partner.name}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -277,7 +318,7 @@ const MessageIntegrationFeatures = () => {
 
   return (
     <div className="min-h-screen bg-primary-light/40 py-10 px-4 sm:px-6 lg:px-8 mb-8">
-      <div className="max-w-[1600px] mx-auto">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16">
           <div className="inline-block mb-4">

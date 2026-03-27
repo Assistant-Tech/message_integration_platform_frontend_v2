@@ -10,7 +10,7 @@ interface FAQProps {
 const FAQ: React.FC<FAQProps> = ({ variant = "landing" }) => {
   return (
     <Section>
-      <div className="py-20" id="faq">
+      <div className="py-20 px-2" id="faq">
         <div
           className={`w-full ${
             variant === "landing"
@@ -28,7 +28,7 @@ const FAQ: React.FC<FAQProps> = ({ variant = "landing" }) => {
               {/* Left Section */}
               <Box
                 width={{ initial: "100%", lg: "50%" }}
-                className="px-6 sm:px-10 lg:px-8"
+                className="px-6 sm:px-10 lg:px-16"
               >
                 <div className="space-y-4 max-w-xl mx-auto lg:mx-0 text-center lg:text-left pt-4">
                   <Badge title="YOU ASK, WE ANSWER" />

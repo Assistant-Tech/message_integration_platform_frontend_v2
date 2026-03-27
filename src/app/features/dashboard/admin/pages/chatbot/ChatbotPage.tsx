@@ -4,7 +4,7 @@ const ChatbotPage = () => {
   return (
     <div>
       <article className="px-6 py-4">
-        <Heading title="Automation" align="left" className="text-base-black" />
+        <Heading title="ChatbotPage" align="left" className="text-base-black" />
       </article>
     </div>
   );

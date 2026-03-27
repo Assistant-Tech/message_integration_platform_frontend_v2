@@ -13,23 +13,16 @@ const RoleBasedRoute = ({ allowedRoles, children }: RoleBasedRouteProps) => {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const user = useAuthStore((s) => s.user);
   const { slug } = useParams();
-  const activeUser = user;
 
   if (isRefreshing) return <Loading />;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
-  if (!activeUser) return <Loading />;
+  if (!user) return <Loading />;
 
-  if (!allowedRoles.includes(activeUser.roleType)) {
-    switch (activeUser.roleType) {
-      case "TENANT_ADMIN":
-        return <Navigate to={`/app/${slug}/admin/dashboard`} replace />;
-      case "MEMBER":
-        return <Navigate to={`/app/${slug}/dashboard`} replace />;
-      default:
-        return <Navigate to="/unauthorized" replace />;
-    }
+  if (!allowedRoles.includes(user.roleType)) {
+    return <Navigate to={`/${slug}/admin/dashboard`} replace />;
   }
 
+  // ✅ if children passed, render them — otherwise use <Outlet /> for nested <Route>
   return children ? <>{children}</> : <Outlet />;
 };
 

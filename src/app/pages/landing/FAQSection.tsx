@@ -20,7 +20,7 @@ const FAQ = () => {
             {/* Left Section */}
             <Box
               width={{ initial: "100%", lg: "50%" }}
-              className="px-4 sm:px-10 lg:px-16"
+              className="px-6 sm:px-10 lg:px-16"
             >
               <div className="space-y-4 max-w-xl mx-auto lg:mx-0 text-center lg:text-left">
                 <Badge title={faq.badge} textStyle="body-italic-bold-16" />

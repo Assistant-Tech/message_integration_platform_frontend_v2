@@ -22,7 +22,7 @@ const EditProductPage = () => {
   });
 
   const handleBack = () => {
-    navigate(`/app/${tenantSlug}/admin/products/all`);
+    navigate(`/${tenantSlug}/admin/products/all`);
   };
 
   const OrderBreadCrumb = [
@@ -52,14 +52,14 @@ const EditProductPage = () => {
 
       toast.success("Product updated successfully");
 
-      navigate(`/app/${tenantSlug}/admin/products/all`);
+      navigate(`/${tenantSlug}/admin/products/all`);
     } catch (error) {
       console.error("Failed to update product:", error);
     }
   };
 
   const handleCancel = () => {
-    navigate(`/app/${tenantSlug}/admin/products/all`);
+    navigate(`/${tenantSlug}/admin/products/all`);
   };
 
   if (isLoading) return <Loading />;

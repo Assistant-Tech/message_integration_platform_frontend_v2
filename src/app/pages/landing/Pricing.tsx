@@ -51,7 +51,7 @@ const Pricing = () => {
   ];
 
   return (
-    <Box className="px-6 md:px-2 mb-6 max-w-full mx-auto">
+    <Box className="px-6 md:px-2 max-w-full mx-auto">
       <Flex direction="column" align="center" gap="3" mb="6">
         <div className="flex flex-col items-center text-center space-y-4">
           <article className="flex flex-col items-center text-center space-y-4">

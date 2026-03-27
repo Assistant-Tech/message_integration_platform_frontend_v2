@@ -42,10 +42,8 @@ type OnboardingData = {
 type Store = {
   data: Partial<OnboardingData>;
   completedSteps: number;
-  setStepData: (
-    step: keyof OnboardingData,
-    values: OnboardingData[keyof OnboardingData],
-  ) => void;
+  // check this
+  setStepData: (step: keyof OnboardingData, values: string[]) => void;
   setCompletedSteps: (step: number) => void;
   reset: () => void;
 };

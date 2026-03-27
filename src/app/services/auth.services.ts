@@ -1,34 +1,6 @@
 import api from "@/app/services/api/axios";
 import { handleApiError } from "@/app/utils/handlerApiError";
 
-const getCookieValue = (name: string): string | null => {
-  if (typeof document === "undefined") return null;
-
-  const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const match = document.cookie.match(
-    new RegExp(`(?:^|; )${escapedName}=([^;]*)`),
-  );
-
-  const value = match?.[1];
-  return value ? decodeURIComponent(value) : null;
-};
-
-const getOnboardingTokenFromCookies = (): string | null => {
-  const candidates = [
-    "onboarding_token",
-    "onboardingToken",
-    "onboarding-token",
-    "onboarding",
-  ];
-
-  for (const cookieName of candidates) {
-    const token = getCookieValue(cookieName);
-    if (token) return token;
-  }
-
-  return null;
-};
-
 /**
  * Service to handle all authentication-related API calls.
  */
@@ -98,14 +70,11 @@ export const signup = async (
 
     const res = await api.post(url, { name, email, password });
     return res.data;
-  } catch (error: any) {
-    // Extract the server-side error message
-    const errorMessage =
-      error.response?.data?.message || "Something went wrong";
-
-    throw new Error(errorMessage);
+  } catch (error) {
+    throw handleApiError(error);
   }
 };
+
 /**
  * Handles the email verification API call.
  */
@@ -125,24 +94,8 @@ export const verifyEmail = async (token: string) => {
  */
 export const onboarding = async (data: FormData) => {
   try {
-    const onboardingToken = getOnboardingTokenFromCookies();
-
     const res = await api.post("/auth/onboarding", data, {
-      withCredentials: true,
-      headers: {
-        ...(onboardingToken
-          ? {
-              "X-Onboarding-Token": onboardingToken,
-              "onboarding-token": onboardingToken,
-            }
-          : {}),
-      },
-      params: onboardingToken
-        ? {
-            onboarding_token: onboardingToken,
-            onboardingToken,
-          }
-        : undefined,
+      headers: { "Content-Type": "multipart/form-data" },
     });
     return res.data;
   } catch (error) {
@@ -155,14 +108,10 @@ export const onboarding = async (data: FormData) => {
  */
 export const login = async (email: string, password: string) => {
   try {
-    console.log("email", email);
     const res = await api.post("/auth/login", { email, password });
     return res.data;
-  } catch (error: any) {
-    const errorMessage =
-      error.response?.data?.message || "Something went wrong";
-
-    throw new Error(errorMessage);
+  } catch (error) {
+    throw handleApiError(error);
   }
 };
 /**
@@ -204,20 +153,13 @@ export const regenerateRecovery = async () => {
 
 /**
  * Handles the access token refresh API call.
- * Returns { accessToken, csrfToken } on success.
  */
-export const refreshAccessTokenAPI = async (): Promise<{
-  accessToken: string | null;
-  csrfToken: string | null;
-}> => {
+export const refreshAccessTokenAPI = async () => {
   try {
     const res = await api.get("/auth/refresh");
-    const data = res.data?.data ?? res.data;
-
-    return {
-      accessToken: data?.accessToken ?? null,
-      csrfToken: data?.csrfToken ?? null,
-    };
+    const accessToken = res.data?.data?.accessToken ?? null;
+    // console.log("🚀 ~ refreshAccessToken ~ data:", data);
+    return accessToken;
   } catch (error) {
     throw handleApiError(error);
   }

@@ -8,4 +8,3 @@ export { default as ChatHeader } from "./ChatHeader";
 export { default as ChatOrderInfoPanel } from "./ChatOrderInfoPanel";
 export { default as ChatMembersDetailsPanel } from "./ChatMembersDetailsPanel";
 export { default as ChatSearchProductDetails } from "./ChatSearchProductDetails";
-export { default as AssignMembersDrawer } from "./AssignMembersDrawer";
