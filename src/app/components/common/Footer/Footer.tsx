@@ -38,11 +38,11 @@ const Footer = () => {
 
   return (
     <footer className="bg-primary pt-10 w-full" id="footer-observer">
-      <div className="w-full max-w-[1600px] mx-auto px-6 md:px-12 lg:px-4 pb-10">
+      <div className="w-full max-w-[1700px] mx-auto px-6 md:px-12 lg:px-4 pb-10">
         {/* Top */}
         <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-x-40">
           {/* Brand */}
-          <div className="flex flex-col items-center text-center md:items-start md:text-left">
+          <div className="flex flex-col items-center text-center md:items-start md:text-left md:px-8 px-12">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -157,7 +157,7 @@ const Footer = () => {
       </div>
 
       {/* Bottom */}
-      <div className="bg-primary-dark text-white flex flex-col md:flex-row justify-between items-center gap-4 px-4 md:px-40 py-6">
+      <div className="max-w-[2400px] mx-auto bg-primary-dark text-white flex flex-col md:flex-row justify-between items-center gap-4 px-4 md:px-12 py-6">
         {/* Copyright */}
         <motion.p
           initial={{ opacity: 0 }}
@@ -182,7 +182,12 @@ const Footer = () => {
                 variants={itemVariants}
                 whileHover={{ scale: 1.2, rotate: 10 }}
               >
-                <a href={item.href} aria-label={item.name} target="_blank" rel="noopener noreferrer">
+                <a
+                  href={item.href}
+                  aria-label={item.name}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <img
                     src={item.src}
                     alt={`${item.name} icon`}

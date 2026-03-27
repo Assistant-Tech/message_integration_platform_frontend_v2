@@ -29,6 +29,5 @@ export { default as Modal } from "./Modal/Modal";
 
 // Conversation Components
 export { default as ChatSidebar } from "./Conversation/chat/ChatSidebar";
-export { default as ChatPanel } from "./Conversation/chat/ChatPanel";
 export { default as ChatDisplay } from "./Conversation/chat/chat-panel/ChatDisplay";
 export { default as ChatInput } from "./Conversation/chat/chat-panel/ChatInput";

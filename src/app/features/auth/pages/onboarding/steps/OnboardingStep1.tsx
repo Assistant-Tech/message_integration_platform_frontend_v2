@@ -1,19 +1,13 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Button, Input } from "@/app/components/ui/";
 import { useOnboardingStore } from "@/app/features/auth/pages/onboarding/hooks/useOnboardingStore";
 import {
   onboardingStep1Schema,
   OnboardingStep1FormData,
 } from "@/app/features/auth/pages/onboarding/schemas/Onboarding.schema";
-import { ZodError } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { ArrowRight } from "lucide-react";
-
-interface FormErrors {
-  organizationName?: string;
-  email?: string;
-  contactNumber?: string;
-  website?: string;
-}
 
 interface OnboardingStep1Props {
   onNext: (stepData: OnboardingStep1FormData) => void;
@@ -26,67 +20,71 @@ const OnboardingStep1: React.FC<OnboardingStep1Props> = ({
   isSubmitting,
 }) => {
   const { data } = useOnboardingStore();
-
-  const [formData, setFormData] = useState<OnboardingStep1FormData>(
-    data.step1 || {
-      organizationName: "",
-      email: "",
-      contactNumber: "",
-      website: "",
-    }
-  );
-
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [countryCode, setCountryCode] = useState<string>("Nepal");
-
-  const handleInputChange = (
-    field: keyof OnboardingStep1FormData,
-    value: string
-  ) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: "" }));
-    }
-  };
-
-  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    try {
-      onboardingStep1Schema.parse(formData);
-      setErrors({});
-      // Include country code in the contact number data if needed
-      const dataWithCountry = {
-        ...formData,
-        contactNumber: `${countryCode}-${formData.contactNumber}`,
+  const { initialCountryCode, initialContactNumber } = useMemo(() => {
+    const stored = data.step1?.contactNumber ?? "";
+    if (!stored) {
+      return {
+        initialCountryCode: "Nepal",
+        initialContactNumber: "",
       };
-      // Remove website if empty
-      if (!formData.website) {
-        delete dataWithCountry.website;
-      }
-      onNext(dataWithCountry);
-    } catch (err) {
-      if (err instanceof ZodError) {
-        const newErrors: FormErrors = {};
-        err.errors.forEach((error) => {
-          if (error.path.length > 0) {
-            newErrors[error.path[0] as keyof FormErrors] = error.message;
-          }
-        });
-        setErrors(newErrors);
-      }
     }
+
+    const [maybeCode, maybeNumber] = stored.split("-", 2);
+
+    if (maybeNumber) {
+      return {
+        initialCountryCode: maybeCode || "Nepal",
+        initialContactNumber: maybeNumber || "",
+      };
+    }
+
+    return {
+      initialCountryCode: "Nepal",
+      initialContactNumber: stored,
+    };
+  }, [data.step1?.contactNumber]);
+
+  const [countryCode, setCountryCode] = useState<string>(initialCountryCode);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<OnboardingStep1FormData>({
+    resolver: zodResolver(onboardingStep1Schema),
+    defaultValues: {
+      organizationName: data.step1?.organizationName ?? "",
+      email: data.step1?.email ?? "",
+      contactNumber: initialContactNumber,
+      website: data.step1?.website ?? "",
+    },
+  });
+
+  const onSubmit: SubmitHandler<OnboardingStep1FormData> = (values) => {
+    const dataWithCountry: OnboardingStep1FormData = {
+      ...values,
+      contactNumber: `${countryCode}-${values.contactNumber}`,
+    };
+
+    if (!values.website) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { website, ...rest } = dataWithCountry;
+      onNext(rest as OnboardingStep1FormData);
+      return;
+    }
+
+    onNext(dataWithCountry);
   };
 
   return (
-    <div className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <Input
         id="organizationName"
         label="Company Name"
         placeholder="Enter your company name"
-        value={formData.organizationName}
-        onChange={(e) => handleInputChange("organizationName", e.target.value)}
-        error={errors.organizationName}
+        error={errors.organizationName?.message}
         required
+        {...register("organizationName")}
       />
 
       <Input
@@ -94,10 +92,9 @@ const OnboardingStep1: React.FC<OnboardingStep1Props> = ({
         type="email"
         label="Company Email"
         placeholder="xyzcompany@gmail.com"
-        value={formData.email}
-        onChange={(e) => handleInputChange("email", e.target.value)}
-        error={errors.email}
+        error={errors.email?.message}
         required
+        {...register("email")}
       />
 
       <div>
@@ -120,18 +117,12 @@ const OnboardingStep1: React.FC<OnboardingStep1Props> = ({
               id="phone"
               type="tel"
               placeholder="+977 9876543210"
-              value={formData.contactNumber}
-              onChange={(e) =>
-                handleInputChange("contactNumber", e.target.value)
-              }
-              error={errors.contactNumber}
+              error={errors.contactNumber?.message}
               className="rounded-l-none border-l-0"
+              {...register("contactNumber")}
             />
           </div>
         </div>
-        {errors.contactNumber && (
-          <p className="text-danger text-sm mt-1">{errors.contactNumber}</p>
-        )}
       </div>
 
       <Input
@@ -139,21 +130,20 @@ const OnboardingStep1: React.FC<OnboardingStep1Props> = ({
         type="url"
         label="Company Website"
         placeholder="https://www.xyz.com"
-        value={formData.website}
-        onChange={(e) => handleInputChange("website", e.target.value)}
-        error={errors.website}
+        error={errors.website?.message}
+        {...register("website")}
       />
 
       <div className="flex justify-end pt-4">
         <Button
           label="Next"
-          onClick={handleSubmit}
+          type="submit"
           variant="primary"
           IconRight={<ArrowRight size={20} />}
           disabled={isSubmitting}
         />
       </div>
-    </div>
+    </form>
   );
 };
 

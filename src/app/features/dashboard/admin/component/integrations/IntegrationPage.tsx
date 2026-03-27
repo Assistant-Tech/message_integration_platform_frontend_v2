@@ -2,29 +2,33 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import IntegrationCard from "./IntgerationCard";
-import {
-  allIntegrations,
-  Integration,
-} from "@/app/utils/integration/integration.config";
+import { allIntegrations } from "@/app/utils/integration/integration.config";
+import { Integration } from "@/app/types/channel.types";
 
 const IntegrationPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState("all");
-  const [activeCategory, setActiveCategory] = useState("communication");
+  const [activeCategory, setActiveCategory] = useState("payment");
   const [integrationStates, setIntegrationStates] = useState<
     Record<string, boolean>
   >({});
 
-  // Check for provider parameter and set category to shipping
+  // Check provider parameter and switch to the category that contains it.
   useEffect(() => {
     const providerParam = searchParams.get("provider");
     if (providerParam) {
-      // Switch to shipping category when provider parameter is present
-      setActiveCategory("shipping");
+      const normalizedProvider = providerParam.toLowerCase();
 
-      // Optional: Scroll to the specific provider integration card
-      // You could add logic here to highlight or focus the specific provider
+      const categoryWithProvider = ["payment", "shipping"].find((category) =>
+        (allIntegrations[category] || []).some(
+          (integration) => integration.id === normalizedProvider,
+        ),
+      );
+
+      if (categoryWithProvider) {
+        setActiveCategory(categoryWithProvider);
+      }
     }
   }, [searchParams]);
 
@@ -58,7 +62,6 @@ const IntegrationPage = () => {
   };
 
   const categories = [
-    { id: "communication", label: "Communication" },
     { id: "payment", label: "Payment" },
     { id: "shipping", label: "Shipping" },
   ];

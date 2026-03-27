@@ -74,7 +74,8 @@ const LandingContent = () => {
       ),
       useContainer: false,
     },
-    { element: <FAQ variant="landing" /> },
+    { element: <FAQ variant="landing" />, useContainer: false },
+    // { element: <FAQ /> },
     { element: <Footer />, useContainer: false },
   ];
 

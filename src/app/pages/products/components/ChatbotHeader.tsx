@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { features } from "@/app/utils/product/product.config";
-import chatbot from "@/app/assets/video/chatbot.mp4";
 import { EmailSignupCTA } from "@/app/pages/products/components/";
 
 const stats = [
@@ -93,7 +92,9 @@ const ChatbotHeader = () => {
               {/* 📹 Chatbot Video */}
               <div className="aspect-[4/3] bg-black">
                 <video
-                  src={chatbot}
+                  src={
+                    "https://res.cloudinary.com/dtoqwn0gx/video/upload/v1767505536/chatbot_kcymyn.mp4"
+                  }
                   autoPlay
                   loop
                   muted

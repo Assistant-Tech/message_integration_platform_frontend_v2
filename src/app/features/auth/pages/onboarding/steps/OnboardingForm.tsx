@@ -11,14 +11,17 @@ import {
   OnboardingStep5,
 } from "@/app/features/auth/pages/onboarding/steps";
 import { Cross } from "lucide-react";
-import { toast } from "sonner";
-import { onboarding } from "@/app/services/auth.services";
-// import { useAuthStore } from "@/app/store/auth.store";
+import { useOnboarding } from "@/app/hooks/query/useAuthQuery";
+import { useAuthStore } from "@/app/store/auth.store";
+import type { NormalizedError } from "@/app/types/error.types";
 
 const OnboardingForm: React.FC = () => {
   const navigate = useNavigate();
   const { data, completedSteps, setStepData, setCompletedSteps, reset } =
     useOnboardingStore();
+  const onboardingMutation = useOnboarding();
+  const resetAuth = useAuthStore((s) => s.resetAuth);
+  const setRequiresOnboarding = useAuthStore((s) => s.setRequiresOnboarding);
 
   // const { onboarding } = useAuthStore();
 
@@ -57,74 +60,109 @@ const OnboardingForm: React.FC = () => {
     }
   };
 
-  const handleFinishEarly = () => {
-    handleFinalSubmit();
+  const isMissingOnboardingTokenError = (error: unknown): boolean => {
+    const normalizedError = error as Partial<NormalizedError>;
+    return (
+      typeof normalizedError?.message === "string" &&
+      normalizedError.message
+        .toLowerCase()
+        .includes("onboarding token not found")
+    );
   };
 
-  const handleFinalSubmit = async () => {
+  const handleOnboardingTokenMissing = () => {
+    setRequiresOnboarding(false);
+    resetAuth();
+    useOnboardingStore.persist.clearStorage();
+    useOnboardingStore.getState().reset();
+
+    navigate(`/login`, {
+      replace: true,
+      state: {
+        message: "Your onboarding session expired. Please login again.",
+      },
+    });
+  };
+
+  const handleFinishEarly = (step3Data: { industry: string }) => {
+    setStepData("step3", step3Data);
+    setCompletedSteps(3);
+    handleFinalSubmit({ step3: step3Data });
+  };
+
+  const handleFinalSubmit = async (overrideData?: Partial<typeof data>) => {
     setIsSubmitting(true);
     setSubmitError("");
 
-    try {
-      // Merge all step data from store into one object
-      const allStepsData = {
-        ...data.step1,
-        ...data.step2,
-        ...data.step3,
-        ...data.step4,
-        ...data.step5,
-      };
+    // Merge all step data from store into one object
+    const allStepsData = {
+      ...data.step1,
+      ...data.step2,
+      ...data.step3,
+      ...data.step4,
+      ...data.step5,
+      ...overrideData?.step1,
+      ...overrideData?.step2,
+      ...overrideData?.step3,
+      ...overrideData?.step4,
+      ...overrideData?.step5,
+    };
 
-      const formData = new FormData();
+    const formData = new FormData();
 
-      Object.entries(allStepsData).forEach(([key, value]) => {
-        if (value instanceof File) {
-          // Single file
-          formData.append(key, value);
-        } else if (
-          Array.isArray(value) &&
-          value.length > 0 &&
-          value[0] instanceof File
-        ) {
-          // Multiple files
-          value.forEach((file, idx) => {
-            if (file instanceof File) {
-              formData.append(`${key}[${idx}]`, file);
-            } else {
-              // If not a File, serialize to JSON string
-              formData.append(`${key}[${idx}]`, JSON.stringify(file));
-            }
-          });
-        } else if (Array.isArray(value)) {
-          // Array of strings/numbers/objects
-          formData.append(key, JSON.stringify(value));
-        } else if (typeof value === "object" && value !== null) {
-          // Serialize objects to JSON string
-          formData.append(key, JSON.stringify(value));
-        } else if (value !== undefined && value !== null) {
-          // Normal text/number fields
-          formData.append(key, value as string | Blob);
+    Object.entries(allStepsData).forEach(([key, value]) => {
+      if (value instanceof File) {
+        // Single file
+        formData.append(key, value);
+      } else if (
+        Array.isArray(value) &&
+        value.length > 0 &&
+        value[0] instanceof File
+      ) {
+        // Multiple files
+        value.forEach((file, idx) => {
+          if (file instanceof File) {
+            formData.append(`${key}[${idx}]`, file);
+          } else {
+            // If not a File, serialize to JSON string
+            formData.append(`${key}[${idx}]`, JSON.stringify(file));
+          }
+        });
+      } else if (Array.isArray(value)) {
+        // Array of strings/numbers/objects
+        formData.append(key, JSON.stringify(value));
+      } else if (typeof value === "object" && value !== null) {
+        // Serialize objects to JSON string
+        formData.append(key, JSON.stringify(value));
+      } else if (value !== undefined && value !== null) {
+        // Normal text/number fields
+        formData.append(key, value as string | Blob);
+      }
+    });
+
+    onboardingMutation.mutate(formData, {
+      onSuccess: () => {
+        setRequiresOnboarding(false);
+        reset();
+        navigate(`/login`, {
+          state: { message: "Onboarding completed successfully!" },
+        });
+        //Clear localstorage
+        useOnboardingStore.persist.clearStorage();
+        useOnboardingStore.getState().reset();
+      },
+      onError: (error) => {
+        if (isMissingOnboardingTokenError(error)) {
+          handleOnboardingTokenMissing();
+          return;
         }
-      });
-
-      const response = await onboarding(formData);
-
-      reset();
-      navigate(`/login`, {
-        state: { message: "Onboarding completed successfully!" },
-      });
-      toast.success("Onboarding completed successfully!");
-      console.log(response.data);
-
-      //Clear localstorage
-      useOnboardingStore.persist.clearStorage();
-      useOnboardingStore.getState().reset();
-    } catch (error) {
-      setSubmitError("Failed to submit onboarding. Please try again.");
-      console.error("Onboarding submission error:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
+        setSubmitError("Failed to submit onboarding. Please try again.");
+        console.error("Onboarding submission error:", error);
+      },
+      onSettled: () => {
+        setIsSubmitting(false);
+      },
+    });
   };
 
   const handlePrevious = () => {

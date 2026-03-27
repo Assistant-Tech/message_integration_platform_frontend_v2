@@ -33,7 +33,7 @@ const GetStarted = () => {
       <div className="relative z-10 max-w-[1600px] w-full flex flex-col-reverse md:flex-row items-end justify-between gap-12 md:gap-20 lg:gap-32 px-4 md:px-8 lg:px-2">
         {/* Left Text Section */}
         <motion.div
-          className="flex flex-col items-center md:items-start text-center md:text-left space-y-4 pb-10 md:pb-20"
+          className="flex flex-col items-center md:items-start text-center md:text-left space-y-4 pb-10 md:pb-20 md:px-4 px-2"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -42,8 +42,8 @@ const GetStarted = () => {
             Get Started with Chatblix today.
           </h2>
           <p className="text-base md:text-lg text-gray-200 max-w-md">
-            Try Chatblix free for 14 days and discover how it can transform
-            your workflow!
+            Try Chatblix free for 14 days and discover how it can transform your
+            workflow!
           </p>
           <motion.button
             whileHover={{ scale: 1.05 }}

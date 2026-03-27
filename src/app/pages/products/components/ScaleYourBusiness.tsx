@@ -3,8 +3,10 @@ import { Circle, Check } from "lucide-react";
 
 import { Button } from "@/app/components/ui";
 import { SCALE_IMAGE_URL } from "@/app/constants/image-cloudinary";
+import crm from "@/app/content/json/crm.json";
 
 const ScaleYourBusiness = () => {
+  const { empowerBusiness } = crm;
   return (
     <div className="flex flex-col md:flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20 px-4 sm:px-6 lg:px-px py-6 sm:py-20 lg:py-24">
       {/* Image Section */}
@@ -13,7 +15,7 @@ const ScaleYourBusiness = () => {
         <div className="absolute -left-6 sm:-left-10 md:-left-16 bottom-0 -z-10">
           <Circle
             size={80}
-            className="opacity-65 sm:w-[100px] sm:h-[100px] md:w-[150px] md:h-[150px] text-orange-400"
+            className="opacity-65 sm:w-[100px] sm:h-[100px] md:w-[150px] md:h-[150px] text-secondary"
           />
         </div>
 
@@ -38,27 +40,21 @@ const ScaleYourBusiness = () => {
       {/* Text Content Section */}
       <motion.div className="w-full md:w-full lg:w-1/2 lg:max-w-xl space-y-6 md:space-y-8">
         <h2 className="h2-bold-40 text-base-black text-center md:text-center lg:text-start">
-          Scale Your Business
+          {empowerBusiness.scale.title}
         </h2>
         <p className="lg:max-w-5xl flex justify-start items-center text-center md:text-center lg:text-start md:max-w-none">
-          Whether you're a startup or an enterprise, our AI-enabled CRM helps
-          take your business to the next level with intelligent automation and
-          insights.
+          {empowerBusiness.scale.description}
         </p>
 
         {/* Features List */}
         <ul className="space-y-4 md:space-y-5">
-          {[
-            "Online store owners who want to reply fast on social media",
-            "Small businesses that want to support customers better",
-            "Big enterprises looking for efficiency, control and long-term value",
-          ].map((text, idx) => (
-            <li key={idx} className="flex items-start gap-4">
+          {empowerBusiness.scale.features.map(({ title }, index) => (
+            <li key={index} className="flex items-start gap-4">
               <div className="flex-shrink-0 p-2 bg-primary-light rounded-full mt-1">
-                <Check className="w-4 h-4 md:w-5 md:h-5 text-teal-600" />
+                <Check className="w-4 h-4 md:w-5 md:h-5 text-primary" />
               </div>
               <span className="text-grey-medium text-base md:text-lg leading-relaxed">
-                {text}
+                {title}
               </span>
             </li>
           ))}
@@ -68,7 +64,7 @@ const ScaleYourBusiness = () => {
           <Button
             label="Book a Demo"
             variant="primary"
-            redirectTo="/demo"
+            // redirectTo="/demo"
             className="w-full sm:w-auto px-6 sm:px-8 md:px-10 h-12 sm:h-14 text-base font-medium mt-8"
           />
         </div>

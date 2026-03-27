@@ -1,286 +1,144 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import {
-  LoginResponse,
-  LoginSuccessResponse,
-  MFARequiredResponse,
-  User,
-} from "@/app/types/auth.types";
-import {
-  fetchCurrentUser,
-  signup,
-  verifyEmail,
-  onboarding,
-  login,
-  refreshAccessTokenAPI,
-  logout,
-  mfalogin,
-} from "@/app/services/auth.services";
+import queryClient from "@/app/utils/queryClient";
+import type { User } from "@/app/types/auth.types";
 
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
 interface AuthState {
-  user: User | null;
+  // Persisted state
   accessToken: string | null;
   csrfToken: string | null;
-  onboardingToken: string | null;
-  requiresOnboarding: boolean;
   tenantSlug: string | null;
-  setTenantSlug: (slug: string) => void;
   isAuthenticated: boolean;
-  isVerified: boolean;
-  isloading: boolean;
+  requiresOnboarding: boolean;
+  tokenExpiresAt: number | null;
+
+  // Runtime state (not persisted)
   isRefreshing: boolean;
-  setRefreshing: (refreshing: boolean) => void;
+  isloading: boolean;
+  user: User | null;
+
+  // Setters
   setAccessToken: (token: string | null) => void;
+  setCsrfToken: (token: string | null) => void;
+  setRefreshing: (refreshing: boolean) => void;
+  setTenantSlug: (slug: string | null) => void;
+  setAuthenticated: (authenticated: boolean) => void;
+  setRequiresOnboarding: (requires: boolean) => void;
   setUser: (user: User | null) => void;
-  signup: (
-    name: string,
-    email: string,
-    password: string,
-    invitationToken?: string,
-  ) => Promise<{ message: string; email: string }>;
-  verifyEmail: (token: string) => Promise<{ message: string }>;
-  onboarding: (data: FormData) => Promise<{ slug: string }>;
-  login: (email: string, password: string) => Promise<LoginResponse>;
-  mfalogin: (
-    mfaToken: string,
-    totp?: string,
-    recoveryPhrase?: string[],
-  ) => Promise<LoginResponse>;
+  setTokenExpiresAt: (expiresAt: number | null) => void;
+
+  // Auth actions
   refreshAccessToken: () => Promise<string | null>;
-  fetchCurrentUserProfile: () => Promise<void>;
-  logout: () => void;
   resetAuth: () => void;
 }
 
+// ---------------------------------------------------------------------------
+// Store
+// ---------------------------------------------------------------------------
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
-      user: null,
+      // ----- Initial state -----
       accessToken: null,
       csrfToken: null,
-      onboardingToken: null,
-      requiresOnboarding: false,
       tenantSlug: null,
-      setTenantSlug: (slug) => set({ tenantSlug: slug }),
-      isVerified: false,
-      isloading: false,
-      isRefreshing: false,
       isAuthenticated: false,
+      requiresOnboarding: false,
+      isRefreshing: false,
+      isloading: false,
+      user: null,
+      tokenExpiresAt: null,
 
-      setRefreshing: (refreshing) => set({ isRefreshing: refreshing }),
-      setAccessToken: (accessToken) => set({ accessToken }),
+      // ----- Setters -----
+      setAccessToken: (accessToken) =>
+        set({ accessToken, isAuthenticated: !!accessToken }),
+      setCsrfToken: (csrfToken) => set({ csrfToken }),
+      setRefreshing: (isRefreshing) => set({ isRefreshing }),
+      setTenantSlug: (tenantSlug) => set({ tenantSlug }),
+      setAuthenticated: (isAuthenticated) => set({ isAuthenticated }),
+      setRequiresOnboarding: (requiresOnboarding) =>
+        set({ requiresOnboarding }),
       setUser: (user) => set({ user }),
+      setTokenExpiresAt: (tokenExpiresAt) => set({ tokenExpiresAt }),
 
       resetAuth: () => {
+        queryClient.clear();
+        localStorage.removeItem("chatblix-query-cache");
+
         set({
-          user: null,
           accessToken: null,
           csrfToken: null,
-          onboardingToken: null,
-          requiresOnboarding: false,
-          isVerified: false,
-          isAuthenticated: false,
           tenantSlug: null,
+          isAuthenticated: false,
+          requiresOnboarding: false,
+          isRefreshing: false,
+          isloading: false,
+          user: null,
+          tokenExpiresAt: null,
         });
       },
 
-      signup: async (name, email, password, invitationToken) => {
-        set({ isloading: true });
-        try {
-          const res = await signup(name, email, password, invitationToken);
-          set({
-            user: res.user,
-            requiresOnboarding: res.requiresOnboarding,
-            isVerified: false,
-          });
-          return { message: res.message, email };
-        } finally {
-          set({ isloading: false });
-        }
-      },
-
-      verifyEmail: async (token) => {
-        set({ isloading: true });
-        try {
-          const res = await verifyEmail(token);
-          set({
-            isVerified: true,
-            requiresOnboarding: true,
-          });
-          return { message: res.message };
-        } finally {
-          set({ isloading: false });
-        }
-      },
-
-      onboarding: async (data) => {
-        set({ isloading: true });
-        try {
-          const res = await onboarding(data);
-          const onboardingData = res.data || {};
-          set({ requiresOnboarding: false });
-          await get().fetchCurrentUserProfile();
-          const slug = get().user?.tenant?.slug ?? onboardingData.slug ?? "";
-          return { slug };
-        } finally {
-          set({ isloading: false });
-        }
-      },
-
-      login: async (email, password) => {
-        set({ isloading: true });
-        try {
-          const res: LoginSuccessResponse | MFARequiredResponse = await login(
-            email,
-            password,
-          );
-
-          if ("mfaRequired" in res.data) {
-            return {
-              message: res.message,
-              success: true,
-              data: {
-                mfaRequired: true,
-                mfaToken: res.data.mfaToken,
-                methods: res.data.methods,
-                expiresIn: res.data.expiresIn,
-              },
-              timestamp: res.timestamp,
-            } satisfies MFARequiredResponse;
-          }
-
-          const {
-            accessToken,
-            requiresOnboarding,
-            csrfToken,
-            tenantSlug,
-            accessTokenExpiresIn,
-          } = res.data;
-
-          set({
-            accessToken,
-            requiresOnboarding,
-            csrfToken,
-            isAuthenticated: true,
-            tenantSlug,
-          });
-
-          await get().fetchCurrentUserProfile();
-
-          return {
-            message: res.message,
-            success: true,
-            data: {
-              accessToken,
-              accessTokenExpiresIn,
-              csrfToken,
-              requiresOnboarding,
-              tenantSlug,
-            },
-            timestamp: res.timestamp,
-          } satisfies LoginSuccessResponse;
-        } finally {
-          set({ isloading: false });
-        }
-      },
-
-      mfalogin: async (mfaToken, totp, recoveryPhrase) => {
-        set({ isloading: true });
-        try {
-          const res: LoginSuccessResponse = await mfalogin(
-            mfaToken,
-            totp,
-            recoveryPhrase,
-          );
-
-          const { accessToken, requiresOnboarding, csrfToken, tenantSlug } =
-            res.data;
-
-          set({
-            accessToken,
-            requiresOnboarding,
-            csrfToken,
-            isAuthenticated: true,
-            tenantSlug,
-          });
-
-          await get().fetchCurrentUserProfile();
-
-          return {
-            message: res.message,
-            success: true,
-            data: res.data,
-            timestamp: res.timestamp,
-          } satisfies LoginSuccessResponse;
-        } finally {
-          set({ isloading: false });
-        }
-      },
-
+      // ----- Refresh Access Token -----
       refreshAccessToken: async () => {
+        const current = get();
+        if (current.isRefreshing) return current.accessToken;
+
         set({ isRefreshing: true });
         try {
-          const res = await refreshAccessTokenAPI();
+          const { refreshAccessTokenAPI } = await import(
+            "@/app/services/auth.services"
+          );
+          const response = await refreshAccessTokenAPI();
 
-          const accessToken = res;
+          if (response?.accessToken) {
+            const expiresIn = 900;
+            const tokenExpiresAt = Date.now() + expiresIn * 1000;
 
-          set({
-            accessToken,
-            isRefreshing: false,
-            isAuthenticated: !!accessToken,
-          });
+            set({
+              accessToken: response.accessToken,
+              csrfToken: response.csrfToken ?? current.csrfToken,
+              isRefreshing: false,
+              tokenExpiresAt: tokenExpiresAt,
+            });
+            return response.accessToken;
+          }
 
-          return accessToken;
-        } catch (err) {
-          set({
-            accessToken: null,
-            csrfToken: null,
-            isRefreshing: false,
-            isAuthenticated: false,
-          });
-          return null;
-        }
-      },
-
-      fetchCurrentUserProfile: async () => {
-        set({ isloading: true });
-        try {
-          const res = await fetchCurrentUser();
-          const user = res?.data ?? res;
-          set({
-            user,
-            tenantSlug: user?.tenant?.slug ?? get().tenantSlug ?? null,
-          });
-        } catch (error) {
-          console.error("Failed to fetch user profile:", error);
-          set({ user: null, tenantSlug: null, isAuthenticated: false });
-          throw error;
-        } finally {
-          set({ isloading: false });
-        }
-      },
-
-      logout: async () => {
-        set({ isloading: true });
-        try {
-          await logout();
-        } catch (error) {
-          console.error("Logout failed:", error);
-          throw error;
-        } finally {
+          console.warn("Refresh token succeeded but returned no tokens?");
           get().resetAuth();
-          set({ isloading: false });
+          return null;
+        } catch (error: any) {
+          const status = error.response?.status;
+          const isCsrfError = error.response?.data?.message
+            ?.toLowerCase()
+            .includes("csrf");
+
+          if (status === 401) {
+            get().resetAuth();
+          } else if (status === 403 && !isCsrfError) {
+            get().resetAuth();
+          } else if (isCsrfError) {
+            console.warn(
+              "CSRF mismatch detected on refresh. Preserving session for retry.",
+            );
+          }
+
+          console.error("Refresh token failed:", error);
+          return null;
         }
       },
     }),
     {
-      name: "auth-csrf",
+      name: "auth-store",
       partialize: (state) => ({
-        csrfToken: state.csrfToken,
         accessToken: state.accessToken,
-        isAuthenticated: state.isAuthenticated,
+        csrfToken: state.csrfToken,
         tenantSlug: state.tenantSlug,
-        user: state.user,
+        isAuthenticated: state.isAuthenticated,
+        requiresOnboarding: state.requiresOnboarding,
+        tokenExpiresAt: state.tokenExpiresAt,
       }),
     },
   ),

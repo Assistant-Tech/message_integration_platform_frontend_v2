@@ -57,7 +57,7 @@ const ChatBot: React.FC = () => {
             </div>
 
             {/* Mobile Floating Cards - Show only on mobile */}
-            <div className="absolute left-4 top-4 z-10 sm:hidden">
+            <div className="absolute left-24 top-4 z-10 sm:hidden">
               <AnimatedProcessCard processes={processes} />
             </div>
 
@@ -77,7 +77,7 @@ const ChatBot: React.FC = () => {
           {/* Right Section: Text & CTA */}
           <motion.div
             variants={itemVariants}
-            className="w-full md:w-full lg:w-full px-4 md:px-8 lg:px-14"
+            className="w-full md:w-full lg:w-full px-4 md:px-8 lg:px-14 flex flex-col items-center md:items-center lg:items-start"
           >
             <Badge
               title="AI DRIVEN CHATBOTS "

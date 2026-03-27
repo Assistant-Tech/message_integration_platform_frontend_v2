@@ -25,7 +25,7 @@ const SubscriptionConfirmation = () => {
 
   const handleConfirm = () => {
     setShowDialog(false);
-    navigate(`/${slug}/admin/dashboard`);
+    navigate(`/app/${slug}/admin/dashboard`);
   };
 
   const invoice = invoiceData[0];

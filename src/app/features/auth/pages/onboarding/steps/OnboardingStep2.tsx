@@ -7,8 +7,10 @@ import {
 } from "@/app/features/auth/pages/onboarding/schemas/Onboarding.schema";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Country, State, City } from "country-state-city";
-import Select from "react-select/creatable"; 
+import Select from "react-select/creatable";
 import { motion } from "framer-motion";
+import { useForm, Controller, type SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 interface OnboardingStep2Props {
   onNext: (stepData: OnboardingStep2FormData) => void;
@@ -23,21 +25,32 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
 }) => {
   const { data } = useOnboardingStore();
 
-  const [formData, setFormData] = useState<OnboardingStep2FormData>(
-    data.step2 || { country: "", state: "", city: "", address: "" },
-  );
-
-  const [errors, setErrors] = useState<
-    Partial<Record<keyof OnboardingStep2FormData, string>>
-  >({});
-
-  // Store manually added states and cities
   const [customOptions, setCustomOptions] = useState<{
     states: string[];
     cities: string[];
   }>({ states: [], cities: [] });
 
-  // Country list
+  const {
+    control,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm<OnboardingStep2FormData>({
+    resolver: zodResolver(onboardingStep2Schema),
+    defaultValues: {
+      country: data.step2?.country ?? "",
+      state: data.step2?.state ?? "",
+      city: data.step2?.city ?? "",
+      address: data.step2?.address ?? "",
+    },
+  });
+
+  const watchCountry = watch("country");
+  const watchState = watch("state");
+  const watchCity = watch("city");
+  const watchAddress = watch("address");
+
   const countries = useMemo(
     () =>
       Country.getAllCountries().map(({ name, isoCode }) => ({
@@ -47,16 +60,14 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
     [],
   );
 
-  // States
   const selectedCountry = useMemo(
-    () => countries.find((c) => c.label === formData.country),
-    [formData.country, countries],
+    () => countries.find((c) => c.label === watchCountry),
+    [countries, watchCountry],
   );
 
   const states = useMemo(() => {
     if (!selectedCountry) return [];
 
-    // Get states from the library
     const libraryStates = State.getStatesOfCountry(selectedCountry.value).map(
       ({ name, isoCode }) => ({
         label: name,
@@ -64,7 +75,6 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
       }),
     );
 
-    // Add custom states for this country
     const customStates = customOptions.states.map((state) => ({
       label: state,
       value: state,
@@ -73,16 +83,14 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
     return [...libraryStates, ...customStates];
   }, [selectedCountry, customOptions.states]);
 
-  // Cities
   const selectedState = useMemo(
-    () => states.find((s) => s.label === formData.state),
-    [formData.state, states],
+    () => states.find((s) => s.label === watchState),
+    [states, watchState],
   );
 
   const cities = useMemo(() => {
     if (!selectedCountry || !selectedState) return [];
 
-    // Get cities from the library
     const libraryCities = City.getCitiesOfState(
       selectedCountry.value,
       selectedState.value,
@@ -91,7 +99,6 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
       value: name,
     }));
 
-    // Add custom cities
     const customCities = customOptions.cities.map((city) => ({
       label: city,
       value: city,
@@ -100,76 +107,20 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
     return [...libraryCities, ...customCities];
   }, [selectedCountry, selectedState, customOptions.cities]);
 
-  // Handles field changes
-  const handleChange = (field: "country" | "state" | "city", value: any) => {
-    const updated = {
-      ...formData,
-      [field]: value ? value.label : "",
-      ...(field === "country" ? { state: "", city: "" } : {}),
-      ...(field === "state" ? { city: "" } : {}),
-    };
+  const recomputeAddress = (overrides?: {
+    country?: string;
+    state?: string;
+    city?: string;
+  }) => {
+    const country = overrides?.country ?? watchCountry;
+    const state = overrides?.state ?? watchState;
+    const city = overrides?.city ?? watchCity;
 
-    updated.address = [updated.city, updated.state, updated.country]
-      .filter(Boolean)
-      .join(", ");
-    setFormData(updated);
-
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: "" }));
-    }
+    const address = [city, state, country].filter(Boolean).join(", ");
+    setValue("address", address, { shouldDirty: true });
   };
 
-  const validateForm = (): boolean => {
-    const currentSchema = onboardingStep2Schema.superRefine((data, ctx) => {
-      if (!data.country) {
-        ctx.addIssue({
-          code: "custom",
-          message: "Country is required",
-          path: ["country"],
-        });
-      }
-      if (!data.state) {
-        ctx.addIssue({
-          code: "custom",
-          message: "State/Province is required",
-          path: ["state"],
-        });
-      }
-      if (!data.city) {
-        ctx.addIssue({
-          code: "custom",
-          message: "City is required",
-          path: ["city"],
-        });
-      }
-    });
-
-    const result = currentSchema.safeParse(formData);
-
-    if (!result.success) {
-      const fieldErrors: typeof errors = {};
-      result.error.errors.forEach((err) => {
-        const fieldName = err.path[0] as keyof OnboardingStep2FormData;
-        fieldErrors[fieldName] = err.message;
-      });
-      setErrors(fieldErrors);
-      return false;
-    }
-
-    setErrors({});
-    return true;
-  };
-
-  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    if (validateForm()) {
-      onNext(formData);
-    }
-  };
-
-  // Handle adding a new state or city
   const handleAddNew = (field: "state" | "city", value: string) => {
-    // Add the new option to custom options
     setCustomOptions((prev) => ({
       ...prev,
       [field === "state" ? "states" : "cities"]: [
@@ -178,35 +129,54 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
       ],
     }));
 
-    // Update the form data to reflect the newly added state or city
-    const updated = {
-      ...formData,
-      [field]: value,
-      ...(field === "state" ? { city: "" } : {}), // Clear city if state is changed
-    };
+    setValue(field, value, { shouldDirty: true });
+    if (field === "state") {
+      setValue("city", "", { shouldDirty: true });
+      recomputeAddress({ state: value, city: "" });
+    } else {
+      recomputeAddress({ city: value });
+    }
+  };
 
-    updated.address = [updated.city, updated.state, updated.country]
+  const onSubmit: SubmitHandler<OnboardingStep2FormData> = (values) => {
+    const address = [values.city, values.state, values.country]
       .filter(Boolean)
       .join(", ");
 
-    setFormData(updated);
+    onNext({ ...values, address });
   };
 
   return (
-    <div className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {/* Country Dropdown */}
       <div className="flex flex-col">
         <label htmlFor="country" className="mb-1 body-bold-16 text-grey-medium">
           Country <span className="text-danger">*</span>
         </label>
-        <Select
-          id="country"
-          options={countries}
-          value={countries.find((c) => c.label === formData.country) || null}
-          onChange={(option) => handleChange("country", option)}
-          placeholder="Select a country"
-          isSearchable
-          className="text-grey-medium"
+        <Controller
+          control={control}
+          name="country"
+          render={({ field }) => {
+            const selected =
+              countries.find((c) => c.label === field.value) || null;
+            return (
+              <Select
+                id="country"
+                options={countries}
+                value={selected}
+                onChange={(option) => {
+                  const label = option ? option.label : "";
+                  field.onChange(label);
+                  setValue("state", "", { shouldDirty: true });
+                  setValue("city", "", { shouldDirty: true });
+                  recomputeAddress({ country: label, state: "", city: "" });
+                }}
+                placeholder="Select a country"
+                isSearchable
+                className="text-grey-medium"
+              />
+            );
+          }}
         />
         {errors.country && (
           <motion.span
@@ -215,7 +185,7 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
           >
-            {errors.country}
+            {errors.country.message}
           </motion.span>
         )}
       </div>
@@ -225,17 +195,34 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
         <label htmlFor="state" className="mb-1 body-bold-16 text-grey-medium">
           State/Province <span className="text-danger">*</span>
         </label>
-        <Select
-          id="state"
-          options={states}
-          value={states.find((s) => s.label === formData.state) || null}
-          onChange={(option) => handleChange("state", option)}
-          placeholder="Select a state"
-          isSearchable
-          isDisabled={!formData.country}
-          isClearable
-          onCreateOption={(inputValue) => handleAddNew("state", inputValue)}
-          className="text-grey-medium"
+        <Controller
+          control={control}
+          name="state"
+          render={({ field }) => {
+            const selected =
+              states.find((s) => s.label === field.value) || null;
+            return (
+              <Select
+                id="state"
+                options={states}
+                value={selected}
+                onChange={(option) => {
+                  const label = option ? option.label : "";
+                  field.onChange(label);
+                  setValue("city", "", { shouldDirty: true });
+                  recomputeAddress({ state: label, city: "" });
+                }}
+                placeholder="Select a state"
+                isSearchable
+                isDisabled={!watchCountry}
+                isClearable
+                onCreateOption={(inputValue) =>
+                  handleAddNew("state", inputValue)
+                }
+                className="text-grey-medium"
+              />
+            );
+          }}
         />
         {errors.state && (
           <motion.span
@@ -244,7 +231,7 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
           >
-            {errors.state}
+            {errors.state.message}
           </motion.span>
         )}
       </div>
@@ -254,17 +241,33 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
         <label htmlFor="city" className="mb-1 body-bold-16 text-grey-medium">
           City <span className="text-danger">*</span>
         </label>
-        <Select
-          id="city"
-          options={cities}
-          value={cities.find((c) => c.label === formData.city) || null}
-          onChange={(option) => handleChange("city", option)}
-          placeholder="Select a city"
-          isSearchable
-          isDisabled={!formData.state}
-          isClearable
-          onCreateOption={(inputValue) => handleAddNew("city", inputValue)}
-          className="text-grey-medium"
+        <Controller
+          control={control}
+          name="city"
+          render={({ field }) => {
+            const selected =
+              cities.find((c) => c.label === field.value) || null;
+            return (
+              <Select
+                id="city"
+                options={cities}
+                value={selected}
+                onChange={(option) => {
+                  const label = option ? option.label : "";
+                  field.onChange(label);
+                  recomputeAddress({ city: label });
+                }}
+                placeholder="Select a city"
+                isSearchable
+                isDisabled={!watchState}
+                isClearable
+                onCreateOption={(inputValue) =>
+                  handleAddNew("city", inputValue)
+                }
+                className="text-grey-medium"
+              />
+            );
+          }}
         />
         {errors.city && (
           <motion.span
@@ -273,15 +276,15 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
           >
-            {errors.city}
+            {errors.city.message}
           </motion.span>
         )}
       </div>
 
       {/* Address Preview */}
-      {formData.address && (
+      {watchAddress && (
         <div className="p-2 bg-base-white border rounded text-sm text-grey-medium">
-          Selected address: <strong>{formData.address}</strong>
+          Selected address: <strong>{watchAddress}</strong>
         </div>
       )}
 
@@ -296,13 +299,13 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
         />
         <Button
           label="Next"
-          onClick={handleSubmit}
+          type="submit"
           variant="primary"
           IconRight={<ArrowRight size={20} />}
           disabled={isSubmitting}
         />
       </div>
-    </div>
+    </form>
   );
 };
 

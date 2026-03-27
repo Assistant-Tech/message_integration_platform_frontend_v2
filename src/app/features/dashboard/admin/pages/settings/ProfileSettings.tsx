@@ -1,26 +1,17 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Edit, Eye, EyeOff, Save, X, CircleUser } from "lucide-react";
+import { Edit, Eye, EyeOff, Save, X } from "lucide-react";
 import { Input, Button } from "@/app/components/ui";
 import { Switch } from "../../component/ui";
 import { useNotificationStore } from "@/app/store/notification.store";
 import { User } from "@/app/types/auth.types";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/app/constants/queryKeys";
-// import { useAuthStore } from "@/app/store/auth.store";
+import { getAvatarUrl } from "@/app/utils/avatar";
 
 const ProfileSettings = () => {
-  // Tarika -1
   const queryClient = useQueryClient();
   const user = queryClient.getQueryData<User>(QUERY_KEYS.CURRENT_USER);
-  console.log("🚀 ~ ProfileSettings ~ user:", user)
-  console.log(useQueryClient().getQueryCache().getAll());
-
-  // Tarika - 2
-  // const user = useAuthStore((state) => state.user);
-  // console.log("🚀 ~ ProfileSettings ~ user:", user)
-
-  // Debuging garne tarika in React-Query
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -79,15 +70,11 @@ const ProfileSettings = () => {
       <motion.div className="flex items-center border border-gray-200 rounded-xl p-4 bg-white mb-6">
         <div className="flex-shrink-0">
           <div className="w-16 h-16 bg-gray-400 rounded-full flex items-center justify-center overflow-hidden">
-            {user.avatar ? (
-              <img
-                src={user.avatar}
-                alt="Profile"
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <CircleUser size={24} className="text-white" />
-            )}
+            <img
+              src={getAvatarUrl(user.avatar)}
+              alt="Profile"
+              className="w-full h-full object-cover"
+            />
           </div>
         </div>
 

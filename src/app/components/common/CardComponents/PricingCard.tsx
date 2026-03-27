@@ -24,7 +24,6 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
     buttonText,
     priceSuffix,
     cardIsPopular,
-    checkoutUrl,
     subtitle,
   } = usePricingCardData({ plan, duration });
 
@@ -101,7 +100,7 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
             )}
             label={buttonText}
             variant="primary"
-            redirectTo={checkoutUrl}
+            // redirectTo={checkoutUrl}
           />
         </div>
       </div>

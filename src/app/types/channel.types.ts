@@ -1,0 +1,53 @@
+export interface Channel {
+  _id: string;
+  title: string;
+  type: "internal" | "whatsapp" | "facebook" | "instagram" | "tiktok";
+  isDefault: boolean;
+  priority: string;
+  participants: string[];
+  unreadCount?: number;
+  isPrivate?: boolean;
+}
+
+/*--------------------- TYPES FOR API & API SERVICES  */
+export interface ChannelApiResponse {
+  platform: string;
+}
+
+/* -------------------- TYPES FOR CONSTANTS -------------------- */
+
+export type Page = {
+  id: string;
+  name: string;
+  channelType: "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "WHATSAPP";
+  externalId: string;
+  linkedPageId?: string | null;
+};
+
+export type UseChannelsReturn = {
+  integrations: IntegrationRecord[];
+  pages: Page[];
+  isLoading: boolean;
+  handleConnectFacebook: () => void;
+};
+
+export interface Integration {
+  id: string;
+  name: string;
+  description: string;
+  logoSvg: string;
+  logoBackgroundColor: string;
+  defaultEnabled: boolean;
+  badge?: {
+    label: "Most Popular" | "Popular" | "Beta";
+    tone: "Most Popular" | "popular" | "beta";
+  };
+  cardGradient?: string;
+}
+
+export type IntegrationRecord = Record<string, unknown>;
+
+export interface ProviderCard extends Integration {
+  isConnected: boolean;
+  details: Page | null;
+}
