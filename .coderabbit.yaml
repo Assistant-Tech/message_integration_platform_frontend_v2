@@ -1,22 +1,301 @@
-language: "en"
-early_access: false
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+
+language: en
+early_access: true
+
+chat:
+  auto_reply: true
+
 reviews:
-  request_changes_workflow: false
+  auto_review:
+    enabled: true
+    ignore_title_keywords:
+      - 'WIP'
+      - 'Draft'
+    drafts: false
+    base_branches:
+      - main
+      - development
+
   high_level_summary: true
-  poem: true
+  sequence_diagrams: true
+  poem: false
   review_status: true
   collapse_walkthrough: false
+  changed_files_summary: true
+  request_changes_workflow: false
+
+  pre_merge_checks:
+    description:
+      mode: warning
+    docstrings:
+      mode: off
+
+  # Exclude generated artifacts, deps, build outputs, and assets
   path_filters:
-    - "!**/.xml"
-    - "!**/__generated__/**"
-    - "!**/generated/**"
-    - "!**/*.json"
-    - "!**/*.svg"
-    - "!**/*.png"
-    - "!**/*.jpg"
-    - "!**/*.gif"
-    - "!**/*.lock"
+    - '!**/node_modules/**'
+    - '!**/dist/**'
+    - '!**/coverage/**'
+    - '!**/.turbo/**'
+    - '!**/.next/**'
+    - '!**/build/**'
+    - '!**/*.min.*'
+    - '!**/*.lock'
+    - '!**/__generated__/**'
+    - '!**/generated/**'
+    - '!**/*.svg'
+    - '!**/*.png'
+    - '!**/*.jpg'
+    - '!**/*.jpeg'
+    - '!**/*.gif'
+    - '!**/*.ico'
+    - '!**/*.webp'
+    - '!**/stats.html'
+    - '!**/public/**'
+
   path_instructions:
-    - path: "**/*.{ts,tsx}"
-      instructions:
-        "Review the Typescript and React code for conformity with best practices in React,Tailwind, Zustand and Typescript. Highlight any deviations."
+    # Core React + TypeScript code
+    - path: '**/*.{ts,tsx,js,jsx}'
+      instructions: |
+        React + TypeScript standards:
+        - Use strict TypeScript; avoid `any` (prefer `unknown` + type guards).
+        - Prefer `import type` for type-only imports.
+        - Use functional components with hooks; avoid class components.
+        - Follow React 19 best practices and concurrent rendering patterns.
+        - Ensure proper dependency arrays in useEffect, useMemo, useCallback.
+        - Avoid prop drilling; use context/Zustand for shared state.
+        - Component files should have single responsibility; keep components focused.
+        - Avoid code smells: no large components (>250 lines), no deep nesting (>3 levels), no duplicated logic.
+        - Use explicit return types for custom hooks and exported functions.
+        - Ensure all components are properly typed with interfaces/types for props.
+
+        Performance & optimization:
+        - Lazy load routes and heavy components with React.lazy() and Suspense.
+        - Memoize expensive computations with useMemo, callbacks with useCallback.
+        - Avoid inline function definitions in JSX render (extract or memoize).
+        - Use React.memo() for components that re-render frequently with same props.
+        - Ensure virtualization for long lists (e.g., react-window, react-virtualized).
+        - Optimize images: use modern formats (WebP), lazy loading, proper sizing.
+
+        Code quality:
+        - Follow clean code principles and consistent naming conventions.
+        - Use composition over inheritance; prefer small, reusable components.
+        - Extract business logic from components into custom hooks or utils.
+        - Use Zod schemas for runtime validation and type inference.
+        - Ensure error boundaries are in place for critical UI sections.
+
+        Security:
+        - Never expose sensitive data (API keys, tokens) in client code.
+        - Sanitize user input to prevent XSS attacks.
+        - Use Content Security Policy headers appropriately.
+        - Validate and sanitize data from external sources before rendering.
+
+    # React components
+    - path: '**/*.tsx'
+      instructions: |
+        Component review checklist:
+        - Components should be focused; single responsibility principle.
+        - Use proper prop typing with TypeScript interfaces/types.
+        - Implement proper error handling and loading states.
+        - Ensure accessibility: semantic HTML, ARIA labels, keyboard navigation.
+        - Use Tailwind utilities consistently; avoid inline styles or random custom CSS.
+        - Follow component file structure: imports → types → component → exports.
+        - Destructure props at function signature for clarity.
+        - Early returns for conditional rendering to reduce nesting.
+        - Use fragment (<>) when returning multiple elements without wrapper.
+        - Avoid prop spreading unless intentional (e.g., ...rest for native elements).
+
+        Hooks usage:
+        - useState: use functional updates when new state depends on previous.
+        - useEffect: dependencies must be exhaustive; no missing deps.
+        - Custom hooks: extract reusable logic; name with 'use' prefix.
+        - Avoid useEffect for derived state; prefer useMemo or direct computation.
+
+        Accessibility (a11y):
+        - Use semantic HTML elements (button, nav, main, header, footer, etc.).
+        - Ensure sufficient color contrast (WCAG AA minimum).
+        - Add alt text for images, aria-labels for icon buttons.
+        - Support keyboard navigation (Tab, Enter, Escape, Arrow keys).
+        - Focus management: trap focus in modals, restore after dialogs close.
+
+    # React Hooks (custom)
+    - path: '**/hooks/**/*.{ts,tsx}'
+      instructions: |
+        Custom hooks checklist:
+        - Must start with 'use' prefix (e.g., useAuth, useFetch).
+        - Ensure proper cleanup in useEffect (return cleanup function).
+        - Memoize returned objects/arrays to prevent unnecessary re-renders.
+        - Use TypeScript generics for reusable hooks.
+        - Document hook purpose and parameters with JSDoc if complex.
+        - Test hooks in isolation with @testing-library/react-hooks.
+
+    # Zustand stores
+    - path: '**/store/**/*.{ts,tsx}'
+      instructions: |
+        Zustand state management checklist:
+        - Keep stores focused; separate concerns (auth, ui, data, etc.).
+        - Use immer middleware for nested state updates when needed.
+        - Use persist middleware for state that should survive page refresh.
+        - Avoid storing derived state; compute on read with selectors.
+        - Use shallow equality check when selecting multiple values.
+        - Prefer atomic selectors to prevent unnecessary re-renders.
+        - Type stores properly with TypeScript interfaces.
+        - Consider devtools middleware for debugging in development.
+
+        Example pattern:
+        ```typescript
+        interface UserStore {
+          user: User | null;
+          setUser: (user: User) => void;
+          clearUser: () => void;
+        }
+        ```
+
+    # React Query / TanStack Query
+    - path: '**/*{query,queries,api}*.{ts,tsx}'
+      instructions: |
+        React Query (TanStack Query) checklist:
+        - Use proper query keys (arrays, specific, hierarchical).
+        - Implement proper error handling with onError callbacks.
+        - Use staleTime and cacheTime appropriately for data freshness.
+        - Leverage optimistic updates for better UX on mutations.
+        - Use query invalidation strategically after mutations.
+        - Consider pagination/infinite queries for large datasets.
+        - Type queries and mutations properly with TypeScript generics.
+        - Use query retries thoughtfully; avoid hammering failing endpoints.
+
+    # Tailwind CSS
+    - path: '**/*.{tsx,jsx}'
+      instructions: |
+        Tailwind CSS checklist:
+        - Use Tailwind utilities consistently; avoid mixing with inline styles.
+        - Prefer utility classes over custom CSS unless absolutely necessary.
+        - Use responsive modifiers (sm:, md:, lg:, xl:, 2xl:) consistently.
+        - Use Tailwind's design tokens (colors, spacing, etc.) for consistency.
+        - Extract repeated patterns into components, not with @apply.
+        - Use clsx/cn utility for conditional classes.
+        - Ensure dark mode variants if dark mode is supported.
+        - Avoid !important; refactor specificity issues instead.
+
+    # API/Services layer
+    - path: '**/services/**/*.{ts,tsx}'
+      instructions: |
+        API services checklist:
+        - Centralize API calls; avoid direct fetch/axios in components.
+        - Use axios interceptors for auth tokens, error handling, logging.
+        - Implement proper timeout configuration to prevent hanging requests.
+        - Type API responses with TypeScript interfaces.
+        - Use Zod schemas to validate API responses at runtime.
+        - Implement retry logic with exponential backoff for transient failures.
+        - Never log sensitive data (tokens, passwords) in API layer.
+        - Ensure proper error transformation (API errors → user-friendly messages).
+
+    # Routing
+    - path: '**/router/**/*.{ts,tsx}'
+      instructions: |
+        React Router checklist:
+        - Use lazy loading for route components (React.lazy + Suspense).
+        - Implement proper loading states for lazy-loaded routes.
+        - Use nested routes for hierarchical page structures.
+        - Implement route guards for protected routes (auth, permissions).
+        - Use proper TypeScript typing for route params and search params.
+        - Avoid navigation in render; use useEffect or event handlers.
+
+    # Forms
+    - path: '**/*{form,Form}*.{ts,tsx}'
+      instructions: |
+        React Hook Form + Zod checklist:
+        - Use Zod schemas for validation; co-locate schema with form.
+        - Use @hookform/resolvers/zod for schema integration.
+        - Implement proper error messages; clear, actionable, user-friendly.
+        - Use controlled components when needed; uncontrolled by default for performance.
+        - Disable submit button while submitting to prevent double submission.
+        - Reset form after successful submission if appropriate.
+        - Provide loading/success feedback; use optimistic updates when possible.
+        - Validate on blur for better UX; show errors after user interaction.
+
+    # Utilities
+    - path: '**/utils/**/*.{ts,tsx}'
+      instructions: |
+        Utilities checklist:
+        - Keep pure functions; no side effects.
+        - Use TypeScript generics for reusable utilities.
+        - Add JSDoc comments for complex utility functions.
+        - Write unit tests for critical utilities.
+        - Avoid global mutable state.
+        - Use proper error handling; throw meaningful errors.
+
+    # Types
+    - path: '**/types/**/*.{ts,tsx}'
+      instructions: |
+        TypeScript types checklist:
+        - Use interfaces for object shapes; types for unions/intersections.
+        - Prefer readonly for immutable data structures.
+        - Use const assertions for literal types.
+        - Avoid type assertions (as); use type guards instead.
+        - Use utility types (Partial, Pick, Omit, Record) effectively.
+        - Export types that are used across modules.
+
+    # Tests
+    - path: '**/*.{spec,test}.{ts,tsx}'
+      instructions: |
+        Testing checklist:
+        - Use @testing-library/react for component tests.
+        - Test user behavior, not implementation details.
+        - Use semantic queries (getByRole, getByLabelText) over getByTestId.
+        - Mock external dependencies (API calls, timers, etc.).
+        - Test accessibility: keyboard navigation, screen readers.
+        - Use Vitest for unit tests; Playwright for E2E tests.
+        - Aim for high coverage on critical paths; avoid testing trivial code.
+        - Keep tests deterministic; no random data or timing issues.
+
+    # Playwright E2E tests
+    - path: 'tests/**/*.{spec,test}.ts'
+      instructions: |
+        Playwright E2E checklist:
+        - Test critical user journeys end-to-end.
+        - Use page object model for better maintainability.
+        - Use proper selectors (role, label, text) over fragile CSS selectors.
+        - Implement proper wait strategies; avoid arbitrary waits.
+        - Clean up test data after tests (database, localStorage, etc.).
+        - Test across different browsers if needed.
+        - Use fixtures for common setup/teardown.
+
+    # Configuration files
+    - path: '**/vite.config.{ts,js}'
+      instructions: |
+        Vite config checklist:
+        - Optimize build output with proper code splitting.
+        - Use manual chunks for vendor separation.
+        - Enable source maps in development; disable in production unless needed.
+        - Configure proper terser options to remove console logs in production.
+        - Use proper alias configuration for clean imports.
+        - Set appropriate chunk size warning limits.
+
+    - path: '**/tsconfig*.json'
+      instructions: |
+        TypeScript config checklist:
+        - Use strict mode for maximum type safety.
+        - Enable all recommended strict flags.
+        - Use proper path aliases matching Vite config.
+        - Set appropriate target and lib for browser support.
+
+    - path: 'eslint.config.{js,ts}'
+      instructions: |
+        ESLint config checklist:
+        - Enforce React hooks rules.
+        - Enforce React Refresh rules for fast refresh compatibility.
+        - Use TypeScript ESLint recommended rules.
+        - Configure prettier integration if using prettier.
+
+    # GitHub workflows (CI/CD)
+    - path: '.github/workflows/**/*'
+      instructions: |
+        CI/CD checklist:
+        - Use pnpm for package management (matching packageManager in package.json).
+        - Cache pnpm efficiently using pnpm-lock.yaml.
+        - Run linting, type-checking, tests in parallel when possible.
+        - Build production bundle and check for errors.
+        - Run Playwright tests in CI with proper browser setup.
+        - Prevent secrets leakage in logs.
+        - Use appropriate Node.js version (match development environment).
