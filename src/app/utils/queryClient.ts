@@ -2,6 +2,9 @@ import { QueryClient } from "@tanstack/react-query";
 import { persistQueryClient } from "@tanstack/react-query-persist-client";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 
+const CACHE_KEY_CHATBLIX = import.meta.env
+  .VITE_QUERY_CACHE_KEY_CHATBLIX as string;
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -15,7 +18,7 @@ const queryClient = new QueryClient({
 
 export const persister = createAsyncStoragePersister({
   storage: window.localStorage,
-  key: "chatblix-query-cache",
+  key: CACHE_KEY_CHATBLIX,
   throttleTime: 1000,
 });
 

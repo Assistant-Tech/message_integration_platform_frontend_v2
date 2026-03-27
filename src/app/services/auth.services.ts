@@ -70,11 +70,14 @@ export const signup = async (
 
     const res = await api.post(url, { name, email, password });
     return res.data;
-  } catch (error) {
-    throw handleApiError(error);
+  } catch (error: any) {
+    // Extract the server-side error message
+    const errorMessage =
+      error.response?.data?.message || "Something went wrong";
+
+    throw new Error(errorMessage);
   }
 };
-
 /**
  * Handles the email verification API call.
  */
@@ -110,8 +113,11 @@ export const login = async (email: string, password: string) => {
   try {
     const res = await api.post("/auth/login", { email, password });
     return res.data;
-  } catch (error) {
-    throw handleApiError(error);
+  } catch (error: any) {
+    const errorMessage =
+      error.response?.data?.message || "Something went wrong";
+
+    throw new Error(errorMessage);
   }
 };
 /**
@@ -153,13 +159,20 @@ export const regenerateRecovery = async () => {
 
 /**
  * Handles the access token refresh API call.
+ * Returns { accessToken, csrfToken } on success.
  */
-export const refreshAccessTokenAPI = async () => {
+export const refreshAccessTokenAPI = async (): Promise<{
+  accessToken: string | null;
+  csrfToken: string | null;
+}> => {
   try {
     const res = await api.get("/auth/refresh");
-    const accessToken = res.data?.data?.accessToken ?? null;
-    // console.log("🚀 ~ refreshAccessToken ~ data:", data);
-    return accessToken;
+    const data = res.data?.data ?? res.data;
+
+    return {
+      accessToken: data?.accessToken ?? null,
+      csrfToken: data?.csrfToken ?? null,
+    };
   } catch (error) {
     throw handleApiError(error);
   }

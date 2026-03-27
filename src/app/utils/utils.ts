@@ -51,7 +51,7 @@ export const navigation: NavigationItem[] = [
         icon: crm,
       },
       {
-        name: "Chatbot",
+        name: "Automation",
         href: APP_ROUTES.PUBLIC.CHATBOT,
         description: "AI-powered customer support",
         icon: chat,
@@ -104,17 +104,14 @@ export const navigation: NavigationItem[] = [
   },
   { id: 3, name: "About Us", href: "/aboutus" },
   { id: 4, name: "Pricing", href: "/pricing" },
+  { id: 5, name: "Contact", href: APP_ROUTES.PUBLIC.CONTACT },
 ];
 
 /*
 ─────────────────────────────────────────────────────────────────────────────
  📦 ▶ Hero data utils
  ─────────────────────────────────────────────────────────────────────────────
-*/
-import WhatsAppIcon from "@/app/assets/icons/whatsapp.svg";
-import FacebookIcon from "@/app/assets/icons/fb.svg";
-import InstagramIcon from "@/app/assets/icons/insta.svg";
-import TelegramIcon from "@/app/assets/icons/telegram.svg";
+ */
 import X from "@/app/assets/icons/x.svg";
 import Tiktok from "@/app/assets/icons/tiktok.svg";
 import viber from "@/app/assets/icons/viber.svg";
@@ -122,7 +119,6 @@ import viber from "@/app/assets/icons/viber.svg";
 export const SOCIAL_LINKS_CONFIG = [
   {
     name: "Facebook",
-    src: FacebookIcon,
     href: "https://facebook.com/yourprofile",
     color: "#1877F2",
     size: 42,
@@ -132,7 +128,6 @@ export const SOCIAL_LINKS_CONFIG = [
   },
   {
     name: "Instagram",
-    src: InstagramIcon,
     href: "https://instagram.com/yourprofile",
     color: "#E4405F",
     size: 36,
@@ -152,7 +147,6 @@ export const SOCIAL_LINKS_CONFIG = [
   },
   {
     name: "Telegram",
-    src: TelegramIcon,
     href: "https://t.me/yourusername",
     color: "#0088cc",
     size: 42,
@@ -182,7 +176,6 @@ export const SOCIAL_LINKS_CONFIG = [
   },
   {
     name: "WhatsApp",
-    src: WhatsAppIcon,
     href: "https://wa.me/yourphonenumber",
     color: "#25D366",
     size: 44,
@@ -553,24 +546,6 @@ export const SocialFooter: SocialLink[] = [
     size: 44,
   },
 ];
-/*
-─────────────────────────────────────────────────────────────────────────────
- 📦 ▶ ABout US data utils
-─────────────────────────────────────────────────────────────────────────────
-*/
-export const features: string[] = [
-  "Online store owners who want to reply fast on social media",
-  "Small businesses that want to support customers better",
-  "Big enterprises looking for efficiency, control and long-term value.",
-];
-export const companies: string[] = [
-  "TechCorp Solutions",
-  "Digital Dynamics",
-  "Innovation Labs",
-  "Future Systems",
-  "Cloud Ventures",
-];
-
 /*
 ─────────────────────────────────────────────────────────────────────────────
  📦 ▶ ABout US TEAM data utils

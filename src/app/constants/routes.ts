@@ -52,6 +52,9 @@ export const APP_ROUTES = {
   ADMIN: {
     DASHBOARD: "dashboard",
     CONVERSATION: "conversation",
+    CONTACT: "contact",
+    INBOX: "inbox",
+    CUSTOMER_CONVERSATION: "messages",
     CHATBOT: "chatbot",
     CHANNEL: "channel",
     TAGS: "tags",

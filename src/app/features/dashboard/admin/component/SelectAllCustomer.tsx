@@ -3,16 +3,16 @@ import { X } from "lucide-react";
 import { Input } from "@/app/components/ui";
 
 // Platform Icons
-import facebook from "@/app/assets/icons/fb.svg";
-import instagram from "@/app/assets/icons/insta.svg";
-import whatsapp from "@/app/assets/icons/whatsapp.svg";
+import facebook from "@/app/assets/dashboard-icons/facebook.svg";
+import instagram from "@/app/assets/dashboard-icons/insta.svg";
+import whatsapp from "@/app/assets/dashboard-icons/whatsapp.svg";
 
 interface Customer {
   id: string;
   name: string;
   avatar: string;
   platform: string;
-  lastContact: string; 
+  lastContact: string;
 }
 
 interface SelectAllCustomerProps {

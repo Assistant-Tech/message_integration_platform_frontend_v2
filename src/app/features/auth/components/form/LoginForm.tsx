@@ -9,12 +9,12 @@ import fb from "@/app/assets/icons/fb.svg";
 import {
   LoginFormData,
   loginSchema,
-} from "@/app/features/auth/schemas/loginSchema";
+} from "@/app/features/auth/schemas/login.schema";
 import { Agreement, Button, Input } from "@/app/components/ui";
 import CheckItem from "@/app/features/auth/components/ui/CheckItem";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { useAuthStore } from "@/app/store/auth.store";
 import { handleApiError } from "@/app/utils/handlerApiError";
+import { useLogin, useMfaLogin } from "@/app/hooks/query/useAuthQuery";
 
 import { useRef, useState } from "react";
 import { useMfaStore } from "@/app/store/mfa.store";
@@ -22,7 +22,8 @@ import RecoveryPhrasesModal from "@/app/features/dashboard/admin/component/mfa/R
 import { APP_ROUTES } from "@/app/constants/routes";
 
 const LoginForm = () => {
-  const { login, mfalogin } = useAuthStore();
+  const loginMutation = useLogin();
+  const mfaLoginMutation = useMfaLogin();
   const { regenerateBackupCodes } = useMfaStore();
   const navigate = useNavigate();
 
@@ -85,84 +86,76 @@ const LoginForm = () => {
   };
 
   const onSubmit = async (data: LoginFormData) => {
-    try {
-      const res = await login(data.email, data.password);
+    loginMutation.mutate(
+      { email: data.email, password: data.password },
+      {
+        onSuccess: (res) => {
+          if ("data" in res && "mfaRequired" in res.data) {
+            setMfaStep(true);
+            setMfaToken(res.data.mfaToken);
+            toast.info(
+              "Multi-factor authentication required. Please enter your code.",
+            );
+            return;
+          }
 
-      if ("data" in res && "mfaRequired" in res.data) {
-        setMfaStep(true);
-        setMfaToken(res.data.mfaToken);
-        toast.info(
-          "Multi-factor authentication required. Please enter your code.",
-        );
-        return;
-      }
+          if ("data" in res && "accessToken" in res.data) {
+            toast.success(res.message);
 
-      if ("data" in res && "accessToken" in res.data) {
-        toast.success(res.message);
-        useAuthStore.getState().setTenantSlug(res.data.tenantSlug);
+            if (res.data.requiresOnboarding) {
+              navigate(APP_ROUTES.PUBLIC.ONBOARDING_FORM);
+            } else {
+              navigate(`/${res.data.tenantSlug}/admin/dashboard`);
+            }
 
-        if (res.data.requiresOnboarding) {
-          navigate(APP_ROUTES.PUBLIC.ONBOARDING_FORM);
-        } else {
-          navigate(`/${res.data.tenantSlug}/admin/dashboard`);
-        }
-
-        reset();
-      }
-    } catch (error) {
-      const parsedError = handleApiError(error);
-      if ("message" in parsedError) toast.error(parsedError.message);
-    }
+            reset();
+          }
+        },
+      },
+    );
   };
 
   const onSubmitMfa = async () => {
     if (!mfaToken) return;
 
-    try {
-      let res;
+    if (useBackup) {
+      const recoveryPhrase = backupCode.trim().split(/\s+/);
 
-      if (useBackup) {
-        const recoveryPhrase = backupCode.trim().split(/\s+/);
-
-        if (recoveryPhrase.length !== 12) {
-          toast.error("Recovery phrase must contain exactly 12 words.");
-          return;
-        }
-
-        res = await mfalogin(mfaToken, undefined, recoveryPhrase);
-      } else {
-        const totp = code.join("");
-        res = await mfalogin(mfaToken, totp, undefined);
+      if (recoveryPhrase.length !== 12) {
+        toast.error("Recovery phrase must contain exactly 12 words.");
+        return;
       }
 
-      if (
-        "data" in res &&
-        "accessToken" in res.data &&
-        "tenantSlug" in res.data
-      ) {
-        const { accessToken, tenantSlug } = res.data;
-        useAuthStore.getState().setAccessToken(accessToken);
-        useAuthStore.getState().setTenantSlug(tenantSlug);
-        toast.success(res.message);
+      mfaLoginMutation.mutate(
+        { mfaToken, recoveryPhrase },
+        {
+          onSuccess: async (res) => {
+            toast.success(res.message);
 
-        if (useBackup) {
-          try {
-            const regenRes = await regenerateBackupCodes();
-            setNewCodes(regenRes?.data?.recoveryPhrases ?? null);
-            setShowModal(true);
-          } catch (error) {
-            const parsedError = handleApiError(error);
-            if ("message" in parsedError) toast.error(parsedError.message);
-          }
-        }
+            try {
+              const regenRes = await regenerateBackupCodes();
+              setNewCodes(regenRes?.data?.recoveryPhrases ?? null);
+              setShowModal(true);
+            } catch (error) {
+              const parsedError = handleApiError(error);
+              if ("message" in parsedError) toast.error(parsedError.message);
+            }
 
-        navigate(`/${tenantSlug}/admin/dashboard`);
-      } else {
-        toast.error("Unexpected response from server during MFA login.");
-      }
-    } catch (error) {
-      const parsedError = handleApiError(error);
-      if ("message" in parsedError) toast.error(parsedError.message);
+            navigate(`/${res.data.tenantSlug}/admin/dashboard`);
+          },
+        },
+      );
+    } else {
+      const totp = code.join("");
+      mfaLoginMutation.mutate(
+        { mfaToken, totp },
+        {
+          onSuccess: (res) => {
+            toast.success(res.message);
+            navigate(`/${res.data.tenantSlug}/admin/dashboard`);
+          },
+        },
+      );
     }
   };
 
@@ -226,7 +219,7 @@ const LoginForm = () => {
                     condition={passwordChecks.maxLength}
                   />
                   <CheckItem
-                    label="Contains a letter"
+                    label="Contains a capital letter"
                     condition={passwordChecks.hasLetter}
                   />
                   <CheckItem
@@ -242,7 +235,12 @@ const LoginForm = () => {
             </AnimatePresence>
           </div>
 
-          <Button label="Sign In" type="submit" className="w-full" />
+          <Button
+            label={loginMutation.isPending ? "Signing In..." : "Sign In"}
+            type="submit"
+            className="w-full"
+            disabled={loginMutation.isPending}
+          />
           <button
             className="h5-medium-16 text-primary hover:underline cursor-pointer"
             onClick={handleForgotpassword}
@@ -356,7 +354,12 @@ const LoginForm = () => {
             </div>
           )}
 
-          <Button label="Verify" type="submit" className="w-full" />
+          <Button
+            label={mfaLoginMutation.isPending ? "Verifying..." : "Verify"}
+            type="submit"
+            className="w-full"
+            disabled={mfaLoginMutation.isPending}
+          />
 
           <div className="flex justify-center gap-2 py-4">
             {!useBackup && (

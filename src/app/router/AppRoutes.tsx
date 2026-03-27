@@ -42,7 +42,11 @@ const AppRoutes = () => {
         <Route element={<ProtectedRoute />}>
           <Route element={<OnboardingGuard />}>
             {/* Admin routes */}
-            <Route element={<RoleBasedRoute allowedRoles={["TENANT_ADMIN", "MEMBER"]} />}>
+            <Route
+              element={
+                <RoleBasedRoute allowedRoles={["TENANT_ADMIN", "MEMBER"]} />
+              }
+            >
               <Route path="/:slug/admin/*" element={<AdminRoutes />} />
             </Route>
 

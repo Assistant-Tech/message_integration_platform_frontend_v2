@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import { Country } from "country-state-city";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
 
 import { PlanType, CheckoutFormData } from "@/app/types/plan.types";
 
@@ -17,7 +16,6 @@ import {
   KHALTI_IMAGE_URL,
   STRIPE_IMAGE_URL,
 } from "@/app/constants/image-cloudinary";
-import { useAuthStore } from "@/app/store/auth.store";
 
 interface CheckoutDialogProps {
   open: boolean;
@@ -26,22 +24,8 @@ interface CheckoutDialogProps {
 }
 
 const CheckoutDialogPop = ({ open, onClose, plan }: CheckoutDialogProps) => {
-  const navigate = useNavigate(); // Initialize useNavigate for redirection
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  // Get authentication status from AuthContext
   const allowedIntervals = ["MONTHLY", "YEARLY"] as const;
   const allowedCurrencies = ["NPR", "USD"] as const;
-
-  // If the user is not authenticated, redirect them to the login page
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/login"); // Redirect to login if not authenticated
-    }
-  }, [isAuthenticated, navigate]);
-
-  // log
-  console.log("🚀 ~ CheckoutDialogPop ~ allowedIntervals:", allowedIntervals);
-  console.log("🚀 ~ CheckoutDialogPop ~ allowedCurrencies:", allowedCurrencies);
 
   type IntervalType = (typeof allowedIntervals)[number];
   type CurrencyType = (typeof allowedCurrencies)[number];

@@ -84,32 +84,32 @@
       {
         "id": 0,
         "name": "Scale",
-        "img": "https://res.cloudinary.com/demo/image/upload/v1616784721/cld-sample-3.jpg"
+        "img": "https://res.cloudinary.com/demo/image/upload/v1616784721/cld-sample-4.jpg"
       },
       {
         "id": 1,
         "name": "Scale",
-        "img": "https://res.cloudinary.com/demo/image/upload/w_800/sample.jpg"
+        "img": "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1767511061/small-shop_q2xktq.jpg"
       },
       {
         "id": 2,
         "name": "Scale",
-        "img": "https://res.cloudinary.com/demo/image/upload/v1616784721/cld-sample-4.jpg"
+        "img": "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1767511066/small-shop-3_knivld.jpg"
       },
       {
         "id": 3,
         "name": "Scale",
-        "img": "https://res.cloudinary.com/demo/image/upload/w_800/sample.jpg"
+        "img": "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1767511049/delivery_xvncgj.jpg"
       },
       {
         "id": 4,
         "name": "Scale",
-        "img": "https://res.cloudinary.com/demo/image/upload/v1616784721/cld-sample-3.jpg"
+        "img": "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1767511062/small-shop-2_zycpwm.jpg"
       },
       {
         "id": 5,
         "name": "Scale",
-        "img": "https://res.cloudinary.com/demo/image/upload/v1616784721/cld-sample-4.jpg"
+        "img": "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1767511062/small-shop-2_zycpwm.jpg"
       }
     ]
   },

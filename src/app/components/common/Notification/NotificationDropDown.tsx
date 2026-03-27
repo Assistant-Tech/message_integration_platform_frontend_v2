@@ -10,8 +10,8 @@ const NotificationDropdown = () => {
 
   return (
     <DropdownMenu.Root>
-      <DropdownMenu.Trigger asChild> 
-        <button className="relative p-2 rounded-full hover:bg-grey-light">
+      <DropdownMenu.Trigger asChild>
+        <button className="flex h-10 w-10 items-center justify-center rounded-full border border-grey-light bg-base-white text-grey-medium transition-colors hover:bg-primary-light hover:text-primary">
           <Bell className="w-5 h-5 text-grey-medium" />
           {unreadCount > 0 && (
             <span className="absolute top-1 right-1 bg-danger text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">

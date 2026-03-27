@@ -28,6 +28,7 @@ const ChatSidebar = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
+  const [sortBy, setSortBy] = useState("latest");
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
@@ -74,8 +75,14 @@ const ChatSidebar = () => {
     if (!conversations) console.log("Conversations not found");
     let filteredConversation = [...conversations];
 
+    if (statusFilter !== "All") {
+      const normalizedStatus = statusFilter.toLowerCase();
+      filteredConversation = filteredConversation.filter(
+        (conv) => (conv.status || "").toLowerCase() === normalizedStatus,
+      );
+    }
+
     if (searchTerm.trim()) {
-      ``;
       const lowerSearch = searchTerm.toLowerCase().trim();
       filteredConversation = filteredConversation.filter(
         (conv) =>
@@ -84,12 +91,23 @@ const ChatSidebar = () => {
       );
     }
 
-    return filteredConversation.sort(
-      (a, b) =>
-        new Date(b.updatedAt || 0).getTime() -
-        new Date(a.updatedAt || 0).getTime(),
-    );
-  }, [conversations, searchTerm, statusFilter]);
+    return filteredConversation.sort((a, b) => {
+      const updatedA = new Date(a.updatedAt || 0).getTime();
+      const updatedB = new Date(b.updatedAt || 0).getTime();
+
+      switch (sortBy) {
+        case "oldest":
+          return updatedA - updatedB;
+        case "title-asc":
+          return (a.title || "").localeCompare(b.title || "");
+        case "title-desc":
+          return (b.title || "").localeCompare(a.title || "");
+        case "latest":
+        default:
+          return updatedB - updatedA;
+      }
+    });
+  }, [conversations, searchTerm, statusFilter, sortBy]);
 
   /** Create */
   const onSubmit = async (data: CreateInternalConversationPayload) => {
@@ -197,6 +215,8 @@ const ChatSidebar = () => {
               setSearchTerm={setSearchTerm}
               statusFilter={statusFilter}
               setStatusFilter={setStatusFilter}
+              sortBy={sortBy}
+              setSortBy={setSortBy}
               total={conversations.length}
               filtered={filteredConversations.length}
             />

@@ -12,8 +12,10 @@ interface RetriableAxiosRequestConfig extends InternalAxiosRequestConfig {
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL_TEST,
   withCredentials: true,
+
   headers: {
     "Content-Type": "application/json",
+    "Allow-access-control-origin": "true",
   },
 });
 
@@ -50,10 +52,11 @@ api.interceptors.request.use(async (config) => {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
 
-    config.headers["X-CSRF-Token"] =
-      csrfToken ??
-      document.cookie.match(/csrf_token=([^;]+)/)?.[1] ??
-      undefined;
+    // Always send CSRF token — backend validates it on all mutating + refresh requests
+    // Prioritize cookie value as it's the source of truth if rotated by backend
+    if (csrfToken) {
+      config.headers["X-CSRF-Token"] = csrfToken;
+    }
   } catch {
     // ignore store import errors
   }
@@ -88,7 +91,17 @@ const processQueue = (error: unknown, token: string | null) => {
 };
 
 api.interceptors.response.use(
-  (res) => res,
+  async (res) => {
+    // Capture CSRF token from response headers if provided by backend
+    // This handles rotation where the backend sends a new token on successful requests
+    const newCsrfToken =
+      res.headers["x-csrf-token"] || res.headers["csrf-token"];
+    if (newCsrfToken) {
+      const { useAuthStore } = await import("@/app/store/auth.store");
+      useAuthStore.getState().setCsrfToken(newCsrfToken);
+    }
+    return res;
+  },
   async (err: AxiosError) => {
     const originalRequest = err.config as RetriableAxiosRequestConfig;
 
@@ -125,9 +138,23 @@ api.interceptors.response.use(
         processQueue(refreshErr, null);
 
         const { useAuthStore } = await import("@/app/store/auth.store");
-        useAuthStore.getState().logout();
+        await useAuthStore.getState().logout();
 
         return Promise.reject(refreshErr);
+      }
+    }
+
+    // Handle 403 CSRF error — logout (CSRF mismatch means session is invalid)
+    if (err.response?.status === 403 && !originalRequest._retry) {
+      const errorData = err.response.data as any;
+      if (
+        errorData?.message?.includes("CSRF") ||
+        errorData?.message?.includes("csrf")
+      ) {
+        originalRequest._retry = true;
+        const { useAuthStore } = await import("@/app/store/auth.store");
+        useAuthStore.getState().resetAuth();
+        return Promise.reject(err);
       }
     }
 

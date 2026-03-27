@@ -3,8 +3,6 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { X } from "lucide-react";
 
-import test from "@/app/assets/video/test_clip.mp4";
-
 const LearnMoreCRM = () => {
   const [open, setOpen] = useState(false);
 
@@ -72,7 +70,9 @@ const LearnMoreCRM = () => {
                     </button>
                   </Dialog.Close>
                   <video
-                    src={test}
+                    src={
+                      "https://res.cloudinary.com/dtoqwn0gx/video/upload/v1767505537/test_clip_gxekqx.mp4"
+                    }
                     autoPlay
                     controls
                     className="w-full h-full object-cover"
