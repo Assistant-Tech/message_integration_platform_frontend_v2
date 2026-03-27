@@ -101,7 +101,7 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
             )}
             label={buttonText}
             variant="primary"
-            redirectTo={checkoutUrl}
+            // redirectTo={checkoutUrl}
           />
         </div>
       </div>

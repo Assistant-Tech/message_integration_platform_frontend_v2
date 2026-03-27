@@ -58,7 +58,7 @@ const PaymentVerify = () => {
             setInvoiceData(invoiceResponse.data.data);
 
             setTimeout(() => {
-              navigate(`/${tenantSlug}/subscription/confirmation`, {
+              navigate(`/app/${tenantSlug}/subscription/confirmation`, {
                 replace: true,
               });
             }, 2000);

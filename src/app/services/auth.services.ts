@@ -1,6 +1,34 @@
 import api from "@/app/services/api/axios";
 import { handleApiError } from "@/app/utils/handlerApiError";
 
+const getCookieValue = (name: string): string | null => {
+  if (typeof document === "undefined") return null;
+
+  const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const match = document.cookie.match(
+    new RegExp(`(?:^|; )${escapedName}=([^;]*)`),
+  );
+
+  const value = match?.[1];
+  return value ? decodeURIComponent(value) : null;
+};
+
+const getOnboardingTokenFromCookies = (): string | null => {
+  const candidates = [
+    "onboarding_token",
+    "onboardingToken",
+    "onboarding-token",
+    "onboarding",
+  ];
+
+  for (const cookieName of candidates) {
+    const token = getCookieValue(cookieName);
+    if (token) return token;
+  }
+
+  return null;
+};
+
 /**
  * Service to handle all authentication-related API calls.
  */
@@ -97,8 +125,24 @@ export const verifyEmail = async (token: string) => {
  */
 export const onboarding = async (data: FormData) => {
   try {
+    const onboardingToken = getOnboardingTokenFromCookies();
+
     const res = await api.post("/auth/onboarding", data, {
-      headers: { "Content-Type": "multipart/form-data" },
+      withCredentials: true,
+      headers: {
+        ...(onboardingToken
+          ? {
+              "X-Onboarding-Token": onboardingToken,
+              "onboarding-token": onboardingToken,
+            }
+          : {}),
+      },
+      params: onboardingToken
+        ? {
+            onboarding_token: onboardingToken,
+            onboardingToken,
+          }
+        : undefined,
     });
     return res.data;
   } catch (error) {
@@ -111,6 +155,7 @@ export const onboarding = async (data: FormData) => {
  */
 export const login = async (email: string, password: string) => {
   try {
+    console.log("email", email);
     const res = await api.post("/auth/login", { email, password });
     return res.data;
   } catch (error: any) {

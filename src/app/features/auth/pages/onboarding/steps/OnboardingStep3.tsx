@@ -15,7 +15,7 @@ interface OnboardingStep3Props {
   onNext: (stepData: { industry: string }) => void;
   onPrevious: () => void;
   isSubmitting: boolean;
-  onFinishEarly?: () => void;
+  onFinishEarly?: (stepData: { industry: string }) => void;
   showFinishEarlyOption?: boolean;
 }
 
@@ -82,6 +82,22 @@ const OnboardingStep3: React.FC<OnboardingStep3Props> = ({
     setErrors({});
     // Send only industry to API
     onNext({ industry: formData.industry.trim() });
+  };
+
+  const handleFinishSetup = () => {
+    const result = onboardingStep3Schema.safeParse(formData);
+
+    if (!result.success) {
+      const newErrors: IndustryErrors = {};
+      result.error.errors.forEach((err) => {
+        newErrors[err.path[0] as keyof IndustryErrors] = err.message;
+      });
+      setErrors(newErrors);
+      return;
+    }
+
+    setErrors({});
+    onFinishEarly?.({ industry: formData.industry.trim() });
   };
 
   return (
@@ -170,13 +186,7 @@ const OnboardingStep3: React.FC<OnboardingStep3Props> = ({
           {showFinishEarlyOption && onFinishEarly && (
             <Button
               label="Finish Setup"
-              onClick={() => {
-                const result = onboardingStep3Schema.safeParse(formData);
-                if (result.success) {
-                  onNext({ industry: formData.industry.trim() });
-                  setTimeout(() => onFinishEarly(), 100);
-                }
-              }}
+              onClick={handleFinishSetup}
               variant="outlined"
               disabled={isSubmitting}
               className="border-primary text-primary hover:bg-primary hover:text-white"

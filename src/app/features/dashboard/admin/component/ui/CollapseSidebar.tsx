@@ -86,8 +86,8 @@ const CollapsibleSidebar = () => {
   const userRole = user?.roleType || "TENANT_ADMIN";
   const profileRoute = slug
     ? user?.roleType === "MEMBER"
-      ? `/${slug}/dashboard/settings/profile`
-      : `/${slug}/admin/${APP_ROUTES.ADMIN.SETTINGS_PROFILE}`
+      ? `/app/${slug}/dashboard/settings/profile`
+      : `/app/${slug}/admin/${APP_ROUTES.ADMIN.SETTINGS_PROFILE}`
     : APP_ROUTES.ADMIN.SETTINGS_PROFILE;
 
   const handleLogout = () => {
@@ -138,13 +138,13 @@ const CollapsibleSidebar = () => {
           <nav className="flex-1 p-4 overflow-y-auto [&::-webkit-scrollbar-thumb]:bg-primary [&::-webkit-scrollbar-track]:bg-primary-dark">
             <ul className="space-y-2">
               {filteredItems.map((item, index) => {
-                const finalHref = `/${slug}/admin/${item.href}`;
+                const finalHref = `/app/${slug}/admin/${item.href}`;
 
                 const hasActiveSubmenu =
                   item.hasSubmenu &&
                   Boolean(
                     item.submenu?.some((sub) => {
-                      const subFinalHref = `/${slug}/admin/${sub.href}`;
+                      const subFinalHref = `/app/${slug}/admin/${sub.href}`;
                       return matchesRoute(subFinalHref);
                     }),
                   );
@@ -226,7 +226,7 @@ const CollapsibleSidebar = () => {
                                 );
                               })
                               .map((sub, subIndex) => {
-                                const subFinalHref = `/${slug}/admin/${sub.href}`;
+                                const subFinalHref = `/app/${slug}/admin/${sub.href}`;
                                 const subActive = matchesRoute(subFinalHref);
                                 return (
                                   <li key={subIndex}>

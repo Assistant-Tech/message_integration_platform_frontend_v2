@@ -118,7 +118,7 @@ const CreateOrderPage = () => {
       }
 
       reset();
-      navigate(`/${tenantSlug}/admin/orders`);
+      navigate(`/app/${tenantSlug}/admin/orders`);
     } catch (error: any) {
       console.error("❌ Order creation failed:", error.response?.data || error);
       alert(error.response?.data?.message || "Order creation failed");
@@ -128,7 +128,7 @@ const CreateOrderPage = () => {
   };
 
   const handleBack = () => {
-    navigate(`/${tenantSlug}/admin/orders`);
+    navigate(`/app/${tenantSlug}/admin/orders`);
   };
 
   const OrderBreadCrumb = [

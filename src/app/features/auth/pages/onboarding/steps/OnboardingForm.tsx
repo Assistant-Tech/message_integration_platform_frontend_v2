@@ -12,13 +12,16 @@ import {
 } from "@/app/features/auth/pages/onboarding/steps";
 import { Cross } from "lucide-react";
 import { useOnboarding } from "@/app/hooks/query/useAuthQuery";
-// import { useAuthStore } from "@/app/store/auth.store";
+import { useAuthStore } from "@/app/store/auth.store";
+import type { NormalizedError } from "@/app/types/error.types";
 
 const OnboardingForm: React.FC = () => {
   const navigate = useNavigate();
   const { data, completedSteps, setStepData, setCompletedSteps, reset } =
     useOnboardingStore();
   const onboardingMutation = useOnboarding();
+  const resetAuth = useAuthStore((s) => s.resetAuth);
+  const setRequiresOnboarding = useAuthStore((s) => s.setRequiresOnboarding);
 
   // const { onboarding } = useAuthStore();
 
@@ -57,11 +60,37 @@ const OnboardingForm: React.FC = () => {
     }
   };
 
-  const handleFinishEarly = () => {
-    handleFinalSubmit();
+  const isMissingOnboardingTokenError = (error: unknown): boolean => {
+    const normalizedError = error as Partial<NormalizedError>;
+    return (
+      typeof normalizedError?.message === "string" &&
+      normalizedError.message
+        .toLowerCase()
+        .includes("onboarding token not found")
+    );
   };
 
-  const handleFinalSubmit = async () => {
+  const handleOnboardingTokenMissing = () => {
+    setRequiresOnboarding(false);
+    resetAuth();
+    useOnboardingStore.persist.clearStorage();
+    useOnboardingStore.getState().reset();
+
+    navigate(`/login`, {
+      replace: true,
+      state: {
+        message: "Your onboarding session expired. Please login again.",
+      },
+    });
+  };
+
+  const handleFinishEarly = (step3Data: { industry: string }) => {
+    setStepData("step3", step3Data);
+    setCompletedSteps(3);
+    handleFinalSubmit({ step3: step3Data });
+  };
+
+  const handleFinalSubmit = async (overrideData?: Partial<typeof data>) => {
     setIsSubmitting(true);
     setSubmitError("");
 
@@ -72,6 +101,11 @@ const OnboardingForm: React.FC = () => {
       ...data.step3,
       ...data.step4,
       ...data.step5,
+      ...overrideData?.step1,
+      ...overrideData?.step2,
+      ...overrideData?.step3,
+      ...overrideData?.step4,
+      ...overrideData?.step5,
     };
 
     const formData = new FormData();
@@ -108,6 +142,7 @@ const OnboardingForm: React.FC = () => {
 
     onboardingMutation.mutate(formData, {
       onSuccess: () => {
+        setRequiresOnboarding(false);
         reset();
         navigate(`/login`, {
           state: { message: "Onboarding completed successfully!" },
@@ -117,6 +152,10 @@ const OnboardingForm: React.FC = () => {
         useOnboardingStore.getState().reset();
       },
       onError: (error) => {
+        if (isMissingOnboardingTokenError(error)) {
+          handleOnboardingTokenMissing();
+          return;
+        }
         setSubmitError("Failed to submit onboarding. Please try again.");
         console.error("Onboarding submission error:", error);
       },

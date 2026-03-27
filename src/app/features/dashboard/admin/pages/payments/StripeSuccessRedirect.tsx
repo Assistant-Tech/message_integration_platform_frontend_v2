@@ -23,7 +23,9 @@ const StripeSuccessRedirect = () => {
   useEffect(() => {
     const sessionId = searchParams.get("sessionId");
     if (!slug || !sessionId) {
-      navigate("/admin/dashboard", { replace: true });
+      navigate(slug ? `/app/${slug}/admin/dashboard` : "/", {
+        replace: true,
+      });
       return;
     }
 
@@ -117,7 +119,7 @@ const StripeSuccessRedirect = () => {
           )}
 
           <button
-            onClick={() => navigate(`/${slug}/admin/dashboard`)}
+            onClick={() => navigate(`/app/${slug}/admin/dashboard`)}
             className="mt-6 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark"
           >
             Go to Dashboard

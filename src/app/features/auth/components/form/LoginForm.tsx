@@ -104,9 +104,9 @@ const LoginForm = () => {
 
             if (res.data.requiresOnboarding) {
               navigate(APP_ROUTES.PUBLIC.ONBOARDING_FORM);
-            } else {
-              navigate(`/${res.data.tenantSlug}/admin/dashboard`);
+              return;
             }
+            navigate(`/app/${res.data.tenantSlug}/admin/dashboard`);
 
             reset();
           }
