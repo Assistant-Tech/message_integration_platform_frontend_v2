@@ -8,10 +8,9 @@ const OnboardingGuard = () => {
 
   if (!requiresOnboarding) return <Outlet />;
 
-  if (location.pathname === APP_ROUTES.PUBLIC.ONBOARDING_FORM)
-    return <Outlet />;
+  if (location.pathname === APP_ROUTES.AUTH.ONBOARDING_FORM) return <Outlet />;
 
-  return <Navigate to={APP_ROUTES.PUBLIC.ONBOARDING_FORM} replace />;
+  return <Navigate to={APP_ROUTES.AUTH.ONBOARDING_FORM} replace />;
 };
 
 export default OnboardingGuard;

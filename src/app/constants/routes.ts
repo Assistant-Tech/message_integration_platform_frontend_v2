@@ -15,8 +15,6 @@ export const APP_ROUTES = {
     RESET_PASSWORD: "/reset-password/:userId/:token",
     PAYMENT_CALLBACK: "/payment/callback",
 
-    ONBOARDING_FORM: "/onboardingform",
-
     PRODUCTS_OVERVIEW: "/products",
     CRM: "/products/crm",
     CHATBOT: "/products/chatbot",
@@ -24,6 +22,7 @@ export const APP_ROUTES = {
     BULK_MESSAGING: "/products/bulk-message",
 
     RESOURCES_OVERVIEW: "/resources",
+    ONBOARDING: "/resources/onboarding",
     SUPPORT: "/resources/support",
     BLOG: "/resources/blogs",
     BLOG_ID: "/resources/blogs/:id",
@@ -40,6 +39,7 @@ export const APP_ROUTES = {
     VERIFY_EMAIL: "/verify/:token",
     CHECK_EMAIL: "/check-email",
     LOGIN_OTP: "/auth/login-otp",
+    ONBOARDING_FORM: "/onboardingform",
   },
 
   // ✅ APP BASE (NEW)

@@ -57,7 +57,7 @@ export const smartCards = [
     description:
       "Explore our flexible subscription options to find the perfect plan for your needs. Try out our 14-days free trial to know more.",
     icon: SubscriptionIcon,
-    redirectTo: APP_ROUTES.PUBLIC.SUBSCRIPTIONS,
+    redirectTo: APP_ROUTES.ADMIN.SETTINGS_SUBSCRIPTION,
   },
   {
     title: "Updates",

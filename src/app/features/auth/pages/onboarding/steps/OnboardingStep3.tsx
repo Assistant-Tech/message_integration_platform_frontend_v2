@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button, Input } from "@/app/components/ui/";
 import { useOnboardingStore } from "@/app/features/auth/pages/onboarding/hooks/useOnboardingStore";
 import { ArrowLeft, ArrowRight } from "lucide-react";
@@ -6,10 +6,8 @@ import {
   onboardingStep3Schema,
   OnboardingStep3FormData,
 } from "@/app/features/auth/pages/onboarding/schemas/Onboarding.schema";
-
-interface IndustryErrors {
-  industry?: string;
-}
+import { useForm, type SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 interface OnboardingStep3Props {
   onNext: (stepData: { industry: string }) => void;
@@ -27,13 +25,23 @@ const OnboardingStep3: React.FC<OnboardingStep3Props> = ({
   showFinishEarlyOption,
 }) => {
   const { data } = useOnboardingStore();
-
-  const [formData, setFormData] = useState<OnboardingStep3FormData>({
-    industry: data.step3?.industry || "",
-    isOther: data.step3?.isOther || false,
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    clearErrors,
+    watch,
+    formState: { errors },
+  } = useForm<OnboardingStep3FormData>({
+    resolver: zodResolver(onboardingStep3Schema),
+    defaultValues: {
+      industry: data.step3?.industry ?? "",
+      isOther: data.step3?.isOther ?? false,
+    },
   });
 
-  const [errors, setErrors] = useState<IndustryErrors>({});
+  const isOther = watch("isOther");
+  const selectedIndustry = watch("industry");
 
   const industries = [
     "Digital Marketing",
@@ -49,59 +57,32 @@ const OnboardingStep3: React.FC<OnboardingStep3Props> = ({
   ];
 
   const handleIndustryChange = (value: string) => {
-    setFormData({
-      industry: value === "Others" ? "" : value,
-      isOther: value === "Others",
+    setValue("industry", value === "Others" ? "" : value, {
+      shouldDirty: true,
     });
-
-    if (errors.industry) setErrors({});
+    setValue("isOther", value === "Others", { shouldDirty: true });
+    clearErrors("industry");
   };
 
   const handleCustomIndustryChange = (value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      industry: value,
-    }));
-
-    if (errors.industry) setErrors({});
+    setValue("industry", value, { shouldDirty: true });
+    clearErrors("industry");
   };
 
-  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    const result = onboardingStep3Schema.safeParse(formData);
-
-    if (!result.success) {
-      const newErrors: IndustryErrors = {};
-      result.error.errors.forEach((err) => {
-        newErrors[err.path[0] as keyof IndustryErrors] = err.message;
-      });
-      setErrors(newErrors);
-      return;
-    }
-
-    setErrors({});
-    // Send only industry to API
-    onNext({ industry: formData.industry.trim() });
+  const onSubmit: SubmitHandler<OnboardingStep3FormData> = (values) => {
+    onNext({ industry: values.industry.trim() });
   };
 
   const handleFinishSetup = () => {
-    const result = onboardingStep3Schema.safeParse(formData);
+    if (!onFinishEarly) return;
 
-    if (!result.success) {
-      const newErrors: IndustryErrors = {};
-      result.error.errors.forEach((err) => {
-        newErrors[err.path[0] as keyof IndustryErrors] = err.message;
-      });
-      setErrors(newErrors);
-      return;
-    }
-
-    setErrors({});
-    onFinishEarly?.({ industry: formData.industry.trim() });
+    handleSubmit((values) => {
+      onFinishEarly({ industry: values.industry.trim() });
+    })();
   };
 
   return (
-    <div className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {showFinishEarlyOption && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
           <h4 className="text-blue-800 font-medium mb-2">🎉 Great progress!</h4>
@@ -120,9 +101,9 @@ const OnboardingStep3: React.FC<OnboardingStep3Props> = ({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {industries.map((industryOption) => {
           const isSelected =
-            formData.isOther && industryOption === "Others"
-              ? true
-              : formData.industry === industryOption;
+            industryOption === "Others"
+              ? isOther
+              : !isOther && selectedIndustry === industryOption;
 
           return (
             <label
@@ -157,18 +138,18 @@ const OnboardingStep3: React.FC<OnboardingStep3Props> = ({
       </div>
 
       {errors.industry && (
-        <p className="text-danger text-sm mt-1">{errors.industry}</p>
+        <p className="text-danger text-sm mt-1">{errors.industry.message}</p>
       )}
 
-      {formData.isOther && (
+      {isOther && (
         <div className="mt-6">
           <p className="text-grey-medium mb-4">If Others, please specify</p>
           <Input
             id="customIndustry"
             placeholder="Please specify your industry"
-            value={formData.industry}
+            {...register("industry")}
             onChange={(e) => handleCustomIndustryChange(e.target.value)}
-            error={errors.industry}
+            error={errors.industry?.message}
           />
         </div>
       )}
@@ -194,14 +175,14 @@ const OnboardingStep3: React.FC<OnboardingStep3Props> = ({
           )}
           <Button
             label="Continue"
-            onClick={handleSubmit}
+            type="submit"
             variant="primary"
             IconRight={<ArrowRight size={20} />}
             disabled={isSubmitting}
           />
         </div>
       </div>
-    </div>
+    </form>
   );
 };
 

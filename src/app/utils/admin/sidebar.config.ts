@@ -3,7 +3,6 @@ import {
   LayoutDashboard,
   Bot,
   BarChart3,
-  Tag,
   Contact,
   // ShoppingBag,
   // ShoppingCart,

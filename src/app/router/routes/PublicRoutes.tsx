@@ -130,7 +130,7 @@ const PublicRoutes = () => {
             element={<AcceptInvitation />}
           />
           <Route
-            path={APP_ROUTES.PUBLIC.ONBOARDING_FORM}
+            path={APP_ROUTES.AUTH.ONBOARDING_FORM}
             element={<OnboardingForm />}
           />
         </Route>
