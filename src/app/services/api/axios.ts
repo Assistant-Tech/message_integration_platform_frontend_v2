@@ -137,9 +137,6 @@ api.interceptors.response.use(
         isRefreshing = false;
         processQueue(refreshErr, null);
 
-        const { useAuthStore } = await import("@/app/store/auth.store");
-        await useAuthStore.getState().logout();
-
         return Promise.reject(refreshErr);
       }
     }

@@ -1,9 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { MfaServices } from "@/app/services/mfa.services";
-import { useMfaStore } from "@/app/store/mfa.store";
+// import { useMfaStore } from "@/app/store/mfa.store";
 import { toast } from "sonner";
 import type {
-  MfaData,
   MfaVerifyResponse,
   ResponseRegeneration,
 } from "@/app/types/mfa.types";
@@ -30,8 +29,6 @@ export const useMfaStatus = () => {
  * Request MFA setup (generates QR code, SMS secret, etc.)
  */
 export const useRequestMfa = () => {
-  const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: () => MfaServices.requestMFA(),
     onSuccess: (data) => {
@@ -50,14 +47,14 @@ export const useRequestMfa = () => {
  */
 export const useVerifyMfa = () => {
   const queryClient = useQueryClient();
-  const mfaStore = useMfaStore();
+  // const mfaStore = useMfaStore();
 
   return useMutation({
     mutationFn: (token: string) => MfaServices.verifyMFA(token),
     onSuccess: (response: MfaVerifyResponse) => {
       // Store recovery codes in modal state (temporary display)
       if (response.data?.recoveryPhrases) {
-        mfaStore.setDisplayRecoveryCodes(response.data.recoveryPhrases);
+        // mfaStore.setDisplayRecoveryCodes(response.data.recoveryPhrases);
       }
 
       // Invalidate MFA status to reflect new state
@@ -79,8 +76,8 @@ export const useRegenerateBackupCodes = () => {
     mutationFn: () => MfaServices.regenerateBackupCodes(),
     onSuccess: (response: ResponseRegeneration) => {
       if (response.data?.recoveryPhrases) {
-        const mfaStore = useMfaStore();
-        mfaStore.setDisplayRecoveryCodes(response.data.recoveryPhrases);
+        // const mfaStore = useMfaStore();
+        // mfaStore.setDisplayRecoveryCodes(response.data.recoveryPhrases);
       }
       toast.success("Recovery codes regenerated successfully");
     },

@@ -39,24 +39,28 @@ const ChannelSettingsPage = () => {
   };
 
   const handleAddPage = () => {
-    if (pages?.channelType === "facebook") {
+    if (normalizedProviderId === "facebook") {
       handleConnectFacebook();
     }
   };
 
-  const columns = useMemo<ColumnDef<any>[]>(
+  const columns: ColumnDef<any>[] = useMemo(
     () => [
       {
         accessorKey: "name",
         header: "Page Name",
-        cell: (info) => (
-          <div>
-            <p className="label-semi-bold-14 text-grey">{info.getValue()}</p>
-            <p className="text-[11px] text-grey-medium font-mono">
-              {info.row.original.id}
-            </p>
-          </div>
-        ),
+        cell: (info) => {
+          const pageName = String(info.getValue() ?? "");
+
+          return (
+            <div>
+              <p className="label-semi-bold-14 text-grey">{pageName}</p>
+              <p className="text-[11px] text-grey-medium font-mono">
+                {info.row.original.id}
+              </p>
+            </div>
+          );
+        },
       },
       {
         accessorKey: "channelType",

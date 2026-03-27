@@ -24,7 +24,6 @@ const PricingCard = ({ plan, duration }: PricingCardProps) => {
     buttonText,
     priceSuffix,
     cardIsPopular,
-    checkoutUrl,
     subtitle,
   } = usePricingCardData({ plan, duration });
 

@@ -64,7 +64,7 @@ const ScaleYourBusiness = () => {
           <Button
             label="Book a Demo"
             variant="primary"
-            redirectTo="/demo"
+            // redirectTo="/demo"
             className="w-full sm:w-auto px-6 sm:px-8 md:px-10 h-12 sm:h-14 text-base font-medium mt-8"
           />
         </div>
