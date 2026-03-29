@@ -38,8 +38,8 @@ export const useChannels = () => {
       const oauthUrl = data?.data?.oauthUrl;
 
       if (oauthUrl) {
-        const width = 600;
-        const height = 750;
+        const width = 800;
+        const height = 950;
         const left = window.screenX + (window.outerWidth - width) / 2;
         const top = window.screenY + (window.outerHeight - height) / 2;
 
@@ -52,9 +52,10 @@ export const useChannels = () => {
         const handleMessage = async (event: MessageEvent) => {
           if (event.origin !== window.location.origin) return;
 
+          // http://localhost:5173/oauth/success?platform=meta&token={{randmomtoken}}
+
           if (event.data?.type === "OAUTH_SUCCESS") {
             const { token } = event.data.payload;
-
             if (popup) popup.close();
             window.removeEventListener("message", handleMessage);
 

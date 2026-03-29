@@ -1,6 +1,9 @@
-import { Button } from "@/app/components/ui";
 import { useEffect } from "react";
 
+/*  
+MOCK-TEST:
+http://localhost:3000/api/v1/meta/oauth/callback?code=AQDG97QVpKj03EA0KnGcZmfD92SFzdC1Y-xJrawyVha7K_8GJCZd9mUb_8TgfkpP2chq26wRms-BQ-tZ2uKXRLnrIWux6WGSkz5tONvS7zToHpCHjb5VZh1xVy4dGfYxWSxgGLZzLm5DWU35DK7FQzXwLqNYyoyay5um2IZO0UyXHWXk7G8a2yg9XyO9QARUiCgFZ6Gt0FD_uXXU6pyrj6BtPoAoJC88ufv5__9LlcZ5RDXT2ZRX3xYO-8GggIxbaw9K2jYSFslLEn2mSAV4Sy782jfa5_FT2b_pJWPTbWYieFLyxLVJM5c1Zx-aEWLSXWiy3JVhtPRcJi0OIb-RYZG4qsV5LorEmQOa6UrMi0nq67vwUypyTEEAVELekDL12p6iEkyMQc3300ihlYA4h3IxBdR9Gy-aN1WLGBz_KrJsiXSQjKVcYpd5x5kn8wcQyjiGXb_ZGWaCGgE9Kug8qLT2&state=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRJZCI6IjNmODE2NDQ3LWI4MDctNGZkOS04OTk1LTc0OTk3YzA1ODUyYSIsImlhdCI6MTc3NDYyMDcxMiwiZXhwIjoxNzc0NjIxNjEyfQ.VNGsCxOFYnGb9P2ffU46M5vJ-KLHj0lQ6UitY8GgLZU#_=_
+ */
 const OAuthSuccessPage = () => {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -19,39 +22,14 @@ const OAuthSuccessPage = () => {
         },
         window.location.origin,
       );
-
-      const timeout = setTimeout(() => {
-        window.close();
-      }, 2000);
-
-      return () => clearTimeout(timeout);
     }
+
+    // No success dialog; close the popup immediately
+    window.close();
   }, []);
 
-  return (
-    <div className="h-screen flex items-center justify-center">
-      <div className="bg-primary absolute inset-0 animate-pulse rounded-full blur-3xl" />
-      <div className="from-base-white to-base-white/40 relative flex h-20 w-20 items-center justify-center rounded-2xl bg-linear-to-br shadow-lg">
-        <img
-          src="/chatblix_icon.svg"
-          alt="ChatBlix Icon"
-          width={100}
-          height={100}
-        />
-      </div>
-      <div className="text-center flex flex-col items-center justify-center">
-        <h2 className="text-grey text-2xl font-semibold">Success!</h2>
-        <p className="text-grey-medium mt-2">
-          Your account is connected. Closing this window...
-        </p>
-        <Button
-          label="Close Window"
-          onClick={() => window.close()}
-          variant="primary"
-        />
-      </div>
-    </div>
-  );
+  // Render nothing; this page is only used for the OAuth callback side-effect
+  return null;
 };
 
 export default OAuthSuccessPage;

@@ -151,12 +151,23 @@ const OnboardingForm: React.FC = () => {
         useOnboardingStore.persist.clearStorage();
         useOnboardingStore.getState().reset();
       },
-      onError: (error) => {
+      onError: (error: any) => {
         if (isMissingOnboardingTokenError(error)) {
           handleOnboardingTokenMissing();
           return;
         }
-        setSubmitError("Failed to submit onboarding. Please try again.");
+
+        // Add a specific check for the Role error to help you debug
+        if (error?.message?.includes("Default role")) {
+          setSubmitError(
+            "Server Configuration Error: System roles are not initialized. Please contact support.",
+          );
+        } else {
+          setSubmitError(
+            error?.message || "Failed to submit onboarding. Please try again.",
+          );
+        }
+
         console.error("Onboarding submission error:", error);
       },
       onSettled: () => {
