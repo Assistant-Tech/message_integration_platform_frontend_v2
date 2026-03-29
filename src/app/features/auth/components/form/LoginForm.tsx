@@ -103,10 +103,10 @@ const LoginForm = () => {
             toast.success(res.message);
 
             if (res.data.requiresOnboarding) {
-              navigate(APP_ROUTES.PUBLIC.ONBOARDING_FORM);
-            } else {
-              navigate(`/${res.data.tenantSlug}/admin/dashboard`);
+              navigate(APP_ROUTES.AUTH.ONBOARDING_FORM);
+              return;
             }
+            navigate(`/app/${res.data.tenantSlug}/admin/dashboard`);
 
             reset();
           }

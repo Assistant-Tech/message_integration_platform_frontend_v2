@@ -170,6 +170,11 @@ export const getRouteMeta = (pathname: string) => {
       subtitle: "Coordinate internal and external channel discussions",
     },
     {
+      match: /\/channel\/settings\/.+$/,
+      title: "Channel Settings",
+      subtitle: "Review and manage connected pages for this channel",
+    },
+    {
       match: /\/chatbot$/,
       title: "Automation",
       subtitle: "Configure automated replies and bot experiences",

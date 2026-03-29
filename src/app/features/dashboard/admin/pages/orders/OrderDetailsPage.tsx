@@ -38,7 +38,7 @@ const OrderDetailsPage = () => {
   };
 
   const handleBack = () => {
-    navigate(`/${tenantSlug}/admin/orders`);
+    navigate(`/app/${tenantSlug}/admin/orders`);
   };
 
   const OrderDetalsBreadCrumbs = [

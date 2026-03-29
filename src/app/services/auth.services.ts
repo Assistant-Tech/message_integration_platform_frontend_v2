@@ -2,10 +2,6 @@ import api from "@/app/services/api/axios";
 import { handleApiError } from "@/app/utils/handlerApiError";
 
 /**
- * Service to handle all authentication-related API calls.
- */
-
-/**
  * Fetches the current user's profile from the API.
  */
 export const fetchCurrentUser = async () => {
@@ -97,9 +93,9 @@ export const verifyEmail = async (token: string) => {
  */
 export const onboarding = async (data: FormData) => {
   try {
-    const res = await api.post("/auth/onboarding", data, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    const res = await api.post("/auth/onboarding", data);
+    console.log("🚀 ~ onboarding ~ res:", res);
+
     return res.data;
   } catch (error) {
     throw handleApiError(error);
@@ -111,6 +107,7 @@ export const onboarding = async (data: FormData) => {
  */
 export const login = async (email: string, password: string) => {
   try {
+    console.log("email", email);
     const res = await api.post("/auth/login", { email, password });
     return res.data;
   } catch (error: any) {

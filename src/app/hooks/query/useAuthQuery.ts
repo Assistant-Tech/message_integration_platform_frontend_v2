@@ -16,7 +16,6 @@ import type {
   MFARequiredResponse,
   User,
 } from "@/app/types/auth.types";
-import { isAuthBypassEnabled, createMockUser } from "@/app/utils/dev/mockAuth";
 
 const AUTH_QUERY_KEYS = {
   all: ["auth"],
@@ -36,21 +35,6 @@ export const useCurrentUser = () => {
   return useQuery<User>({
     queryKey: AUTH_QUERY_KEYS.currentUser,
     queryFn: async () => {
-      // Return mock data in development bypass mode
-      if (isAuthBypassEnabled()) {
-        console.log("🔧 AUTH BYPASS: Using mock user data for API call");
-        const mockUser = createMockUser();
-
-        // Sync to auth store so RoleBasedRoutes and other guards can read it
-        setUser(mockUser);
-        if (mockUser.tenant?.slug) {
-          setTenantSlug(mockUser.tenant.slug);
-        }
-
-        return mockUser;
-      }
-
-      // Normal API call when not in bypass mode
       const res = await fetchCurrentUser();
       const user = (res.data ?? res) as User;
 
@@ -62,10 +46,10 @@ export const useCurrentUser = () => {
 
       return user;
     },
-    enabled: !!accessToken || isAuthBypassEnabled(),
+    enabled: !!accessToken,
     staleTime: 5 * 60 * 1000,
     gcTime: 15 * 60 * 1000,
-    retry: isAuthBypassEnabled() ? 0 : 1, // Don't retry in bypass mode
+    retry: 1,
     refetchOnWindowFocus: false,
   });
 };
@@ -121,10 +105,12 @@ export const useVerifyEmail = () => {
  */
 export const useOnboarding = () => {
   const queryClient = useQueryClient();
+  const setRequiresOnboarding = useAuthStore((s) => s.setRequiresOnboarding);
 
   return useMutation({
     mutationFn: (data: FormData) => onboarding(data),
     onSuccess: () => {
+      setRequiresOnboarding(false);
       toast.success("Onboarding completed!");
       queryClient.invalidateQueries({ queryKey: AUTH_QUERY_KEYS.currentUser });
     },

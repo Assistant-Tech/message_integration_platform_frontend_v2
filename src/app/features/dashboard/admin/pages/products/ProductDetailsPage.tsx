@@ -33,7 +33,7 @@ const ProductDetailsPage = () => {
   }, [id]);
 
   const handleBack = () => {
-    navigate(`/${tenantSlug}/admin/products/all`);
+    navigate(`/app/${tenantSlug}/admin/products/all`);
   };
 
   const ProductsCrumbs = [

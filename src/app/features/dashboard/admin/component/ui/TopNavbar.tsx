@@ -78,8 +78,8 @@ const TopNavbar = ({
   const isPlainTitle = typeof resolvedTitle === "string";
   const profileRoute = slug
     ? user?.roleType === "MEMBER"
-      ? `/${slug}/dashboard/settings/profile`
-      : `/${slug}/admin/${APP_ROUTES.ADMIN.SETTINGS_PROFILE}`
+      ? `/app/${slug}/dashboard/settings/profile`
+      : `/app/${slug}/admin/${APP_ROUTES.ADMIN.SETTINGS_PROFILE}`
     : APP_ROUTES.ADMIN.SETTINGS_PROFILE;
   const searchDestinations = useMemo<SearchDestination[]>(() => {
     if (!slug) {
@@ -91,14 +91,14 @@ const TopNavbar = ({
         {
           label: "Dashboard",
           description: "Overview of your personal workspace activity",
-          href: `/${slug}/dashboard`,
+          href: `/app/${slug}/dashboard`,
           keywords: ["home", "overview", "workspace"],
           section: "Workspace",
         },
         {
           label: "Profile Settings",
           description: "Manage your account details and preferences",
-          href: `/${slug}/dashboard/settings/profile`,
+          href: `/app/${slug}/dashboard/settings/profile`,
           keywords: ["profile", "settings", "account"],
           section: "Settings",
         },
@@ -109,35 +109,35 @@ const TopNavbar = ({
       {
         label: "Dashboard",
         description: "Overview of workspace activity and account health",
-        href: `/${slug}/admin/${APP_ROUTES.ADMIN.DASHBOARD}`,
+        href: `/app/${slug}/admin/${APP_ROUTES.ADMIN.DASHBOARD}`,
         keywords: ["home", "overview", "workspace"],
         section: "Workspace",
       },
       {
         label: "Conversations",
         description: "Monitor inbound customer conversations",
-        href: `/${slug}/admin/${APP_ROUTES.ADMIN.CONVERSATION}`,
+        href: `/app/${slug}/admin/${APP_ROUTES.ADMIN.CONVERSATION}`,
         keywords: ["inbox", "messages", "chat"],
         section: "Workspace",
       },
       {
         label: "Channels",
         description: "Coordinate internal and external channel discussions",
-        href: `/${slug}/admin/${APP_ROUTES.ADMIN.CHANNEL}`,
+        href: `/app/${slug}/admin/${APP_ROUTES.ADMIN.CHANNEL}`,
         keywords: ["teams", "discussion", "internal"],
         section: "Workspace",
       },
       {
         label: "Contact",
         description: "View and manage your contact directory",
-        href: `/${slug}/admin/${APP_ROUTES.ADMIN.CONTACT}`,
+        href: `/app/${slug}/admin/${APP_ROUTES.ADMIN.CONTACT}`,
         keywords: ["contacts", "people", "directory"],
         section: "Workspace",
       },
       {
         label: "Automation",
         description: "Configure automated replies and bot flows",
-        href: `/${slug}/admin/${APP_ROUTES.ADMIN.CHATBOT}`,
+        href: `/app/${slug}/admin/${APP_ROUTES.ADMIN.CHATBOT}`,
         keywords: ["automation", "bot", "assistant"],
         section: "Workspace",
       },
@@ -159,77 +159,77 @@ const TopNavbar = ({
       {
         label: "Tags",
         description: "Organize conversations with reusable tags",
-        href: `/${slug}/admin/${APP_ROUTES.ADMIN.TAGS}`,
+        href: `/app/${slug}/admin/${APP_ROUTES.ADMIN.TAGS}`,
         keywords: ["labels", "categorize", "segment"],
         section: "Workspace",
       },
       {
         label: "Analytics",
         description: "Review conversation and business performance",
-        href: `/${slug}/admin/${APP_ROUTES.ADMIN.ANALYTICS}`,
+        href: `/app/${slug}/admin/${APP_ROUTES.ADMIN.ANALYTICS}`,
         keywords: ["reports", "insights", "metrics"],
         section: "Insights",
       },
       {
         label: "Profile Settings",
         description: "Manage your account details and preferences",
-        href: `/${slug}/admin/${APP_ROUTES.ADMIN.SETTINGS_PROFILE}`,
+        href: `/app/${slug}/admin/${APP_ROUTES.ADMIN.SETTINGS_PROFILE}`,
         keywords: ["profile", "settings", "account"],
         section: "Settings",
       },
       {
         label: "Company Settings",
         description: "Update company and workspace information",
-        href: `/${slug}/admin/${APP_ROUTES.ADMIN.SETTINGS_COMPANY}`,
+        href: `/app/${slug}/admin/${APP_ROUTES.ADMIN.SETTINGS_COMPANY}`,
         keywords: ["business", "tenant", "company"],
         section: "Settings",
       },
       {
         label: "Security Settings",
         description: "Control authentication and security settings",
-        href: `/${slug}/admin/${APP_ROUTES.ADMIN.SETTINGS_SECURITY}`,
+        href: `/app/${slug}/admin/${APP_ROUTES.ADMIN.SETTINGS_SECURITY}`,
         keywords: ["mfa", "password", "security"],
         section: "Settings",
       },
       {
         label: "Notification Settings",
         description: "Choose how notifications are delivered",
-        href: `/${slug}/admin/${APP_ROUTES.ADMIN.SETTINGS_NOTIFICATIONS}`,
+        href: `/app/${slug}/admin/${APP_ROUTES.ADMIN.SETTINGS_NOTIFICATIONS}`,
         keywords: ["alerts", "email", "notifications"],
         section: "Settings",
       },
       {
         label: "Role Management",
         description: "Assign permissions and manage workspace access",
-        href: `/${slug}/admin/${APP_ROUTES.ADMIN.SETTINGS_ROLE_MANAGEMENT}`,
+        href: `/app/${slug}/admin/${APP_ROUTES.ADMIN.SETTINGS_ROLE_MANAGEMENT}`,
         keywords: ["permissions", "roles", "members"],
         section: "Settings",
       },
       {
         label: "Chat Settings",
         description: "Adjust chat defaults and routing behavior",
-        href: `/${slug}/admin/${APP_ROUTES.ADMIN.SETTINGS_CHAT_SETTINGS}`,
+        href: `/app/${slug}/admin/${APP_ROUTES.ADMIN.SETTINGS_CHAT_SETTINGS}`,
         keywords: ["chat", "routing", "settings"],
         section: "Settings",
       },
       {
         label: "Shipping Settings",
         description: "Configure delivery and fulfilment options",
-        href: `/${slug}/admin/${APP_ROUTES.ADMIN.SETTINGS_SHIPPING}`,
+        href: `/app/${slug}/admin/${APP_ROUTES.ADMIN.SETTINGS_SHIPPING}`,
         keywords: ["shipping", "delivery", "logistics"],
         section: "Settings",
       },
       {
         label: "Subscription",
         description: "Review plan, billing, and renewals",
-        href: `/${slug}/admin/${APP_ROUTES.ADMIN.SETTINGS_SUBSCRIPTION}`,
+        href: `/app/${slug}/admin/${APP_ROUTES.ADMIN.SETTINGS_SUBSCRIPTION}`,
         keywords: ["billing", "plan", "subscription"],
         section: "Settings",
       },
       {
         label: "Integrations",
         description: "Connect external services and APIs",
-        href: `/${slug}/admin/${APP_ROUTES.ADMIN.SETTINGS_INTEGRATION_SETTINGS}`,
+        href: `/app/${slug}/admin/${APP_ROUTES.ADMIN.SETTINGS_INTEGRATION_SETTINGS}`,
         keywords: ["integrations", "api", "connections"],
         section: "Settings",
       },

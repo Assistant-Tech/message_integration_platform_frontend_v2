@@ -15,7 +15,7 @@ const api = axios.create({
 
   headers: {
     "Content-Type": "application/json",
-    "Allow-access-control-origin": "true",
+    // "Allow-access-control-origin": "true",
   },
 });
 
@@ -90,10 +90,11 @@ const processQueue = (error: unknown, token: string | null) => {
   }
 };
 
+// ---------------------------------------------------------------------------
+// RESPONSE INTERCEPTOR
+// ---------------------------------------------------------------------------
 api.interceptors.response.use(
   async (res) => {
-    // Capture CSRF token from response headers if provided by backend
-    // This handles rotation where the backend sends a new token on successful requests
     const newCsrfToken =
       res.headers["x-csrf-token"] || res.headers["csrf-token"];
     if (newCsrfToken) {
@@ -105,8 +106,15 @@ api.interceptors.response.use(
   async (err: AxiosError) => {
     const originalRequest = err.config as RetriableAxiosRequestConfig;
 
-    // Handle 401 with refresh
+    // 1. Handle 401 Unauthorized
     if (err.response?.status === 401 && !originalRequest._retry) {
+      // If the URL contains 'onboarding', do not attempt to refresh.
+      // Onboarding tokens are temporary and shouldn't trigger the standard refresh flow.
+      if (originalRequest.url?.includes("/onboarding")) {
+        return Promise.reject(err);
+      }
+      // ---------------------------
+
       originalRequest._retry = true;
 
       try {
@@ -136,21 +144,14 @@ api.interceptors.response.use(
       } catch (refreshErr) {
         isRefreshing = false;
         processQueue(refreshErr, null);
-
-        const { useAuthStore } = await import("@/app/store/auth.store");
-        await useAuthStore.getState().logout();
-
         return Promise.reject(refreshErr);
       }
     }
 
-    // Handle 403 CSRF error — logout (CSRF mismatch means session is invalid)
+    // 2. Handle 403 CSRF error
     if (err.response?.status === 403 && !originalRequest._retry) {
       const errorData = err.response.data as any;
-      if (
-        errorData?.message?.includes("CSRF") ||
-        errorData?.message?.includes("csrf")
-      ) {
+      if (errorData?.message?.toLowerCase().includes("csrf")) {
         originalRequest._retry = true;
         const { useAuthStore } = await import("@/app/store/auth.store");
         useAuthStore.getState().resetAuth();
@@ -158,7 +159,7 @@ api.interceptors.response.use(
       }
     }
 
-    // Handle 429 Too Many Requests
+    // 3. Handle 429 Too Many Requests
     if (err.response?.status === 429) {
       const retryAfter = Number(err.response.headers?.["retry-after"]) || 5;
       toast.error(`Too many requests. Please wait ${retryAfter}s.`);

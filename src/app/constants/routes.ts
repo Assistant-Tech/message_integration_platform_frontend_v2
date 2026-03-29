@@ -10,46 +10,47 @@ export const APP_ROUTES = {
     UNAUTHORIZED: "/unauthorized",
     PRICING: "/pricing",
     PRODUCTS: "/products",
-    SLUG: (slug: string) => `/${slug}`,
     DEMO: "/demo",
     FORGOT_PASSWORD: "/forgot-password",
     RESET_PASSWORD: "/reset-password/:userId/:token",
     PAYMENT_CALLBACK: "/payment/callback",
-    // Onboarding
-    ONBOARDING_FORM: "/onboardingform",
-    ONBOARDING_FORM_STEP_1: "step-1",
-    ONBOARDING_FORM_STEP_2: "step-2",
-    ONBOARDING_FORM_STEP_3: "step-3",
-    ONBOARDING_FORM_STEP_4: "step-4",
-    ONBOARDING_FORM_STEP_5: "step-5",
-    // Products
+
     PRODUCTS_OVERVIEW: "/products",
     CRM: "/products/crm",
     CHATBOT: "/products/chatbot",
     UNIFIED_MESSAGE: "/products/unified-message",
     BULK_MESSAGING: "/products/bulk-message",
-    // Resources
+
     RESOURCES_OVERVIEW: "/resources",
+    ONBOARDING: "/resources/onboarding",
     SUPPORT: "/resources/support",
     BLOG: "/resources/blogs",
     BLOG_ID: "/resources/blogs/:id",
     VIDEOS: "/resources/videos",
     FAQ: "/resources/faq",
-    FAQ_CRM: "/resources/faq/crm",
-    ONBOARDING: "/resources/support/onboarding",
-    SUBSCRIPTIONS: "/resources/subscription",
+
     TERMSCONDITION: "/resources/support/terms&condition",
     POLICY: "/resources/support/policy",
     UPDATES: "/resources/support/updates",
   },
+
   // Auth routes
   AUTH: {
     VERIFY_EMAIL: "/verify/:token",
     CHECK_EMAIL: "/check-email",
     LOGIN_OTP: "/auth/login-otp",
+    ONBOARDING_FORM: "/onboardingform",
   },
-  // Admin routes
+
+  // ✅ APP BASE (NEW)
+  APP: {
+    ROOT: (slug: string) => `/app/${slug}`,
+  },
+
+  // Admin routes (relative to /app/:slug/admin)
   ADMIN: {
+    ROOT: (slug: string) => `/app/${slug}/admin`,
+
     DASHBOARD: "dashboard",
     CONVERSATION: "conversation",
     CONTACT: "contact",
@@ -57,13 +58,14 @@ export const APP_ROUTES = {
     CUSTOMER_CONVERSATION: "messages",
     CHATBOT: "chatbot",
     CHANNEL: "channel",
+    CHANNEL_SETTINGS: "channel/settings/:providerId",
     TAGS: "tags",
     ANALYTICS: "analytics",
+
     ORDERS: "orders",
     ORDERS_CREATE: "orders/createOrder",
     ORDERS_DETAILS: "orders/details/:id",
 
-    // Settings
     SETTINGS: "settings",
     SETTINGS_PROFILE: "settings/profile",
     SETTINGS_COMPANY: "settings/company",
@@ -77,7 +79,6 @@ export const APP_ROUTES = {
     SETTINGS_INTEGRATION_SETTINGS: "settings/integration",
     SETTINGS_STRIPE: "settings/integration/stripe",
 
-    // Products
     PRODUCTS: "products",
     PRODUCTS_ALL: "products/all",
     PRODUCTS_CATEGORY: "products/category",
@@ -89,9 +90,11 @@ export const APP_ROUTES = {
 
     CHECKOUT: "checkout",
   },
-  // User routes
+
+  // User routes (relative to /app/:slug/dashboard)
   USER: {
-    DASHBOARD: "/user/dashboard",
+    ROOT: (slug: string) => `/app/${slug}/dashboard`,
+    DASHBOARD: "dashboard",
   },
 };
 
@@ -101,7 +104,7 @@ export const buildBillingUrl = (
   interval: string,
   currency: string,
 ) => {
-  return `/${orgSlug}/admin/${APP_ROUTES.ADMIN.SETTINGS_SUBSCRIPTION_BILLING}?planId=${planId}&interval=${interval}&currency=${currency}`;
+  return `/app/${orgSlug}/admin/${APP_ROUTES.ADMIN.SETTINGS_SUBSCRIPTION_BILLING}?planId=${planId}&interval=${interval}&currency=${currency}`;
 };
 
 export type RouteKeys = keyof typeof APP_ROUTES;

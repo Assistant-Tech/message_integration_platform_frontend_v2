@@ -3,7 +3,7 @@ import { X } from "lucide-react";
 import { Input } from "@/app/components/ui";
 
 // Platform Icons
-import facebook from "@/app/assets/dashboard-icons/facebook.svg";
+import facebook from "@/app/assets/dashboard-icons/fb.svg";
 import instagram from "@/app/assets/dashboard-icons/insta.svg";
 import whatsapp from "@/app/assets/dashboard-icons/whatsapp.svg";
 

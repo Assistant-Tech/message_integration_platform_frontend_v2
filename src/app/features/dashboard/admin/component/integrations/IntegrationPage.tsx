@@ -2,10 +2,8 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import IntegrationCard from "./IntgerationCard";
-import {
-  allIntegrations,
-  Integration,
-} from "@/app/utils/integration/integration.config";
+import { allIntegrations } from "@/app/utils/integration/integration.config";
+import { Integration } from "@/app/types/channel.types";
 
 const IntegrationPage = () => {
   const navigate = useNavigate();
@@ -31,9 +29,6 @@ const IntegrationPage = () => {
       if (categoryWithProvider) {
         setActiveCategory(categoryWithProvider);
       }
-
-      // Optional: Scroll to the specific provider integration card
-      // You could add logic here to highlight or focus the specific provider
     }
   }, [searchParams]);
 

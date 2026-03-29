@@ -22,7 +22,7 @@ const CreateProductPage: React.FC = () => {
   const navigate = useNavigate();
   const tenantSlug = useAuthStore((s) => s.tenantSlug);
   const handleBack = () => {
-    navigate(`/${tenantSlug}/admin/products/all`);
+    navigate(`/app/${tenantSlug}/admin/products/all`);
   };
   const ProductsCrumbs = [
     { label: "All Products", onClick: handleBack },
@@ -68,7 +68,7 @@ const CreateProductPage: React.FC = () => {
       console.log("🚀 ~ onSubmit ~ data:", data);
       mutate(data);
       reset();
-      navigate(`/${tenantSlug}/admin/${APP_ROUTES.ADMIN.PRODUCTS_ALL}`);
+      navigate(`/app/${tenantSlug}/admin/${APP_ROUTES.ADMIN.PRODUCTS_ALL}`);
     } catch (error) {
       console.error("❌ Error:", error);
     }

@@ -28,7 +28,7 @@ const Logo: React.FC<LogoProps> = ({
 
   const getDashboardRoute = () => {
     if (requiresOnboarding) return "/onboardingform";
-    return `/${tenantSlug}/admin/dashboard`;
+    return `/app/${tenantSlug}/admin/dashboard`;
   };
 
   const handleClick = () => {
