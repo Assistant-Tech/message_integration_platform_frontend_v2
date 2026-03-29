@@ -16,8 +16,10 @@ const AdminDashboardPage = lazy(
   () =>
     import("@/app/features/dashboard/admin/pages/dashboard/AdminDashboardPage"),
 );
+
+// FOLDER CHANGED TO FEATURE BASED
 const InboxPage = lazy(
-  () => import("@/app/features/dashboard/admin/pages/conversation/InboxPage"),
+  () => import("@/app/features/inbox/conversation/InboxPage"),
 );
 const ContactPage = lazy(
   () => import("@/app/features/dashboard/admin/pages/contact/ContactAdminPage"),
