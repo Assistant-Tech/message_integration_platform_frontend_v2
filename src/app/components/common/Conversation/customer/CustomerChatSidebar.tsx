@@ -6,54 +6,54 @@ import {
   Search,
   SlidersHorizontal,
 } from "lucide-react";
-import PlatformIcon from "@/app/components/common/Conversation/customer/PlatformIcons";
-import {
-  type CustomerConversation,
-  type Platform,
-  PLATFORM_LABELS,
-} from "@/app/features/dashboard/admin/pages/conversation/mockData/customerConversationMockData";
 import { cn } from "@/app/utils/cn";
+import {
+  type Inbox,
+  type ChannelType,
+  SortOption,
+  StatusFilter,
+  QuickFilterId,
+  TabId,
+} from "@/app/types/inbox.types";
 import ConversationItem from "@/app/components/common/Conversation/customer/ConversationItem";
-
-type TabId = "all" | Platform;
-
-interface Props {
-  conversations: CustomerConversation[];
-  activeTab: TabId;
-  selectedId: string | null;
-  onSelect: (conv: CustomerConversation) => void;
-  onHideConversation: (conversationId: string) => void;
-  onRestoreHiddenChats: () => void;
-  hiddenCount: number;
-}
-
-type QuickFilterId = "unread" | "priority" | "adReplies" | "followUp";
-type StatusFilter = "all" | "unassigned" | "assigned" | "resolved";
-type SortOption = "latest" | "oldest" | "name-asc" | "name-desc";
 
 const QUICK_FILTERS: Array<{
   id: QuickFilterId;
   label: string;
-  matches: (conversation: CustomerConversation) => boolean;
+  matches: (inbox: Inbox) => boolean;
 }> = [
   {
     id: "unread",
     label: "Unread",
-    matches: (conversation) => (conversation.unreadCount ?? 0) > 0,
+    matches: (inbox) => inbox.unreadCount > 0,
   },
   {
     id: "priority",
     label: "Priority",
-    matches: (conversation) =>
-      conversation.status === "assigned" ||
-      Boolean(conversation.tags?.includes("Pending")),
+    matches: (inbox) => inbox.priority === "HIGH",
   },
   {
-    id: "adReplies",
-    label: "Ad replies",
-    matches: (conversation) => conversation.leadSource === "ads",
+    id: "followUp",
+    label: "Assigned",
+    matches: (inbox) => inbox.assignedTo !== null,
   },
 ];
+
+const CHANNEL_LABELS: Record<ChannelType, string> = {
+  INTERNAL: "Internal",
+  EXTERNAL: "External",
+  SUPPORT: "Support",
+};
+
+interface Props {
+  conversations: Inbox[];
+  activeTab: TabId;
+  selectedId: string | null;
+  onSelect: (inbox: Inbox) => void;
+  onHideConversation: (id: string) => void;
+  onRestoreHiddenChats: () => void;
+  hiddenCount: number;
+}
 
 const CustomerChatSidebar = ({
   conversations,
@@ -78,41 +78,44 @@ const CustomerChatSidebar = ({
       const q = search.toLowerCase();
       list = list.filter(
         (c) =>
-          c.contactName.toLowerCase().includes(q) ||
-          c.lastMessage.toLowerCase().includes(q),
+          c.title.toLowerCase().includes(q) ||
+          (c.contact?.name ?? "").toLowerCase().includes(q) ||
+          c.lastMessageContent.toLowerCase().includes(q),
       );
     }
 
     if (activeFilters.length > 0) {
-      list = list.filter((conversation) =>
+      list = list.filter((inbox) =>
         activeFilters.every((filterId) =>
-          QUICK_FILTERS.find((filter) => filter.id === filterId)?.matches(
-            conversation,
-          ),
+          QUICK_FILTERS.find((f) => f.id === filterId)?.matches(inbox),
         ),
       );
     }
 
     if (statusFilter !== "all") {
-      list = list.filter(
-        (conversation) => conversation.status === statusFilter,
-      );
+      list = list.filter((c) => c.status === statusFilter);
     }
 
     list.sort((a, b) => {
       switch (sortBy) {
         case "oldest":
           return (
-            new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+            new Date(a.lastMessageAt).getTime() -
+            new Date(b.lastMessageAt).getTime()
           );
         case "name-asc":
-          return a.contactName.localeCompare(b.contactName);
+          return (a.contact?.name ?? a.title).localeCompare(
+            b.contact?.name ?? b.title,
+          );
         case "name-desc":
-          return b.contactName.localeCompare(a.contactName);
+          return (b.contact?.name ?? b.title).localeCompare(
+            a.contact?.name ?? a.title,
+          );
         case "latest":
         default:
           return (
-            new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+            new Date(b.lastMessageAt).getTime() -
+            new Date(a.lastMessageAt).getTime()
           );
       }
     });
@@ -123,7 +126,7 @@ const CustomerChatSidebar = ({
   const toggleFilter = (filterId: QuickFilterId) => {
     setActiveFilters((prev) =>
       prev.includes(filterId)
-        ? prev.filter((value) => value !== filterId)
+        ? prev.filter((f) => f !== filterId)
         : [...prev, filterId],
     );
   };
@@ -136,12 +139,11 @@ const CustomerChatSidebar = ({
 
   return (
     <aside className="flex h-full w-full flex-col overflow-hidden bg-base-white-12">
-      {/* ── Search ── */}
+      {/* Search + Manage */}
       <div className="px-4 py-3">
         <div className="flex items-center gap-3">
           <div className="flex min-w-0 flex-1 items-center gap-2 rounded-xl border border-grey-light bg-primary-light/30 px-3 py-2">
             <Search className="h-4 w-4 flex-shrink-0 text-grey-medium" />
-
             <input
               type="text"
               value={search}
@@ -150,7 +152,6 @@ const CustomerChatSidebar = ({
               className="min-w-0 flex-1 bg-transparent text-sm text-grey outline-none placeholder:text-grey-medium"
             />
           </div>
-
           <button
             type="button"
             onClick={() => setIsManageMode((prev) => !prev)}
@@ -166,6 +167,7 @@ const CustomerChatSidebar = ({
           </button>
         </div>
 
+        {/* Filter toggle */}
         <div className="mt-3">
           <button
             type="button"
@@ -192,26 +194,23 @@ const CustomerChatSidebar = ({
               <div>
                 <p className="mb-2 text-xs text-grey-medium">Status</p>
                 <div className="flex flex-wrap gap-2">
-                  {(["all", "unassigned", "assigned", "resolved"] as const).map(
-                    (option) => (
-                      <button
-                        key={option}
-                        type="button"
-                        onClick={() => setStatusFilter(option)}
-                        className={cn(
-                          "rounded-full px-3 py-1.5 text-xs capitalize",
-                          statusFilter === option
-                            ? "bg-primary text-base-white"
-                            : "bg-primary-light text-primary",
-                        )}
-                      >
-                        {option}
-                      </button>
-                    ),
-                  )}
+                  {(["all", "OPEN", "CLOSED"] as const).map((option) => (
+                    <button
+                      key={option}
+                      type="button"
+                      onClick={() => setStatusFilter(option)}
+                      className={cn(
+                        "rounded-full px-3 py-1.5 text-xs capitalize",
+                        statusFilter === option
+                          ? "bg-primary text-base-white"
+                          : "bg-primary-light text-primary",
+                      )}
+                    >
+                      {option.toLowerCase()}
+                    </button>
+                  ))}
                 </div>
               </div>
-
               <div className="flex items-center justify-between gap-3">
                 <span className="text-xs text-grey-medium">Sort by</span>
                 <select
@@ -225,11 +224,9 @@ const CustomerChatSidebar = ({
                   <option value="name-desc">Name (Z-A)</option>
                 </select>
               </div>
-
               <div className="flex items-center gap-2 overflow-x-auto pb-1">
                 {QUICK_FILTERS.map((filter) => {
                   const isActive = activeFilters.includes(filter.id);
-
                   return (
                     <button
                       key={filter.id}
@@ -246,7 +243,6 @@ const CustomerChatSidebar = ({
                     </button>
                   );
                 })}
-
                 <button
                   type="button"
                   onClick={clearFilters}
@@ -280,7 +276,7 @@ const CustomerChatSidebar = ({
         )}
       </div>
 
-      {/* ── Conversation List ── */}
+      {/* Conversation list */}
       <div className="flex-1 overflow-y-auto scrollbar-invisible ms-2">
         {filtered.length === 0 ? (
           <p className="py-10 text-center text-sm text-grey-medium">
@@ -290,26 +286,22 @@ const CustomerChatSidebar = ({
           <>
             {activeTab !== "all" && (
               <div className="flex items-center gap-2 border-b border-grey-light bg-primary-light/20 px-4 py-2">
-                <PlatformIcon platform={activeTab} size={18} />
-
                 <span className="text-xs font-semibold uppercase tracking-wide text-grey-medium">
-                  {PLATFORM_LABELS[activeTab]}
+                  {CHANNEL_LABELS[activeTab as ChannelType]}
                 </span>
-
                 <span className="ml-auto rounded-full bg-grey-light px-2 py-0.5 text-[10px] font-semibold text-grey-medium">
                   {filtered.length}
                 </span>
               </div>
             )}
-
-            {filtered.map((conv) => (
+            {filtered.map((inbox) => (
               <ConversationItem
-                key={conv._id}
-                conv={conv}
-                isSelected={selectedId === conv._id}
-                onSelect={() => onSelect(conv)}
+                key={inbox.id}
+                conv={inbox}
+                isSelected={selectedId === inbox.id}
+                onSelect={() => onSelect(inbox)}
                 isManageMode={isManageMode}
-                onRemove={() => onHideConversation(conv._id)}
+                onRemove={() => onHideConversation(inbox.id)}
               />
             ))}
           </>

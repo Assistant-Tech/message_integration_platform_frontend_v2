@@ -1,26 +1,18 @@
 import { Info, UserRound, X } from "lucide-react";
 import { cn } from "@/app/utils/cn";
-import type { CustomerConversation } from "@/app/features/dashboard/admin/pages/conversation/mockData/customerConversationMockData";
-import {
-  LEAD_SOURCE_LABELS,
-  LEAD_SOURCE_STYLES,
-  TAG_STYLES,
-} from "@/app/features/dashboard/admin/pages/conversation/mockData/customerConversationMockData";
+import type { InboxById } from "@/app/types/inbox.types";
 import CustomerChatAvatar from "./CustomerChatAvatar";
 
 interface Props {
-  conversation: CustomerConversation;
+  conversation: InboxById;
   onClose: () => void;
   onAssignToggle?: () => void;
 }
 
 const formatDateTime = (value?: string) => {
   if (!value) return "Not available";
-
   const date = new Date(value);
-
   if (Number.isNaN(date.getTime())) return "Not available";
-
   return date.toLocaleString("en-US", {
     month: "short",
     day: "numeric",
@@ -30,10 +22,9 @@ const formatDateTime = (value?: string) => {
   });
 };
 
-const titleCase = (value?: string) => {
+const titleCase = (value?: string | null) => {
   if (!value) return "Not assigned";
-
-  return value.charAt(0).toUpperCase() + value.slice(1);
+  return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
 };
 
 const CustomerDetailsDrawer = ({
@@ -41,41 +32,34 @@ const CustomerDetailsDrawer = ({
   onClose,
   onAssignToggle,
 }: Props) => {
+  const displayName = conversation.contact?.name ?? conversation.title;
+  const channelLabel = titleCase(conversation.channel);
+
+  const statusTone =
+    conversation.status === "CLOSED"
+      ? "bg-success-light text-success-dark"
+      : "bg-primary-light text-primary";
+
+  const priorityTone =
+    conversation.priority === "HIGH"
+      ? "bg-error-light text-error-dark"
+      : conversation.priority === "LOW"
+        ? "bg-grey-light text-grey-medium"
+        : "bg-warning-light text-warning-dark";
+
   const overview = [
-    {
-      label: "Platform",
-      value: titleCase(conversation.platform),
-      tone: "",
-    },
+    { label: "Channel", value: channelLabel, tone: "bg-grey-light text-grey" },
     {
       label: "Status",
       value: titleCase(conversation.status),
-      tone:
-        conversation.status === "resolved"
-          ? "bg-success-light text-success-dark"
-          : conversation.status === "assigned"
-            ? "bg-primary-light text-primary"
-            : "bg-warning-light text-warning-dark",
+      tone: statusTone,
     },
     {
-      label: "Unread",
-      value: `${conversation.unreadCount ?? 0}`,
-      tone: "",
+      label: "Priority",
+      value: titleCase(conversation.priority),
+      tone: priorityTone,
     },
-    {
-      label: "Messages",
-      value: `${conversation.messages.length}`,
-      tone: "bg-base-white text-grey",
-    },
-    {
-      label: "Source",
-      value: conversation.leadSource
-        ? LEAD_SOURCE_LABELS[conversation.leadSource]
-        : "Unknown",
-      tone: conversation.leadSource
-        ? LEAD_SOURCE_STYLES[conversation.leadSource]
-        : "bg-grey-light text-grey-medium",
-    },
+    { label: "Unread", value: `${conversation.unreadCount}`, tone: "" },
   ];
 
   return (
@@ -100,41 +84,27 @@ const CustomerDetailsDrawer = ({
       </div>
 
       <div className="space-y-6 px-5 py-5">
+        {/* Contact card */}
         <section className="rounded-[28px] border border-grey-light bg-primary-light/35 p-5">
           <div className="flex flex-col items-center text-center">
             <CustomerChatAvatar
-              name={conversation.contactName}
-              platform={conversation.platform}
+              name={displayName}
+              platform={conversation.channel}
             />
             <h4 className="mt-4 text-xl font-semibold text-grey">
-              {conversation.contactName}
+              {displayName}
             </h4>
             <p className="mt-1 text-sm text-grey-medium">
-              {titleCase(conversation.platform)} customer
+              {channelLabel} customer
             </p>
             <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-              {conversation.leadSource && (
-                <span
-                  className={cn(
-                    "inline-flex items-center rounded-full px-3 py-1 label-regular-14",
-                    LEAD_SOURCE_STYLES[conversation.leadSource],
-                  )}
-                >
-                  {LEAD_SOURCE_LABELS[conversation.leadSource]}
-                </span>
-              )}
               {(conversation.tags?.length
                 ? conversation.tags
                 : ["No tags"]
               ).map((tag) => (
                 <span
                   key={tag}
-                  className={cn(
-                    "inline-flex items-center rounded-full px-3 py-1 label-regular-14",
-                    conversation.tags?.length
-                      ? (TAG_STYLES[tag] ?? "bg-grey-light text-grey")
-                      : "bg-grey-light text-grey-medium",
-                  )}
+                  className="inline-flex items-center rounded-full px-3 py-1 label-regular-14 bg-grey-light text-grey"
                 >
                   {tag}
                 </span>
@@ -143,6 +113,7 @@ const CustomerDetailsDrawer = ({
           </div>
         </section>
 
+        {/* Overview grid */}
         <section>
           <h4 className="mb-3 label-regular-16 uppercase tracking-[0.12em] text-grey-medium">
             Overview
@@ -169,6 +140,7 @@ const CustomerDetailsDrawer = ({
           </div>
         </section>
 
+        {/* Customer profile */}
         <section className="rounded-[24px] border border-grey-light bg-base-white p-4">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary-light text-primary">
@@ -181,29 +153,31 @@ const CustomerDetailsDrawer = ({
               </p>
             </div>
           </div>
-
           <dl className="mt-4 space-y-3 text-sm">
             <div className="flex items-start justify-between gap-4">
               <dt className="text-grey-medium">Assigned to</dt>
               <dd className="text-right text-grey">
-                {conversation.assignedTo || "Not assigned"}
+                {conversation.assignedUser?.name ?? "Not assigned"}
               </dd>
             </div>
+            {conversation.contact?.email && (
+              <div className="flex items-start justify-between gap-4">
+                <dt className="text-grey-medium">Email</dt>
+                <dd className="text-right text-grey">
+                  {conversation.contact.email}
+                </dd>
+              </div>
+            )}
             <div className="flex items-start justify-between gap-4">
               <dt className="text-grey-medium">Last activity</dt>
               <dd className="text-right text-grey">
-                {formatDateTime(conversation.timestamp)}
+                {formatDateTime(conversation.lastMessageAt)}
               </dd>
             </div>
-            {/* <div className="flex items-start justify-between gap-4">
-              <dt className="text-grey-medium">Last customer message</dt>
-              <dd className="max-w-[180px] text-right text-grey">
-                {latestCustomerMessage?.content || "No customer message yet"}
-              </dd>
-            </div> */}
           </dl>
         </section>
 
+        {/* Assign section */}
         <section className="rounded-[24px] border border-grey-light bg-base-white p-4">
           <div className="flex items-center justify-between gap-3">
             <div>
@@ -221,44 +195,6 @@ const CustomerDetailsDrawer = ({
             </button>
           </div>
         </section>
-
-        {/* <section className="rounded-[24px] border border-grey-light bg-base-white p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="label-regular-16 text-grey">
-                Conversation signals
-              </h4>
-              <p className="text-xs text-grey-medium">
-                Quick details from the current thread
-              </p>
-            </div>
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-light text-primary">
-              <MessageSquare className="h-4 w-4" />
-            </div>
-          </div>
-
-          <div className="mt-4 space-y-3">
-            <div className="rounded-[18px] border border-grey-light bg-primary-light/20 px-3 py-3">
-              <div className="flex items-center gap-2 label-regular-16 text-grey">
-                <Clock3 className="h-4 w-4 text-primary" />
-                Last activity
-              </div>
-              <p className="mt-2 text-sm text-grey-medium">
-                {formatDateTime(conversation.timestamp)}
-              </p>
-            </div>
-
-            <div className="rounded-[18px] border border-grey-light bg-primary-light/20 px-3 py-3">
-              <div className="flex items-center gap-2 label-regular-16 text-grey">
-                <Tag className="h-4 w-4 text-primary" />
-                Latest message
-              </div>
-              <p className="mt-2 text-sm text-grey-medium break-words">
-                {conversation.lastMessage || "No message yet"}
-              </p>
-            </div>
-          </div>
-        </section> */}
       </div>
     </aside>
   );

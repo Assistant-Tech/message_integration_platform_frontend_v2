@@ -1,4 +1,4 @@
-import { Platform } from "../features/dashboard/admin/pages/conversation/mockData/customerConversationMockData";
+import { Platform } from "../features/inbox/mocks/mockData/customerConversationMockData";
 
 /**
  * Extracts and formats features from a plan's features object into a readable array

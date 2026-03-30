@@ -1,140 +1,113 @@
 import { useEffect, useRef, useState } from "react";
 import { CheckCheck, Info, Tag, UserPlus2 } from "lucide-react";
-import { cn } from "@/app/utils/cn";
 import { TopNavbar } from "@/app/features/dashboard/admin/component/ui";
-import type {
-  CustomerConversation,
-  ConversationMessage,
-} from "@/app/features/dashboard/admin/pages/conversation/mockData/customerConversationMockData";
-import {
-  LEAD_SOURCE_LABELS,
-  LEAD_SOURCE_STYLES,
-  TAG_STYLES,
-} from "@/app/features/dashboard/admin/pages/conversation/mockData/customerConversationMockData";
-import CustomerChatAvatar from "@/app/components/common/Conversation/customer/customer-chat-panel/CustomerChatAvatar";
-import CustomerChatComposer from "@/app/components/common/Conversation/customer/customer-chat-panel/CustomerChatComposer";
-import CustomerChatEmptyState from "@/app/components/common/Conversation/customer/customer-chat-panel/CustomerChatEmptyState";
-import CustomerChatMessageBubble from "@/app/components/common/Conversation/customer/customer-chat-panel/CustomerChatMessageBubble";
-import { getPlatformSubtitle } from "@/app/components/common/Conversation/customer/customer-chat-panel/helpers";
+import type { Inbox, InboxMessage } from "@/app/types/inbox.types";
+import { useInboxMessagesQuery } from "@/app/hooks/query/useInboxQuery";
+import CustomerChatEmptyState from "./customer-chat-panel/CustomerChatEmptyState";
+import CustomerChatAvatar from "./customer-chat-panel/CustomerChatAvatar";
+import CustomerChatMessageBubble from "./customer-chat-panel/CustomerChatMessageBubble";
+import CustomerChatComposer from "./customer-chat-panel/CustomerChatComposer";
+import InboxSkeleton from "@/app/components/ui/InboxSkeleton";
 
 interface Props {
-  conversation: CustomerConversation | null;
-  onResolve?: (id: string) => void;
-  onTagsClick?: (id: string) => void;
+  conversation: Inbox | null;
   onDetailsToggle?: () => void;
   isDetailsOpen?: boolean;
   onAssignToggle?: () => void;
   isAssignOpen?: boolean;
   assignedMemberName?: string;
+  onResolve?: (id: string) => void;
+  onTagsClick?: (id: string) => void;
 }
 
 const CustomerChatPanel = ({
   conversation,
-  onResolve,
-  onTagsClick,
   onDetailsToggle,
   isDetailsOpen = false,
   onAssignToggle,
   isAssignOpen = false,
   assignedMemberName,
+  onResolve,
+  onTagsClick,
 }: Props) => {
-  const [messages, setMessages] = useState<ConversationMessage[]>(
-    conversation?.messages ?? [],
-  );
+  const [localMessages, setLocalMessages] = useState<InboxMessage[]>([]);
   const [input, setInput] = useState("");
-  const [replyTarget, setReplyTarget] = useState<ConversationMessage | null>(
-    null,
-  );
+  const [replyTarget, setReplyTarget] = useState<InboxMessage | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
-    endRef.current?.scrollIntoView({ behavior, block: "end" });
-  };
+  const { data: serverMessages = [], isLoading: isLoadingMessages } =
+    useInboxMessagesQuery(conversation?.id ?? null);
 
   useEffect(() => {
-    setMessages(conversation?.messages ?? []);
+    setLocalMessages([]);
     setInput("");
     setReplyTarget(null);
-  }, [conversation?._id]);
+  }, [conversation?.id]);
+
+  const allMessages = [
+    ...serverMessages,
+    ...localMessages.filter(
+      (local) => !serverMessages.some((s) => s.id === local.id),
+    ),
+  ];
 
   useEffect(() => {
-    const behavior = conversation ? "auto" : "smooth";
-    const frameId = window.requestAnimationFrame(() => {
-      scrollToBottom(behavior);
+    const frameId = requestAnimationFrame(() => {
+      endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
     });
-
-    return () => window.cancelAnimationFrame(frameId);
-  }, [conversation?._id, messages.length]);
+    return () => cancelAnimationFrame(frameId);
+  }, [allMessages.length]);
 
   const handleSend = () => {
     if (!input.trim() || !conversation) return;
 
-    const newMsg: ConversationMessage = {
-      _id: `local-${Date.now()}`,
+    const optimistic: InboxMessage = {
+      id: `optimistic-${Date.now()}`,
       sender: "agent",
       senderName: "You",
+      senderId: "me",
       content: input.trim(),
       timestamp: new Date().toISOString(),
+      type: "TEXT",
+      status: "SENT",
+      attachments: [],
       replyTo: replyTarget
         ? {
-            _id: replyTarget._id,
+            id: replyTarget.id,
             senderName: replyTarget.senderName,
             content: replyTarget.content,
           }
-        : undefined,
+        : null,
     };
 
-    setMessages((prev) => [...prev, newMsg]);
+    setLocalMessages((prev) => [...prev, optimistic]);
     setInput("");
     setReplyTarget(null);
+    // TODO: call sendMessage API, rollback on failure:
+    // sendMessage(conversation.id, { content: optimistic.content })
+    //   .catch(() =>
+    //     setLocalMessages((prev) => prev.filter((m) => m.id !== optimistic.id))
+    //   );
   };
 
-  if (!conversation) {
-    return <CustomerChatEmptyState />;
-  }
+  if (!conversation) return <CustomerChatEmptyState />;
 
-  const hasTags = Boolean(conversation.tags?.length);
+  const displayName = conversation.contact?.name ?? conversation.title;
+  const subtitle = `${conversation.channel} · ${conversation.status.toLowerCase()}`;
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden">
-      {/* ── TopNavbar ── */}
       <TopNavbar
-        title={
-          <>
-            <span className="truncate">{conversation.contactName}</span>
-            {conversation.leadSource && (
-              <span
-                className={cn(
-                  "inline-flex max-w-full items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
-                  LEAD_SOURCE_STYLES[conversation.leadSource],
-                )}
-              >
-                {LEAD_SOURCE_LABELS[conversation.leadSource]}
-              </span>
-            )}
-            {hasTags &&
-              conversation.tags?.map((tag) => (
-                <span
-                  key={tag}
-                  className={cn(
-                    "inline-flex max-w-full items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
-                    TAG_STYLES[tag] ?? "bg-grey-light text-grey",
-                  )}
-                >
-                  {tag}
-                </span>
-              ))}
-          </>
-        }
-        subtitle={getPlatformSubtitle(conversation)}
+        title={<span className="truncate">{displayName}</span>}
+        subtitle={subtitle}
         showSearch={false}
         showHelp={false}
         showNotifications={false}
         showProfileMenu={false}
         leadingContent={
           <CustomerChatAvatar
-            name={conversation.contactName}
-            platform={conversation.platform}
+            name={displayName}
+            platform={conversation.channel}
           />
         }
         actions={[
@@ -153,46 +126,54 @@ const CustomerChatPanel = ({
           {
             label: "Tags",
             icon: Tag,
-            onClick: () => onTagsClick?.(conversation._id),
+            onClick: () => onTagsClick?.(conversation.id),
             isActive: false,
           },
           {
             label: "Resolve",
             icon: CheckCheck,
-            onClick: () => onResolve?.(conversation._id),
-            isActive: conversation.status === "resolved",
+            onClick: () => onResolve?.(conversation.id),
+            isActive: conversation.status === "CLOSED",
           },
         ]}
       />
-      {/* ── Message Feed ── */}
-      <div className="min-h-0 flex-1 overflow-y-auto bg-white px-5 py-4">
-        <div className="flex min-h-full flex-col justify-end gap-4">
-          {messages.map((msg, index) => {
-            const isLastMessage = index === messages.length - 1;
-            const sentByLabel =
-              isLastMessage && msg.sender === "agent"
-                ? assignedMemberName || msg.senderName || "Member"
-                : undefined;
 
-            return (
-              <CustomerChatMessageBubble
-                key={msg._id}
-                message={msg}
-                contactName={conversation.contactName}
-                sentByLabel={sentByLabel}
-                onReply={
-                  msg.sender === "customer"
-                    ? () => setReplyTarget(msg)
-                    : undefined
-                }
-              />
-            );
-          })}
-          <div ref={endRef} />
-        </div>
+      <div className="min-h-0 flex-1 overflow-y-auto bg-white px-5 py-4">
+        {isLoadingMessages ? (
+          <InboxSkeleton />
+        ) : (
+          <div className="flex min-h-full flex-col justify-end gap-4">
+            {allMessages.length === 0 && (
+              <p className="py-10 text-center text-sm text-grey-medium">
+                No messages yet. Start the conversation.
+              </p>
+            )}
+            {allMessages.map((msg, index) => {
+              const isLast = index === allMessages.length - 1;
+              const sentByLabel =
+                isLast && msg.sender === "agent"
+                  ? (assignedMemberName ?? msg.senderName)
+                  : undefined;
+
+              return (
+                <CustomerChatMessageBubble
+                  key={msg.id}
+                  message={msg}
+                  contactName={displayName}
+                  sentByLabel={sentByLabel}
+                  onReply={
+                    msg.sender === "customer"
+                      ? () => setReplyTarget(msg)
+                      : undefined
+                  }
+                />
+              );
+            })}
+            <div ref={endRef} />
+          </div>
+        )}
       </div>
 
-      {/* ── Input ── */}
       <CustomerChatComposer
         value={input}
         onChange={setInput}

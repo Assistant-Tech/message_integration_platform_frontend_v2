@@ -1,9 +1,3 @@
-import type {
-  CustomerConversation,
-  Platform,
-} from "@/app/features/dashboard/admin/pages/conversation/mockData/customerConversationMockData";
-import { PLATFORM_LABELS } from "@/app/features/dashboard/admin/pages/conversation/mockData/customerConversationMockData";
-
 const AVATAR_COLOURS: [string, ...string[]] = [
   "bg-violet-200 text-violet-700",
   "bg-blue-200 text-blue-700",
@@ -48,4 +42,4 @@ export function getPlatformSubtitle(conv: CustomerConversation): string {
   return `${platform} · ${status}`;
 }
 
-export type { Platform };
+export type { PLATFORM_LABELS };
