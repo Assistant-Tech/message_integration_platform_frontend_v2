@@ -9,13 +9,13 @@ import {
 import { cn } from "@/app/utils/cn";
 import {
   type Inbox,
-  type ChannelType,
   SortOption,
   StatusFilter,
   QuickFilterId,
   TabId,
 } from "@/app/types/inbox.types";
 import ConversationItem from "@/app/components/common/Conversation/customer/ConversationItem";
+import { ChannelType } from "@/app/types/common.types";
 
 const QUICK_FILTERS: Array<{
   id: QuickFilterId;

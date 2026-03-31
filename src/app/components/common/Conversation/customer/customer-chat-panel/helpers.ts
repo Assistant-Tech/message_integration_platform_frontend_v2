@@ -44,8 +44,14 @@ export const PLATFORM_LABELS: Record<Platform, string> = {
   INSTAGRAM: "Instagram",
 };
 
-export const toUISender = (senderType: MessageSenderType): UISenderType => {
-  if (senderType === "AGENT") return "agent";
-  if (senderType === "CUSTOMER") return "customer";
-  return "system";
-};
+export function toUISender(senderType: MessageSenderType): UISenderType {
+  switch (senderType) {
+    case "AGENT":
+      return "AGENT";
+    case "CUSTOMER":
+    case "CONTACT":
+      return "CUSTOMER";
+    default:
+      return "SYSTEM";
+  }
+}

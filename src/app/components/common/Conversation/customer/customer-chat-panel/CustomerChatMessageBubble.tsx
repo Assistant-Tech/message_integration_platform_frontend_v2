@@ -1,6 +1,6 @@
 import { cn } from "@/app/utils/cn";
 import { formatMessageTime, getAvatarColour, getInitials } from "./helpers";
-import { InboxMessage } from "@/app/types/inbox.types";
+import { InboxMessage } from "@/app/types/message.types";
 
 interface Props {
   message: InboxMessage;
@@ -15,7 +15,7 @@ const CustomerChatMessageBubble = ({
   sentByLabel,
   onReply,
 }: Props) => {
-  const isAgent = message.senderName === "agent";
+  const isAgent = message.senderName === "AGENT";
 
   return (
     <div
