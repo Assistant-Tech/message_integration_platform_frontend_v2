@@ -8,6 +8,7 @@ import CustomerChatAvatar from "./customer-chat-panel/CustomerChatAvatar";
 import CustomerChatMessageBubble from "./customer-chat-panel/CustomerChatMessageBubble";
 import CustomerChatComposer from "./customer-chat-panel/CustomerChatComposer";
 import InboxSkeleton from "@/app/components/ui/InboxSkeleton";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface Props {
   conversation: Inbox | null;
@@ -30,6 +31,7 @@ const CustomerChatPanel = ({
   onResolve,
   onTagsClick,
 }: Props) => {
+  const queryClient = useQueryClient();
   const [localMessages, setLocalMessages] = useState<InboxMessage[]>([]);
   const [input, setInput] = useState("");
   const [replyTarget, setReplyTarget] = useState<InboxMessage | null>(null);
@@ -38,6 +40,7 @@ const CustomerChatPanel = ({
   const { data: serverMessages = [], isLoading: isLoadingMessages } =
     useInboxMessagesQuery(conversation?.id ?? null);
 
+  // console.log("serverMessages", serverMessages);
   useEffect(() => {
     setLocalMessages([]);
     setInput("");
@@ -83,17 +86,26 @@ const CustomerChatPanel = ({
     setLocalMessages((prev) => [...prev, optimistic]);
     setInput("");
     setReplyTarget(null);
-    // TODO: call sendMessage API, rollback on failure:
-    // sendMessage(conversation.id, { content: optimistic.content })
-    //   .catch(() =>
-    //     setLocalMessages((prev) => prev.filter((m) => m.id !== optimistic.id))
-    //   );
+
+    queryClient.setQueriesData(
+      { queryKey: ["inbox"] },
+      (old: Inbox[] | undefined) =>
+        old?.map((inbox) =>
+          inbox.id === conversation.id
+            ? {
+                ...inbox,
+                lastMessageContent: input.trim(),
+                lastMessageAt: new Date().toISOString(),
+              }
+            : inbox,
+        ),
+    );
   };
 
   if (!conversation) return <CustomerChatEmptyState />;
 
   const displayName = conversation.contact?.name ?? conversation.title;
-  const subtitle = `${conversation.channel} · ${conversation.status.toLowerCase()}`;
+  const subtitle = `${conversation.channel.toLocaleLowerCase()} · ${conversation.status.toLowerCase()}`;
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden">

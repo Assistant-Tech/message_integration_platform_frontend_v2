@@ -37,50 +37,55 @@ export const useChannels = () => {
       const { data } = await api.get("/meta/oauth");
       const oauthUrl = data?.data?.oauthUrl;
 
-      if (oauthUrl) {
-        const width = 800;
-        const height = 950;
-        const left = window.screenX + (window.outerWidth - width) / 2;
-        const top = window.screenY + (window.outerHeight - height) / 2;
+      if (!oauthUrl) return;
 
-        const popup = window.open(
-          oauthUrl,
-          "Facebook Login",
-          `width=${width},height=${height},left=${left},top=${top}`,
-        );
+      const width = 800;
+      const height = 950;
+      const left = window.screenX + (window.outerWidth - width) / 2;
+      const top = window.screenY + (window.outerHeight - height) / 2;
 
-        const handleMessage = async (event: MessageEvent) => {
-          if (event.origin !== window.location.origin) return;
+      let popup: Window | null = null;
 
-          // http://localhost:5173/oauth/success?platform=meta&token={{randmomtoken}}
+      const handleMessage = async (event: MessageEvent) => {
+        console.log("MESSAGE RECEIVED:", event);
 
-          if (event.data?.type === "OAUTH_SUCCESS") {
-            const { token } = event.data.payload;
-            if (popup) popup.close();
-            window.removeEventListener("message", handleMessage);
+        if (event.data?.type === "OAUTH_SUCCESS") {
+          const { token } = event.data.payload;
 
-            try {
-              setIsLoading(true);
-              const res = await connectMetaApiPage(token);
+          console.log("TOKEN RECEIVED:", token);
 
-              if (res.success) {
-                await refreshChannels();
-              }
-            } catch (err) {
-              console.error("Connection failed", err);
-            } finally {
-              setIsLoading(false);
+          if (popup) popup.close();
+          window.removeEventListener("message", handleMessage);
+
+          try {
+            setIsLoading(true);
+
+            const res = await connectMetaApiPage(token);
+
+            console.log("CONNECT RESPONSE:", res);
+
+            if (res.success) {
+              await refreshChannels();
             }
+          } catch (err) {
+            console.error("Connection failed", err);
+          } finally {
+            setIsLoading(false);
           }
-        };
+        }
+      };
 
-        window.addEventListener("message", handleMessage);
-      }
+      window.addEventListener("message", handleMessage);
+
+      popup = window.open(
+        oauthUrl,
+        "Facebook Login",
+        `width=${width},height=${height},left=${left},top=${top}`,
+      );
     } catch (err) {
       console.error("OAuth init failed", err);
     }
   }, [refreshChannels]);
-
   return {
     integrations,
     pages,

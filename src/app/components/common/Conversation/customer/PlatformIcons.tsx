@@ -2,8 +2,8 @@ import fbIcon from "@/app/assets/dashboard-icons/fb.svg";
 import instaIcon from "@/app/assets/dashboard-icons/insta.svg";
 import tiktokIcon from "@/app/assets/dashboard-icons/tiktok.svg";
 import whatsappIcon from "@/app/assets/dashboard-icons/whatsapp.svg";
-import type { Platform } from "@/app/features/dashboard/admin/pages/conversation/mockData/customerConversationMockData";
 import { cn } from "@/app/utils/cn";
+import { Platform } from "@/app/components/common/Conversation/customer/customer-chat-panel/helpers";
 
 interface PlatformIconProps {
   platform: Platform;
@@ -12,17 +12,17 @@ interface PlatformIconProps {
 }
 
 const PLATFORM_ICON_SRC: Record<Platform, string> = {
-  facebook: fbIcon,
-  instagram: instaIcon,
-  tiktok: tiktokIcon,
-  whatsapp: whatsappIcon,
+  FACEBOOK: fbIcon,
+  INSTAGRAM: instaIcon,
+  TIKTOK: tiktokIcon,
+  WHATSAPP: whatsappIcon,
 };
 
 const PLATFORM_ALT: Record<Platform, string> = {
-  facebook: "Facebook",
-  instagram: "Instagram",
-  tiktok: "TikTok",
-  whatsapp: "WhatsApp",
+  FACEBOOK: "Facebook",
+  INSTAGRAM: "Instagram",
+  TIKTOK: "TikTok",
+  WHATSAPP: "WhatsApp",
 };
 
 const PlatformIcon = ({

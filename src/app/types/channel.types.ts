@@ -1,7 +1,8 @@
-export interface Channel {
+export interface ChannelData {
   _id: string;
   title: string;
-  type: "internal" | "whatsapp" | "facebook" | "instagram" | "tiktok";
+  channelType: "INTERNAL" | "EXTERNAL" | "CUSTOMER";
+  channel: "FACEBOOK" | "WHATSAPP" | "TIKTOK" | "INSTAGRAM";
   isDefault: boolean;
   priority: string;
   participants: string[];
@@ -19,7 +20,7 @@ export interface ChannelApiResponse {
 export type Page = {
   id: string;
   name: string;
-  channelType: "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "WHATSAPP";
+  channelType: "INTERNAL" | "EXTERNAL" | "CUSTOMER";
   externalId: string;
   linkedPageId?: string | null;
 };

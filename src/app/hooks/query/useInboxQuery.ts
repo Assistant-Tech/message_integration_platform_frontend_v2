@@ -1,10 +1,9 @@
+import { fetchInboxById, fetchInboxes } from "@/app/services/inbox.services";
 import {
   adaptApiMessage,
-  fetchInboxById,
-  fetchInboxes,
   fetchInboxMessages,
-} from "@/app/services/inbox.services";
-import { ChannelType, InboxMessage } from "@/app/types/inbox.types";
+} from "@/app/services/messages.services";
+import { InboxMessage } from "@/app/types/inbox.types";
 import { useQuery } from "@tanstack/react-query";
 
 /*
@@ -16,9 +15,14 @@ export const useInboxMessagesQuery = (inboxId: string | null) => {
     queryFn: async (): Promise<InboxMessage[]> => {
       if (!inboxId) return [];
       const res = await fetchInboxMessages(inboxId);
-      return res.data.items
-        .filter((msg) => !msg.isDeleted)
-        .map(adaptApiMessage);
+      try {
+        return res.data.items
+          .filter((msg) => !msg.isDeleted)
+          .map(adaptApiMessage);
+      } catch (err) {
+        console.error("adaptApiMessage failed", err);
+        return [];
+      }
     },
     enabled: Boolean(inboxId),
     staleTime: 30_000,
@@ -29,7 +33,7 @@ export const useInboxMessagesQuery = (inboxId: string | null) => {
  * Fetch Inbox queries
  */
 export const useInboxFetchAllQuery = (
-  channelType: ChannelType = "INTERNAL",
+  channelType = "INTERNAL",
   page: number = 1,
   limit: number = 20,
 ) => {

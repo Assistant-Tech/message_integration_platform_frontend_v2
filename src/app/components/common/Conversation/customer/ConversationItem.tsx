@@ -28,8 +28,8 @@ const ConversationItem = ({
   const displayName = conv.contact?.name ?? conv.title;
   const preview =
     conv.assignedUser && conv.unreadCount === 0
-      ? `You: ${conv.lastMessageContent}`
-      : conv.lastMessageContent;
+      ? `You: ${conv.lastMessageContent ?? ""}`
+      : (conv.lastMessageContent ?? "No message yet");
 
   const hasPriority = conv.priority !== "NORMAL";
 
@@ -58,7 +58,7 @@ const ConversationItem = ({
               {displayName} {/* ← was conv.contactName */}
             </span>
             <span className="flex-shrink-0 text-xs text-grey-medium">
-              {formatTimestamp(conv.lastMessageAt)} {/* ← was conv.timestamp */}
+              {formatTimestamp(conv.lastMessageAt)}
             </span>
           </div>
 

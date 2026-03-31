@@ -1,13 +1,13 @@
 import type { KeyboardEvent } from "react";
 import { Send, X } from "lucide-react";
 import { cn } from "@/app/utils/cn";
-import type { ConversationMessage } from "@/app/features/dashboard/admin/pages/conversation/mockData/customerConversationMockData";
+import { InboxMessage } from "@/app/types/inbox.types";
 
 interface Props {
   value: string;
   onChange: (value: string) => void;
   onSend: () => void;
-  replyTarget?: ConversationMessage | null;
+  replyTarget?: InboxMessage | null;
   onClearReply?: () => void;
 }
 

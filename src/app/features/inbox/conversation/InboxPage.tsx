@@ -89,9 +89,9 @@ const InboxPage = () => {
             <CustomerChatSidebar
               conversations={visibleConversations}
               activeTab={activeTab}
-              selectedId={selected?._id ?? null}
+              selectedId={selected?.id ?? null}
               onSelect={(c) => {
-                setSelected(c._id);
+                setSelected(c.id);
                 setIsDetailsOpen(false);
                 setIsAssignOpen(false);
               }}
@@ -134,7 +134,7 @@ const InboxPage = () => {
           {selected && isAssignOpen && (
             <div className="h-full w-full max-w-[360px] flex-shrink-0 overflow-hidden border-l border-grey-light bg-white">
               <CustomerAssignDrawer
-                contactName={selected.contactName}
+                contactName={selected.contact?.name || undefined}
                 assignedTo={selected.assignedTo}
                 options={assigneeOptions}
                 onAssign={handleAssign}

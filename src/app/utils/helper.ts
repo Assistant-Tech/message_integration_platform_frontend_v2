@@ -110,10 +110,10 @@ type TabId = "all" | Platform;
 
 export const TABS: { id: TabId; label: string }[] = [
   { id: "all", label: "All" },
-  { id: "instagram", label: "Instagram" },
-  { id: "facebook", label: "Facebook" },
-  { id: "whatsapp", label: "WhatsApp" },
-  { id: "tiktok", label: "TikTok" },
+  { id: "FACEBOOK", label: "Facebook" },
+  { id: "INSTAGRAM", label: "Instagram" },
+  { id: "WHATSAPP", label: "WhatsApp" },
+  { id: "TIKTOK", label: "TikTok" },
 ];
 
 export const formatTimestamp = (iso: string): string => {

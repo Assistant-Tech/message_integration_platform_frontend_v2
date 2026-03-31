@@ -1,3 +1,5 @@
+import { MessageSenderType, UISenderType } from "@/app/types/inbox.types";
+
 const AVATAR_COLOURS: [string, ...string[]] = [
   "bg-violet-200 text-violet-700",
   "bg-blue-200 text-blue-700",
@@ -8,11 +10,9 @@ const AVATAR_COLOURS: [string, ...string[]] = [
 
 export function getAvatarColour(name: string): string {
   let hash = 0;
-
   for (let index = 0; index < name.length; index += 1) {
     hash = name.charCodeAt(index) + hash * 31;
   }
-
   return (
     AVATAR_COLOURS[Math.abs(hash) % AVATAR_COLOURS.length] ?? AVATAR_COLOURS[0]
   );
@@ -35,11 +35,17 @@ export function formatMessageTime(iso: string): string {
   });
 }
 
-export function getPlatformSubtitle(conv: CustomerConversation): string {
-  const platform = PLATFORM_LABELS[conv.platform];
-  const status = conv.status.charAt(0).toUpperCase() + conv.status.slice(1);
+export type Platform = "FACEBOOK" | "WHATSAPP" | "TIKTOK" | "INSTAGRAM";
 
-  return `${platform} · ${status}`;
-}
+export const PLATFORM_LABELS: Record<Platform, string> = {
+  FACEBOOK: "Facebook",
+  WHATSAPP: "WhatsApp",
+  TIKTOK: "TikTok",
+  INSTAGRAM: "Instagram",
+};
 
-export type { PLATFORM_LABELS };
+export const toUISender = (senderType: MessageSenderType): UISenderType => {
+  if (senderType === "AGENT") return "agent";
+  if (senderType === "CUSTOMER") return "customer";
+  return "system";
+};

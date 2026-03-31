@@ -1,7 +1,7 @@
-import { Platform } from "@/app/features/dashboard/admin/pages/conversation/mockData/customerConversationMockData";
-import PlatformIcon from "../common/Conversation/customer/PlatformIcons";
+import PlatformIcon from "@/app/components//common/Conversation/customer/PlatformIcons";
 import { cn } from "@/app/utils/cn";
 import { getAvatarUrl } from "@/app/utils/avatar";
+import { Platform } from "@/app/components/common/Conversation/customer/customer-chat-panel/helpers";
 
 const AVATAR_COLOURS: [string, ...string[]] = [
   "bg-violet-200 text-violet-700",

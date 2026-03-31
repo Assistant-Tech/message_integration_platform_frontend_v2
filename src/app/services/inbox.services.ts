@@ -1,11 +1,7 @@
 import {
-  ApiMessage,
-  ChannelType,
   CreateInboxBody,
   InboxDetailResponse,
   InboxListResponse,
-  InboxMessage,
-  MessageListResponse,
   UpdateConversationBody,
 } from "@/app/types/inbox.types";
 import { handleApiError } from "@/app/utils/handlerApiError";
@@ -16,9 +12,7 @@ import api from "@/app/services/api/axios";
  */
 export const fetchInboxes = async (): Promise<InboxListResponse> => {
   try {
-    const res = await api.get<InboxListResponse>(
-      "/inbox?type=INTERNAL&isGroup=true&page=1&limit=20",
-    );
+    const res = await api.get<InboxListResponse>("/inbox");
     return res.data;
   } catch (error) {
     throw handleApiError(error);
@@ -77,42 +71,3 @@ export const deleteInbox = async (id: string) => {
     throw handleApiError(error);
   }
 };
-
-/*
- * Fetch Inbox Message
- */
-export const fetchInboxMessages = async (
-  inboxId: string,
-  limit = 50,
-): Promise<MessageListResponse> => {
-  try {
-    const res = await api.get<MessageListResponse>(
-      `/api/inbox/${inboxId}/messages`,
-      { params: { limit } },
-    );
-    return res.data;
-  } catch (error) {
-    throw handleApiError(error);
-  }
-};
-
-/*
- * Adapt ApiMessage to InboxMessage
- */
-export const adaptApiMessage = (msg: ApiMessage): InboxMessage => ({
-  id: msg.id,
-  sender:
-    msg.senderType === "AGENT"
-      ? "agent"
-      : msg.senderType === "CONTACT"
-        ? "customer"
-        : "system",
-  senderName: msg.sender.name,
-  senderId: msg.sentBy,
-  content: msg.content,
-  timestamp: msg.sentAt,
-  type: msg.type,
-  status: msg.status,
-  attachments: msg.attachments,
-  replyTo: null,
-});

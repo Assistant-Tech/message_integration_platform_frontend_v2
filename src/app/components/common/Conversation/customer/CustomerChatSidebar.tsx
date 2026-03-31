@@ -39,10 +39,11 @@ const QUICK_FILTERS: Array<{
   },
 ];
 
-const CHANNEL_LABELS: Record<ChannelType, string> = {
-  INTERNAL: "Internal",
-  EXTERNAL: "External",
-  SUPPORT: "Support",
+const CHANNEL_LABELS: Record<string, string> = {
+  FACEBOOK: "facebook",
+  WHATSAPP: "whatsapp",
+  TIKTOK: "tiktok",
+  INSTAGRAM: "instagram",
 };
 
 interface Props {

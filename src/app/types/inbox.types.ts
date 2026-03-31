@@ -7,7 +7,8 @@ export interface ApiResponse<T> {
 }
 
 /* ─── Shared Enums ────────────────────────────────────────────────────────── */
-export type ChannelType = "INTERNAL" | "EXTERNAL" | "SUPPORT";
+// export type ChannelType = "INTERNAL" | "EXTERNAL" | "SUPPORT";
+export type ChannelType = "FACEBOOK" | "WHATSAPP" | "TIKTOK" | "INSTAGRAM";
 export type InboxType = "INTERNAL" | "CUSTOMER";
 export type InboxStatus = "OPEN" | "CLOSED";
 export type InboxPriority = "LOW" | "NORMAL" | "HIGH";
@@ -21,7 +22,7 @@ export type SortOption = "latest" | "oldest" | "name-asc" | "name-desc";
 export type MessageType = "TEXT" | "IMAGE" | "FILE" | "AUDIO" | "VIDEO";
 export type MessageStatus = "SENT" | "DELIVERED" | "READ" | "FAILED";
 export type MessageDirection = "INTERNAL" | "INBOUND" | "OUTBOUND";
-export type MessageSenderType = "AGENT" | "CONTACT" | "SYSTEM";
+export type MessageSenderType = "AGENT" | "CONTACT" | "SYSTEM" | "CUSTOMER";
 
 /* ─── Shared Primitives ───────────────────────────────────────────────────── */
 export interface UserSnippet {
@@ -102,12 +103,12 @@ export interface ApiMessage {
   status: MessageStatus;
   channel: ChannelType;
   sentAt: string;
-  sentBy: string;
+  sentBy: string | null;
   parentId: string | null;
   metadata: Record<string, unknown> | null;
   isDeleted: boolean;
   createdAt: string;
-  sender: UserSnippet;
+  sender: UserSnippet | null;
   attachments: MessageAttachment[];
 }
 
