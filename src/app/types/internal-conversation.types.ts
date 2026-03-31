@@ -23,7 +23,7 @@ export interface ChatParticipant {
 export type ChatPlatform = "facebook" | "instagram" | "whatsapp" | "internal";
 export interface participantsDetails {
   name: string;
-  
+
   avatar?: string;
 }
 export interface InternalConversation {
@@ -32,8 +32,8 @@ export interface InternalConversation {
   title: string;
   type: "INTERNAL";
   isDefault: boolean;
-  status: "open" | "closed";
-  priority: "normal" | "high" | "urgent";
+  status: "OPEN" | "CLOSED";
+  priority: "NORMAL" | "HIGH" | "URGENT";
   tags: string[];
   participants: string[];
   participantsWithDetails: participantsDetails[];

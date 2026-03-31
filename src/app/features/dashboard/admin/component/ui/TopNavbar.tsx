@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import type React from "react";
 import { ChevronDown, ChevronRight, HelpCircle, Search } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
@@ -22,7 +22,7 @@ interface TopNavbarAction {
 
 interface TopNavbarProps {
   title?: React.ReactNode;
-  subtitle?: string;
+  subtitle?: ReactNode;
   actions?: TopNavbarAction[];
   showSearch?: boolean;
   showHelp?: boolean;

@@ -9,6 +9,7 @@ import CustomerChatMessageBubble from "./customer-chat-panel/CustomerChatMessage
 import CustomerChatComposer from "./customer-chat-panel/CustomerChatComposer";
 import InboxSkeleton from "@/app/components/ui/InboxSkeleton";
 import { useQueryClient } from "@tanstack/react-query";
+import { Label } from "@/app/components/ui";
 
 interface Props {
   conversation: Inbox | null;
@@ -105,7 +106,15 @@ const CustomerChatPanel = ({
   if (!conversation) return <CustomerChatEmptyState />;
 
   const displayName = conversation.contact?.name ?? conversation.title;
-  const subtitle = `${conversation.channel.toLocaleLowerCase()} · ${conversation.status.toLowerCase()}`;
+  const subtitle = (
+    <span className="flex items-center gap-1.5">
+      <span>{conversation.channel.toLocaleLowerCase()}</span>
+      <Label variant="status" value={conversation.status} />
+      {conversation.priority && conversation.priority !== "NORMAL" && (
+        <Label variant="priority" value={conversation.priority} />
+      )}
+    </span>
+  );
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden">

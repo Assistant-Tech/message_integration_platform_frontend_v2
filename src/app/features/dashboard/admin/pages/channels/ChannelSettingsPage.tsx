@@ -19,7 +19,7 @@ const ChannelSettingsPage = () => {
   const navigate = useNavigate();
   const { slug, providerId } = useParams();
   const { pages, isLoading, handleConnectFacebook } = useChannels();
-  console.log("pages", pages);
+  // console.log("pages", pages);
 
   const normalizedProviderId = (providerId || "").toLowerCase();
 

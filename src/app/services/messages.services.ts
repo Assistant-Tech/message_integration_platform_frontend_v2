@@ -19,7 +19,6 @@ export const fetchInboxMessages = async (
       `/inbox/${inboxId}/messages`,
       { params: { limit } },
     );
-    console.log(res.data.data.items);
     return res.data;
   } catch (error) {
     throw handleApiError(error);
