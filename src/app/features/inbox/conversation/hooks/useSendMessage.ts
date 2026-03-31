@@ -4,6 +4,7 @@ import type {
   SendMessagePayload,
 } from "@/app/types/message.types";
 import { sendMessage } from "@/app/services/messages.services";
+import { QUERY_KEYS } from "@/app/constants/queryKeys";
 
 export const useSendMessage = (conversationId: string | null) => {
   const queryClient = useQueryClient();
@@ -26,7 +27,7 @@ export const useSendMessage = (conversationId: string | null) => {
       const optimisticMessage: InboxMessage = {
         id: `optimistic-${Date.now()}`,
         sender: "agent",
-        senderName: "You",
+        senderName: "AGENT",
         senderId: "me",
         content: variables.content,
         timestamp: new Date().toISOString(),
@@ -53,14 +54,29 @@ export const useSendMessage = (conversationId: string | null) => {
     onSuccess: (data) => {
       queryClient.setQueryData(
         ["messages", conversationId],
-        (old: InboxMessage[] = []) => [
-          ...old.filter((m) => !m.id.startsWith("optimistic-")),
-          data,
-        ],
+        (old: InboxMessage[] = []) =>
+          old.map((msg) => (msg.id.startsWith("optimistic-") ? data : msg)),
       );
-      queryClient.invalidateQueries({
-        queryKey: ["messages", conversationId],
-      });
+
+      // your existing sidebar update
+      queryClient.setQueryData(
+        QUERY_KEYS.INBOX("INTERNAL", 1, 20),
+        (old: any) => {
+          if (!old?.data) return old;
+          return {
+            ...old,
+            data: old.data.map((conv: any) =>
+              conv.id === conversationId
+                ? {
+                    ...conv,
+                    lastMessageContent: data.content,
+                    lastMessageAt: data.timestamp,
+                  }
+                : conv,
+            ),
+          };
+        },
+      );
     },
   });
 };

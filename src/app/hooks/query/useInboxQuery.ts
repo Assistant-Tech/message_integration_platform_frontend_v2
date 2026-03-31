@@ -13,7 +13,7 @@ export const useInboxFetchAllQuery = (
   return useQuery({
     queryKey: QUERY_KEYS.INBOX(channelType, page, limit),
     queryFn: () => fetchInboxes(),
-    staleTime: 60_000,
+    staleTime: 10_000,
   });
 };
 

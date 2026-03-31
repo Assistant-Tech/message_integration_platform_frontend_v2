@@ -25,6 +25,6 @@ export const useInboxMessagesQuery = (inboxId: string | null) => {
       }
     },
     enabled: Boolean(inboxId),
-    staleTime: 30_000,
+    staleTime: 15_000,
   });
 };

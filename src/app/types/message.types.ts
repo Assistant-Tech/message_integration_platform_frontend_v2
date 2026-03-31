@@ -53,7 +53,7 @@ export type UISenderType = "agent" | "customer" | "system";
 export interface InboxMessage {
   id: string;
   sender: UISenderType;
-  senderName: string;
+  senderName: "AGENT" | "CUSTOMER" | string;
   senderId: string;
   content: string;
   timestamp: string;

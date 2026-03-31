@@ -65,8 +65,7 @@ function Label<T extends LabelVariant>({
         "ring-1 ring-inset",
         "bg-white/5 dark:bg-white/10",
         "border border-white/10",
-        // Hover polish
-        "transition-all duration-200 cursor-pointer hover:scale-[1.02]",
+        "transition-all duration-200 cursor-pointer",
         // Variant styles
         config.className,
         className,
