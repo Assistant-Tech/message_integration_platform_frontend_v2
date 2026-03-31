@@ -154,11 +154,7 @@ const CustomerChatPanel = ({
                   message={msg}
                   contactName={displayName}
                   sentByLabel={sentByLabel}
-                  onReply={
-                    msg.sender === "AGENT"
-                      ? () => setReplyTarget(msg)
-                      : undefined
-                  }
+                  onReply={() => setReplyTarget(msg)}
                 />
               );
             })}
@@ -168,6 +164,7 @@ const CustomerChatPanel = ({
         )}
       </div>
 
+      {/* Reply and all stuffs */}
       <CustomerChatComposer
         value={input}
         onChange={setInput}

@@ -1,7 +1,7 @@
 import type { KeyboardEvent } from "react";
 import { Send, X } from "lucide-react";
 import { cn } from "@/app/utils/cn";
-import { InboxMessage } from "@/app/types/inbox.types";
+import { InboxMessage } from "@/app/types/message.types";
 
 interface Props {
   value: string;

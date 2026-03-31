@@ -45,11 +45,8 @@ export const useSendMessage = (conversationId: string | null) => {
     },
 
     onError: (_err, _variables, context) => {
-      if (context?.previousMessages) {
-        queryClient.setQueryData(
-          ["messages", conversationId],
-          context.previousMessages,
-        );
+      if (context) {
+        queryClient.setQueryData(["messages", conversationId], context);
       }
     },
 
@@ -61,6 +58,9 @@ export const useSendMessage = (conversationId: string | null) => {
           data,
         ],
       );
+      queryClient.invalidateQueries({
+        queryKey: ["messages", conversationId],
+      });
     },
   });
 };

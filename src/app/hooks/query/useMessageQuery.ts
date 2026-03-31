@@ -3,7 +3,7 @@ import {
   adaptApiMessage,
   fetchInboxMessages,
 } from "@/app/services/messages.services";
-import { MessageResponse } from "@/app/types/inbox.types";
+import { InboxMessage } from "@/app/types/message.types";
 import { useQuery } from "@tanstack/react-query";
 
 /*
@@ -12,7 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 export const useInboxMessagesQuery = (inboxId: string | null) => {
   return useQuery({
     queryKey: QUERY_KEYS.MESSAGES(inboxId as string),
-    queryFn: async (): Promise<MessageResponse[]> => {
+    queryFn: async (): Promise<InboxMessage[]> => {
       if (!inboxId) return [];
       const res = await fetchInboxMessages(inboxId);
       try {
