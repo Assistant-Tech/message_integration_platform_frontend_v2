@@ -5,8 +5,7 @@ import { CUSTOM_EVENTS } from "@/app/socket/events/customEvents";
 
 let socket: Socket | null = null;
 
-// const SOCKET_URL = import.meta.env.VITE_SOCKET_URL as string;
-const SOCKET_URL = "https://api.chatblix.com/";
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL as string;
 
 export const connectSubscriptionSocket = () => {
   const token = useAuthStore.getState().accessToken;

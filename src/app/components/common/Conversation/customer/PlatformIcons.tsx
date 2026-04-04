@@ -9,6 +9,7 @@ interface PlatformIconProps {
   platform: Platform;
   size?: number;
   className?: string;
+  showUnreadDot?: boolean;
 }
 
 const PLATFORM_ICON_SRC: Record<Platform, string> = {
@@ -29,14 +30,23 @@ const PlatformIcon = ({
   platform,
   size = 20,
   className = "",
+  showUnreadDot = false,
 }: PlatformIconProps) => (
-  <img
-    src={PLATFORM_ICON_SRC[platform]}
-    alt={PLATFORM_ALT[platform]}
-    width={size}
-    height={size}
-    className={cn(className, "bg-white")}
-  />
+  <span className="relative inline-flex">
+    <img
+      src={PLATFORM_ICON_SRC[platform]}
+      alt={PLATFORM_ALT[platform]}
+      width={size}
+      height={size}
+      className={cn(className, "bg-white")}
+    />
+    {showUnreadDot && (
+      <span
+        className="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-danger ring-2 ring-base-white"
+        aria-label={`${PLATFORM_ALT[platform]} has unread messages`}
+      />
+    )}
+  </span>
 );
 
 export default PlatformIcon;

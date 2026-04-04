@@ -5,6 +5,7 @@ import PlatformIcon from "@/app/components/common/Conversation/customer/Platform
 import InboxSkeleton from "@/app/components/ui/InboxSkeleton";
 import CustomerChatSidebar from "@/app/components/common/Conversation/customer/CustomerChatSidebar";
 import CustomerChatPanel from "@/app/components/common/Conversation/customer/CustomerChatPanel";
+import NotificationToast from "@/app/components/common/Conversation/customer/NotificationToast";
 import { useInboxPage } from "@/app/features/inbox/conversation/hooks/useInboxPage";
 import CustomerDetailsDrawer from "@/app/components/common/Conversation/customer/customer-chat-panel/CustomerDetailsDrawer";
 import CustomerAssignDrawer from "@/app/components/common/Conversation/customer/customer-chat-panel/CustomerAssignDrawer";
@@ -27,6 +28,19 @@ const InboxPage = () => {
     handleAssign,
   } = useInboxPage();
 
+  const unreadByTab = visibleConversations.reduce<Record<string, number>>(
+    (acc, conversation) => {
+      if (conversation.unreadCount <= 0) {
+        return acc;
+      }
+
+      acc[conversation.channel] =
+        (acc[conversation.channel] ?? 0) + conversation.unreadCount;
+      return acc;
+    },
+    {},
+  );
+
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isAssignOpen, setIsAssignOpen] = useState(false);
 
@@ -36,6 +50,7 @@ const InboxPage = () => {
 
   return (
     <section className="flex h-full min-h-0 flex-col p-4 bg-primary-light/20">
+      <NotificationToast activeConversationId={selected?.id ?? null} />
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-md border border-grey-light">
         {/* Tab bar */}
         <div className="border-b border-grey-light bg-white px-4 py-3">
@@ -55,7 +70,11 @@ const InboxPage = () => {
                     )}
                   >
                     {tab.id !== "all" && (
-                      <PlatformIcon platform={tab.id} size={24} />
+                      <PlatformIcon
+                        platform={tab.id}
+                        size={24}
+                        showUnreadDot={(unreadByTab[tab.id] ?? 0) > 0}
+                      />
                     )}
                     <span>{tab.label}</span>
                     <span

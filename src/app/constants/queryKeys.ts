@@ -14,5 +14,8 @@ export const QUERY_KEYS = {
   ],
   INBOX_BY_ID: (id: string) => ["inboxById", id],
   // Messages
-  MESSAGES: (inboxId: string) => ["messages", inboxId],
+  MESSAGES: (inboxId: string, limit?: number) =>
+    typeof limit === "number"
+      ? (["messages", inboxId, limit] as const)
+      : (["messages", inboxId] as const),
 };

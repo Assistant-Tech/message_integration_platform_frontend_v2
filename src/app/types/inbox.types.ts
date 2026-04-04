@@ -5,7 +5,7 @@ import type {
   Pagination,
   Participant,
   UserSnippet,
-} from "./common.types";
+} from "@/app/types/common.types";
 
 /* ─── Inbox Enums ────────────────────────────────────────────────────────── */
 export type InboxType = "INTERNAL" | "CUSTOMER";
@@ -35,6 +35,8 @@ export interface Inbox {
   contact: Contact | null;
   assignedUser: UserSnippet | null;
   participants: Participant[];
+  isTyping?: boolean;
+  hasNewMessage?: boolean;
 }
 
 export interface InboxById extends Inbox {

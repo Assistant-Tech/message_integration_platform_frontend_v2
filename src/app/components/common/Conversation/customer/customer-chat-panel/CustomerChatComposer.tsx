@@ -9,6 +9,8 @@ interface Props {
   onSend: () => void;
   replyTarget?: InboxMessage | null;
   onClearReply?: () => void;
+  onTypingStart?: () => void;
+  onTypingStop?: () => void;
 }
 
 const CustomerChatComposer = ({
@@ -17,6 +19,8 @@ const CustomerChatComposer = ({
   onSend,
   replyTarget,
   onClearReply,
+  onTypingStart,
+  onTypingStop,
 }: Props) => {
   const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === "Enter" && !event.shiftKey) {
@@ -50,8 +54,12 @@ const CustomerChatComposer = ({
       <div className="flex items-end gap-3 rounded-2xl border border-grey-light bg-primary-light/20 px-4 py-2">
         <textarea
           value={value}
-          onChange={(event) => onChange(event.target.value)}
+          onChange={(event) => {
+            onChange(event.target.value);
+            onTypingStart?.();
+          }}
           onKeyDown={handleKeyDown}
+          onBlur={onTypingStop}
           placeholder="Type a message…"
           rows={1}
           className="min-h-[36px] flex-1 resize-none bg-transparent text-grey outline-none placeholder:text-grey-medium label-regular-16 pt-1"

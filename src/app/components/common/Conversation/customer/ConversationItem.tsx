@@ -1,9 +1,10 @@
 import { ConversationAvatar } from "@/app/components/ui/ConversationAvatar";
-import { Trash2 } from "lucide-react";
+import { BellDot, Trash2 } from "lucide-react";
 import { cn } from "@/app/utils/cn";
 import { formatTimestamp } from "@/app/utils/helper";
 import { Label } from "@/app/components/ui";
 import { type Inbox } from "@/app/types/inbox.types";
+import UnreadBadge from "@/app/components/common/Conversation/customer/UnreadBadge";
 
 interface Props {
   conv: Inbox;
@@ -20,6 +21,7 @@ const ConversationItem = ({
   onRemove,
 }: Props) => {
   const displayName = conv.contact?.name ?? conv.title;
+  const showTyping = Boolean(conv.isTyping);
   const preview =
     conv.assignedUser && conv.unreadCount === 0
       ? `You: ${conv.lastMessageContent ?? ""}`
@@ -37,7 +39,11 @@ const ConversationItem = ({
         onClick={onSelect}
         className="flex min-w-0 flex-1 items-start gap-3 text-left cursor-pointer"
       >
-        <ConversationAvatar name={displayName} platform={conv.channel} />
+        <ConversationAvatar
+          name={displayName}
+          platform={conv.channel}
+          hasUnread={conv.unreadCount > 0}
+        />
 
         <div className="flex min-h-full min-w-0 flex-1 flex-col">
           {/* Name + timestamp */}
@@ -52,12 +58,23 @@ const ConversationItem = ({
 
           {/* Message preview + unread badge */}
           <div className="mt-0.5 flex items-center justify-between gap-2">
-            <p className="truncate text-xs text-grey-medium">{preview}</p>
-            {conv.unreadCount > 0 && (
-              <span className="flex h-5 min-w-5 flex-shrink-0 items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-semibold text-white">
-                {conv.unreadCount}
-              </span>
-            )}
+            <p
+              className={cn(
+                "truncate text-xs",
+                showTyping ? "font-medium text-primary" : "text-grey-medium",
+              )}
+            >
+              {showTyping ? "Typing..." : preview}
+            </p>
+            <div className="flex items-center gap-1.5">
+              {conv.hasNewMessage && conv.unreadCount === 0 && (
+                <BellDot
+                  className="h-4 w-4 text-primary"
+                  aria-label="New message"
+                />
+              )}
+              <UnreadBadge count={conv.unreadCount} />
+            </div>
           </div>
 
           {/* Badges */}

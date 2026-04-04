@@ -1,6 +1,7 @@
 import { cn } from "@/app/utils/cn";
 import { formatMessageTime, getAvatarColour, getInitials } from "./helpers";
 import { InboxMessage } from "@/app/types/message.types";
+import MessageStatusIcon from "@/app/components/common/Conversation/customer/MessageStatusIcon";
 
 interface Props {
   message: InboxMessage;
@@ -79,6 +80,14 @@ const CustomerChatMessageBubble = ({
         <p className="px-1 text-[10px] text-grey-medium">
           {formatMessageTime(message.timestamp)}
         </p>
+        {isAgent &&
+          (message.status === "SENT" ||
+            message.status === "DELIVERED" ||
+            message.status === "READ") && (
+            <div className="flex justify-end px-1">
+              <MessageStatusIcon status={message.status} />
+            </div>
+          )}
       </div>
     </div>
   );

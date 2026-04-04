@@ -4,9 +4,8 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Agreement, Button, Input, PhoneInput } from "@/app/components/ui";
-import { DemoFormData, demoSchema } from "@/app/schemas/demo.schema";
-
 import DemoTextArea from "./DemoTextArea";
+import { DemoFormData, demoSchema } from "../../table/schemas/demo.schema";
 
 const DemoFormContent = ({
   onClose,

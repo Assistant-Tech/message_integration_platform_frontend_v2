@@ -9,12 +9,15 @@ import { useQuery } from "@tanstack/react-query";
 /*
  * Fetch Inbox messages query
  */
-export const useInboxMessagesQuery = (inboxId: string | null) => {
+export const useInboxMessagesQuery = (
+  inboxId: string | null,
+  limit: number = 30,
+) => {
   return useQuery({
-    queryKey: QUERY_KEYS.MESSAGES(inboxId as string),
+    queryKey: QUERY_KEYS.MESSAGES(inboxId as string, limit),
     queryFn: async (): Promise<InboxMessage[]> => {
       if (!inboxId) return [];
-      const res = await fetchInboxMessages(inboxId);
+      const res = await fetchInboxMessages(inboxId, limit);
       try {
         return res.data.items
           .filter((msg) => !msg.isDeleted)

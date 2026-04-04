@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/app/store/auth.store";
 import { useCreateProduct } from "@/app/hooks/useProducts";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { productSchema } from "@/app/schemas/createProduct.schema";
+import { productSchema } from "@/app/components/table/schemas/createProduct.schema";
 import { APP_ROUTES } from "@/app/constants/routes";
 import ProductVariants from "./ProductVariants";
 

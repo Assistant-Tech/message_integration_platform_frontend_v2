@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { QueryKey } from "@tanstack/react-query";
 import type {
   InboxMessage,
   SendMessagePayload,
@@ -6,23 +7,33 @@ import type {
 import { sendMessage } from "@/app/services/messages.services";
 import { QUERY_KEYS } from "@/app/constants/queryKeys";
 
+type SendMessageMutationContext = {
+  previousMessages: Array<[QueryKey, InboxMessage[] | undefined]>;
+};
+
 export const useSendMessage = (conversationId: string | null) => {
   const queryClient = useQueryClient();
 
-  return useMutation<InboxMessage, Error, SendMessagePayload>({
+  return useMutation<
+    InboxMessage,
+    Error,
+    SendMessagePayload,
+    SendMessageMutationContext
+  >({
     mutationFn: sendMessage,
 
     onMutate: async (variables) => {
-      if (!conversationId) return;
+      if (!conversationId) {
+        return { previousMessages: [] };
+      }
 
       await queryClient.cancelQueries({
         queryKey: ["messages", conversationId],
       });
 
-      const previousMessages = queryClient.getQueryData([
-        "messages",
-        conversationId,
-      ]);
+      const previousMessages = queryClient.getQueriesData<InboxMessage[]>({
+        queryKey: ["messages", conversationId],
+      }) as SendMessageMutationContext["previousMessages"];
 
       const optimisticMessage: InboxMessage = {
         id: `optimistic-${Date.now()}`,
@@ -37,8 +48,10 @@ export const useSendMessage = (conversationId: string | null) => {
         replyTo: null,
       };
 
-      queryClient.setQueryData(
-        ["messages", conversationId],
+      queryClient.setQueriesData<InboxMessage[]>(
+        {
+          queryKey: ["messages", conversationId],
+        },
         (old: InboxMessage[] = []) => [...old, optimisticMessage],
       );
 
@@ -46,19 +59,22 @@ export const useSendMessage = (conversationId: string | null) => {
     },
 
     onError: (_err, _variables, context) => {
-      if (context) {
-        queryClient.setQueryData(["messages", conversationId], context);
+      if (!context) return;
+
+      for (const [key, data] of context.previousMessages) {
+        queryClient.setQueryData(key, data);
       }
     },
 
     onSuccess: (data) => {
-      queryClient.setQueryData(
-        ["messages", conversationId],
+      queryClient.setQueriesData<InboxMessage[]>(
+        {
+          queryKey: ["messages", conversationId],
+        },
         (old: InboxMessage[] = []) =>
           old.map((msg) => (msg.id.startsWith("optimistic-") ? data : msg)),
       );
 
-      // your existing sidebar update
       queryClient.setQueryData(
         QUERY_KEYS.INBOX("INTERNAL", 1, 20),
         (old: any) => {

@@ -18,7 +18,7 @@ import { getStripePaymentLink } from "@/app/services/stripe.services";
 import {
   orderFormSchema,
   OrderFormValues,
-} from "@/app/schemas/createOrder.schema";
+} from "@/app/components/table/schemas/createOrder.schema";
 
 interface SelectedItem {
   productId: string;
