@@ -1,5 +1,5 @@
 export { default as AdminDashboardPage } from "../pages/dashboard/AdminDashboardPage";
-export { default as InboxPage } from "./conversation/InboxPage";
+export { default as InboxPage } from "@/app/features/inbox/InboxPage";
 export { default as ChatbotPage } from "../pages/chatbot/ChatbotPage";
 export { default as ChannelPage } from "../pages/channels/ChannelPage";
 export { default as AnalyticsPage } from "../pages/analytics/AnalyticsPage";

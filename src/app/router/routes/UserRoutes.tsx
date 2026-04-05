@@ -10,7 +10,7 @@ const AdminDashboardPage = lazy(
     import("@/app/features/dashboard/admin/pages/dashboard/AdminDashboardPage"),
 );
 const InboxPage = lazy(
-  () => import("@/app/features/dashboard/admin/pages/conversation/InboxPage"),
+  () => import("@/app/features/inbox/InboxPage"),
 );
 const ContactPage = lazy(
   () => import("@/app/features/dashboard/admin/pages/contact/ContactAdminPage"),

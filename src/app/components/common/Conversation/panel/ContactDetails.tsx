@@ -1,10 +1,10 @@
 import { Info, UserRound, X } from "lucide-react";
 import { cn } from "@/app/utils/cn";
-import type { InboxById } from "@/app/types/inbox.types";
+import type { Inbox } from "@/app/types/inbox.types";
 import ChatAvatar from "./ChatAvatar";
 
 interface Props {
-  conversation: InboxById;
+  conversation: Inbox & { tags?: string[] };
   onClose: () => void;
   onAssignToggle?: () => void;
 }
@@ -89,7 +89,7 @@ const ContactDetails = ({
           <div className="flex flex-col items-center text-center">
             <ChatAvatar
               name={displayName}
-              url={conversation.contact?.avatar}
+              url={conversation.contact?.profilePicture}
               platform={conversation.channel}
             />
             <h4 className="mt-4 text-xl font-semibold text-grey">

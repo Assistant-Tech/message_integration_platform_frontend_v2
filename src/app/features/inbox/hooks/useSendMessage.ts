@@ -5,7 +5,7 @@ import type {
   SendMessagePayload,
 } from "@/app/types/message.types";
 import { sendMessage } from "@/app/services/messages.services";
-import { QUERY_KEYS } from "@/app/constants/queryKeys";
+import { QUERY_KEYS, INBOX_LIST_PARAMS } from "@/app/constants/queryKeys";
 
 type SendMessageMutationContext = {
   previousMessages: Array<[QueryKey, InboxMessage[] | undefined]>;
@@ -28,11 +28,11 @@ export const useSendMessage = (conversationId: string | null) => {
       }
 
       await queryClient.cancelQueries({
-        queryKey: ["messages", conversationId],
+        queryKey: QUERY_KEYS.MESSAGES(conversationId ?? ""),
       });
 
       const previousMessages = queryClient.getQueriesData<InboxMessage[]>({
-        queryKey: ["messages", conversationId],
+        queryKey: QUERY_KEYS.MESSAGES(conversationId ?? ""),
       }) as SendMessageMutationContext["previousMessages"];
 
       const optimisticMessage: InboxMessage = {
@@ -50,7 +50,7 @@ export const useSendMessage = (conversationId: string | null) => {
 
       queryClient.setQueriesData<InboxMessage[]>(
         {
-          queryKey: ["messages", conversationId],
+          queryKey: QUERY_KEYS.MESSAGES(conversationId ?? ""),
         },
         (old: InboxMessage[] = []) => [...old, optimisticMessage],
       );
@@ -69,14 +69,14 @@ export const useSendMessage = (conversationId: string | null) => {
     onSuccess: (data) => {
       queryClient.setQueriesData<InboxMessage[]>(
         {
-          queryKey: ["messages", conversationId],
+          queryKey: QUERY_KEYS.MESSAGES(conversationId ?? ""),
         },
         (old: InboxMessage[] = []) =>
           old.map((msg) => (msg.id.startsWith("optimistic-") ? data : msg)),
       );
 
       queryClient.setQueryData(
-        QUERY_KEYS.INBOX("INTERNAL", 1, 20),
+        QUERY_KEYS.INBOX(INBOX_LIST_PARAMS.type, INBOX_LIST_PARAMS.page, INBOX_LIST_PARAMS.limit),
         (old: any) => {
           if (!old?.data) return old;
           return {

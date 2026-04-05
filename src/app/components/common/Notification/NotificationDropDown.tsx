@@ -2,6 +2,7 @@ import { useNotificationStore } from "@/app/store/notification.store";
 import { useInboxFetchAllQuery } from "@/app/hooks/query/useInboxQuery";
 import { formatTimestamp } from "@/app/utils/helper";
 import { APP_ROUTES } from "@/app/constants/routes";
+import { INBOX_LIST_PARAMS } from "@/app/constants/queryKeys";
 import { Bell } from "lucide-react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useNavigate, useParams } from "react-router-dom";
@@ -9,7 +10,11 @@ import { useNavigate, useParams } from "react-router-dom";
 const NotificationDropdown = () => {
   const { notifications, markAsRead, markAllAsRead, clearNotifications } =
     useNotificationStore();
-  const { data } = useInboxFetchAllQuery("INTERNAL", 1, 20);
+  const { data } = useInboxFetchAllQuery(
+    INBOX_LIST_PARAMS.type,
+    INBOX_LIST_PARAMS.page,
+    INBOX_LIST_PARAMS.limit,
+  );
   const navigate = useNavigate();
   const { slug } = useParams();
 

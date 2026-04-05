@@ -1,3 +1,5 @@
+export const INBOX_LIST_PARAMS = { type: "INTERNAL" as const, page: 1, limit: 20 };
+
 export const QUERY_KEYS = {
   CURRENT_USER: ["currentUser"] as const,
   TENANT_LIST: ["tenantList"] as const,

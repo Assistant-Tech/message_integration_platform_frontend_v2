@@ -8,6 +8,8 @@
  */
 
 import type { QueryClient } from "@tanstack/react-query";
+import { QUERY_KEYS, INBOX_LIST_PARAMS } from "@/app/constants/queryKeys";
+import type { InboxListResponse } from "@/app/types/inbox.types";
 import { socketState } from "./socketManager";
 import { updateInboxListTypingState } from "./cacheHelpers";
 
@@ -28,7 +30,7 @@ const TYPING_RESET_MS = 2000;
 export function setTypingActive(
   queryClient: QueryClient,
   conversationId: string,
-  conversationIdRef: React.MutableRefObject<string | null>,
+  currentConversationId: string | null,
   onLocalTypingChange?: (isTyping: boolean) => void,
 ): void {
   // Clear any existing timeout for this conversation
@@ -38,14 +40,14 @@ export function setTypingActive(
   // Set new timeout and store it
   socketState.typingTimers.set(
     conversationId,
-    setTimeout(() => clearTyping(queryClient, conversationId, conversationIdRef, onLocalTypingChange), TYPING_RESET_MS),
+    setTimeout(() => clearTyping(queryClient, conversationId, currentConversationId, onLocalTypingChange), TYPING_RESET_MS),
   );
 
   // Update cache
   updateInboxListTypingState(queryClient, conversationId, true);
 
   // Update local state if this is the active conversation
-  if (conversationIdRef.current === conversationId) {
+  if (currentConversationId === conversationId) {
     onLocalTypingChange?.(true);
   }
 }
@@ -61,7 +63,7 @@ export function setTypingActive(
 export function clearTyping(
   queryClient: QueryClient,
   conversationId: string,
-  conversationIdRef: React.MutableRefObject<string | null>,
+  currentConversationId: string | null,
   onLocalTypingChange?: (isTyping: boolean) => void,
 ): void {
   // Clear any existing timeout
@@ -73,7 +75,7 @@ export function clearTyping(
   updateInboxListTypingState(queryClient, conversationId, false);
 
   // Update local state if this is the active conversation
-  if (conversationIdRef.current === conversationId) {
+  if (currentConversationId === conversationId) {
     onLocalTypingChange?.(false);
   }
 }
@@ -89,7 +91,10 @@ export function getTypingState(
   queryClient: QueryClient,
   conversationId: string,
 ): boolean {
-  return Boolean(queryClient.getQueryData(["typing", conversationId]));
+  const data = queryClient.getQueryData<InboxListResponse>(
+    QUERY_KEYS.INBOX(INBOX_LIST_PARAMS.type, INBOX_LIST_PARAMS.page, INBOX_LIST_PARAMS.limit)
+  );
+  return data?.data?.find((c) => c.id === conversationId)?.isTyping ?? false;
 }
 
 /**

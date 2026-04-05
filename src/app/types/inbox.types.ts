@@ -43,6 +43,20 @@ export interface InboxById extends Inbox {
   tags: string[];
 }
 
+/* ─── Request Bodies ─────────────────────────────────────────────────────── */
+export interface CreateInboxBody {
+  title: string;
+  type: InboxType;
+  channel: ChannelType;
+}
+
+export interface UpdateConversationBody {
+  title?: string;
+  priority?: InboxPriority;
+  status?: InboxStatus;
+  assignedTo?: string | null;
+}
+
 /* ─── API Responses ──────────────────────────────────────────────────────── */
 export interface InboxListResponse extends ApiResponse<Inbox[]> {
   pagination: Pagination;

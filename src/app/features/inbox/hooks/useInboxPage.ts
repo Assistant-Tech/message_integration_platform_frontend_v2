@@ -6,6 +6,7 @@ import {
   getDisplayName,
 } from "@/app/utils/inbox/inbox.config";
 import { useInboxStore } from "@/app/store/inbox.store";
+import { INBOX_LIST_PARAMS } from "@/app/constants/queryKeys";
 import type { Inbox } from "@/app/types/inbox.types";
 
 export const useInboxPage = () => {
@@ -20,7 +21,7 @@ export const useInboxPage = () => {
     assignToMember,
   } = useInboxStore();
 
-  const { data, isLoading, isError } = useInboxFetchAllQuery("INTERNAL", 1, 20);
+  const { data, isLoading, isError } = useInboxFetchAllQuery(INBOX_LIST_PARAMS.type, INBOX_LIST_PARAMS.page, INBOX_LIST_PARAMS.limit);
   const conversations: Inbox[] = data?.data ?? [];
 
   const filteredConversations = useMemo(() => {

@@ -1,12 +1,3 @@
-export interface ShippingDetail {
-  customerName: string;
-  address: string;
-  city?: string;
-  postalCode?: string;
-  phone?: string;
-  email?: string;
-}
-
 export interface ShippingResponse {
   orderId: string;
   trackingNumber: string;
@@ -68,7 +59,7 @@ export interface Order {
   channel: string;
   externalId: string | null;
   shippingDetail: ShippingDetail;
-  payments: Array<any>;
+  payments: Array<Record<string, unknown>>;
   items: OrderItem[];
   createdAt: string;
   updatedAt: string;

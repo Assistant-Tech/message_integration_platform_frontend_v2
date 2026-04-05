@@ -65,16 +65,16 @@ export default function OrderTable({
 
           if (!payment) return "N/A";
 
-          const isPaid = payment.status === "PAID";
+          const status = typeof payment.status === "string" ? payment.status : "";
+          const isPaid = status === "PAID";
 
-          console.log("🚀 ~ OrderTable ~ payment.status:", payment.status);
           return (
             <span
               className={`px-3 py-1 rounded-lg label-regular-14 ${
                 isPaid ? " text-primary" : " text-danger"
               }`}
             >
-              {payment.status.toUpperCase()}
+              {status.toUpperCase()}
             </span>
           );
         },

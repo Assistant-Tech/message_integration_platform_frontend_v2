@@ -6,11 +6,11 @@
  */
 
 import { QueryClient } from "@tanstack/react-query";
-import { QUERY_KEYS } from "@/app/constants/queryKeys";
+import { QUERY_KEYS, INBOX_LIST_PARAMS } from "@/app/constants/queryKeys";
 import type { InboxMessage } from "@/app/types/message.types";
 import type { InboxListResponse } from "@/app/types/inbox.types";
 
-const INBOX_QUERY_KEY = QUERY_KEYS.INBOX("INTERNAL", 1, 20);
+const INBOX_QUERY_KEY = QUERY_KEYS.INBOX(INBOX_LIST_PARAMS.type, INBOX_LIST_PARAMS.page, INBOX_LIST_PARAMS.limit);
 
 // ────────────────────────────────────────────────────────────────────────────
 // TYPING STATE UPDATES
@@ -56,7 +56,7 @@ export function addMessageToCache(
   message: InboxMessage,
 ): void {
   queryClient.setQueriesData<InboxMessage[]>(
-    { queryKey: ["messages", conversationId] },
+    { queryKey: QUERY_KEYS.MESSAGES(conversationId) },
     (old = []) =>
       old.some((m) => m.id === message.id) ? old : [...old, message],
   );
@@ -80,7 +80,7 @@ export function updateMessageStatusInCache(
   status: InboxMessage["status"],
 ): void {
   queryClient.setQueriesData<InboxMessage[]>(
-    { queryKey: ["messages", conversationId] },
+    { queryKey: QUERY_KEYS.MESSAGES(conversationId) },
     (old = []) =>
       old.map((msg) =>
         msg.id === tempId ? { ...msg, id: realId, status } : msg,

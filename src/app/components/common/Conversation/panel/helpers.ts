@@ -1,5 +1,3 @@
-import { MessageSenderType, UISenderType } from "@/app/types/inbox.types";
-
 const AVATAR_COLOURS: [string, ...string[]] = [
   "bg-violet-200 text-violet-700",
   "bg-blue-200 text-blue-700",
@@ -35,23 +33,7 @@ export function formatMessageTime(iso: string): string {
   });
 }
 
-export type Platform = "FACEBOOK" | "WHATSAPP" | "TIKTOK" | "INSTAGRAM";
+export type { ChannelType as Platform } from "@/app/types/common.types";
 
-export const PLATFORM_LABELS: Record<Platform, string> = {
-  FACEBOOK: "Facebook",
-  WHATSAPP: "WhatsApp",
-  TIKTOK: "TikTok",
-  INSTAGRAM: "Instagram",
-};
-
-export function toUISender(senderType: MessageSenderType): UISenderType {
-  switch (senderType) {
-    case "AGENT":
-      return "AGENT";
-    case "CUSTOMER":
-    case "CONTACT":
-      return "CUSTOMER";
-    default:
-      return "SYSTEM";
-  }
-}
+// toUISender has been moved to @/app/utils/inbox/messageAdapters
+export { toUISender } from "@/app/utils/inbox/messageAdapters";

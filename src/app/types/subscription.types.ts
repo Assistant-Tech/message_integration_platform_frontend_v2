@@ -1,4 +1,5 @@
-import { ReactNode } from "react";
+// NOTE: ReactNode was removed. InvoiceResponse and SubscriptionResponse are
+// API-shaped types; UI rendering concerns belong in the component layer.
 
 /*
 ─────────────────────────────────────────────────────────────────────────────
@@ -65,10 +66,10 @@ export interface Transaction {
 ─────────────────────────────────────────────────────────────────────────────
 */
 export interface InvoiceResponse {
-  id: null | undefined;
-  invoiceNumber: ReactNode;
-  status: ReactNode;
-  total: ReactNode;
+  id: string | null;
+  invoiceNumber: string;
+  status: string;
+  total: string;
   message: string;
   success: boolean;
   data: Invoice[];
@@ -133,10 +134,10 @@ export interface SubscriptionData {
 
 export interface SubscriptionResponse {
   plan: Plan;
-  status: ReactNode;
+  status: string;
   startDate: string;
   endDate: string;
-  currency: ReactNode;
+  currency: string;
   success: boolean;
   message: string;
   data: SubscriptionData;
@@ -189,7 +190,7 @@ export interface EsewaResponse {
     paymentUrl: string;
     fields: {
       amount: string;
-      total_amount: any;
+      total_amount: string;
       tax_amount: number;
       transaction_uuid: string;
       product_code: string;

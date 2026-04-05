@@ -54,7 +54,7 @@ function Label<T extends LabelVariant>({
   value,
   className,
 }: Props<T>) {
-  const config = CONFIG[variant][value];
+  const config = CONFIG[variant][value] as { label: string; className: string };
 
   return (
     <span

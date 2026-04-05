@@ -153,8 +153,8 @@ const InboxPage = () => {
           {selected && isAssignOpen && (
             <div className="h-full w-full max-w-[360px] flex-shrink-0 overflow-hidden border-l border-grey-light bg-white">
               <AssignDrawer
-                contactName={selected.contact?.name || undefined}
-                assignedTo={selected.assignedTo}
+                contactName={selected.contact?.name ?? selected.title}
+                assignedTo={selected.assignedTo ?? undefined}
                 options={assigneeOptions}
                 onAssign={handleAssign}
                 onClose={() => setIsAssignOpen(false)}

@@ -1,9 +1,10 @@
-import { Platform } from "@/app/components/common/Conversation/panel/helpers";
 import type {
   ApiResponse,
   ChannelType,
   UserSnippet,
 } from "@/app/types/common.types";
+
+type Platform = ChannelType;
 
 /* ─── Message Enums ──────────────────────────────────────────────────────── */
 export type MessageType = "TEXT" | "IMAGE" | "FILE" | "AUDIO" | "VIDEO";

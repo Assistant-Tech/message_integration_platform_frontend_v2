@@ -54,8 +54,8 @@ export default PlatformIcon;
 // ─── Badge ring colour per platform ──────────────────────────────────────────
 
 export const PLATFORM_RING: Record<Platform, string> = {
-  facebook: "ring-blue-500",
-  instagram: "ring-pink-500",
-  tiktok: "ring-gray-900",
-  whatsapp: "ring-green-500",
+  FACEBOOK: "ring-blue-500",
+  INSTAGRAM: "ring-pink-500",
+  TIKTOK: "ring-gray-900",
+  WHATSAPP: "ring-green-500",
 };

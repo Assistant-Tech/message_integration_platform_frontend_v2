@@ -10,7 +10,7 @@ interface AssigneeOption {
 interface Props {
   contactName: string;
   assignedTo?: string;
-  options: AssigneeOption[];
+  options: ReadonlyArray<AssigneeOption>;
   onAssign: (assigneeId: string | undefined) => void;
   onClose: () => void;
 }
