@@ -1,20 +1,29 @@
 export const CHAT_EVENTS = {
-  // Chat Mesages and handling Events
-  CHAT_MESSAGE: "chat:message",
-  CHAT_PONG: "chat:pong",
+  // Connection (server → client)
   CHAT_CONNECTED: "chat:connected",
+  CHAT_ERROR: "chat:error",
+  CHAT_PING: "chat:ping",
+  CHAT_PONG: "chat:pong",
 
-  // Conversation Events
-  CONVERSATION_CREATED: "conversation:created",
+  // Unified inbox event — switch on event.type (server → client)
+  // Types: 'new_message' | 'new_conversation' | 'message_read' | 'message_reaction'
+  INBOX_EVENT: "inbox:event",
+
+  // Conversation room management (client → server)
+  CONVERSATION_JOIN: "conversation:join",
+  CONVERSATION_LEAVE: "conversation:leave",
+  // ACK received after conversation:join (server → client)
   CONVERSATION_JOINED: "conversation:joined",
-  CONVERSATION_MEMBER_ADDED: "conversation:members_added",
 
-  // Inbox Events
-  INBOX_MESSAGE: "inbox:message",
-  NEW_INBOX_MESSAGE: "inbox:new",
-  INBOX_MESSAGE_ACK: "message:ack",
-
-  // in chatEvents.ts
+  // Typing — client emits these to signal own typing
   TYPING_START: "typing:start",
   TYPING_STOP: "typing:stop",
+  // Server broadcasts typing state for the conversation room (server → client)
+  TYPING_UPDATE: "typing:update",
+
+  // Presence (server → client, tenant room)
+  PRESENCE_UPDATE: "presence:update",
+  USER_LEFT: "user:left",
+  PRESENCE_HEARTBEAT: "presence:heartbeat",
+  PRESENCE_HEARTBEAT_ACK: "presence:heartbeat:ack",
 } as const;

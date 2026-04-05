@@ -4,6 +4,7 @@ interface Toast {
   id: string;
   senderName: string;
   content: string;
+  profilePicUrl?: string | null;
 }
 
 interface Props {
@@ -28,6 +29,7 @@ const NotificationToast = ({ activeConversationId }: Props) => {
         id: `${Date.now()}`,
         senderName: message.senderName ?? "Customer",
         content: message.content?.slice(0, 60) ?? "",
+        profilePicUrl: message.profilePicUrl ?? null,
       };
       setToasts((prev) => [...prev, toast]);
       setTimeout(() => dismiss(toast.id), 4000);
@@ -47,9 +49,17 @@ const NotificationToast = ({ activeConversationId }: Props) => {
           key={toast.id}
           className="flex w-72 items-start gap-3 rounded-xl bg-white p-3 shadow-lg ring-1 ring-grey-light animate-in slide-in-from-right-4"
         >
-          <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary-light text-xs font-semibold text-primary">
-            {toast.senderName[0]?.toUpperCase()}
-          </div>
+          {toast.profilePicUrl ? (
+            <img
+              src={toast.profilePicUrl}
+              alt={toast.senderName}
+              className="h-8 w-8 flex-shrink-0 rounded-full object-cover"
+            />
+          ) : (
+            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary-light text-xs font-semibold text-primary">
+              {toast.senderName[0]?.toUpperCase()}
+            </div>
+          )}
           <div className="min-w-0 flex-1">
             <p className="text-xs font-semibold text-grey">
               {toast.senderName}

@@ -2,10 +2,10 @@
  * Payload normalization and extraction utilities
  *
  * Converts various socket.io payload formats into our application types.
- * Handles API schema flexibility with multiple field name fallbacks.
+ * Handles the unified `inbox:event` payload shape from the backend.
  */
 
-import type { InboxMessage } from "@/app/types/message.types";
+import type { InboxMessage, MessageType, MessageStatus } from "@/app/types/message.types";
 import type { PlainObject, SenderInfo } from "./types";
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -14,7 +14,6 @@ import type { PlainObject, SenderInfo } from "./types";
 
 /**
  * Type guard: ensure value is a plain object
- * Checks both type and constructor to avoid prototype pollution
  */
 export const isPlainObject = (value: unknown): value is PlainObject =>
   value !== null && typeof value === "object" && value.constructor === Object;
@@ -24,17 +23,24 @@ export const isPlainObject = (value: unknown): value is PlainObject =>
 // ────────────────────────────────────────────────────────────────────────────
 
 /**
- * Extract conversation ID from payload with fallback chain
+ * Extract conversation ID from payload.
  *
- * Attempts multiple field names to handle API schema variations:
- * - conversationId (preferred)
- * - inboxId
- * - roomId
- * - chatId
- * - conversation.id (nested)
+ * Primary path (inbox:event[new_message]): payload.message.conversation.id
+ * Fallbacks for other shapes: conversationId, inboxId, roomId, chatId,
+ * conversation.id (flat nested)
  */
 export function extractConversationId(payload: PlainObject): string | null {
-  const conversationIdCandidates = [
+  // Primary: new backend shape — message.conversation.id
+  const msgData = isPlainObject(payload.message) ? payload.message : null;
+  const convData = msgData && isPlainObject(msgData.conversation)
+    ? msgData.conversation
+    : null;
+  if (typeof convData?.id === "string" && convData.id.trim()) {
+    return convData.id;
+  }
+
+  // Fallbacks for older shapes
+  const candidates = [
     payload.conversationId,
     payload.inboxId,
     payload.roomId,
@@ -42,106 +48,125 @@ export function extractConversationId(payload: PlainObject): string | null {
     isPlainObject(payload.conversation) ? payload.conversation.id : undefined,
   ];
 
-  for (const candidate of conversationIdCandidates) {
-    if (typeof candidate === "string" && candidate.trim()) {
-      return candidate;
-    }
+  for (const c of candidates) {
+    if (typeof c === "string" && c.trim()) return c;
   }
 
   return null;
 }
 
 /**
- * Extract message ID from payload with fallback chain
+ * Extract message ID from payload.
  *
- * Attempts:
- * - message.id (nested message object)
- * - id (top-level)
- * - messageId
+ * Primary path: payload.message.id
+ * Fallbacks: id, messageId
  */
 export function extractMessageId(payload: PlainObject): string | null {
   const msgData = isPlainObject(payload.message) ? payload.message : null;
-  const idCandidates = [msgData?.id, payload.id, payload.messageId];
 
-  for (const candidate of idCandidates) {
-    if (typeof candidate === "string" && candidate.trim()) {
-      return candidate;
-    }
+  const candidates = [msgData?.id, payload.id, payload.messageId];
+  for (const c of candidates) {
+    if (typeof c === "string" && c.trim()) return c;
   }
 
   return null;
 }
 
 /**
- * Extract message content from payload with fallback chain
+ * Extract message content from payload.
  *
- * Attempts:
- * - message.content (nested)
- * - content
- * - text (alternative field name)
+ * Returns null for attachment-only messages (content is null/missing).
  */
 export function extractMessageContent(payload: PlainObject): string | null {
   const msgData = isPlainObject(payload.message) ? payload.message : null;
-  const contentCandidates = [msgData?.content, payload.content, payload.text];
 
-  for (const candidate of contentCandidates) {
-    if (typeof candidate === "string" && candidate.trim()) {
-      return candidate;
-    }
+  const candidates = [msgData?.content, payload.content, payload.text];
+  for (const c of candidates) {
+    if (typeof c === "string" && c.trim()) return c;
   }
 
   return null;
 }
 
 /**
- * Extract sender information (name and ID) from payload
+ * Extract sender info from payload.
  *
- * Returns:
- * - name: defaults to "CUSTOMER" if not found
- * - id: defaults to empty string if not found
+ * Primary path (new shape): payload.message.sender.{name, contactId}
+ *   + payload.message.senderType for the role
+ * Fallbacks: flat senderName / senderType fields
  */
-export function extractSenderInfo(payload: PlainObject): SenderInfo {
+export function extractSenderInfo(payload: PlainObject): SenderInfo & { profilePicUrl?: string | null } {
   const msgData = isPlainObject(payload.message) ? payload.message : null;
+  const senderData = msgData && isPlainObject(msgData.sender)
+    ? msgData.sender
+    : null;
 
+  // Name: prefer sender.name, then senderType, then legacy fields
   const name =
-    (msgData?.senderName as string | undefined) ||
+    (senderData?.name as string | undefined) ||
     (msgData?.senderType as string | undefined) ||
     (payload.senderName as string | undefined) ||
     (payload.senderType as string | undefined) ||
     "CUSTOMER";
 
+  // ID: prefer sender.contactId, then legacy sentBy/senderId
   const id =
-    (msgData?.senderId as string | undefined) ||
+    (senderData?.contactId as string | undefined) ||
     (msgData?.sentBy as string | undefined) ||
     (payload.senderId as string | undefined) ||
-    (payload.sentBy as string | undefined) ||
     "";
 
-  return { name, id };
+  const profilePicUrl =
+    (senderData?.profilePicUrl as string | null | undefined) ?? null;
+
+  return { name, id, profilePicUrl };
 }
 
 /**
- * Extract timestamp from payload with fallback to current time
- *
- * Attempts multiple field names, falls back to ISO string of now.
+ * Extract timestamp from payload.
+ * Primary: payload.message.sentAt
+ * Fallback: payload.timestamp, current time
  */
 export function extractTimestamp(payload: PlainObject): string {
   const msgData = isPlainObject(payload.message) ? payload.message : null;
 
-  const timestampCandidates = [
+  const candidates = [
     msgData?.sentAt,
     msgData?.timestamp,
     payload.timestamp,
     payload.sentAt,
   ];
 
-  for (const candidate of timestampCandidates) {
-    if (typeof candidate === "string" && candidate.trim()) {
-      return candidate;
-    }
+  for (const c of candidates) {
+    if (typeof c === "string" && c.trim()) return c;
   }
 
   return new Date().toISOString();
+}
+
+/**
+ * Map backend MessageType to frontend MessageType.
+ * Backend types not in frontend enum fall back to "TEXT".
+ */
+function mapMessageType(raw: unknown): MessageType {
+  const FRONTEND_TYPES: MessageType[] = ["TEXT", "IMAGE", "FILE", "AUDIO", "VIDEO"];
+  if (typeof raw === "string" && FRONTEND_TYPES.includes(raw as MessageType)) {
+    return raw as MessageType;
+  }
+  // Backend DOCUMENT → FILE
+  if (raw === "DOCUMENT") return "FILE";
+  return "TEXT";
+}
+
+/**
+ * Map backend MessageStatus to frontend MessageStatus.
+ */
+function mapMessageStatus(raw: unknown): MessageStatus {
+  const FRONTEND_STATUSES: MessageStatus[] = ["SENT", "DELIVERED", "READ", "FAILED"];
+  if (typeof raw === "string" && FRONTEND_STATUSES.includes(raw as MessageStatus)) {
+    return raw as MessageStatus;
+  }
+  return "DELIVERED";
 }
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -149,37 +174,47 @@ export function extractTimestamp(payload: PlainObject): string {
 // ────────────────────────────────────────────────────────────────────────────
 
 /**
- * Normalize incoming socket payload to InboxMessage type
+ * Normalize an `inbox:event[new_message]` payload to InboxMessage.
  *
- * @param payload - Raw socket.io event payload
- * @returns InboxMessage if payload contains required fields (id, content), null otherwise
+ * Handles:
+ * - The new unified inbox:event shape (payload.message.*)
+ * - Null content for attachment-only messages (uses "[Attachment]" placeholder)
+ * - Sender role mapping: CUSTOMER/BOT → "customer", AGENT → "agent", SYSTEM → "system"
+ * - Profile picture URL from payload.message.sender.profilePicUrl
  *
- * This function:
- * 1. Validates payload structure
- * 2. Extracts all required and optional fields using fallback chains
- * 3. Returns typed InboxMessage or null if validation fails
+ * Returns null if the required message ID cannot be extracted.
  */
 export function normalizeMessage(payload: unknown): InboxMessage | null {
   if (!isPlainObject(payload)) return null;
 
   const id = extractMessageId(payload);
-  const content = extractMessageContent(payload);
+  if (!id) return null;
 
-  // Required fields validation
-  if (!id || !content) return null;
-
-  const { name: senderName, id: senderId } = extractSenderInfo(payload);
+  const content = extractMessageContent(payload) ?? "[Attachment]";
+  const { name: senderName, id: senderId, profilePicUrl } = extractSenderInfo(payload);
   const timestamp = extractTimestamp(payload);
+
+  const msgData = isPlainObject(payload.message) ? payload.message : null;
+  const type = mapMessageType(msgData?.type ?? payload.type);
+  const status = mapMessageStatus(msgData?.status ?? payload.status);
+
+  // Derive UI sender role from senderType
+  const senderType = (msgData?.senderType ?? payload.senderType) as string | undefined;
+  const sender =
+    senderType === "AGENT" ? "agent"
+    : senderType === "SYSTEM" ? "system"
+    : "customer";
 
   return {
     id,
     content,
     senderName,
-    sender: senderName === "AGENT" ? "agent" : "customer",
+    sender,
     senderId,
+    profilePicUrl,
     timestamp,
-    type: "TEXT",
-    status: "DELIVERED",
+    type,
+    status,
     attachments: [],
     replyTo: null,
   };

@@ -22,7 +22,7 @@ export interface Contact {
   id: string;
   name: string;
   email?: string;
-  avatar?: string | null;
+  profilePicture?: string | null;
 }
 
 export interface Participant {

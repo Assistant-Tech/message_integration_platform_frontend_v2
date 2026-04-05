@@ -55,6 +55,7 @@ export interface InboxMessage {
   sender: UISenderType;
   senderName: "AGENT" | "CUSTOMER" | string;
   senderId: string;
+  profilePicUrl?: string | null;
   content: string;
   timestamp: string;
   type: MessageType;

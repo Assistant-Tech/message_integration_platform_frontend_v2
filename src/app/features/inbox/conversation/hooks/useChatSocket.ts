@@ -3,9 +3,9 @@
  *
  * Coordinates:
  * - Socket lifecycle (connection, disconnection, subscription counting)
- * - Message events (incoming, ACK, deduplication)
- * - Typing indicators (with auto-reset timeout)
- * - Conversation join/leave
+ * - Unified inbox:event handling (new_message, new_conversation, message_read, message_reaction)
+ * - Typing indicators via typing:update (isTyping boolean)
+ * - Conversation join/leave (emits conversation:join / conversation:leave)
  * - Cache synchronization with React Query
  *
  * Uses a singleton socket instance shared across all hook instances.
@@ -29,10 +29,8 @@ import { markConversationAsRead } from "./socket/cacheHelpers";
 
 // Event handlers
 import {
-  createMessageEventHandler,
-  createMessageAckHandler,
-  createTypingStartHandler,
-  createTypingStopHandler,
+  createInboxEventHandler,
+  createTypingUpdateHandler,
   createConnectHandler,
   createDisconnectHandler,
 } from "./socket/eventHandlers";
@@ -61,29 +59,32 @@ export function useChatSocket(conversationId: string | null) {
   // TYPING STATE CALLBACKS
   // ───────────────────────────────────────────────────────────────────────────
 
-  const handleSetTypingActive = useCallback(
+  /**
+   * Called when typing:update arrives with isTyping=true for a conversation.
+   * Delegates to typingStateManager which handles auto-reset timer.
+   */
+  const handleTypingStart = useCallback(
     (cid: string) => {
-      setTypingActive(queryClient, cid, conversationIdRef, (isTyping) => {
-        if (conversationIdRef.current === cid) {
-          setIsTyping(isTyping);
-        }
+      setTypingActive(queryClient, cid, conversationIdRef, (typing) => {
+        if (conversationIdRef.current === cid) setIsTyping(typing);
       });
     },
     [queryClient],
   );
 
-  const handleClearTyping = useCallback(
+  /**
+   * Called when typing:update arrives with isTyping=false for a conversation.
+   */
+  const handleTypingStop = useCallback(
     (cid: string) => {
-      clearTyping(queryClient, cid, conversationIdRef, (isTyping) => {
-        if (conversationIdRef.current === cid) {
-          setIsTyping(isTyping);
-        }
+      clearTyping(queryClient, cid, conversationIdRef, (typing) => {
+        if (conversationIdRef.current === cid) setIsTyping(typing);
       });
     },
     [queryClient],
   );
 
-  // Sync isTyping state when conversation changes
+  // Sync isTyping when conversation changes
   useEffect(() => {
     setIsTyping(
       conversationId ? getTypingState(queryClient, conversationId) : false,
@@ -99,95 +100,89 @@ export function useChatSocket(conversationId: string | null) {
   useEffect(() => {
     if (!accessToken) return;
 
-    // Increment subscriber count
     addSubscriber();
-
-    // Get or create socket
     const socket = getOrCreateSocket(accessToken);
 
-    // Create event handlers
-    const handleMessageEvent = createMessageEventHandler(
+    // Unified inbox:event handler (new_message, new_conversation, message_read, message_reaction)
+    const handleInboxEvent = createInboxEventHandler(
       queryClient,
       conversationIdRef,
     );
-    const handleMessageAck = createMessageAckHandler(
-      queryClient,
-      conversationIdRef,
+
+    // typing:update — single event with isTyping boolean
+    const handleTypingUpdate = createTypingUpdateHandler(
+      (cid, isTyping) => {
+        if (isTyping) handleTypingStart(cid);
+        else handleTypingStop(cid);
+      },
     );
-    const handleTypingStart = createTypingStartHandler(
-      queryClient,
-      conversationIdRef,
-      handleSetTypingActive,
-    );
-    const handleTypingStop = createTypingStopHandler(
-      queryClient,
-      handleClearTyping,
-    );
+
     const handleConnect = createConnectHandler(setIsConnected);
     const handleDisconnect = createDisconnectHandler(setIsConnected);
 
-    // Register handlers only once
     if (!handlersRegisteredRef.current) {
-      socket.on(CHAT_EVENTS.NEW_INBOX_MESSAGE, handleMessageEvent);
-      socket.on(CHAT_EVENTS.INBOX_MESSAGE, handleMessageEvent);
-      socket.on(CHAT_EVENTS.INBOX_MESSAGE_ACK, handleMessageAck);
-      socket.on(CHAT_EVENTS.TYPING_START, handleTypingStart);
-      socket.on(CHAT_EVENTS.TYPING_STOP, handleTypingStop);
+      socket.on(CHAT_EVENTS.INBOX_EVENT, handleInboxEvent);
+      socket.on(CHAT_EVENTS.TYPING_UPDATE, handleTypingUpdate);
       socket.on("connect", handleConnect);
       socket.on("disconnect", handleDisconnect);
 
       handlersRegisteredRef.current = true;
     }
 
-    // Set initial connection state
     setIsConnected(isSocketConnected());
 
-    // Cleanup on unmount
     return () => {
       const wasDisconnected = removeSubscriber();
-
       if (wasDisconnected) {
-        // Handlers are cleaned up automatically when socket disconnects
         handlersRegisteredRef.current = false;
       }
     };
-  }, [accessToken, queryClient, handleSetTypingActive, handleClearTyping]);
+  }, [
+    accessToken,
+    queryClient,
+    handleTypingStart,
+    handleTypingStop,
+  ]);
 
   // ───────────────────────────────────────────────────────────────────────────
-  // CONVERSATION JOIN/LEAVE & MARK AS READ
+  // CONVERSATION JOIN / LEAVE
+  //
+  // Emits conversation:join when a conversation is opened → server places the
+  // socket in the conversation room so it receives typing, read, reaction events.
+  // Emits conversation:leave when navigating away.
   // ───────────────────────────────────────────────────────────────────────────
 
   useEffect(() => {
-    const socket = getOrCreateSocket(accessToken || "");
-    if (!socket || !conversationId) return;
+    if (!accessToken || !conversationId) return;
 
-    // Emit conversation joined event
-    socket.emit(CHAT_EVENTS.CONVERSATION_JOINED, { conversationId });
+    const socket = getOrCreateSocket(accessToken);
+    if (!socket) return;
 
-    // Mark conversation as read
+    socket.emit(CHAT_EVENTS.CONVERSATION_JOIN, { conversationId });
     markConversationAsRead(queryClient, conversationId);
 
-    // Cleanup: emit leave event on unmount or conversation change
     return () => {
-      socket.emit("leave:conversation", { conversationId });
+      socket.emit(CHAT_EVENTS.CONVERSATION_LEAVE, { conversationId });
     };
   }, [conversationId, queryClient, accessToken]);
 
   // ───────────────────────────────────────────────────────────────────────────
-  // EMIT HELPERS - For consumer to signal typing
+  // EMIT HELPERS — signal own typing to the server
   // ───────────────────────────────────────────────────────────────────────────
 
   const emitTypingStart = useCallback(() => {
+    if (!accessToken) return;
     const cid = conversationIdRef.current;
-    const socket = getOrCreateSocket(accessToken || "");
+    const socket = getOrCreateSocket(accessToken);
     if (socket?.connected && cid) {
       socket.emit(CHAT_EVENTS.TYPING_START, { conversationId: cid });
     }
   }, [accessToken]);
 
   const emitTypingStop = useCallback(() => {
+    if (!accessToken) return;
     const cid = conversationIdRef.current;
-    const socket = getOrCreateSocket(accessToken || "");
+    const socket = getOrCreateSocket(accessToken);
     if (socket?.connected && cid) {
       socket.emit(CHAT_EVENTS.TYPING_STOP, { conversationId: cid });
     }

@@ -6,151 +6,121 @@
  */
 
 import type { QueryClient } from "@tanstack/react-query";
-import type { InboxMessage } from "@/app/types/message.types";
 import {
   extractConversationId,
   normalizeMessage,
   isPlainObject,
 } from "./normalizers";
 import {
-  updateInboxListTypingState,
   addMessageToCache,
-  updateMessageStatusInCache,
   updateInboxListWithNewMessage,
 } from "./cacheHelpers";
-import type { MessageAckPayload } from "./types";
 
 // ────────────────────────────────────────────────────────────────────────────
-// MESSAGE EVENT HANDLER
+// UNIFIED INBOX EVENT HANDLER
 // ────────────────────────────────────────────────────────────────────────────
 
 /**
- * Factory: create handler for incoming messages
+ * Factory: create handler for the unified `inbox:event`.
  *
- * Handles:
- * - Message normalization and validation
- * - Deduplication in messages cache
- * - Inbox list updates (last message, unread count)
- * - Custom event dispatch for notifications
+ * Switches on event.type:
+ *   new_message       — normalise and insert into message/inbox caches
+ *   new_conversation  — dispatch window event so sidebar can refetch
+ *   message_read      — dispatch window event for read-receipt UI
+ *   message_reaction  — dispatch window event for reaction UI
  */
-export function createMessageEventHandler(
+export function createInboxEventHandler(
   queryClient: QueryClient,
   conversationIdRef: React.MutableRefObject<string | null>,
 ) {
-  return (payload: unknown) => {
-    const conversationId = extractConversationId(
-      isPlainObject(payload) ? payload : {},
-    );
-    const message = normalizeMessage(payload);
+  return (event: unknown) => {
+    if (!isPlainObject(event)) return;
 
-    if (!conversationId || !message) return;
+    const type = event.type as string | undefined;
 
-    // Add to messages cache
-    addMessageToCache(queryClient, conversationId, message);
+    switch (type) {
+      case "new_message": {
+        const conversationId = extractConversationId(event);
+        const message = normalizeMessage(event);
 
-    // Update inbox list
-    const isCurrentConversation =
-      conversationIdRef.current === conversationId;
-    updateInboxListWithNewMessage(
-      queryClient,
-      conversationId,
-      message,
-      isCurrentConversation,
-    );
+        if (!conversationId || !message) return;
 
-    // Dispatch notification event for new incoming customer messages
-    // (only if not in active conversation)
-    if (message.sender === "customer" && !isCurrentConversation) {
-      window.dispatchEvent(
-        new CustomEvent("inbox:new-message", {
-          detail: { message, conversationId },
-        }),
-      );
+        // Add to messages cache (deduplication handled inside)
+        addMessageToCache(queryClient, conversationId, message);
+
+        // Update inbox list sidebar
+        const isCurrentConversation =
+          conversationIdRef.current === conversationId;
+        updateInboxListWithNewMessage(
+          queryClient,
+          conversationId,
+          message,
+          isCurrentConversation,
+        );
+
+        // Notify other UI layers (e.g. notification badge) for incoming
+        // customer messages when this conversation isn't currently open
+        if (message.sender === "customer" && !isCurrentConversation) {
+          window.dispatchEvent(
+            new CustomEvent("inbox:new-message", {
+              detail: { message, conversationId },
+            }),
+          );
+        }
+        break;
+      }
+
+      case "new_conversation": {
+        // Let the sidebar pick this up and refetch the inbox list
+        window.dispatchEvent(
+          new CustomEvent("inbox:new-conversation", { detail: event }),
+        );
+        break;
+      }
+
+      case "message_read": {
+        window.dispatchEvent(
+          new CustomEvent("inbox:message-read", { detail: event }),
+        );
+        break;
+      }
+
+      case "message_reaction": {
+        window.dispatchEvent(
+          new CustomEvent("inbox:message-reaction", { detail: event }),
+        );
+        break;
+      }
     }
   };
 }
 
 // ────────────────────────────────────────────────────────────────────────────
-// MESSAGE ACK HANDLER
+// TYPING HANDLER
 // ────────────────────────────────────────────────────────────────────────────
 
 /**
- * Factory: create handler for message ACK events
+ * Factory: create handler for `typing:update` events.
  *
- * Handles:
- * - Replacing temporary message IDs with server-assigned IDs
- * - Updating message status (SENT, DELIVERED, etc.)
- * - Deduplication and message tracking
- */
-export function createMessageAckHandler(
-  queryClient: QueryClient,
-  conversationIdRef: React.MutableRefObject<string | null>,
-) {
-  return (ack: unknown) => {
-    const conversationId = conversationIdRef.current;
-    if (!conversationId) return;
-
-    if (!isPlainObject(ack) || !ack.tempId) return;
-
-    const { tempId, id, status } = ack as MessageAckPayload;
-
-    if (!id || !status) return;
-
-    updateMessageStatusInCache(
-      queryClient,
-      conversationId,
-      tempId,
-      id,
-      status,
-    );
-  };
-}
-
-// ────────────────────────────────────────────────────────────────────────────
-// TYPING INDICATOR HANDLERS
-// ────────────────────────────────────────────────────────────────────────────
-
-/**
- * Factory: create handler for typing start events
+ * The server sends a single event with `isTyping: boolean` instead of
+ * separate typing:start / typing:stop events.
  *
- * Updates:
- * - isTyping state for specific conversation in inbox list
- * - Local isTyping state if it's the active conversation
- * - Typing timeout (auto-clears after TYPING_RESET_MS)
+ * @param onTypingChange - callback(conversationId, isTyping)
  */
-export function createTypingStartHandler(
-  queryClient: QueryClient,
-  conversationIdRef: React.MutableRefObject<string | null>,
-  onTypingStart: (conversationId: string) => void,
+export function createTypingUpdateHandler(
+  onTypingChange: (conversationId: string, isTyping: boolean) => void,
 ) {
   return (payload: unknown) => {
-    const conversationId = extractConversationId(
-      isPlainObject(payload) ? payload : {},
-    );
-    if (conversationId) {
-      onTypingStart(conversationId);
-    }
-  };
-}
+    if (!isPlainObject(payload)) return;
 
-/**
- * Factory: create handler for typing stop events
- *
- * Updates:
- * - isTyping state for specific conversation to false
- * - Clears typing timeout
- */
-export function createTypingStopHandler(
-  queryClient: QueryClient,
-  onTypingStop: (conversationId: string) => void,
-) {
-  return (payload: unknown) => {
-    const conversationId = extractConversationId(
-      isPlainObject(payload) ? payload : {},
-    );
-    if (conversationId) {
-      onTypingStop(conversationId);
+    const conversationId = payload.conversationId;
+    const isTyping = payload.isTyping;
+
+    if (typeof conversationId !== "string" || typeof isTyping !== "boolean") {
+      return;
     }
+
+    onTypingChange(conversationId, isTyping);
   };
 }
 
@@ -158,18 +128,10 @@ export function createTypingStopHandler(
 // CONNECTION STATE HANDLERS
 // ────────────────────────────────────────────────────────────────────────────
 
-/**
- * Create handler for socket connected event
- */
-export function createConnectHandler(
-  onConnect: (connected: boolean) => void,
-) {
+export function createConnectHandler(onConnect: (connected: boolean) => void) {
   return () => onConnect(true);
 }
 
-/**
- * Create handler for socket disconnected event
- */
 export function createDisconnectHandler(
   onDisconnect: (connected: boolean) => void,
 ) {

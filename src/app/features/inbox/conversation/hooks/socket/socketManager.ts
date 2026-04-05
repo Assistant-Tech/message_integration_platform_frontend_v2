@@ -17,12 +17,25 @@ import type { SocketState } from "./types";
 const SOCKET_URL = buildSocketUrl(import.meta.env.VITE_SOCKET_URL as string);
 
 /**
- * Build socket URL with /chat suffix if not present
- * Handles various API configurations gracefully
+ * Build the chat socket URL.
+ *
+ * Always uses the origin of VITE_SOCKET_URL and appends /chat so that
+ * VITE_SOCKET_URL = "https://api.chatblix.com/subscription" correctly
+ * produces "https://api.chatblix.com/chat" instead of
+ * "https://api.chatblix.com/subscription/chat" (invalid namespace).
+ *
+ * Falls back to simple string manipulation if URL parsing fails
+ * (e.g. relative URLs in local dev).
  */
 function buildSocketUrl(raw: string): string {
-  const base = raw.replace(/\/+$/, "");
-  return base.endsWith("/chat") ? base : `${base}/chat`;
+  try {
+    const { origin } = new URL(raw);
+    return `${origin}/chat`;
+  } catch {
+    // Fallback for relative/non-standard URLs
+    const base = raw.replace(/\/+$/, "").replace(/\/[^/]+$/, "");
+    return base.endsWith("/chat") ? base : `${base}/chat`;
+  }
 }
 
 // ────────────────────────────────────────────────────────────────────────────

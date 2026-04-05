@@ -25,7 +25,7 @@ export const connectSubscriptionSocket = () => {
     query: {
       EIO: "4",
       transport: "websocket",
-      token,
+      auth: { token },
     },
     reconnection: true,
     reconnectionAttempts: 5,

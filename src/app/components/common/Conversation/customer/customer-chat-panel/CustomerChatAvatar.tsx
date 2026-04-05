@@ -1,11 +1,12 @@
 import { cn } from "@/app/utils/cn";
 import PlatformIcon from "@/app/components/common/Conversation/customer/PlatformIcons";
-import { getAvatarUrl } from "@/app/utils/avatar";
 import { getAvatarColour, type Platform } from "./helpers";
+import { DEFAULT_PROFILE_IMAGE_URL } from "@/app/constants/image-cloudinary";
 
 interface Props {
   name: string;
   platform: Platform;
+  url?: string | undefined | null;
   size?: "sm" | "md";
 }
 
@@ -19,11 +20,11 @@ const iconSize = {
   md: 16,
 };
 
-const CustomerChatAvatar = ({ name, platform, size = "md" }: Props) => {
+const CustomerChatAvatar = ({ name, platform, url, size = "md" }: Props) => {
   return (
     <div className="relative flex-shrink-0">
       <img
-        src={getAvatarUrl()}
+        src={url ? url : DEFAULT_PROFILE_IMAGE_URL}
         alt={name}
         className={cn(
           "rounded-full object-cover",

@@ -23,14 +23,16 @@ export const ConversationAvatar = ({
   name,
   platform,
   hasUnread = false,
+  avatarUrl,
 }: {
   name: string;
   platform: Platform;
   hasUnread?: boolean;
+  avatarUrl?: string | null;
 }) => (
   <div className="relative flex-shrink-0">
     <img
-      src={getAvatarUrl()}
+      src={avatarUrl ?? getAvatarUrl()}
       alt={name}
       className={cn("h-12 w-12 rounded-full object-cover", avatarColour(name))}
     />

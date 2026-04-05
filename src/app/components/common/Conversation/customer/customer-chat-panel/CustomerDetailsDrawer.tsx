@@ -89,6 +89,7 @@ const CustomerDetailsDrawer = ({
           <div className="flex flex-col items-center text-center">
             <CustomerChatAvatar
               name={displayName}
+              url={conversation.contact?.avatar}
               platform={conversation.channel}
             />
             <h4 className="mt-4 text-xl font-semibold text-grey">
