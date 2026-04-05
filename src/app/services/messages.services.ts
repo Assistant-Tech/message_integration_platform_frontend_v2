@@ -1,6 +1,6 @@
 import { handleApiError } from "@/app/utils/handlerApiError";
 import api from "@/app/services/api/axios";
-import { toUISender } from "@/app/components/common/Conversation/customer/customer-chat-panel/helpers";
+import { toUISender } from "@/app/components/common/Conversation/panel/helpers";
 import {
   ApiMessage,
   InboxMessage,

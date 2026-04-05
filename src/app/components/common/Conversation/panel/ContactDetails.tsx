@@ -1,7 +1,7 @@
 import { Info, UserRound, X } from "lucide-react";
 import { cn } from "@/app/utils/cn";
 import type { InboxById } from "@/app/types/inbox.types";
-import CustomerChatAvatar from "./CustomerChatAvatar";
+import ChatAvatar from "./ChatAvatar";
 
 interface Props {
   conversation: InboxById;
@@ -27,7 +27,7 @@ const titleCase = (value?: string | null) => {
   return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
 };
 
-const CustomerDetailsDrawer = ({
+const ContactDetails = ({
   conversation,
   onClose,
   onAssignToggle,
@@ -87,7 +87,7 @@ const CustomerDetailsDrawer = ({
         {/* Contact card */}
         <section className="rounded-[28px] border border-grey-light bg-primary-light/35 p-5">
           <div className="flex flex-col items-center text-center">
-            <CustomerChatAvatar
+            <ChatAvatar
               name={displayName}
               url={conversation.contact?.avatar}
               platform={conversation.channel}
@@ -201,4 +201,4 @@ const CustomerDetailsDrawer = ({
   );
 };
 
-export default CustomerDetailsDrawer;
+export default ContactDetails;

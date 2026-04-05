@@ -1,5 +1,5 @@
 import { cn } from "@/app/utils/cn";
-import PlatformIcon from "@/app/components/common/Conversation/customer/PlatformIcons";
+import PlatformIcon from "@/app/components/common/Conversation/chat/PlatformIcons";
 import { getAvatarColour, type Platform } from "./helpers";
 import { DEFAULT_PROFILE_IMAGE_URL } from "@/app/constants/image-cloudinary";
 
@@ -20,7 +20,7 @@ const iconSize = {
   md: 16,
 };
 
-const CustomerChatAvatar = ({ name, platform, url, size = "md" }: Props) => {
+const ChatAvatar = ({ name, platform, url, size = "md" }: Props) => {
   return (
     <div className="relative flex-shrink-0">
       <img
@@ -39,4 +39,4 @@ const CustomerChatAvatar = ({ name, platform, url, size = "md" }: Props) => {
   );
 };
 
-export default CustomerChatAvatar;
+export default ChatAvatar;

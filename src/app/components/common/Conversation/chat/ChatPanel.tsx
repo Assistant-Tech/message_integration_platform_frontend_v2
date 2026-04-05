@@ -2,17 +2,17 @@ import { useEffect, useRef, useState } from "react";
 import { CheckCheck, Info, Tag, UserPlus2 } from "lucide-react";
 import { TopNavbar } from "@/app/features/dashboard/admin/component/ui";
 import type { Inbox } from "@/app/types/inbox.types";
-import CustomerChatEmptyState from "@/app/components/common/Conversation/customer/customer-chat-panel/CustomerChatEmptyState";
-import CustomerChatAvatar from "@/app/components/common/Conversation/customer/customer-chat-panel/CustomerChatAvatar";
-import CustomerChatMessageBubble from "@/app/components/common/Conversation/customer/customer-chat-panel/CustomerChatMessageBubble";
-import CustomerChatComposer from "@/app/components/common/Conversation/customer/customer-chat-panel/CustomerChatComposer";
+import ChatEmptyState from "@/app/components/common/Conversation/panel/ChatEmptyState";
+import ChatAvatar from "@/app/components/common/Conversation/panel/ChatAvatar";
+import MessageBubble from "@/app/components/common/Conversation/panel/MessageBubble";
+import ChatComposer from "@/app/components/common/Conversation/panel/ChatComposer";
 import InboxSkeleton from "@/app/components/ui/InboxSkeleton";
 import { Label } from "@/app/components/ui";
 import { InboxMessage } from "@/app/types/message.types";
-import { useMessage } from "@/app/features/inbox/conversation/hooks/useMessage";
-import { useSendMessage } from "@/app/features/inbox/conversation/hooks/useSendMessage";
-import { useChatSocket } from "@/app/features/inbox/conversation/hooks/useChatSocket";
-import TypingIndicator from "@/app/components/common/Conversation/customer/TypingIndicator";
+import { useMessage } from "@/app/features/inbox/hooks/useMessage";
+import { useSendMessage } from "@/app/features/inbox/hooks/useSendMessage";
+import { useChatSocket } from "@/app/features/inbox/hooks/useChatSocket";
+import TypingIndicator from "@/app/components/common/Conversation/chat/TypingIndicator";
 
 const TYPING_STOP_DELAY = 1200;
 
@@ -27,7 +27,7 @@ interface Props {
   onTagsClick?: (id: string) => void;
 }
 
-const CustomerChatPanel = ({
+const ChatPanel = ({
   conversation,
   onDetailsToggle,
   isDetailsOpen = false,
@@ -169,7 +169,7 @@ const CustomerChatPanel = ({
     loadMore();
   };
 
-  if (!conversation) return <CustomerChatEmptyState />;
+  if (!conversation) return <ChatEmptyState />;
 
   const displayName = conversation.contact?.name ?? conversation.title;
 
@@ -202,7 +202,7 @@ const CustomerChatPanel = ({
         showNotifications={false}
         showProfileMenu={false}
         leadingContent={
-          <CustomerChatAvatar
+          <ChatAvatar
             name={displayName}
             platform={conversation.channel}
           />
@@ -272,7 +272,7 @@ const CustomerChatPanel = ({
                   : undefined;
 
               return (
-                <CustomerChatMessageBubble
+                <MessageBubble
                   key={msg.id}
                   message={msg}
                   contactName={displayName}
@@ -290,7 +290,7 @@ const CustomerChatPanel = ({
       </div>
 
       {/* Reply and all stuffs */}
-      <CustomerChatComposer
+      <ChatComposer
         value={input}
         onChange={setInput}
         onSend={handleSend}
@@ -303,4 +303,4 @@ const CustomerChatPanel = ({
   );
 };
 
-export default CustomerChatPanel;
+export default ChatPanel;

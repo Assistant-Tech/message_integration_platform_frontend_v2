@@ -13,7 +13,7 @@ interface Props {
   onTypingStop?: () => void;
 }
 
-const CustomerChatComposer = ({
+const ChatComposer = ({
   value,
   onChange,
   onSend,
@@ -85,4 +85,4 @@ const CustomerChatComposer = ({
   );
 };
 
-export default CustomerChatComposer;
+export default ChatComposer;

@@ -1,6 +1,6 @@
 import { MessagesSquare } from "lucide-react";
 
-const CustomerChatEmptyState = () => (
+const ChatEmptyState = () => (
   <div className="flex h-full flex-col items-center justify-center gap-3 text-grey-medium">
     <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-primary-light/40">
       <MessagesSquare
@@ -15,4 +15,4 @@ const CustomerChatEmptyState = () => (
   </div>
 );
 
-export default CustomerChatEmptyState;
+export default ChatEmptyState;

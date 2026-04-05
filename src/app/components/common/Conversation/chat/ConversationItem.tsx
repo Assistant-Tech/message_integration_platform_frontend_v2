@@ -4,7 +4,7 @@ import { cn } from "@/app/utils/cn";
 import { formatTimestamp } from "@/app/utils/helper";
 import { Label } from "@/app/components/ui";
 import { type Inbox } from "@/app/types/inbox.types";
-import UnreadBadge from "@/app/components/common/Conversation/customer/UnreadBadge";
+import UnreadBadge from "@/app/components/common/Conversation/chat/UnreadBadge";
 
 interface Props {
   conv: Inbox;

@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { TABS } from "@/app/utils/helper";
 import { cn } from "@/app/utils/cn";
-import PlatformIcon from "@/app/components/common/Conversation/customer/PlatformIcons";
+import PlatformIcon from "@/app/components/common/Conversation/chat/PlatformIcons";
 import InboxSkeleton from "@/app/components/ui/InboxSkeleton";
-import CustomerChatSidebar from "@/app/components/common/Conversation/customer/CustomerChatSidebar";
-import CustomerChatPanel from "@/app/components/common/Conversation/customer/CustomerChatPanel";
-import NotificationToast from "@/app/components/common/Conversation/customer/NotificationToast";
-import { useInboxPage } from "@/app/features/inbox/conversation/hooks/useInboxPage";
-import CustomerDetailsDrawer from "@/app/components/common/Conversation/customer/customer-chat-panel/CustomerDetailsDrawer";
-import CustomerAssignDrawer from "@/app/components/common/Conversation/customer/customer-chat-panel/CustomerAssignDrawer";
+import ChatSidebar from "@/app/components/common/Conversation/chat/ChatSidebar";
+import ChatPanel from "@/app/components/common/Conversation/chat/ChatPanel";
+import NotificationToast from "@/app/components/common/Conversation/chat/NotificationToast";
+import { useInboxPage } from "@/app/features/inbox/hooks/useInboxPage";
+import ContactDetails from "@/app/components/common/Conversation/panel/ContactDetails";
+import AssignDrawer from "@/app/components/common/Conversation/panel/AssignDrawer";
 
 const InboxPage = () => {
   const {
@@ -105,7 +105,7 @@ const InboxPage = () => {
         {/* Content panels */}
         <div className="flex min-h-0 flex-1 overflow-hidden">
           <div className="h-full w-full max-w-[360px] flex-shrink-0 overflow-hidden border-r border-grey-light bg-white">
-            <CustomerChatSidebar
+            <ChatSidebar
               conversations={visibleConversations}
               activeTab={activeTab}
               selectedId={selected?.id ?? null}
@@ -121,7 +121,7 @@ const InboxPage = () => {
           </div>
 
           <div className="min-w-0 flex-1 overflow-hidden">
-            <CustomerChatPanel
+            <ChatPanel
               conversation={selected}
               onDetailsToggle={() => {
                 setIsAssignOpen(false);
@@ -139,7 +139,7 @@ const InboxPage = () => {
 
           {selected && isDetailsOpen && (
             <div className="h-full w-full max-w-[360px] flex-shrink-0 overflow-hidden border-l border-grey-light bg-white">
-              <CustomerDetailsDrawer
+              <ContactDetails
                 conversation={selected}
                 onClose={() => setIsDetailsOpen(false)}
                 onAssignToggle={() => {
@@ -152,7 +152,7 @@ const InboxPage = () => {
 
           {selected && isAssignOpen && (
             <div className="h-full w-full max-w-[360px] flex-shrink-0 overflow-hidden border-l border-grey-light bg-white">
-              <CustomerAssignDrawer
+              <AssignDrawer
                 contactName={selected.contact?.name || undefined}
                 assignedTo={selected.assignedTo}
                 options={assigneeOptions}

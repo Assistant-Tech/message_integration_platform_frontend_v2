@@ -15,7 +15,7 @@ interface Props {
   onClose: () => void;
 }
 
-const CustomerAssignDrawer = ({
+const AssignDrawer = ({
   contactName,
   assignedTo,
   options,
@@ -79,4 +79,4 @@ const CustomerAssignDrawer = ({
   );
 };
 
-export default CustomerAssignDrawer;
+export default AssignDrawer;

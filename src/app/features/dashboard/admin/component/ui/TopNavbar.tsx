@@ -10,7 +10,7 @@ import NotificationDropdown from "@/app/components/common/Notification/Notificat
 import { useAuthStore } from "@/app/store/auth.store";
 import { cn } from "@/app/utils/cn";
 import { getAvatarUrl } from "@/app/utils/avatar";
-import { getInitials } from "@/app/components/common/Conversation/customer/customer-chat-panel/helpers";
+import { getInitials } from "@/app/components/common/Conversation/panel/helpers";
 import { getRouteMeta } from "@/app/utils/helper";
 
 interface TopNavbarAction {

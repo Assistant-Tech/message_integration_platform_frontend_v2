@@ -1,7 +1,7 @@
 import { cn } from "@/app/utils/cn";
 import { formatMessageTime, getAvatarColour, getInitials } from "./helpers";
 import { InboxMessage } from "@/app/types/message.types";
-import MessageStatusIcon from "@/app/components/common/Conversation/customer/MessageStatusIcon";
+import MessageStatusIcon from "@/app/components/common/Conversation/chat/MessageStatusIcon";
 
 interface Props {
   message: InboxMessage;
@@ -10,7 +10,7 @@ interface Props {
   onReply?: () => void;
 }
 
-const CustomerChatMessageBubble = ({
+const MessageBubble = ({
   message,
   contactName,
   sentByLabel,
@@ -93,4 +93,4 @@ const CustomerChatMessageBubble = ({
   );
 };
 
-export default CustomerChatMessageBubble;
+export default MessageBubble;

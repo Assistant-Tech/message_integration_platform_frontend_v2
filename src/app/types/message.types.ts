@@ -1,4 +1,4 @@
-import { Platform } from "@/app/components/common/Conversation/customer/customer-chat-panel/helpers";
+import { Platform } from "@/app/components/common/Conversation/panel/helpers";
 import type {
   ApiResponse,
   ChannelType,

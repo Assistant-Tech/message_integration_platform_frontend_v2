@@ -3,7 +3,7 @@ import instaIcon from "@/app/assets/dashboard-icons/insta.svg";
 import tiktokIcon from "@/app/assets/dashboard-icons/tiktok.svg";
 import whatsappIcon from "@/app/assets/dashboard-icons/whatsapp.svg";
 import { cn } from "@/app/utils/cn";
-import { Platform } from "@/app/components/common/Conversation/customer/customer-chat-panel/helpers";
+import { Platform } from "@/app/components/common/Conversation/panel/helpers";
 
 interface PlatformIconProps {
   platform: Platform;

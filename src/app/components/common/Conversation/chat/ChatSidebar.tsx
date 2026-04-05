@@ -14,7 +14,7 @@ import {
   QuickFilterId,
   TabId,
 } from "@/app/types/inbox.types";
-import ConversationItem from "@/app/components/common/Conversation/customer/ConversationItem";
+import ConversationItem from "@/app/components/common/Conversation/chat/ConversationItem";
 import { ChannelType } from "@/app/types/common.types";
 
 const QUICK_FILTERS: Array<{
@@ -56,7 +56,7 @@ interface Props {
   hiddenCount: number;
 }
 
-const CustomerChatSidebar = ({
+const ChatSidebar = ({
   conversations,
   activeTab,
   selectedId,
@@ -312,4 +312,4 @@ const CustomerChatSidebar = ({
   );
 };
 
-export default CustomerChatSidebar;
+export default ChatSidebar;
