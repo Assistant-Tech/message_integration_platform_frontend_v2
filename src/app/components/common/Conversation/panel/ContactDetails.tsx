@@ -27,11 +27,7 @@ const titleCase = (value?: string | null) => {
   return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
 };
 
-const ContactDetails = ({
-  conversation,
-  onClose,
-  onAssignToggle,
-}: Props) => {
+const ContactDetails = ({ conversation, onClose, onAssignToggle }: Props) => {
   const displayName = conversation.contact?.name ?? conversation.title;
   const channelLabel = titleCase(conversation.channel);
 
@@ -89,7 +85,7 @@ const ContactDetails = ({
           <div className="flex flex-col items-center text-center">
             <ChatAvatar
               name={displayName}
-              url={conversation.contact?.profilePicture}
+              url={conversation.contact?.avatar}
               platform={conversation.channel}
             />
             <h4 className="mt-4 text-xl font-semibold text-grey">

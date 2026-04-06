@@ -26,7 +26,7 @@ export const ConversationAvatar = ({
   avatarUrl,
 }: {
   name: string;
-  platform: Platform;
+  platform?: Platform;
   hasUnread?: boolean;
   avatarUrl?: string | null;
 }) => (
@@ -37,7 +37,9 @@ export const ConversationAvatar = ({
       className={cn("h-12 w-12 rounded-full object-cover", avatarColour(name))}
     />
     <span className="absolute -bottom-0.5 -right-0.5 rounded-full ring-2 ring-base-white">
-      <PlatformIcon platform={platform} size={18} showUnreadDot={hasUnread} />
+      {platform && (
+        <PlatformIcon platform={platform} size={18} showUnreadDot={hasUnread} />
+      )}
     </span>
   </div>
 );

@@ -32,7 +32,7 @@ export interface Inbox {
   lastMessageAt: string;
   unreadCount: number;
   createdAt: string;
-  contact: Contact | null;
+  contact: Contact;
   assignedUser: UserSnippet | null;
   participants: Participant[];
   isTyping?: boolean;

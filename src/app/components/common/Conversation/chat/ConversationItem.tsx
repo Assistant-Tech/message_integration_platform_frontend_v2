@@ -43,7 +43,7 @@ const ConversationItem = ({
           name={displayName}
           platform={conv.channel}
           hasUnread={conv.unreadCount > 0}
-          avatarUrl={conv.contact?.profilePicture}
+          avatarUrl={conv.contact?.avatar}
         />
 
         <div className="flex min-h-full min-w-0 flex-1 flex-col">

@@ -3,7 +3,6 @@ import { CheckCheck, Info, Tag, UserPlus2 } from "lucide-react";
 import { TopNavbar } from "@/app/features/dashboard/admin/component/ui";
 import type { Inbox } from "@/app/types/inbox.types";
 import ChatEmptyState from "@/app/components/common/Conversation/panel/ChatEmptyState";
-import ChatAvatar from "@/app/components/common/Conversation/panel/ChatAvatar";
 import MessageBubble from "@/app/components/common/Conversation/panel/MessageBubble";
 import ChatComposer from "@/app/components/common/Conversation/panel/ChatComposer";
 import InboxSkeleton from "@/app/components/ui/InboxSkeleton";
@@ -13,6 +12,7 @@ import { useMessage } from "@/app/features/inbox/hooks/useMessage";
 import { useSendMessage } from "@/app/features/inbox/hooks/useSendMessage";
 import { useChatSocket } from "@/app/features/inbox/hooks/useChatSocket";
 import TypingIndicator from "@/app/components/common/Conversation/chat/TypingIndicator";
+import { ConversationAvatar } from "@/app/components/ui/ConversationAvatar";
 
 const TYPING_STOP_DELAY = 1200;
 
@@ -191,6 +191,7 @@ const ChatPanel = ({
       )}
     </span>
   );
+  console.log("conversation", conversation);
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden">
@@ -202,9 +203,10 @@ const ChatPanel = ({
         showNotifications={false}
         showProfileMenu={false}
         leadingContent={
-          <ChatAvatar
+          <ConversationAvatar
             name={displayName}
             platform={conversation.channel}
+            avatarUrl={conversation.contact?.avatar}
           />
         }
         actions={[
@@ -276,6 +278,7 @@ const ChatPanel = ({
                   key={msg.id}
                   message={msg}
                   contactName={displayName}
+                  avatar={conversation.contact?.avatar}
                   sentByLabel={sentByLabel}
                   onReply={() => setReplyTarget(msg)}
                 />

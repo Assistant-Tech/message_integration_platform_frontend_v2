@@ -1,10 +1,12 @@
 import { cn } from "@/app/utils/cn";
-import { formatMessageTime, getAvatarColour, getInitials } from "./helpers";
+import { formatMessageTime } from "./helpers";
 import { InboxMessage } from "@/app/types/message.types";
 import MessageStatusIcon from "@/app/components/common/Conversation/chat/MessageStatusIcon";
+import { ConversationAvatar } from "@/app/components/ui/ConversationAvatar";
 
 interface Props {
   message: InboxMessage;
+  avatar?: string;
   contactName: string;
   sentByLabel?: string;
   onReply?: () => void;
@@ -13,6 +15,7 @@ interface Props {
 const MessageBubble = ({
   message,
   contactName,
+  avatar,
   sentByLabel,
   onReply,
 }: Props) => {
@@ -22,16 +25,7 @@ const MessageBubble = ({
     <div
       className={cn("flex gap-3", isAgent ? "flex-row-reverse" : "flex-row")}
     >
-      {!isAgent && (
-        <div
-          className={cn(
-            "flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-xs font-semibold",
-            getAvatarColour(contactName),
-          )}
-        >
-          {getInitials(contactName)}
-        </div>
-      )}
+      {!isAgent && <ConversationAvatar name={contactName} avatarUrl={avatar} />}
       <div
         className={cn(
           "max-w-[70%] space-y-1",
@@ -62,6 +56,15 @@ const MessageBubble = ({
             </div>
           )}
           {message.content}
+          {message.attachments &&
+            message.attachments.map((attachment) => (
+              <img
+                key={attachment.id}
+                src={attachment.url}
+                alt={attachment.name}
+                className="w-48 aspect-auto object-cover"
+              />
+            ))}
         </div>
         {!isAgent && onReply && (
           <button

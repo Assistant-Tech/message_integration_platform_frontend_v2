@@ -15,6 +15,7 @@ import {
   addMessageToCache,
   updateInboxListWithNewMessage,
 } from "./cacheHelpers";
+import { playNotificationSound } from "@/app/utils/audioManager";
 
 // ────────────────────────────────────────────────────────────────────────────
 // UNIFIED INBOX EVENT HANDLER
@@ -61,6 +62,7 @@ export function createInboxEventHandler(
         // Notify other UI layers (e.g. notification badge) for incoming
         // customer messages when this conversation isn't currently open
         if (message.sender === "customer" && !isCurrentConversation) {
+          playNotificationSound();
           window.dispatchEvent(
             new CustomEvent("inbox:new-message", {
               detail: { message, conversationId },
