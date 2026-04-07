@@ -29,7 +29,8 @@ export type UseChannelsReturn = {
   integrations: IntegrationRecord[];
   pages: Page[];
   isLoading: boolean;
-  handleConnectFacebook: () => void;
+  startMetaOAuth: () => void;
+  linkMetaPages: (token: string) => Promise<unknown>;
 };
 
 export interface Integration {

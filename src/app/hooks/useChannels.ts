@@ -1,96 +1,20 @@
-import { useState, useEffect, useCallback } from "react";
-import api from "@/app/services/api/axios";
-import {
-  connectMetaApiPage,
-  fetchStoredPages,
-} from "@/app/services/meta.services";
-import { IntegrationRecord, Page } from "@/app/types/channel.types";
+import { useEffect } from "react";
+import { useChannelsStore } from "@/app/store/channels.store";
 
 export const useChannels = () => {
-  const [integrations, setIntegrations] = useState<IntegrationRecord[]>([]);
-  const [pages, setPages] = useState<Page[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const refreshChannels = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetchStoredPages();
-
-      const fetchedPages = response.data?.pages || [];
-      setPages(fetchedPages);
-
-      setIntegrations([]);
-    } catch (err) {
-      console.error("Failed to fetch channels", err);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const pages = useChannelsStore((s) => s.pages);
+  const isLoading = useChannelsStore((s) => s.isLoading);
+  const refreshChannels = useChannelsStore((s) => s.refreshChannels);
+  const startMetaOAuth = useChannelsStore((s) => s.startMetaOAuth);
 
   useEffect(() => {
     refreshChannels();
-  }, [refreshChannels]);
+  }, []);
 
-  // Connect Facebook function
-  const handleConnectFacebook = useCallback(async () => {
-    try {
-      const { data } = await api.get("/meta/oauth");
-      const oauthUrl = data?.data?.oauthUrl;
-
-      if (!oauthUrl) return;
-
-      const width = 800;
-      const height = 950;
-      const left = window.screenX + (window.outerWidth - width) / 2;
-      const top = window.screenY + (window.outerHeight - height) / 2;
-
-      let popup: Window | null = null;
-
-      const handleMessage = async (event: MessageEvent) => {
-        console.log("MESSAGE RECEIVED:", event);
-
-        if (event.data?.type === "OAUTH_SUCCESS") {
-          const { token } = event.data.payload;
-
-          console.log("TOKEN RECEIVED:", token);
-
-          if (popup) popup.close();
-          window.removeEventListener("message", handleMessage);
-
-          try {
-            setIsLoading(true);
-
-            const res = await connectMetaApiPage(token);
-
-            console.log("CONNECT RESPONSE:", res);
-
-            if (res.success) {
-              await refreshChannels();
-            }
-          } catch (err) {
-            console.error("Connection failed", err);
-          } finally {
-            setIsLoading(false);
-          }
-        }
-      };
-
-      window.addEventListener("message", handleMessage);
-
-      popup = window.open(
-        oauthUrl,
-        "Facebook Login",
-        `width=${width},height=${height},left=${left},top=${top}`,
-      );
-    } catch (err) {
-      console.error("OAuth init failed", err);
-    }
-  }, [refreshChannels]);
   return {
-    integrations,
     pages,
     isLoading,
-    handleConnectFacebook,
     refreshChannels,
+    startMetaOAuth,
   };
 };
