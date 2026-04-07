@@ -18,7 +18,7 @@ const PROVIDER_LABELS: Record<string, string> = {
 const ChannelSettingsPage = () => {
   const navigate = useNavigate();
   const { slug, providerId } = useParams();
-  const { pages, isLoading, handleConnectFacebook } = useChannels();
+  const { pages, isLoading, startMetaOAuth } = useChannels();
   // console.log("pages", pages);
 
   const normalizedProviderId = (providerId || "").toLowerCase();
@@ -40,7 +40,7 @@ const ChannelSettingsPage = () => {
 
   const handleAddPage = () => {
     if (normalizedProviderId === "facebook") {
-      handleConnectFacebook();
+      startMetaOAuth();
     }
   };
 
