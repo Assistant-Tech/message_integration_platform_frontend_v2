@@ -7,10 +7,13 @@ import SubscriptionListener from "@/app/socket/listeners/SubscriptionListener";
 import { AnnouncementBanner } from "@/app/components/common";
 import { useBanner } from "@/app/context/BannerContext";
 import { useNotificationStore } from "@/app/store/notification.store";
+import { useGlobalSocket } from "@/app/hooks/useGlobalSocket";
 
 const AdminLayout = () => {
   const { isVisible } = useBanner();
   const { hasUpcomingRenewal } = useNotificationStore();
+
+  useGlobalSocket();
 
   const showBanner =
     hasUpcomingRenewal && isVisible("dashboard_banner_dismissed");

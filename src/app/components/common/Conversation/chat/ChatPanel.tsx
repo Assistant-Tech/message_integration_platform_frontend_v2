@@ -1,18 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import { CheckCheck, Info, Tag, UserPlus2 } from "lucide-react";
-import { TopNavbar } from "@/app/features/dashboard/admin/component/ui";
 import type { Inbox } from "@/app/types/inbox.types";
 import ChatEmptyState from "@/app/components/common/Conversation/panel/ChatEmptyState";
 import MessageBubble from "@/app/components/common/Conversation/panel/MessageBubble";
 import ChatComposer from "@/app/components/common/Conversation/panel/ChatComposer";
 import InboxSkeleton from "@/app/components/ui/InboxSkeleton";
-import { Label } from "@/app/components/ui";
 import { InboxMessage } from "@/app/types/message.types";
 import { useMessage } from "@/app/features/inbox/hooks/useMessage";
 import { useSendMessage } from "@/app/features/inbox/hooks/useSendMessage";
 import { useChatSocket } from "@/app/features/inbox/hooks/useChatSocket";
 import TypingIndicator from "@/app/components/common/Conversation/chat/TypingIndicator";
-import { ConversationAvatar } from "@/app/components/ui/ConversationAvatar";
+import ChatPanelHeader from "@/app/components/common/Conversation/chat/ChatPanelHeader/ChatPanelHeader";
 
 const TYPING_STOP_DELAY = 1200;
 
@@ -173,68 +170,17 @@ const ChatPanel = ({
 
   const displayName = conversation.contact?.name ?? conversation.title;
 
-  const subtitle = (
-    <span className="flex items-center gap-1.5">
-      <span>{conversation.channel.toLowerCase()}</span>
-      <Label variant="status" value={conversation.status} />
-      <span
-        className={
-          isConnected
-            ? "text-[10px] font-medium text-emerald-600"
-            : "text-[10px] font-medium text-amber-600"
-        }
-      >
-        {isConnected ? "Live" : "Reconnecting"}
-      </span>
-      {conversation.priority !== "NORMAL" && (
-        <Label variant="priority" value={conversation.priority} />
-      )}
-    </span>
-  );
-  console.log("conversation", conversation);
-
   return (
     <div className="flex h-full w-full flex-col overflow-hidden">
-      <TopNavbar
-        title={<span className="truncate">{displayName}</span>}
-        subtitle={subtitle}
-        showSearch={false}
-        showHelp={false}
-        showNotifications={false}
-        showProfileMenu={false}
-        leadingContent={
-          <ConversationAvatar
-            name={displayName}
-            platform={conversation.channel}
-            avatarUrl={conversation.contact?.avatar}
-          />
-        }
-        actions={[
-          {
-            label: "Details",
-            icon: Info,
-            onClick: onDetailsToggle,
-            isActive: isDetailsOpen,
-          },
-          {
-            label: "Assign",
-            icon: UserPlus2,
-            onClick: onAssignToggle,
-            isActive: isAssignOpen,
-          },
-          {
-            label: "Tags",
-            icon: Tag,
-            onClick: () => onTagsClick?.(conversation.id),
-            isActive: false,
-          },
-          {
-            label: "Resolve",
-            icon: CheckCheck,
-            onClick: () => onResolve?.(conversation.id),
-            isActive: conversation.status === "CLOSED",
-          },
-        ]}
+      <ChatPanelHeader
+        conversation={conversation}
+        isConnected={isConnected}
+        onDetailsToggle={onDetailsToggle}
+        isDetailsOpen={isDetailsOpen}
+        onAssignToggle={onAssignToggle}
+        isAssignOpen={isAssignOpen}
+        onResolve={onResolve}
+        onTagsClick={onTagsClick}
       />
 
       <div

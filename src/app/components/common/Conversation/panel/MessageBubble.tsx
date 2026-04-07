@@ -8,7 +8,7 @@ interface Props {
   message: InboxMessage;
   avatar?: string;
   contactName: string;
-  sentByLabel?: string;
+  // sentByLabel?: string;
   onReply?: () => void;
 }
 
@@ -16,7 +16,7 @@ const MessageBubble = ({
   message,
   contactName,
   avatar,
-  sentByLabel,
+  // sentByLabel,
   onReply,
 }: Props) => {
   const isAgent = message.senderName === "AGENT";
@@ -75,11 +75,11 @@ const MessageBubble = ({
             Reply
           </button>
         )}
-        {sentByLabel && (
+        {/*{sentByLabel && (
           <p className="px-1 text-[10px] font-medium text-primary">
             Sent by {sentByLabel}
           </p>
-        )}
+        )}*/}
         <p className="px-1 text-[10px] text-grey-medium">
           {formatMessageTime(message.timestamp)}
         </p>

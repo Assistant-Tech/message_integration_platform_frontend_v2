@@ -36,10 +36,10 @@ const ChannelCard = ({
           }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
           className={`
-            absolute top-0 left-4 z-20
+            absolute top-0 left-3 sm:left-4 z-20
             inline-flex items-center gap-1
-            rounded-md px-2.5 py-1
-            label-regular-14 shadow-sm
+            rounded-md px-2 py-0.5 sm:px-2.5 sm:py-1
+            text-[11px] sm:label-regular-14 shadow-sm
             ${badgeStyles}
           `}
         >
@@ -64,12 +64,12 @@ const ChannelCard = ({
         className={`
           relative overflow-hidden rounded-2xl border border-grey-light
           bg-gradient-to-r ${card.cardGradient ?? "from-white to-grey-light/30"}
-          p-8 flex flex-col gap-4
+          p-5 sm:p-6 lg:p-8 flex flex-col gap-3 sm:gap-4 h-full
         `}
       >
-        <div className="flex flex-row items-start gap-4">
+        <div className="flex flex-row items-start gap-3 sm:gap-4">
           <div
-            className={`h-14 w-14 shrink-0 rounded-2xl flex items-center justify-center p-3 ${card.logoBackgroundColor}`}
+            className={`h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-2xl flex items-center justify-center p-2.5 sm:p-3 ${card.logoBackgroundColor}`}
           >
             <div
               className="h-full w-full"
@@ -77,9 +77,11 @@ const ChannelCard = ({
             />
           </div>
 
-          <div className="flex flex-col gap-1">
-            <h3 className="h4-semi-bold-24 leading-tight">{card.name}</h3>
-            <p className="label-regular-14 text-grey-medium line-clamp-2">
+          <div className="flex flex-col gap-1 min-w-0 flex-1">
+            <h3 className="text-lg sm:text-xl lg:h4-semi-bold-24 font-semibold leading-tight truncate">
+              {card.name}
+            </h3>
+            <p className="text-xs sm:label-regular-14 text-grey-medium line-clamp-2">
               {card.description}
             </p>
           </div>
@@ -95,8 +97,8 @@ const ChannelCard = ({
             }}
             className={
               isConnected
-                ? "text-sm underline text-grey-medium hover:text-grey-dark"
-                : "text-sm px-5 py-2 rounded-xl border border-grey-light bg-white text-grey-dark hover:bg-grey-50 transition-all font-medium"
+                ? "text-xs sm:text-sm underline text-grey-medium hover:text-grey-dark"
+                : "text-xs sm:text-sm px-4 sm:px-5 py-1.5 sm:py-2 rounded-xl border border-grey-light bg-white text-grey-dark hover:bg-grey-50 transition-all font-medium"
             }
           />
         </div>

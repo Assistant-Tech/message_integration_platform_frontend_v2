@@ -1,6 +1,5 @@
 import PlatformIcon from "@/app/components/common/Conversation/chat/PlatformIcons";
 import { cn } from "@/app/utils/cn";
-import { getAvatarUrl } from "@/app/utils/avatar";
 import { Platform } from "@/app/components/common/Conversation/panel/helpers";
 
 const AVATAR_COLOURS: [string, ...string[]] = [
@@ -19,6 +18,14 @@ const avatarColour = (name: string): string => {
   );
 };
 
+const initials = (name: string): string =>
+  name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((w) => w[0]?.toUpperCase() ?? "")
+    .join("");
+
 export const ConversationAvatar = ({
   name,
   platform,
@@ -31,11 +38,27 @@ export const ConversationAvatar = ({
   avatarUrl?: string | null;
 }) => (
   <div className="relative flex-shrink-0">
-    <img
-      src={avatarUrl ?? getAvatarUrl()}
-      alt={name}
-      className={cn("h-12 w-12 rounded-full object-cover", avatarColour(name))}
-    />
+    {avatarUrl ? (
+      <img
+        src={avatarUrl}
+        alt={name}
+        className="h-12 w-12 rounded-full object-cover"
+        onError={(e) => {
+          (e.currentTarget as HTMLImageElement).style.display = "none";
+          (e.currentTarget.nextElementSibling as HTMLElement | null)?.style.setProperty("display", "flex");
+        }}
+      />
+    ) : null}
+    <div
+      className={cn(
+        "h-12 w-12 rounded-full items-center justify-center text-sm font-semibold select-none",
+        avatarColour(name),
+        avatarUrl ? "hidden" : "flex",
+      )}
+      aria-hidden={!!avatarUrl}
+    >
+      {initials(name)}
+    </div>
     <span className="absolute -bottom-0.5 -right-0.5 rounded-full ring-2 ring-base-white">
       {platform && (
         <PlatformIcon platform={platform} size={18} showUnreadDot={hasUnread} />

@@ -37,3 +37,33 @@ export type { ChannelType as Platform } from "@/app/types/common.types";
 
 // toUISender has been moved to @/app/utils/inbox/messageAdapters
 export { toUISender } from "@/app/utils/inbox/messageAdapters";
+
+// Notify the parent window (or any listener) about the OAuth result
+export function notifyParent(
+  type: "OAUTH_CONNECTED" | "OAUTH_FAILED",
+  pages?: unknown[],
+) {
+  const message = { type, pages };
+
+  try {
+    const ch = new BroadcastChannel("oauth-meta");
+    ch.postMessage(message);
+    setTimeout(() => ch.close(), 800);
+  } catch {
+    /* BroadcastChannel not available */
+  }
+
+  try {
+    window.opener?.postMessage(message, "*");
+  } catch {
+    /* opener gone */
+  }
+
+  setTimeout(() => {
+    try {
+      window.close();
+    } catch {
+      /* ignore */
+    }
+  }, 1000);
+}
