@@ -9,8 +9,17 @@ interface RetriableAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
 }
 
+// In dev we go through the Vite proxy at /api/v1 so the browser sees a
+// same-origin request. This is required for HttpOnly + SameSite=Strict cookies
+// (e.g. `onboarding-token`, `refresh-token`, `sessionId`, `device-fingerprint`)
+// which the browser otherwise refuses to send cross-site.
+// In production the frontend and API share an eTLD+1, so we hit the API directly.
+const baseURL = import.meta.env.DEV
+  ? "/api/v1"
+  : import.meta.env.VITE_API_BASE_URL_TEST;
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL_TEST,
+  baseURL,
   withCredentials: true,
 
   headers: {
