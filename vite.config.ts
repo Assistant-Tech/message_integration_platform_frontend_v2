@@ -1,11 +1,19 @@
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 import { visualizer } from "rollup-plugin-visualizer";
 import svgr from "vite-plugin-svgr";
 
-export default defineConfig({
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), "");
+
+  // Resolve the upstream API base URL and strip the /api/v1 suffix so the
+  // dev proxy can forward the same path the browser requested.
+  const apiBase = env.VITE_API_BASE_URL_TEST ?? "";
+  const apiOrigin = apiBase.replace(/\/api\/v1\/?$/, "");
+
+  return {
   plugins: [
     react(),
     tailwindcss(),
@@ -45,6 +53,23 @@ export default defineConfig({
     port: 5173,
     open: true,
     allowedHosts: ["rachele-paleaceous-ethyl.ngrok-free.dev"],
+    // Proxy API calls in dev so the browser sees them as same-origin.
+    // This is critical for HttpOnly + SameSite=Strict cookies (e.g.
+    // `onboarding-token`, `refresh-token`, `sessionId`, `device-fingerprint`)
+    // which the browser otherwise refuses to send cross-site.
+    proxy: apiOrigin
+      ? {
+          "/api/v1": {
+            target: apiOrigin,
+            changeOrigin: true,
+            secure: true,
+            // Strip the cookie Domain attribute so the browser stores cookies
+            // against the dev host (localhost / ngrok) instead of api.chatblix.com.
+            cookieDomainRewrite: "",
+            cookiePathRewrite: "/",
+          },
+        }
+      : undefined,
   },
   build: {
     outDir: "dist",
@@ -70,4 +95,5 @@ export default defineConfig({
   optimizeDeps: {
     include: ["react", "react-dom", "framer-motion"],
   },
+  };
 });
