@@ -4,41 +4,50 @@ import { InboxMessage } from "@/app/types/message.types";
 import MessageStatusIcon from "@/app/components/common/Conversation/chat/MessageStatusIcon";
 import { ConversationAvatar } from "@/app/components/ui/ConversationAvatar";
 import MessageContent from "./MessageContent";
+import { CornerUpLeft, Ellipsis } from "lucide-react";
 
 interface Props {
   message: InboxMessage;
   avatar?: string;
   contactName: string;
-  // sentByLabel?: string;
   onReply?: () => void;
+  showTime?: boolean;
+  showAvatar?: boolean;
 }
 
 const MessageBubble = ({
   message,
   contactName,
   avatar,
-  // sentByLabel,
   onReply,
+  showTime = false,
+  showAvatar = true,
 }: Props) => {
   const isAgent = message.senderName === "AGENT";
 
   return (
-    <div
-      className={cn("flex gap-3", isAgent ? "flex-row-reverse" : "flex-row")}
-    >
-      {!isAgent && <ConversationAvatar name={contactName} avatarUrl={avatar} />}
+    <div className={cn("flex flex-col", isAgent ? "items-end" : "items-start")}>
       <div
         className={cn(
-          "max-w-[70%] space-y-1",
-          isAgent ? "items-end text-right" : "items-start",
+          "group flex items-end gap-2",
+          isAgent ? "flex-row-reverse" : "flex-row",
         )}
       >
+        {/* Avatar or spacer to keep alignment */}
+        {!isAgent &&
+          (showAvatar ? (
+            <ConversationAvatar name={contactName} avatarUrl={avatar} />
+          ) : (
+            <div className="w-12 flex-shrink-0" />
+          ))}
+
+        {/* Bubble */}
         <div
           className={cn(
-            "rounded-2xl px-4 py-2.5 text-sm whitespace-pre-wrap break-words",
+            "max-w-[70%] rounded-2xl px-4 py-2.5 text-sm whitespace-pre-wrap break-words",
             isAgent
-              ? "rounded-tr-sm bg-primary text-white"
-              : "rounded-tl-sm bg-base-white text-grey shadow-sm ring-1 ring-grey-light",
+              ? "rounded-lg bg-primary text-white"
+              : "rounded-lg bg-base-white text-grey shadow-sm ring-1 ring-grey-light",
           )}
         >
           {message.replyTo && (
@@ -58,32 +67,47 @@ const MessageBubble = ({
           )}
           <MessageContent message={message} isAgent={isAgent} />
         </div>
-        {!isAgent && onReply && (
+
+        {/* Hover action buttons */}
+        <div className="hidden group-hover:flex items-center gap-1 pb-1">
           <button
             type="button"
             onClick={onReply}
-            className="w-fit px-1 text-[12px] font-medium text-grey-medium transition-colors hover:text-primary"
+            className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-grey-light bg-white text-grey-medium transition-colors hover:text-primary hover:border-primary/30"
+            aria-label="Reply"
           >
-            Reply
+            <CornerUpLeft className="h-3.5 w-3.5" />
           </button>
-        )}
-        {/*{sentByLabel && (
-          <p className="px-1 text-[10px] font-medium text-primary">
-            Sent by {sentByLabel}
-          </p>
-        )}*/}
-        <p className="px-1 text-[10px] text-grey-medium">
-          {formatMessageTime(message.timestamp)}
-        </p>
-        {isAgent &&
-          (message.status === "SENT" ||
-            message.status === "DELIVERED" ||
-            message.status === "READ") && (
-            <div className="flex justify-end px-1">
-              <MessageStatusIcon status={message.status} />
-            </div>
-          )}
+          <button
+            type="button"
+            className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-grey-light bg-white text-grey-medium transition-colors hover:text-grey hover:border-grey-medium"
+            aria-label="More options"
+          >
+            <Ellipsis className="h-3.5 w-3.5" />
+          </button>
+        </div>
       </div>
+
+      {/* Time + status — shown once per minute group */}
+      {showTime && (
+        <div
+          className={cn(
+            "mt-0.5 flex items-center gap-1 px-1",
+            isAgent ? "flex-row-reverse" : "flex-row",
+            isAgent && "ml-auto",
+          )}
+        >
+          <p className="text-[10px] text-grey-medium">
+            {formatMessageTime(message.timestamp)}
+          </p>
+          {isAgent &&
+            (message.status === "SENT" ||
+              message.status === "DELIVERED" ||
+              message.status === "READ") && (
+              <MessageStatusIcon status={message.status} />
+            )}
+        </div>
+      )}
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { Inbox } from "@/app/types/inbox.types";
+import { formatMessageTime } from "@/app/components/common/Conversation/panel/helpers";
 import ChatEmptyState from "@/app/components/common/Conversation/panel/ChatEmptyState";
 import MessageBubble from "@/app/components/common/Conversation/panel/MessageBubble";
 import ChatComposer from "@/app/components/common/Conversation/panel/ChatComposer";
@@ -210,15 +211,24 @@ const ChatPanel = ({
               </p>
             )}
 
-            {messages.map((msg) => (
-              <MessageBubble
-                key={msg.id}
-                message={msg}
-                contactName={displayName}
-                avatar={conversation.contact?.avatar}
-                onReply={() => setReplyTarget(msg)}
-              />
-            ))}
+            {messages.map((msg, index) => {
+              const nextMsg = messages[index + 1];
+              const isSameGroup =
+                !!nextMsg &&
+                nextMsg.senderName === msg.senderName &&
+                formatMessageTime(msg.timestamp) === formatMessageTime(nextMsg.timestamp);
+              return (
+                <MessageBubble
+                  key={msg.id}
+                  message={msg}
+                  contactName={displayName}
+                  avatar={conversation.contact?.avatar}
+                  onReply={() => setReplyTarget(msg)}
+                  showTime={!isSameGroup}
+                  showAvatar={!isSameGroup}
+                />
+              );
+            })}
 
             {isTyping && <TypingIndicator />}
 
