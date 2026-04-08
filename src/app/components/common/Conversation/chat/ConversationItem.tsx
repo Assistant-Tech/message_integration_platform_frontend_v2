@@ -1,8 +1,8 @@
 import { ConversationAvatar } from "@/app/components/ui/ConversationAvatar";
-import { BellDot, Trash2 } from "lucide-react";
+import { BellDot, Ellipsis, Pin, Trash2 } from "lucide-react";
 import { cn } from "@/app/utils/cn";
 import { formatTimestamp } from "@/app/utils/helper";
-import { Label } from "@/app/components/ui";
+import { Button, Label } from "@/app/components/ui";
 import { type Inbox } from "@/app/types/inbox.types";
 import UnreadBadge from "@/app/components/common/Conversation/chat/UnreadBadge";
 
@@ -10,15 +10,21 @@ interface Props {
   conv: Inbox;
   isSelected: boolean;
   onSelect: () => void;
-  isManageMode?: boolean;
   onRemove?: () => void;
+  openId: string | null;
+  setOpenId: (id: string | null) => void;
+  isPinned?: boolean;
+  onTogglePin?: () => void;
 }
 const ConversationItem = ({
   conv,
   isSelected,
   onSelect,
-  isManageMode = false,
   onRemove,
+  openId,
+  setOpenId,
+  isPinned = false,
+  onTogglePin,
 }: Props) => {
   const displayName = conv.contact?.name ?? conv.title;
   const showTyping = Boolean(conv.isTyping);
@@ -27,9 +33,18 @@ const ConversationItem = ({
       ? `You: ${conv.lastMessageContent ?? ""}`
       : (conv.lastMessageContent ?? "No message yet");
 
+  const handleDialogDrop = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    id: string | null,
+  ) => {
+    e.stopPropagation();
+    setOpenId(openId === id ? null : id);
+  };
+
   return (
     <div
       className={cn(
+        "relative group flex items-center justify-between ",
         "flex h-22 items-start gap-2 border-b border-grey-light px-4 py-3 transition-colors hover:bg-primary-light/50",
         isSelected && "bg-primary-light",
       )}
@@ -91,15 +106,42 @@ const ConversationItem = ({
         </div>
       </button>
 
-      {isManageMode && (
-        <button
-          type="button"
-          onClick={onRemove}
-          className="mt-0.5 inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-grey-light bg-white text-grey-medium transition-colors hover:border-danger/30 hover:bg-danger/5 hover:text-danger"
-          aria-label={`Remove ${displayName}`}
-        >
-          <Trash2 className="h-4 w-4" />
-        </button>
+      {/* Only showcase when hovered */}
+      <div className="hidden group-hover:block absolute right-4 top-7">
+        <Button
+          variant="none"
+          onClick={(e) => handleDialogDrop(e, conv.id)}
+          className="mt-0.5 inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-grey-light bg-white "
+          IconRight={<Ellipsis className="h-4 w-4 rounded-full" />}
+        />
+      </div>
+
+      {/* Dropdown menu */}
+      {openId === conv.id && (
+        <div className="absolute right-6 top-18 z-10 min-w-[130px] rounded-lg border border-grey-light bg-white shadow-md">
+          <Button
+            variant="none"
+            onClick={(e) => {
+              e.stopPropagation();
+              onTogglePin?.();
+              setOpenId(null);
+            }}
+            className="flex gap-2 px-3 py-2 text-xs text-grey hover:bg-primary-light/50"
+            IconLeft={<Pin className="h-3.5 w-3.5" />}
+            label={isPinned ? "Unpin" : "Pin"}
+          />
+
+          <Button
+            label="Remove"
+            variant="none"
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpenId(null);
+            }}
+            className="flex gap-2 px-3 py-2 text-xs text-grey hover:bg-primary-light/50"
+            IconLeft={<Trash2 className="h-3.5 w-3.5" />}
+          />
+        </div>
       )}
     </div>
   );

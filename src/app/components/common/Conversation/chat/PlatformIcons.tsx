@@ -38,11 +38,11 @@ const PlatformIcon = ({
       alt={PLATFORM_ALT[platform]}
       width={size}
       height={size}
-      className={cn(className, "bg-white")}
+      className={cn(className, PLATFORM_RING[platform])}
     />
     {showUnreadDot && (
       <span
-        className="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-danger ring-2 ring-base-white"
+        className="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-danger "
         aria-label={`${PLATFORM_ALT[platform]} has unread messages`}
       />
     )}

@@ -30,7 +30,6 @@ const ChatPanel = ({
   isDetailsOpen = false,
   onAssignToggle,
   isAssignOpen = false,
-  assignedMemberName,
   onResolve,
   onTagsClick,
 }: Props) => {
@@ -211,25 +210,15 @@ const ChatPanel = ({
               </p>
             )}
 
-            {messages.map((msg, index) => {
-              const isLast = index === messages.length - 1;
-
-              const sentByLabel =
-                isLast && msg.sender === "agent"
-                  ? (assignedMemberName ?? msg.senderName)
-                  : undefined;
-
-              return (
-                <MessageBubble
-                  key={msg.id}
-                  message={msg}
-                  contactName={displayName}
-                  avatar={conversation.contact?.avatar}
-                  sentByLabel={sentByLabel}
-                  onReply={() => setReplyTarget(msg)}
-                />
-              );
-            })}
+            {messages.map((msg) => (
+              <MessageBubble
+                key={msg.id}
+                message={msg}
+                contactName={displayName}
+                avatar={conversation.contact?.avatar}
+                onReply={() => setReplyTarget(msg)}
+              />
+            ))}
 
             {isTyping && <TypingIndicator />}
 

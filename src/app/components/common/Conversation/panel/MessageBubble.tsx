@@ -3,6 +3,7 @@ import { formatMessageTime } from "./helpers";
 import { InboxMessage } from "@/app/types/message.types";
 import MessageStatusIcon from "@/app/components/common/Conversation/chat/MessageStatusIcon";
 import { ConversationAvatar } from "@/app/components/ui/ConversationAvatar";
+import MessageContent from "./MessageContent";
 
 interface Props {
   message: InboxMessage;
@@ -55,16 +56,7 @@ const MessageBubble = ({
               </p>
             </div>
           )}
-          {message.content}
-          {message.attachments &&
-            message.attachments.map((attachment) => (
-              <img
-                key={attachment.id}
-                src={attachment.url}
-                alt={attachment.name}
-                className="w-48 aspect-auto object-cover"
-              />
-            ))}
+          <MessageContent message={message} isAgent={isAgent} />
         </div>
         {!isAgent && onReply && (
           <button

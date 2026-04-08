@@ -1,5 +1,3 @@
-import { Platform } from "../features/inbox/mocks/mockData/customerConversationMockData";
-
 /**
  * Extracts and formats features from a plan's features object into a readable array
  */
@@ -106,7 +104,7 @@ export const mapStatus = (status?: string) => {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-type TabId = "all" | Platform;
+import type { TabId } from "@/app/types/inbox.types";
 
 export const TABS: { id: TabId; label: string }[] = [
   { id: "all", label: "All" },

@@ -1,3 +1,5 @@
+import { Inbox, QuickFilterId } from "@/app/types/inbox.types";
+
 const AVATAR_COLOURS: [string, ...string[]] = [
   "bg-violet-200 text-violet-700",
   "bg-blue-200 text-blue-700",
@@ -67,3 +69,34 @@ export function notifyParent(
     }
   }, 1000);
 }
+
+// QUICK FILTERS
+export const QUICK_FILTERS: Array<{
+  id: QuickFilterId;
+  label: string;
+  matches: (inbox: Inbox) => boolean;
+}> = [
+  {
+    id: "unread",
+    label: "Unread",
+    matches: (inbox) => inbox.unreadCount > 0,
+  },
+  {
+    id: "priority",
+    label: "Priority",
+    matches: (inbox) => inbox.priority === "HIGH",
+  },
+  {
+    id: "followUp",
+    label: "Assigned",
+    matches: (inbox) => inbox.assignedTo !== null,
+  },
+];
+
+// Channel labels for display purposes
+export const CHANNEL_LABELS: Record<string, string> = {
+  FACEBOOK: "facebook",
+  WHATSAPP: "whatsapp",
+  TIKTOK: "tiktok",
+  INSTAGRAM: "instagram",
+};

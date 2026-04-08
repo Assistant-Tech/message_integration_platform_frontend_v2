@@ -127,9 +127,9 @@ const OnboardingStep5: React.FC<OnboardingStep5Props> = ({
       >
         {/* Header Row */}
         <div className="grid grid-cols-3 gap-4 mb-4">
-          <div className="text-sm font-medium text-gray-600">Name</div>
-          <div className="text-sm font-medium text-gray-600">Role</div>
-          <div className="text-sm font-medium text-gray-600">Email</div>
+          <div className="text-sm font-medium text-grey-medium">Name</div>
+          <div className="text-sm font-medium text-grey-medium">Role</div>
+          <div className="text-sm font-medium text-grey-medium">Email</div>
         </div>
 
         <form onSubmit={handleSubmit}>
@@ -153,7 +153,7 @@ const OnboardingStep5: React.FC<OnboardingStep5Props> = ({
                       onChange={(e) =>
                         handleMemberChange(index, "name", e.target.value)
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400"
+                      className="w-full px-3 py-2 border border-grey-light rounded-md focus:outline-none focus:ring-2 focus:ring-information focus:border-transparent placeholder-gray-400"
                     />
                   </div>
 
@@ -164,7 +164,7 @@ const OnboardingStep5: React.FC<OnboardingStep5Props> = ({
                       onChange={(e) =>
                         handleMemberChange(index, "role", e.target.value)
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-600 bg-white appearance-none cursor-pointer"
+                      className="w-full px-3 py-2 border border-grey-light rounded-md focus:outline-none focus:ring-2 focus:ring-information focus:border-transparent text-grey-medium bg-white appearance-none cursor-pointer"
                       style={{
                         backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e")`,
                         backgroundRepeat: "no-repeat",
@@ -193,13 +193,13 @@ const OnboardingStep5: React.FC<OnboardingStep5Props> = ({
                       onChange={(e: any) =>
                         handleMemberChange(index, "email", e.target.value)
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400"
+                      className="w-full px-3 py-2 border border-grey-light rounded-md focus:outline-none focus:ring-2 focus:ring-information focus:border-transparent placeholder-gray-400"
                     />
                     {formData.members.length > 2 && (
                       <button
                         type="button"
                         onClick={() => removeMember(index)}
-                        className="absolute -right-8 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-500 transition-colors"
+                        className="absolute -right-8 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-danger transition-colors"
                       >
                         <svg
                           className="w-4 h-4"
@@ -226,11 +226,11 @@ const OnboardingStep5: React.FC<OnboardingStep5Props> = ({
           <motion.button
             type="button"
             onClick={addStaffMember}
-            className="flex items-center text-teal-600 hover:text-teal-700 mt-6 transition-colors group"
+            className="flex items-center text-primary hover:text-primary-dark mt-6 transition-colors group"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <div className="w-6 h-6 rounded-full border-2 border-teal-600 flex items-center justify-center mr-3 group-hover:border-teal-700 transition-colors">
+            <div className="w-6 h-6 rounded-full border-2 border-primary flex items-center justify-center mr-3 group-hover:border-primary-dark transition-colors">
               <Plus className="w-4 h-4" />
             </div>
             <span className="font-medium">Add Staff Members</span>
@@ -241,7 +241,7 @@ const OnboardingStep5: React.FC<OnboardingStep5Props> = ({
             <motion.button
               type="button"
               onClick={onPrevious}
-              className="flex items-center px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
+              className="flex items-center px-6 py-2 border border-grey-light rounded-md text-grey hover:bg-grey-light transition-colors"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -254,7 +254,7 @@ const OnboardingStep5: React.FC<OnboardingStep5Props> = ({
                 <motion.button
                   type="button"
                   onClick={onSkip}
-                  className="text-teal-600 hover:text-teal-700 underline font-medium transition-colors"
+                  className="text-primary hover:text-primary-dark underline font-medium transition-colors"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -264,7 +264,7 @@ const OnboardingStep5: React.FC<OnboardingStep5Props> = ({
               <motion.button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-6 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+                className="px-6 py-2 bg-primary text-white rounded-md hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
                 whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
                 whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
               >

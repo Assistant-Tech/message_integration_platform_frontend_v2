@@ -2,8 +2,10 @@ import { handleApiError } from "@/app/utils/handlerApiError";
 import api from "@/app/services/api/axios";
 import { toUISender } from "@/app/utils/inbox/messageAdapters";
 import {
+  ApiAttachment,
   ApiMessage,
   InboxMessage,
+  MessageAttachment,
   MessageListResponse,
   SendMessagePayload,
 } from "@/app/types/message.types";
@@ -52,14 +54,25 @@ export function adaptApiMessage(msg: ApiMessage): InboxMessage {
     id: msg.id,
     sender: toUISender(msg.senderType),
     senderName: msg.senderType,
-    senderId: msg.sentBy as string,
-    content: msg.content,
+    senderId: msg.sentBy ?? "",
+    content: msg.content ?? "",
     timestamp: msg.sentAt,
     type: msg.type,
     status: msg.status,
-    attachments: msg.attachments,
+    attachments: msg.attachments.map(adaptAttachment),
     replyTo: msg.parentId
       ? { id: msg.parentId, senderName: "", content: "" }
       : null,
+  };
+}
+
+function adaptAttachment(raw: ApiAttachment): MessageAttachment {
+  return {
+    // API doesn't provide an id — derive a stable one from the URL
+    id: raw.url,
+    url: raw.url,
+    name: raw.originalFilename || raw.filename,
+    mimeType: raw.mimeType,
+    size: raw.size,
   };
 }

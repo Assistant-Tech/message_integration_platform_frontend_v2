@@ -16,8 +16,8 @@ const avatarSizeClass = {
 };
 
 const iconSize = {
-  sm: 14,
-  md: 16,
+  sm: 24,
+  md: 32,
 };
 
 const ChatAvatar = ({ name, platform, url, size = "md" }: Props) => {
@@ -32,7 +32,7 @@ const ChatAvatar = ({ name, platform, url, size = "md" }: Props) => {
           getAvatarColour(name),
         )}
       />
-      <span className="absolute -bottom-0.5 -right-0.5 rounded-full ring-2 ring-base-white">
+      <span className="absolute -bottom-0.5 -right-0.5 ">
         <PlatformIcon platform={platform} size={iconSize[size]} />
       </span>
     </div>

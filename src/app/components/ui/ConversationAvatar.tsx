@@ -45,7 +45,9 @@ export const ConversationAvatar = ({
         className="h-12 w-12 rounded-full object-cover"
         onError={(e) => {
           (e.currentTarget as HTMLImageElement).style.display = "none";
-          (e.currentTarget.nextElementSibling as HTMLElement | null)?.style.setProperty("display", "flex");
+          (
+            e.currentTarget.nextElementSibling as HTMLElement | null
+          )?.style.setProperty("display", "flex");
         }}
       />
     ) : null}
@@ -59,7 +61,7 @@ export const ConversationAvatar = ({
     >
       {initials(name)}
     </div>
-    <span className="absolute -bottom-0.5 -right-0.5 rounded-full ring-2 ring-base-white">
+    <span className="absolute -bottom-2 -right-0.5 rounded-full">
       {platform && (
         <PlatformIcon platform={platform} size={18} showUnreadDot={hasUnread} />
       )}

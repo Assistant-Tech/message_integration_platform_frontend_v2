@@ -7,14 +7,27 @@ import type {
 type Platform = ChannelType;
 
 /* ─── Message Enums ──────────────────────────────────────────────────────── */
-export type MessageType = "TEXT" | "IMAGE" | "FILE" | "AUDIO" | "VIDEO";
-export type MessageStatus = "SENT" | "DELIVERED" | "READ" | "FAILED";
-export type MessageDirection = "INTERNAL" | "INBOUND" | "OUTBOUND";
+export type MessageType = "TEXT" | "IMAGE" | "FILE" | "AUDIO" | "VIDEO" | "VOICE";
+// "RECIEVED" is a backend typo kept here intentionally for API compatibility
+export type MessageStatus = "SENT" | "DELIVERED" | "READ" | "FAILED" | "RECIEVED";
+// "INCOMING"/"OUTGOING" are Facebook-flavored values alongside the canonical ones
+export type MessageDirection = "INTERNAL" | "INBOUND" | "OUTBOUND" | "INCOMING" | "OUTGOING";
 export type MessageSenderType = "AGENT" | "CONTACT" | "SYSTEM" | "CUSTOMER";
 
 /* ─── Attachments ───────────────────────────────────────────────────────── */
+
+/** Raw attachment shape returned by the API */
+export interface ApiAttachment {
+  url: string;
+  size: number;
+  filename: string;
+  originalFilename: string;
+  mimeType: string;
+}
+
+/** Normalised attachment shape used throughout the UI */
 export interface MessageAttachment {
-  id: string;
+  id: string;   // derived from url when the API doesn't provide one
   url: string;
   name: string;
   mimeType: string;
@@ -24,7 +37,7 @@ export interface MessageAttachment {
 /* ─── Raw API Message ───────────────────────────────────────────────────── */
 export interface ApiMessage {
   id: string;
-  content: string;
+  content: string | null;
   type: MessageType;
   direction: MessageDirection;
   senderType: MessageSenderType;
@@ -37,7 +50,7 @@ export interface ApiMessage {
   isDeleted: boolean;
   createdAt: string;
   sender: UserSnippet | null;
-  attachments: MessageAttachment[];
+  attachments: ApiAttachment[];
 }
 
 /* ─── API Response ──────────────────────────────────────────────────────── */

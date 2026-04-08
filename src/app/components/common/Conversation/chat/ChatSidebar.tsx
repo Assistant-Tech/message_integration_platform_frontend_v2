@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import {
   ChevronDown,
-  Layers3,
-  RotateCcw,
+  Divide,
+  Pin,
   Search,
   SlidersHorizontal,
 } from "lucide-react";
@@ -16,44 +16,16 @@ import {
 } from "@/app/types/inbox.types";
 import ConversationItem from "@/app/components/common/Conversation/chat/ConversationItem";
 import { ChannelType } from "@/app/types/common.types";
-
-const QUICK_FILTERS: Array<{
-  id: QuickFilterId;
-  label: string;
-  matches: (inbox: Inbox) => boolean;
-}> = [
-  {
-    id: "unread",
-    label: "Unread",
-    matches: (inbox) => inbox.unreadCount > 0,
-  },
-  {
-    id: "priority",
-    label: "Priority",
-    matches: (inbox) => inbox.priority === "HIGH",
-  },
-  {
-    id: "followUp",
-    label: "Assigned",
-    matches: (inbox) => inbox.assignedTo !== null,
-  },
-];
-
-const CHANNEL_LABELS: Record<string, string> = {
-  FACEBOOK: "facebook",
-  WHATSAPP: "whatsapp",
-  TIKTOK: "tiktok",
-  INSTAGRAM: "instagram",
-};
-
+import {
+  CHANNEL_LABELS,
+  QUICK_FILTERS,
+} from "@/app/components/common/Conversation/panel/helpers.ts";
 interface Props {
   conversations: Inbox[];
   activeTab: TabId;
   selectedId: string | null;
   onSelect: (inbox: Inbox) => void;
   onHideConversation: (id: string) => void;
-  onRestoreHiddenChats: () => void;
-  hiddenCount: number;
 }
 
 const ChatSidebar = ({
@@ -62,15 +34,22 @@ const ChatSidebar = ({
   selectedId,
   onSelect,
   onHideConversation,
-  onRestoreHiddenChats,
-  hiddenCount,
 }: Props) => {
   const [search, setSearch] = useState("");
   const [activeFilters, setActiveFilters] = useState<QuickFilterId[]>([]);
-  const [isManageMode, setIsManageMode] = useState(false);
   const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [sortBy, setSortBy] = useState<SortOption>("latest");
+  const [openId, setOpenId] = useState<string | null>(null);
+  const [pinnedIds, setPinnedIds] = useState<Set<string>>(new Set());
+
+  const togglePin = (id: string) => {
+    setPinnedIds((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
 
   const filtered = useMemo(() => {
     let list = [...conversations];
@@ -124,6 +103,9 @@ const ChatSidebar = ({
     return list;
   }, [activeFilters, conversations, search, statusFilter, sortBy]);
 
+  const pinned = filtered.filter((c) => pinnedIds.has(c.id));
+  const unpinned = filtered.filter((c) => !pinnedIds.has(c.id));
+
   const toggleFilter = (filterId: QuickFilterId) => {
     setActiveFilters((prev) =>
       prev.includes(filterId)
@@ -153,19 +135,6 @@ const ChatSidebar = ({
               className="min-w-0 flex-1 bg-transparent text-sm text-grey outline-none placeholder:text-grey-medium"
             />
           </div>
-          <button
-            type="button"
-            onClick={() => setIsManageMode((prev) => !prev)}
-            className={cn(
-              "inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-sm font-medium transition-colors",
-              isManageMode
-                ? "border-primary bg-primary-light text-primary"
-                : "border-grey-medium/40 bg-white text-grey hover:border-grey-medium hover:bg-grey-light/30",
-            )}
-          >
-            <Layers3 className="h-4 w-4" />
-            <span>{isManageMode ? "Done" : "Manage"}</span>
-          </button>
         </div>
 
         {/* Filter toggle */}
@@ -255,26 +224,6 @@ const ChatSidebar = ({
             </div>
           )}
         </div>
-
-        {(isManageMode || hiddenCount > 0) && (
-          <div className="mt-3 flex items-center justify-between rounded-xl border border-grey-light bg-white px-3 py-2 text-xs text-grey-medium">
-            <span>
-              {isManageMode
-                ? "Click the remove button on a chat to hide it from this list."
-                : `${hiddenCount} chat${hiddenCount === 1 ? "" : "s"} hidden.`}
-            </span>
-            {hiddenCount > 0 && (
-              <button
-                type="button"
-                onClick={onRestoreHiddenChats}
-                className="inline-flex items-center gap-1 font-medium text-primary transition-colors hover:text-primary-dark"
-              >
-                <RotateCcw className="h-3.5 w-3.5" />
-                Restore
-              </button>
-            )}
-          </div>
-        )}
       </div>
 
       {/* Conversation list */}
@@ -295,14 +244,39 @@ const ChatSidebar = ({
                 </span>
               </div>
             )}
-            {filtered.map((inbox) => (
+            {pinned.length > 0 && (
+              <>
+                <div className="me-2 px-4 py-1.5 label-regular-16 text-grey-medium bg-secondary-light">
+                  <Pin className="h-3.5 w-3.5 inline-block mr-1" />
+                  Pinned
+                </div>
+                {pinned.map((inbox) => (
+                  <ConversationItem
+                    key={inbox.id}
+                    conv={inbox}
+                    isSelected={selectedId === inbox.id}
+                    onSelect={() => onSelect(inbox)}
+                    onRemove={() => onHideConversation(inbox.id)}
+                    openId={openId}
+                    setOpenId={setOpenId}
+                    isPinned={true}
+                    onTogglePin={() => togglePin(inbox.id)}
+                  />
+                ))}
+                <div className="mx-4 border-b border-grey-light my-1" />
+              </>
+            )}
+            {unpinned.map((inbox) => (
               <ConversationItem
                 key={inbox.id}
                 conv={inbox}
                 isSelected={selectedId === inbox.id}
                 onSelect={() => onSelect(inbox)}
-                isManageMode={isManageMode}
                 onRemove={() => onHideConversation(inbox.id)}
+                openId={openId}
+                setOpenId={setOpenId}
+                isPinned={false}
+                onTogglePin={() => togglePin(inbox.id)}
               />
             ))}
           </>
