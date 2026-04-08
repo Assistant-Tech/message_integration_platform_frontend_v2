@@ -26,10 +26,10 @@ const MessageBubble = ({
   const isAgent = message.senderName === "AGENT";
 
   return (
-    <div className={cn("flex flex-col", isAgent ? "items-end" : "items-start")}>
+    <div className={cn("flex w-full flex-col", isAgent ? "items-end" : "items-start")}>
       <div
         className={cn(
-          "group flex items-end gap-2",
+          "group flex w-full items-end gap-2",
           isAgent ? "flex-row-reverse" : "flex-row",
         )}
       >
