@@ -107,6 +107,9 @@ importers:
       framer-motion:
         specifier: ^12.12.1
         version: 12.12.2(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      frimousse:
+        specifier: ^0.3.0
+        version: 0.3.0(react@19.2.1)(typescript@5.8.3)
       jspdf:
         specifier: ^3.0.3
         version: 3.0.3
@@ -2999,6 +3002,15 @@ packages:
       react:
         optional: true
       react-dom:
+        optional: true
+
+  frimousse@0.3.0:
+    resolution: {integrity: sha512-kO6LMoKY/cLAYEhXXtqLRaLIE6L/DagpFPrUZaLv3LsUa1/8Iza3HhwZcgN8eZ+weXnhv69eoclNUPohcCa/IQ==}
+    peerDependencies:
+      react: ^18 || ^19
+      typescript: '>=5.1.0'
+    peerDependenciesMeta:
+      typescript:
         optional: true
 
   fs.realpath@1.0.0:
@@ -7561,6 +7573,12 @@ snapshots:
     optionalDependencies:
       react: 19.2.1
       react-dom: 19.2.1(react@19.2.1)
+
+  frimousse@0.3.0(react@19.2.1)(typescript@5.8.3):
+    dependencies:
+      react: 19.2.1
+    optionalDependencies:
+      typescript: 5.8.3
 
   fs.realpath@1.0.0: {}
 

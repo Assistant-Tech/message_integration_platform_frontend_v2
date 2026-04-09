@@ -5,13 +5,7 @@ import React from "react";
 import { BannerProvider } from "./context/BannerContext";
 import queryClient, { persister } from "@/app/utils/queryClient";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
-
-// Lazy load ReactQueryDevtools only in development
-const DevTools = React.lazy(() =>
-  import("@tanstack/react-query-devtools").then((module) => ({
-    default: module.ReactQueryDevtools,
-  })),
-);
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,
@@ -19,6 +13,7 @@ const root = ReactDOM.createRoot(
 
 root.render(
   // <React.StrictMode>
+
   <PersistQueryClientProvider
     client={queryClient}
     persistOptions={{ persister: persister }}
@@ -27,7 +22,7 @@ root.render(
       <App />
       {import.meta.env.DEV && (
         <React.Suspense fallback={null}>
-          <DevTools initialIsOpen={false} />
+          <ReactQueryDevtools initialIsOpen={false} />
         </React.Suspense>
       )}
     </BannerProvider>
