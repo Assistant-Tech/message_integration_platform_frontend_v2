@@ -150,6 +150,7 @@ export interface TenantSettings {
 export interface TenantDetails {
   id: string;
   organizationName: string;
+  slug?: string;
   industry?: string;
   website?: string;
   email?: string;
@@ -158,10 +159,17 @@ export interface TenantDetails {
   country?: string;
   city?: string;
   address?: string;
+  status?: "ACTIVE" | "INACTIVE" | string;
+  isOnboarded?: boolean;
+  registrationNumber?: string;
+  registrationCertificateImageUri?: string | null;
+  logoUri?: string | null;
   logoUrl?: string | null;
   panCardNumber?: string;
   panCardImageUri?: string | null;
   settings?: TenantSettings;
+  user?: Array<{ id: string; email: string; name: string; status: string }>;
+  _count?: { user: number };
   createdAt: string;
   updatedAt: string;
 }

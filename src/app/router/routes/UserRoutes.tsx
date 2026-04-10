@@ -15,9 +15,6 @@ const InboxPage = lazy(
 const ContactPage = lazy(
   () => import("@/app/features/dashboard/admin/pages/contact/ContactAdminPage"),
 );
-const SettingsPage = lazy(
-  () => import("@/app/features/dashboard/admin/pages/settings/SettingsPage"),
-);
 const ProfileSettings = lazy(
   () => import("@/app/features/dashboard/admin/pages/settings/ProfileSettings"),
 );
@@ -43,7 +40,6 @@ const AdminRoutes = () => {
         />
         <Route path={APP_ROUTES.ADMIN.CONVERSATION} element={<InboxPage />} />
         <Route path={APP_ROUTES.ADMIN.CONTACT} element={<ContactPage />} />
-        <Route path={APP_ROUTES.ADMIN.SETTINGS} element={<SettingsPage />} />
         <Route
           path={APP_ROUTES.ADMIN.SETTINGS_PROFILE}
           element={<ProfileSettings />}

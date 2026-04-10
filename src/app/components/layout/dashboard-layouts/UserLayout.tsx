@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import {
   CollapseSidebar,
@@ -6,14 +7,22 @@ import {
 import { useGlobalSocket } from "@/app/hooks/useGlobalSocket";
 
 const UserLayout = () => {
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+
   // Message Socket connection
   useGlobalSocket();
+
   return (
     <section className="max-h-screen overflow-y-hidden flex flex-col h-screen gap-10">
       <div className="flex flex-1 min-h-0">
-        <CollapseSidebar />
+        <CollapseSidebar
+          isMobileOpen={isMobileSidebarOpen}
+          onMobileClose={() => setIsMobileSidebarOpen(false)}
+        />
         <div className="flex flex-col flex-1 overflow-hidden">
-          <TopNavbar />
+          <TopNavbar
+            onSidebarToggle={() => setIsMobileSidebarOpen((prev) => !prev)}
+          />
           <main className="overflow-auto flex-1">
             <Outlet />
           </main>

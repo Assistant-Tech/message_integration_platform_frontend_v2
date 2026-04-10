@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import {
   CollapseSidebar,
@@ -12,6 +13,7 @@ import { useGlobalSocket } from "@/app/hooks/useGlobalSocket";
 const AdminLayout = () => {
   const { isVisible } = useBanner();
   const { hasUpcomingRenewal } = useNotificationStore();
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   useGlobalSocket();
 
@@ -31,9 +33,15 @@ const AdminLayout = () => {
         </div>
       )}
       <div className="flex flex-1 min-h-0">
-        <CollapseSidebar />
+        <CollapseSidebar
+          isMobileOpen={isMobileSidebarOpen}
+          onMobileClose={() => setIsMobileSidebarOpen(false)}
+        />
         <div className="flex flex-col flex-1 overflow-hidden">
-          <TopNavbar showProfileMenu={false} />
+          <TopNavbar
+            showProfileMenu={false}
+            onSidebarToggle={() => setIsMobileSidebarOpen((prev) => !prev)}
+          />
           <main className="overflow-auto flex-1">
             <SubscriptionListener />
             <Outlet />

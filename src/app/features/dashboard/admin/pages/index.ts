@@ -3,7 +3,6 @@ export { default as InboxPage } from "@/app/features/inbox/InboxPage";
 export { default as ChatbotPage } from "../pages/chatbot/ChatbotPage";
 export { default as ChannelPage } from "../pages/channels/ChannelPage";
 export { default as AnalyticsPage } from "../pages/analytics/AnalyticsPage";
-export { default as SettingsPage } from "../pages/settings/SettingsPage";
 export { default as TagsPage } from "../pages/tags/TagsPage";
 
 // Order-Pages

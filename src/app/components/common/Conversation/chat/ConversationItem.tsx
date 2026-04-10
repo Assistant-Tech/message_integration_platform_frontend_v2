@@ -126,7 +126,7 @@ const ConversationItem = ({
               onTogglePin?.();
               setOpenId(null);
             }}
-            className="flex gap-2 px-3 py-2 text-xs text-grey hover:bg-primary-light/50"
+            className="flex gap-2 px-3 py-2 text-xs text-grey"
             IconLeft={<Pin className="h-3.5 w-3.5" />}
             label={isPinned ? "Unpin" : "Pin"}
           />
@@ -138,7 +138,7 @@ const ConversationItem = ({
               e.stopPropagation();
               setOpenId(null);
             }}
-            className="flex gap-2 px-3 py-2 text-xs text-grey hover:bg-primary-light/50"
+            className="flex gap-2 px-3 py-2 text-xs text-grey"
             IconLeft={<Trash2 className="h-3.5 w-3.5" />}
           />
         </div>

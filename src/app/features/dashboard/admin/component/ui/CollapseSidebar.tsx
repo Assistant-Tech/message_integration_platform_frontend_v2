@@ -63,7 +63,12 @@ const SidebarIcon = ({
   );
 };
 
-const CollapsibleSidebar = () => {
+interface CollapsibleSidebarProps {
+  isMobileOpen?: boolean;
+  onMobileClose?: () => void;
+}
+
+const CollapsibleSidebar = ({ isMobileOpen = false, onMobileClose }: CollapsibleSidebarProps) => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -107,11 +112,25 @@ const CollapsibleSidebar = () => {
 
   return (
     <TooltipProvider delayDuration={100}>
+      {/* Mobile backdrop */}
+      {isMobileOpen && (
+        <div
+          className="fixed inset-0 z-[59] bg-black/50 md:hidden"
+          onClick={onMobileClose}
+          aria-hidden
+        />
+      )}
       <div className="flex bg-grey-light h-full min-h-0">
         <aside
-          className={`bg-primary text-white transition-all duration-300 ease-in-out ${
-            isCollapsed ? "w-20" : "w-64"
-          } flex flex-col h-full`}
+          className={clsx(
+            "bg-primary text-white flex flex-col transition-all duration-300 ease-in-out",
+            isCollapsed ? "w-20" : "w-64",
+            // Mobile: fixed overlay, slides in/out
+            "fixed top-0 left-0 z-[60] h-full",
+            isMobileOpen ? "translate-x-0" : "-translate-x-full",
+            // Desktop: in-flow, always visible
+            "md:relative md:z-auto md:translate-x-0 md:h-full",
+          )}
         >
           {/* Sidebar Header */}
           <div className="p-4 border-primary-dark relative">

@@ -21,7 +21,7 @@
 
 import { useMemo } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { HelpCircle, Search } from "lucide-react";
+import { HelpCircle, Menu, Search } from "lucide-react";
 
 import { Button } from "@/app/components/ui";
 import NotificationDropdown from "@/app/components/common/Notification/NotificationDropDown";
@@ -53,6 +53,7 @@ const TopNavbar = ({
   showNotifications = true,
   showProfileMenu = true,
   className,
+  onSidebarToggle,
 }: TopNavbarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -106,7 +107,18 @@ const TopNavbar = ({
     >
       <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
         {/* Title / subtitle ─────────────────────────────────────────────── */}
-        <div className="flex min-w-0 flex-1 items-center gap-4">
+        <div className="flex min-w-0 flex-1 items-center gap-3">
+          {/* Mobile sidebar toggle */}
+          {onSidebarToggle && (
+            <button
+              type="button"
+              onClick={onSidebarToggle}
+              aria-label="Toggle sidebar"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-grey-light bg-base-white text-grey-medium hover:bg-primary-light hover:text-primary md:hidden"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+          )}
           {(resolvedTitle || resolvedSubtitle) && (
             <div className="min-w-0 shrink-0">
               {resolvedTitle && (

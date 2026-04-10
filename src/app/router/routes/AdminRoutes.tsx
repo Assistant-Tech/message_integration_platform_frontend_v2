@@ -18,9 +18,7 @@ const AdminDashboardPage = lazy(
 );
 
 // FOLDER CHANGED TO FEATURE BASED
-const InboxPage = lazy(
-  () => import("@/app/features/inbox/InboxPage"),
-);
+const InboxPage = lazy(() => import("@/app/features/inbox/InboxPage"));
 const ContactPage = lazy(
   () => import("@/app/features/dashboard/admin/pages/contact/ContactAdminPage"),
 );
@@ -39,9 +37,6 @@ const ChannelSettingsPage = lazy(
 // );
 const AnalyticsPage = lazy(
   () => import("@/app/features/dashboard/admin/pages/analytics/AnalyticsPage"),
-);
-const SettingsPage = lazy(
-  () => import("@/app/features/dashboard/admin/pages/settings/SettingsPage"),
 );
 const ProfileSettings = lazy(
   () => import("@/app/features/dashboard/admin/pages/settings/ProfileSettings"),
@@ -103,7 +98,6 @@ const AdminRoutes = () => {
 
         {/*<Route path={APP_ROUTES.ADMIN.TAGS} element={<TagsPage />} />*/}
         <Route path={APP_ROUTES.ADMIN.ANALYTICS} element={<AnalyticsPage />} />
-        <Route path={APP_ROUTES.ADMIN.SETTINGS} element={<SettingsPage />} />
         <Route
           path={APP_ROUTES.ADMIN.SETTINGS_PROFILE}
           element={<ProfileSettings />}

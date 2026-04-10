@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ChevronLeft } from "lucide-react";
 import { TABS } from "@/app/utils/helper";
 import { cn } from "@/app/utils/cn";
 import PlatformIcon from "@/app/components/common/Conversation/chat/PlatformIcons";
@@ -9,6 +10,8 @@ import NotificationToast from "@/app/components/common/Conversation/chat/Notific
 import { useInboxPage } from "@/app/features/inbox/hooks/useInboxPage";
 import ContactDetails from "@/app/components/common/Conversation/panel/ContactDetails";
 import AssignDrawer from "@/app/components/common/Conversation/panel/AssignDrawer";
+
+type MobileView = "list" | "chat" | "panel";
 
 const InboxPage = () => {
   const {
@@ -43,6 +46,21 @@ const InboxPage = () => {
 
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isAssignOpen, setIsAssignOpen] = useState(false);
+  const [mobileView, setMobileView] = useState<MobileView>("list");
+
+  const handleDetailsToggle = () => {
+    const nextIsOpen = !isDetailsOpen;
+    setIsAssignOpen(false);
+    setIsDetailsOpen(nextIsOpen);
+    setMobileView(nextIsOpen ? "panel" : "chat");
+  };
+
+  const handleAssignToggle = () => {
+    const nextIsOpen = !isAssignOpen;
+    setIsDetailsOpen(false);
+    setIsAssignOpen(nextIsOpen);
+    setMobileView(nextIsOpen ? "panel" : "chat");
+  };
 
   if (isLoading) return <InboxSkeleton />;
   if (isError)
@@ -55,9 +73,9 @@ const InboxPage = () => {
         {/* Tab bar */}
         <div className="border-b border-grey-light bg-white px-4 py-3">
           <nav aria-label="Conversation platform tabs">
-            <ul className="grid w-full grid-cols-5 items-center gap-2">
+            <ul className="flex overflow-x-auto gap-2 scrollbar-invisible md:grid md:w-full md:grid-cols-5 md:items-center">
               {TABS.map((tab) => (
-                <li key={tab.id} className="group relative w-full">
+                <li key={tab.id} className="group relative shrink-0 md:shrink md:w-full">
                   <button
                     type="button"
                     onClick={() => setActiveTab(tab.id)}
@@ -104,7 +122,14 @@ const InboxPage = () => {
 
         {/* Content panels */}
         <div className="flex min-h-0 flex-1 overflow-hidden">
-          <div className="h-full w-full max-w-[360px] flex-shrink-0 overflow-hidden border-r border-grey-light bg-white">
+          {/* Left panel — conversation list */}
+          <div
+            className={cn(
+              "h-full overflow-hidden border-r border-grey-light bg-white",
+              "md:w-full md:max-w-[360px] md:flex-shrink-0 md:block",
+              mobileView === "list" ? "flex-1 w-full" : "hidden md:block",
+            )}
+          >
             <ChatSidebar
               conversations={visibleConversations}
               activeTab={activeTab}
@@ -113,6 +138,7 @@ const InboxPage = () => {
                 setSelected(c.id);
                 setIsDetailsOpen(false);
                 setIsAssignOpen(false);
+                setMobileView("chat");
               }}
               onHideConversation={hideConversation}
               onRestoreHiddenChats={restoreHidden}
@@ -120,44 +146,77 @@ const InboxPage = () => {
             />
           </div>
 
-          <div className="min-w-0 flex-1 overflow-hidden">
-            <ChatPanel
-              conversation={selected}
-              onDetailsToggle={() => {
-                setIsAssignOpen(false);
-                setIsDetailsOpen((p) => !p);
-              }}
-              isDetailsOpen={isDetailsOpen}
-              onAssignToggle={() => {
-                setIsDetailsOpen(false);
-                setIsAssignOpen((p) => !p);
-              }}
-              isAssignOpen={isAssignOpen}
-              assignedMemberName={assignedMemberName}
-            />
+          {/* Center panel — chat */}
+          <div
+            className={cn(
+              "overflow-hidden flex flex-col",
+              "md:min-w-0 md:flex-1",
+              mobileView === "chat" ? "flex-1 w-full" : "hidden md:flex",
+            )}
+          >
+            {/* Mobile back button */}
+            <button
+              type="button"
+              onClick={() => setMobileView("list")}
+              className="flex shrink-0 items-center gap-1.5 border-b border-grey-light bg-white px-4 py-2.5 text-sm font-medium text-grey hover:text-primary md:hidden"
+            >
+              <ChevronLeft className="h-4 w-4" />
+              All Conversations
+            </button>
+            <div className="flex-1 min-h-0 overflow-hidden">
+              <ChatPanel
+                conversation={selected}
+                onDetailsToggle={handleDetailsToggle}
+                isDetailsOpen={isDetailsOpen}
+                onAssignToggle={handleAssignToggle}
+                isAssignOpen={isAssignOpen}
+                assignedMemberName={assignedMemberName}
+              />
+            </div>
           </div>
 
+          {/* Right panel — contact details */}
           {selected && isDetailsOpen && (
-            <div className="h-full w-full max-w-[360px] flex-shrink-0 overflow-hidden border-l border-grey-light bg-white">
+            <div
+              className={cn(
+                "h-full overflow-hidden border-l border-grey-light bg-white",
+                "md:w-full md:max-w-[360px] md:flex-shrink-0",
+                mobileView === "panel" ? "flex-1 w-full" : "hidden md:block",
+              )}
+            >
               <ContactDetails
                 conversation={selected}
-                onClose={() => setIsDetailsOpen(false)}
+                onClose={() => {
+                  setIsDetailsOpen(false);
+                  setMobileView("chat");
+                }}
                 onAssignToggle={() => {
                   setIsDetailsOpen(false);
                   setIsAssignOpen(true);
+                  setMobileView("panel");
                 }}
               />
             </div>
           )}
 
+          {/* Right panel — assign drawer */}
           {selected && isAssignOpen && (
-            <div className="h-full w-full max-w-[360px] flex-shrink-0 overflow-hidden border-l border-grey-light bg-white">
+            <div
+              className={cn(
+                "h-full overflow-hidden border-l border-grey-light bg-white",
+                "md:w-full md:max-w-[360px] md:flex-shrink-0",
+                mobileView === "panel" ? "flex-1 w-full" : "hidden md:block",
+              )}
+            >
               <AssignDrawer
                 contactName={selected.contact?.name ?? selected.title}
                 assignedTo={selected.assignedTo ?? undefined}
                 options={assigneeOptions}
                 onAssign={handleAssign}
-                onClose={() => setIsAssignOpen(false)}
+                onClose={() => {
+                  setIsAssignOpen(false);
+                  setMobileView("chat");
+                }}
               />
             </div>
           )}

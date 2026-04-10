@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import {
   ChevronDown,
-  Divide,
   Pin,
   Search,
   SlidersHorizontal,
@@ -26,6 +25,8 @@ interface Props {
   selectedId: string | null;
   onSelect: (inbox: Inbox) => void;
   onHideConversation: (id: string) => void;
+  onRestoreHiddenChats?: () => void;
+  hiddenCount?: number;
 }
 
 const ChatSidebar = ({
