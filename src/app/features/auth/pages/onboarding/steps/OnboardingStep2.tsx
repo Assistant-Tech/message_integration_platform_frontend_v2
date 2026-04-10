@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { Button } from "@/app/components/ui/";
 import { useOnboardingStore } from "@/app/features/auth/pages/onboarding/hooks/useOnboardingStore";
 import {
@@ -6,11 +6,40 @@ import {
   onboardingStep2Schema,
 } from "@/app/features/auth/pages/onboarding/schemas/Onboarding.schema";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { Country, State, City } from "country-state-city";
 import Select from "react-select/creatable";
-import { motion } from "framer-motion";
 import { useForm, Controller, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+
+// Dynamically import the heavy geo data (~7.7MB) only when this step mounts
+type CountryData = { name: string; isoCode: string };
+type StateData = { name: string; isoCode: string };
+type CityData = { name: string };
+
+interface GeoModule {
+  Country: {
+    getAllCountries: () => CountryData[];
+  };
+  State: {
+    getStatesOfCountry: (countryCode: string) => StateData[];
+  };
+  City: {
+    getCitiesOfState: (countryCode: string, stateCode: string) => CityData[];
+  };
+}
+
+const useGeoData = () => {
+  const [geo, setGeo] = useState<GeoModule | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    import("country-state-city").then((mod) => {
+      if (!cancelled) setGeo(mod as unknown as GeoModule);
+    });
+    return () => { cancelled = true; };
+  }, []);
+
+  return geo;
+};
 
 interface OnboardingStep2Props {
   onNext: (stepData: OnboardingStep2FormData) => void;
@@ -24,6 +53,7 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
   isSubmitting,
 }) => {
   const { data } = useOnboardingStore();
+  const geo = useGeoData();
 
   const [customOptions, setCustomOptions] = useState<{
     states: string[];
@@ -53,11 +83,13 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
 
   const countries = useMemo(
     () =>
-      Country.getAllCountries().map(({ name, isoCode }) => ({
-        label: name,
-        value: isoCode,
-      })),
-    [],
+      geo
+        ? geo.Country.getAllCountries().map(({ name, isoCode }) => ({
+            label: name,
+            value: isoCode,
+          }))
+        : [],
+    [geo],
   );
 
   const selectedCountry = useMemo(
@@ -66,14 +98,14 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
   );
 
   const states = useMemo(() => {
-    if (!selectedCountry) return [];
+    if (!selectedCountry || !geo) return [];
 
-    const libraryStates = State.getStatesOfCountry(selectedCountry.value).map(
-      ({ name, isoCode }) => ({
-        label: name,
-        value: isoCode,
-      }),
-    );
+    const libraryStates = geo.State.getStatesOfCountry(
+      selectedCountry.value,
+    ).map(({ name, isoCode }) => ({
+      label: name,
+      value: isoCode,
+    }));
 
     const customStates = customOptions.states.map((state) => ({
       label: state,
@@ -81,7 +113,7 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
     }));
 
     return [...libraryStates, ...customStates];
-  }, [selectedCountry, customOptions.states]);
+  }, [geo, selectedCountry, customOptions.states]);
 
   const selectedState = useMemo(
     () => states.find((s) => s.label === watchState),
@@ -89,9 +121,9 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
   );
 
   const cities = useMemo(() => {
-    if (!selectedCountry || !selectedState) return [];
+    if (!selectedCountry || !selectedState || !geo) return [];
 
-    const libraryCities = City.getCitiesOfState(
+    const libraryCities = geo.City.getCitiesOfState(
       selectedCountry.value,
       selectedState.value,
     ).map(({ name }) => ({
@@ -105,7 +137,7 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
     }));
 
     return [...libraryCities, ...customCities];
-  }, [selectedCountry, selectedState, customOptions.cities]);
+  }, [geo, selectedCountry, selectedState, customOptions.cities]);
 
   const recomputeAddress = (overrides?: {
     country?: string;
@@ -146,6 +178,21 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
     onNext({ ...values, address });
   };
 
+  // Show a lightweight loading state while geo data loads
+  if (!geo) {
+    return (
+      <div className="space-y-6">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="space-y-2">
+            <div className="h-4 w-32 bg-grey-light rounded animate-pulse" />
+            <div className="h-10 w-full bg-grey-light rounded animate-pulse" />
+          </div>
+        ))}
+        <p className="text-sm text-grey-medium">Loading location data...</p>
+      </div>
+    );
+  }
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {/* Country Dropdown */}
@@ -179,14 +226,9 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
           }}
         />
         {errors.country && (
-          <motion.span
-            className="text-danger text-sm mt-1"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-          >
+          <span className="text-danger text-sm mt-1 animate-in fade-in duration-200">
             {errors.country.message}
-          </motion.span>
+          </span>
         )}
       </div>
 
@@ -225,14 +267,9 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
           }}
         />
         {errors.state && (
-          <motion.span
-            className="text-danger text-sm mt-1"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-          >
+          <span className="text-danger text-sm mt-1 animate-in fade-in duration-200">
             {errors.state.message}
-          </motion.span>
+          </span>
         )}
       </div>
 
@@ -270,14 +307,9 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
           }}
         />
         {errors.city && (
-          <motion.span
-            className="text-danger text-sm mt-1"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-          >
+          <span className="text-danger text-sm mt-1 animate-in fade-in duration-200">
             {errors.city.message}
-          </motion.span>
+          </span>
         )}
       </div>
 

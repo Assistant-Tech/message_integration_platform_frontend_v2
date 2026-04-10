@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { useOnboardingStore } from "@/app/features/auth/pages/onboarding/hooks/useOnboardingStore";
 import { Logo } from "@/app/components/ui/";
 import { StepSidebar } from "@/app/features/auth/pages/onboarding/components/";
 import {
   OnboardingStep1,
-  OnboardingStep2,
   OnboardingStep3,
   OnboardingStep4,
   OnboardingStep5,
 } from "@/app/features/auth/pages/onboarding/steps";
 import { Cross } from "lucide-react";
+
+// Lazy-load Step2 — it pulls in country-state-city (~7.7MB of geo JSON)
+const OnboardingStep2 = lazy(() => import("./OnboardingStep2"));
 import { useOnboarding } from "@/app/hooks/query/useAuthQuery";
 import { useAuthStore } from "@/app/store/auth.store";
 import type { NormalizedError } from "@/app/types/error.types";
@@ -278,7 +280,17 @@ const OnboardingForm: React.FC = () => {
           {/* Form Section */}
           <div className="w-full lg:flex-1">
             <h2 className="h4-bold-24 text-grey mb-6">{getStepTitle()}</h2>
-            {renderCurrentStep()}
+            <Suspense
+              fallback={
+                <div className="space-y-4 animate-pulse">
+                  <div className="h-10 bg-grey-light rounded w-full" />
+                  <div className="h-10 bg-grey-light rounded w-full" />
+                  <div className="h-10 bg-grey-light rounded w-3/4" />
+                </div>
+              }
+            >
+              {renderCurrentStep()}
+            </Suspense>
           </div>
         </div>
       </div>

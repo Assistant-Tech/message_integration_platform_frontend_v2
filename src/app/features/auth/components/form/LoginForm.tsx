@@ -17,14 +17,14 @@ import { handleApiError } from "@/app/utils/handlerApiError";
 import { useLogin, useMfaLogin } from "@/app/hooks/query/useAuthQuery";
 
 import { useRef, useState } from "react";
-import { useMfaStore } from "@/app/store/mfa.store";
+import { MfaServices } from "@/app/services/mfa.services";
 import RecoveryPhrasesModal from "@/app/features/dashboard/admin/component/mfa/RecoveryCodesModal";
 import { APP_ROUTES } from "@/app/constants/routes";
 
 const LoginForm = () => {
   const loginMutation = useLogin();
   const mfaLoginMutation = useMfaLogin();
-  const { regenerateBackupCodes } = useMfaStore();
+  const regenerateBackupCodes = MfaServices.regenerateBackupCodes;
   const navigate = useNavigate();
 
   const [showPasswordChecks, setShowPasswordChecks] = useState(false);
@@ -141,7 +141,7 @@ const LoginForm = () => {
               if ("message" in parsedError) toast.error(parsedError.message);
             }
 
-            navigate(`/${res.data.tenantSlug}/admin/dashboard`);
+            navigate(`/app/${res.data.tenantSlug}/admin/dashboard`);
           },
         },
       );
@@ -152,7 +152,7 @@ const LoginForm = () => {
         {
           onSuccess: (res) => {
             toast.success(res.message);
-            navigate(`/${res.data.tenantSlug}/admin/dashboard`);
+            navigate(`/app/${res.data.tenantSlug}/admin/dashboard`);
           },
         },
       );
