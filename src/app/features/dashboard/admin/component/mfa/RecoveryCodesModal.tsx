@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Button } from "@/app/components/ui";
-import { Download, AlertTriangle } from "lucide-react"; // Import AlertTriangle icon
+import { Download, AlertTriangle } from "lucide-react";
 
 interface RecoveryPhrasesModalProps {
   codes: string[];
@@ -17,9 +17,7 @@ const RecoveryPhrasesModal: React.FC<RecoveryPhrasesModalProps> = ({
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
-    if (inputsRef.current[0]) {
-      inputsRef.current[0].focus();
-    }
+    inputsRef.current[0]?.focus();
   }, []);
 
   const handleChange = (index: number, value: string) => {
@@ -63,8 +61,8 @@ const RecoveryPhrasesModal: React.FC<RecoveryPhrasesModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
-      <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-lg relative">
+    <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50 p-4">
+      <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 w-full max-w-lg relative max-h-[90vh] overflow-y-auto">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
@@ -76,14 +74,12 @@ const RecoveryPhrasesModal: React.FC<RecoveryPhrasesModalProps> = ({
           Your 12 words recovery phrases
         </h2>
 
-        {/* --- PROMINENT WARNING SECTION --- */}
+        {/* Warning */}
         <div className="flex items-start p-3 mb-4 rounded-lg bg-red-100 border border-red-400">
-          <div className="ml-3">
+          <div className="ml-2 sm:ml-3">
             <div className="flex gap-2 items-center">
               <AlertTriangle className="w-5 h-5 text-danger flex-shrink-0" />
-              <h3 className="body-bold-16 text-danger">
-                Important Warning
-              </h3>
+              <h3 className="body-bold-16 text-danger">Important Warning</h3>
             </div>
             <p className="body-regular-16 text-danger">
               **These recovery phrases will NOT be displayed again.** Make sure
@@ -91,22 +87,21 @@ const RecoveryPhrasesModal: React.FC<RecoveryPhrasesModalProps> = ({
             </p>
           </div>
         </div>
-        {/* ---------------------------------- */}
 
-        <p className="body-regular-16 text-grey mb-2 ">
+        <p className="body-regular-16 text-grey mb-2">
           This is the only way to recover your account if you lose access to
           your device. Please write down these 12 words in the exact order shown
           below and store them in a safe place.
         </p>
 
-        <div className="mb-4 px-4">
+        <div className="mb-4 px-2 sm:px-4">
           <ul className="body-regular-16 text-grey space-y-1">
-            <li>• Do not share this phrase with anyone.</li>
-            <li>• Do not store this phrase as a screenshot or digital file.</li>
+            <li>Do not share this phrase with anyone.</li>
+            <li>Do not store this phrase as a screenshot or digital file.</li>
           </ul>
         </div>
 
-        <div className="grid grid-cols-3 gap-2 mb-6 px-12">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-6 px-2 sm:px-12">
           {phraseInputs.map((phrase, index) => (
             <div key={index} className="relative">
               <span className="absolute left-2 top-1/2 transform -translate-y-1/2 caption-regular-12 text-gray-light">
@@ -121,25 +116,25 @@ const RecoveryPhrasesModal: React.FC<RecoveryPhrasesModalProps> = ({
                 onChange={(e) => handleChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
                 ref={(el: any) => (inputsRef.current[index] = el)}
-                className="w-full h-12 body-regular-16 text-grey border bg-base-white border-primary rounded-[10px] text-center text-lg focus:outline-none focus:border-primary-dark focus:ring-0 focus:ring-primary shadow-[0_2px_4px_0_rgba(0,0,0,0.25)_inset]"
+                className="w-full h-10 sm:h-12 body-regular-16 text-grey border bg-base-white border-primary rounded-[10px] text-center text-sm sm:text-lg focus:outline-none focus:border-primary-dark focus:ring-0 focus:ring-primary shadow-[0_2px_4px_0_rgba(0,0,0,0.25)_inset]"
               />
             </div>
           ))}
         </div>
 
-        <div className="flex justify-center gap-3 w-full">
+        <div className="flex flex-col sm:flex-row justify-center gap-3 w-full">
           <Button
-            label="Copy 🔗"
+            label="Copy"
             variant="none"
             onClick={handleCopyAll}
-            className="w-1/2 bg-base-black text-white px-4 py-2 hover:bg-grey"
+            className="w-full sm:w-1/2 bg-base-black text-white px-4 py-2 hover:bg-grey"
           />
           <Button
             label="Download"
             variant="primary"
             onClick={handleDownload}
             IconRight={<Download />}
-            className="w-1/2"
+            className="w-full sm:w-1/2"
           />
         </div>
       </div>

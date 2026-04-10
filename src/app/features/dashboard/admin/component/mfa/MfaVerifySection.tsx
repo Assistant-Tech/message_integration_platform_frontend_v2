@@ -1,28 +1,26 @@
 import { useState, useRef } from "react";
 import { Button } from "@/app/components/ui";
-import { useMfaStore } from "@/app/store/mfa.store";
+import { useVerifyMfa } from "@/app/hooks/query/useMfaQuery";
+import { mapMfaErrorMessage } from "@/app/utils/mfaerrors";
 
-const MfaVerifySection = ({
-  onSuccess,
-  onCancel,
-}: {
-  onSuccess: () => void;
+interface MfaVerifySectionProps {
+  onSuccess: (recoveryCodes: string[]) => void;
   onCancel?: () => void;
-}) => {
-  const { verifyMfa } = useMfaStore();
+}
+
+const MfaVerifySection = ({ onSuccess, onCancel }: MfaVerifySectionProps) => {
+  const verifyMutation = useVerifyMfa();
   const [otp, setOtp] = useState(Array(6).fill(""));
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
 
   const handleChange = (index: number, value: string) => {
-    if (!/^\d*$/.test(value)) return; // only numbers
+    if (!/^\d*$/.test(value)) return;
     const newOtp = [...otp];
-    newOtp[index] = value.slice(-1); // always take last typed digit
+    newOtp[index] = value.slice(-1);
     setOtp(newOtp);
 
-    // move focus to next input
     if (value && index < 5) {
       inputsRef.current[index + 1]?.focus();
     }
@@ -46,59 +44,37 @@ const MfaVerifySection = ({
         }
       });
       setOtp(newOtp);
-      // focus last filled input
       const lastIndex = Math.min(index + chars.length - 1, 5);
       inputsRef.current[lastIndex]?.focus();
     }
   };
 
-  const handleVerify = async () => {
+  const handleVerify = () => {
     const code = otp.join("");
-    setLoading(true);
     setError("");
 
-    try {
-      const res = await verifyMfa(code);
-
-      if (res?.success) {
-        onSuccess();
-        return;
-      }
-
-      // Map backend message to user-friendly error
-      let errorMessage = "Verification failed";
-
-      if (res?.message) {
-        const msg = res.message.toLowerCase();
-
-        if (msg.includes("invalid")) {
-          errorMessage = "Invalid verification code.";
-        } else if (msg.includes("expired")) {
-          errorMessage = "Session expired. Please log in again.";
-        } else if (
-          msg.includes("Failed to request MFA") ||
-          msg.includes("failed")
-        ) {
-          errorMessage = "MFA is already enabled.";
-        } else if (msg.includes("request")) {
-          errorMessage = "Failed to request MFA.";
+    verifyMutation.mutate(code, {
+      onSuccess: (res) => {
+        if (res.success) {
+          onSuccess(res.data.recoveryPhrases);
         } else {
-          errorMessage = res.message;
+          setError(mapMfaErrorMessage(res.message));
         }
-      }
-
-      setError(errorMessage);
-    } catch (err) {
-      setError("Something went wrong. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+      },
+      onError: (err) => {
+        setError(
+          mapMfaErrorMessage(
+            err instanceof Error ? err.message : "Verification failed",
+          ),
+        );
+      },
+    });
   };
 
   return (
     <div className="mt-6 w-full">
       <div className="flex justify-center items-center">
-        <div className="flex gap-[10px]">
+        <div className="flex gap-1.5 sm:gap-[10px]">
           {otp.slice(0, 3).map((digit, index) => (
             <input
               key={index}
@@ -110,12 +86,12 @@ const MfaVerifySection = ({
               onKeyDown={(e) => handleKeyDown(index, e)}
               onPaste={(e) => handlePaste(index, e)}
               ref={(el: any) => (inputsRef.current[index] = el)}
-              className="w-12 h-12 h3-medium-32 text-grey border bg-base-white border-primary rounded-[10px] text-center text-lg focus:outline-none focus:border-primary-dark focus:ring-0 focus:ring-primary shadow-[0_2px_4px_0_rgba(0,0,0,0.25)_inset]"
+              className="w-10 h-10 sm:w-12 sm:h-12 h3-medium-32 text-grey border bg-base-white border-primary rounded-[10px] text-center text-base sm:text-lg focus:outline-none focus:border-primary-dark focus:ring-0 focus:ring-primary shadow-[0_2px_4px_0_rgba(0,0,0,0.25)_inset]"
             />
           ))}
         </div>
-        <span className="mx-2 h1-bold-48 text-grey">-</span>
-        <div className="flex gap-[10px]">
+        <span className="mx-1.5 sm:mx-2 text-2xl sm:h1-bold-48 text-grey">-</span>
+        <div className="flex gap-1.5 sm:gap-[10px]">
           {otp.slice(3, 6).map((digit, index) => (
             <input
               key={index + 3}
@@ -127,18 +103,18 @@ const MfaVerifySection = ({
               onKeyDown={(e) => handleKeyDown(index + 3, e)}
               onPaste={(e) => handlePaste(index + 3, e)}
               ref={(el: any) => (inputsRef.current[index + 3] = el)}
-              className="w-12 h-12 h3-medium-32 text-grey border bg-base-white border-primary rounded-[10px] text-center text-lg focus:outline-none focus:border-primary-dark focus:ring-0 focus:ring-primary shadow-[0_2px_4px_0_rgba(0,0,0,0.25)_inset]"
+              className="w-10 h-10 sm:w-12 sm:h-12 h3-medium-32 text-grey border bg-base-white border-primary rounded-[10px] text-center text-base sm:text-lg focus:outline-none focus:border-primary-dark focus:ring-0 focus:ring-primary shadow-[0_2px_4px_0_rgba(0,0,0,0.25)_inset]"
             />
           ))}
         </div>
       </div>
-      {error && <p className="text-danger h5-semi-bold-16 mt-2">{error}</p>}
-      <div className="flex items-center gap-4">
+      {error && <p className="text-danger h5-semi-bold-16 mt-2 text-center">{error}</p>}
+      <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
         <Button
-          label={loading ? "Verifying..." : "Verify"}
+          label={verifyMutation.isPending ? "Verifying..." : "Verify"}
           variant="primary"
           onClick={handleVerify}
-          disabled={loading || otp.some((d) => d === "")}
+          disabled={verifyMutation.isPending || otp.some((d) => d === "")}
           className="mt-4 w-full"
         />
         <Button
