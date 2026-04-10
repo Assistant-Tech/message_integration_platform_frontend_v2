@@ -84,7 +84,7 @@ const CompanyDetailsCard = ({ tenant, isLoading }: CompanyDetailsCardProps) => {
                   {tenant?.slug ? `@${tenant.slug}` : ""}
                 </p>
                 <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                  {tenant?.status && (
+                  {/*{tenant?.status && (
                     <span
                       className={`caption-bold-12 px-2 py-0.5 rounded-full ${
                         tenant.status === "ACTIVE"
@@ -94,7 +94,7 @@ const CompanyDetailsCard = ({ tenant, isLoading }: CompanyDetailsCardProps) => {
                     >
                       {tenant.status}
                     </span>
-                  )}
+                  )}*/}
                   {tenant?.industry && (
                     <span className="caption-medium-12 px-2 py-0.5 rounded-full bg-primary-light text-primary border border-primary/20">
                       {tenant.industry}
@@ -170,7 +170,7 @@ const CompanyDetailsCard = ({ tenant, isLoading }: CompanyDetailsCardProps) => {
 
             {/* Team members */}
             {tenant?.user && tenant.user.length > 0 && (
-              <div className="pt-2 border-t border-grey-light">
+              <div className="py-4 border-t border-grey-light">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-1.5">
                     <Users size={13} className="text-grey-medium" />

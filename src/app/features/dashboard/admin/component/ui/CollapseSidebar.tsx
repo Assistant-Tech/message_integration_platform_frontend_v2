@@ -329,7 +329,7 @@ const CollapsibleSidebar = ({
                       align="end"
                       sideOffset={20}
                       alignOffset={10}
-                      className="z-50 min-w-[200px] rounded-2xl border border-white/20 bg-base-white backdrop-blur-xl p-2 shadow-xl
+                      className="z-[70] min-w-[200px] rounded-2xl border border-white/20 bg-base-white backdrop-blur-xl p-2 shadow-xl
                                data-[state=open]:animate-in data-[state=closed]:animate-out
                                data-[state=open]:fade-in data-[state=closed]:fade-out
                                data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95

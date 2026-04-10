@@ -12,7 +12,7 @@ interface ProfilePersonalCardProps {
   isVerified: boolean;
 }
 
-const getRoleBadge = (role: string) => {
+/* const getRoleBadge = (role: string) => {
   const label =
     role === "TENANT_ADMIN" ? "Admin" : role === "MEMBER" ? "Member" : role;
   const style =
@@ -20,19 +20,19 @@ const getRoleBadge = (role: string) => {
       ? "bg-primary-light text-primary border border-primary/20"
       : "bg-information-light text-information border border-information/20";
   return { label, style };
-};
+}; */
 
 const ProfilePersonalCard = ({
   name,
   email,
   avatar,
-  roleType,
+  roleType: _roleType,
   userStatus: _userStatus,
   isVerified,
 }: ProfilePersonalCardProps) => {
-  void _userStatus; // kept for future use — status badge is commented out below
+  void _userStatus; void _roleType; // kept for future use — role badge is commented out below
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const role = getRoleBadge(roleType);
+  // const role = getRoleBadge(roleType);
 
   return (
     <motion.div
@@ -72,11 +72,11 @@ const ProfilePersonalCard = ({
           {email}
         </p>
         <div className="flex items-center justify-center sm:justify-start gap-2 mt-2 flex-wrap">
-          <span
+          {/*<span
             className={`caption-bold-12 px-2.5 py-0.5 rounded-full ${role.style}`}
           >
             {role.label}
-          </span>
+          </span>*/}
           {isVerified && (
             <span className="flex items-center gap-1 caption-bold-12 px-2.5 py-0.5 rounded-full bg-success-light text-success border border-success/20">
               <Shield size={10} />
