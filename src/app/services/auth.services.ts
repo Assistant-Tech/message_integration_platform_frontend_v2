@@ -94,7 +94,7 @@ export const verifyEmail = async (token: string) => {
 export const onboarding = async (data: FormData) => {
   try {
     const res = await api.post("/auth/onboarding", data);
-    console.log("🚀 ~ onboarding ~ res:", res);
+    // console.log("🚀 ~ onboarding ~ res:", res);
 
     return res.data;
   } catch (error) {
@@ -107,7 +107,7 @@ export const onboarding = async (data: FormData) => {
  */
 export const login = async (email: string, password: string) => {
   try {
-    console.log("email", email);
+    // console.log("email", email);
     const res = await api.post("/auth/login", { email, password });
     return res.data;
   } catch (error: any) {
@@ -193,6 +193,26 @@ export const logout = async () => {
 export const resendEmailVerification = async (email: string) => {
   try {
     const res = await api.post("/auth/verify/resend", { email });
+    return res.data;
+  } catch (error) {
+    throw handleApiError(error);
+  }
+};
+
+/**
+ * Handles the users to change the password
+ */
+export const changePassword = async (
+  currentPassword: string,
+  newPassword: string,
+  confirmPassword: string,
+) => {
+  try {
+    const res = await api.put("/user/change-password", {
+      currentPassword,
+      newPassword,
+      confirmPassword,
+    });
     return res.data;
   } catch (error) {
     throw handleApiError(error);

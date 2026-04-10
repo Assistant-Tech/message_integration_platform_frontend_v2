@@ -101,11 +101,11 @@ const TopNavbar = ({
   return (
     <header
       className={cn(
-        "w-full border-b border-grey-light bg-base-white px-6 py-2 md:px-12",
+        "w-full border-b border-grey-light bg-base-white px-4 py-2 md:px-12",
         className,
       )}
     >
-      <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+      <div className="flex items-center justify-between gap-3">
         {/* Title / subtitle ─────────────────────────────────────────────── */}
         <div className="flex min-w-0 flex-1 items-center gap-3">
           {/* Mobile sidebar toggle */}
@@ -120,11 +120,11 @@ const TopNavbar = ({
             </button>
           )}
           {(resolvedTitle || resolvedSubtitle) && (
-            <div className="min-w-0 shrink-0">
+            <div className="min-w-0">
               {resolvedTitle && (
                 <h2
                   className={cn(
-                    "text-lg font-semibold text-grey",
+                    "text-base md:text-lg font-semibold text-grey",
                     isPlainTitle
                       ? "truncate"
                       : "flex flex-wrap items-center gap-2",
@@ -134,7 +134,7 @@ const TopNavbar = ({
                 </h2>
               )}
               {resolvedSubtitle && (
-                <p className="truncate text-sm text-grey-medium">
+                <p className="hidden md:block truncate text-sm text-grey-medium">
                   {resolvedSubtitle}
                 </p>
               )}
@@ -143,8 +143,7 @@ const TopNavbar = ({
         </div>
 
         {/* Right-side controls ──────────────────────────────────────────── */}
-        <div className="flex items-center justify-end gap-3">
-
+        <div className="flex items-center justify-end gap-2 md:gap-3 shrink-0">
           {/* Desktop (≥ md) — full controls inline */}
           <div className="hidden items-center gap-3 md:flex">
             {showSearch && (

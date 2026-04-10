@@ -20,7 +20,6 @@ const ConversationItem = ({
   conv,
   isSelected,
   onSelect,
-  onRemove,
   openId,
   setOpenId,
   isPinned = false,

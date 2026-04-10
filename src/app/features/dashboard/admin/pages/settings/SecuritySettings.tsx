@@ -3,13 +3,19 @@ import { motion } from "framer-motion";
 import {
   MemberInfoSettings,
   MfaSettings,
-  LoginInfoSettings,
+  // LoginInfoSettings,
 } from "@/app/features/dashboard/admin/component";
 
+type Tab = "multifactor" | "memberInfo";
+
+const tabs: { id: Tab; label: string }[] = [
+  { id: "multifactor", label: "Multifactor Authentication" },
+  // { id: "loginInfo", label: "Login Info" },
+  { id: "memberInfo", label: "Member Login Info" },
+];
+
 const SecuritySettings = () => {
-  const [activeTab, setActiveTab] = useState<
-    "multifactor" | "loginInfo" | "memberInfo"
-  >("multifactor");
+  const [activeTab, setActiveTab] = useState<Tab>("multifactor");
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -27,7 +33,7 @@ const SecuritySettings = () => {
 
   return (
     <motion.section
-      className="-1/2 flex flex-col h-full px-6 py-4 min-h-screen font-sans"
+      className="flex flex-col h-full px-4 md:px-6 py-4 min-h-screen font-sans"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -41,49 +47,35 @@ const SecuritySettings = () => {
         <h2 className="label-semi-bold-14 text-primary">Security Settings</h2>
       </motion.article>
 
-      {/* Tabs */}
+      {/* Tabs — horizontally scrollable on mobile */}
       <motion.div
-        className="w-full flex items-center border-b border-grey-light mb-6 bg-base-white rounded-t-lg"
+        className="w-full border-b border-grey-light mb-6 bg-base-white rounded-t-lg overflow-x-auto"
         variants={itemVariants}
       >
-        <button
-          className={`w-1/2 px-6 py-3 text-sm font-medium transition-colors rounded-tl-lg ${
-            activeTab === "multifactor"
-              ? "text-primary border-b-2 border-primary bg-primary-light"
-              : "text-grey-medium hover:text-grey"
-          }`}
-          onClick={() => setActiveTab("multifactor")}
-        >
-          Multifactor Authentication
-        </button>
-        <button
-          className={`w-1/2 px-6 py-3 text-sm font-medium transition-colors ${
-            activeTab === "loginInfo"
-              ? "text-primary border-b-2 border-primary bg-primary-light"
-              : "text-grey-medium hover:text-grey"
-          }`}
-          onClick={() => setActiveTab("loginInfo")}
-        >
-          Login Info
-        </button>
-        <button
-          className={`w-1/2 px-6 py-3 text-sm font-medium transition-colors ${
-            activeTab === "memberInfo"
-              ? "text-primary border-b-2 border-primary bg-primary-light"
-              : "text-grey-medium hover:text-grey"
-          }`}
-          onClick={() => setActiveTab("memberInfo")}
-        >
-          Member Login Info
-        </button>
+        <div className="flex min-w-max md:min-w-0 md:w-full">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              className={`flex-1 min-w-[140px] md:min-w-0 px-4 md:px-6 py-3 text-sm font-medium whitespace-nowrap transition-colors ${
+                activeTab === tab.id
+                  ? "text-primary border-b-2 border-primary bg-primary-light"
+                  : "text-grey-medium hover:text-grey"
+              } ${tab.id === "multifactor" ? "rounded-tl-lg" : ""}`}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
       </motion.div>
 
       {/* Tab Content */}
       {activeTab === "multifactor" ? (
         <MfaSettings />
-      ) : activeTab === "loginInfo" ? (
-        <LoginInfoSettings />
       ) : (
+        // activeTab === "loginInfo" ? (
+        // <LoginInfoSettings />
+        // ) :
         <MemberInfoSettings />
       )}
     </motion.section>

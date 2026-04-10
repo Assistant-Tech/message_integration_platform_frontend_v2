@@ -1,4 +1,10 @@
-import { HelpCircle, LogOut, Menu, Search, User } from "lucide-react";
+import {
+  EllipsisVertical,
+  HelpCircle,
+  LogOut,
+  Search,
+  User,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Button } from "@/app/components/ui";
@@ -16,7 +22,7 @@ interface Props {
 interface MenuItem {
   key: string;
   label: string;
-  Icon: typeof Menu;
+  Icon: typeof EllipsisVertical;
   onSelect: () => void;
   variant?: "default" | "danger";
 }
@@ -80,7 +86,7 @@ const MobileMenu = ({
           iconOnly
           size="xs"
           aria-label="Open menu"
-          IconLeft={<Menu className="h-5 w-5" />}
+          IconLeft={<EllipsisVertical className="h-5 w-5" />}
           className="!h-10 !w-10 rounded-full border border-grey-light bg-base-white text-grey-medium hover:border-primary hover:bg-primary-light hover:text-primary"
         />
       </DropdownMenu.Trigger>

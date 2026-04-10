@@ -68,7 +68,10 @@ interface CollapsibleSidebarProps {
   onMobileClose?: () => void;
 }
 
-const CollapsibleSidebar = ({ isMobileOpen = false, onMobileClose }: CollapsibleSidebarProps) => {
+const CollapsibleSidebar = ({
+  isMobileOpen = false,
+  onMobileClose,
+}: CollapsibleSidebarProps) => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -138,17 +141,13 @@ const CollapsibleSidebar = ({ isMobileOpen = false, onMobileClose }: Collapsible
               <Logo collapsed={isCollapsed} variant="white" isDashboard />
             </div>
 
-            {/* Collapse Toggle */}
-            <div className="absolute top-2 -right-12">
+            {/* Collapse Toggle — desktop only; mobile uses TopNavbar hamburger */}
+            <div className="absolute top-2 -right-12 block">
               <button
                 onClick={() => setIsCollapsed((prev) => !prev)}
-                className="bg-transparent rounded-full text-primary p-2 cursor-pointer"
+                className="bg-transparent rounded-full text-primary p-2 cursor-pointer hidden md:block"
               >
-                {isCollapsed ? (
-                  <img src={ham} className="w-8 h-8" />
-                ) : (
-                  <img src={ham} className="w-8 h-8" />
-                )}
+                <img src={ham} className="w-8 h-8" />
               </button>
             </div>
           </div>

@@ -1,20 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { MfaServices } from "@/app/services/mfa.services";
-// import { useMfaStore } from "@/app/store/mfa.store";
 import { toast } from "sonner";
 import type {
   MfaVerifyResponse,
   ResponseRegeneration,
 } from "@/app/types/mfa.types";
 
-const MFA_QUERY_KEYS = {
-  all: ["mfa"],
-  status: ["mfa", "status"],
-} as const;
+export const MFA_QUERY_KEYS = {
+  all: ["mfa"] as const,
+  status: ["mfa", "status"] as const,
+};
 
 /**
- * Fetch MFA status (enabled/disabled, current method)
- * Cached for 5 minutes
+ * Fetch MFA status (enabled/disabled, current method).
+ * Cached for 5 minutes.
  */
 export const useMfaStatus = () => {
   return useQuery({
@@ -26,16 +25,11 @@ export const useMfaStatus = () => {
 };
 
 /**
- * Request MFA setup (generates QR code, SMS secret, etc.)
+ * Request MFA setup — generates QR code + secret.
  */
 export const useRequestMfa = () => {
   return useMutation({
     mutationFn: () => MfaServices.requestMFA(),
-    onSuccess: (data) => {
-      toast.success("MFA setup initiated");
-      // Don't cache the setup data - it's temporary
-      return data;
-    },
     onError: (error: any) => {
       toast.error(error?.message || "Failed to request MFA setup");
     },
@@ -43,23 +37,16 @@ export const useRequestMfa = () => {
 };
 
 /**
- * Verify MFA token and enable MFA
+ * Verify MFA token and enable MFA.
+ * On success invalidates the status query so the UI reflects the new state.
  */
 export const useVerifyMfa = () => {
   const queryClient = useQueryClient();
-  // const mfaStore = useMfaStore();
 
   return useMutation({
     mutationFn: (token: string) => MfaServices.verifyMFA(token),
-    onSuccess: (response: MfaVerifyResponse) => {
-      // Store recovery codes in modal state (temporary display)
-      if (response.data?.recoveryPhrases) {
-        // mfaStore.setDisplayRecoveryCodes(response.data.recoveryPhrases);
-      }
-
-      // Invalidate MFA status to reflect new state
+    onSuccess: (_response: MfaVerifyResponse) => {
       queryClient.invalidateQueries({ queryKey: MFA_QUERY_KEYS.status });
-
       toast.success("MFA verified successfully!");
     },
     onError: (error: any) => {
@@ -69,16 +56,12 @@ export const useVerifyMfa = () => {
 };
 
 /**
- * Regenerate backup/recovery codes
+ * Regenerate backup/recovery codes.
  */
 export const useRegenerateBackupCodes = () => {
   return useMutation({
     mutationFn: () => MfaServices.regenerateBackupCodes(),
-    onSuccess: (response: ResponseRegeneration) => {
-      if (response.data?.recoveryPhrases) {
-        // const mfaStore = useMfaStore();
-        // mfaStore.setDisplayRecoveryCodes(response.data.recoveryPhrases);
-      }
+    onSuccess: (_response: ResponseRegeneration) => {
       toast.success("Recovery codes regenerated successfully");
     },
     onError: (error: any) => {
@@ -88,7 +71,8 @@ export const useRegenerateBackupCodes = () => {
 };
 
 /**
- * Disable MFA
+ * Disable MFA with password confirmation.
+ * On success invalidates the status query.
  */
 export const useDisableMfa = () => {
   const queryClient = useQueryClient();
@@ -96,7 +80,6 @@ export const useDisableMfa = () => {
   return useMutation({
     mutationFn: (password: string) => MfaServices.disableMFA(password),
     onSuccess: () => {
-      // Invalidate MFA status
       queryClient.invalidateQueries({ queryKey: MFA_QUERY_KEYS.status });
       toast.success("MFA disabled successfully");
     },

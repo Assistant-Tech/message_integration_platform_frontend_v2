@@ -1,14 +1,15 @@
 import api from "@/app/services/api/axios";
-import {
+import type {
   MfaDisableResponse,
   MfaEnrollResponse,
+  MfaStatusResponse,
   MfaVerifyResponse,
+  ResponseRegeneration,
 } from "@/app/types/mfa.types";
 import { handleApiError } from "../utils/handlerApiError";
 
 export const MfaServices = {
-  // Regenerate mfa backup codes
-  async regenerateBackupCodes() {
+  async regenerateBackupCodes(): Promise<ResponseRegeneration> {
     try {
       const res = await api.post("/mfa/recovery/regenerate");
       return res.data;
@@ -17,29 +18,39 @@ export const MfaServices = {
     }
   },
 
-  //get the status of mfa enable and details or not!
-  async getStatus() {
-    const res = await api.get("/mfa/status");
-    return res.data;
+  async getStatus(): Promise<MfaStatusResponse> {
+    try {
+      const res = await api.get("/mfa/status");
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
   },
 
-  // request QR + secret
   async requestMFA(): Promise<MfaEnrollResponse> {
-    const res = await api.get("/mfa/request");
-    return res.data;
+    try {
+      const res = await api.get("/mfa/request");
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
   },
 
-  // verify code from authenticator
   async verifyMFA(token: string): Promise<MfaVerifyResponse> {
-    const res = await api.post("/mfa/enroll/verify", { token });
-    return res.data;
+    try {
+      const res = await api.post("/mfa/enroll/verify", { token });
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
   },
 
-  // disable MFA
   async disableMFA(password: string): Promise<MfaDisableResponse> {
-    const res = await api.delete("/mfa/disable", {
-      data: { password },
-    });
-    return res.data;
+    try {
+      const res = await api.delete("/mfa/disable", { data: { password } });
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
   },
 };

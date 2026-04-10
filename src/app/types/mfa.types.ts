@@ -26,6 +26,16 @@ export interface MfaDisableResponse {
   timestamp: string;
 }
 
+export interface MfaStatusResponse {
+  message: string;
+  success: boolean;
+  data: {
+    enabled: boolean;
+    method: "sms" | "email" | "authenticator" | null;
+  };
+  timestamp: string;
+}
+
 export interface ResponseRegeneration {
   message: string;
   success: boolean;

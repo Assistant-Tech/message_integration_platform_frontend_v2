@@ -32,14 +32,14 @@ ChartJS.register(
 
 const AdminDashboard = () => {
   const { user: profile} = useAuthStore();
-  const { recoveryPhrases } = useMfaStore();
+  const { displayedRecoveryCodes, closeRecoveryCodes } = useMfaStore();
   const [showRecoveryModal, setShowRecoveryModal] = useState(false);
 
   useEffect(() => {
-    if (recoveryPhrases?.length > 0) {
+    if (displayedRecoveryCodes?.length > 0) {
       setShowRecoveryModal(true);
     }
-  }, [recoveryPhrases]);
+  }, [displayedRecoveryCodes]);
 
   // Static data for charts
   const userGrowthData = {
@@ -284,8 +284,11 @@ const AdminDashboard = () => {
 
       {showRecoveryModal && (
         <RecoveryPhrasesModal
-          codes={recoveryPhrases}
-          onClose={() => setShowRecoveryModal(false)}
+          codes={displayedRecoveryCodes}
+          onClose={() => {
+            setShowRecoveryModal(false);
+            closeRecoveryCodes();
+          }}
         />
       )}
     </div>

@@ -50,7 +50,7 @@ export const useChatSocket = () => {
     );
 
     // Incoming messages
-    socket.on(CHAT_EVENTS.CHAT_MESSAGE, (payload) => {
+    socket.on(CHAT_EVENTS.CHAT_MESSAGE, (payload: any) => {
       try {
         const convId = payload.received?.conversationId;
         if (!convId) return;
@@ -72,7 +72,7 @@ export const useChatSocket = () => {
     });
 
     // Conversation created
-    socket.on(CHAT_EVENTS.CONVERSATION_CREATED, (newConv) => {
+    socket.on(CHAT_EVENTS.CONVERSATION_CREATED, (newConv: any) => {
       addConversation(newConv);
       if (newConv?._id) {
         queryClient.setQueryData(["internalConversation", newConv._id], {
@@ -82,7 +82,7 @@ export const useChatSocket = () => {
     });
 
     // User joined
-    socket.on(CHAT_EVENTS.USER_JOINED, (data) => {
+    socket.on(CHAT_EVENTS.USER_JOINED, (data: any) => {
       try {
         const convId = data.conversationId;
         if (!convId) return;

@@ -10,6 +10,13 @@ export interface ChannelData {
   isPrivate?: boolean;
 }
 
+export interface Channel {
+  id: string;
+  title: string;
+  type: string;
+  isPrivate: boolean;
+}
+
 /*--------------------- TYPES FOR API & API SERVICES  */
 export interface ChannelApiResponse {
   platform: string;

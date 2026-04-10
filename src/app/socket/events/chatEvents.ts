@@ -21,6 +21,11 @@ export const CHAT_EVENTS = {
   // Server broadcasts typing state for the conversation room (server → client)
   TYPING_UPDATE: "typing:update",
 
+  // Internal chat messaging (client ↔ server)
+  CHAT_MESSAGE: "chat:message",
+  CONVERSATION_CREATED: "conversation:created",
+  USER_JOINED: "user:joined",
+
   // Presence (server → client, tenant room)
   PRESENCE_UPDATE: "presence:update",
   USER_LEFT: "user:left",
