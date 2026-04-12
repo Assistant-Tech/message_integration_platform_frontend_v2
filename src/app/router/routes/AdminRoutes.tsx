@@ -38,6 +38,12 @@ const ChannelSettingsPage = lazy(
 const AnalyticsPage = lazy(
   () => import("@/app/features/dashboard/admin/pages/analytics/AnalyticsPage"),
 );
+const TeamActivityPage = lazy(
+  () =>
+    import(
+      "@/app/features/dashboard/admin/pages/dashboard/team-activity/TeamActivityPage"
+    ),
+);
 const ProfileSettings = lazy(
   () => import("@/app/features/dashboard/admin/pages/settings/ProfileSettings"),
 );
@@ -98,6 +104,10 @@ const AdminRoutes = () => {
 
         {/*<Route path={APP_ROUTES.ADMIN.TAGS} element={<TagsPage />} />*/}
         <Route path={APP_ROUTES.ADMIN.ANALYTICS} element={<AnalyticsPage />} />
+        <Route
+          path={APP_ROUTES.ADMIN.TEAM_ACTIVITY}
+          element={<TeamActivityPage />}
+        />
         <Route
           path={APP_ROUTES.ADMIN.SETTINGS_PROFILE}
           element={<ProfileSettings />}

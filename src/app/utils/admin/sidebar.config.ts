@@ -1,11 +1,12 @@
 import { APP_ROUTES } from "@/app/constants/routes";
 import {
   LayoutDashboard,
-  Bot,
+  // Bot,
   BarChart3,
   Contact,
   // ShoppingBag,
   // ShoppingCart,
+  Users,
   LucideIcon,
 } from "lucide-react";
 
@@ -55,10 +56,16 @@ export const sidebarItems: SidebarItem[] = [
     href: APP_ROUTES.ADMIN.CHANNEL,
     roles: ["TENANT_ADMIN"],
   },
+  // {
+  //   label: "Automation",
+  //   icon: Bot,
+  //   href: APP_ROUTES.ADMIN.CHATBOT,
+  //   roles: ["TENANT_ADMIN"],
+  // },
   {
-    label: "Automation",
-    icon: Bot,
-    href: APP_ROUTES.ADMIN.CHATBOT,
+    label: "Team Activity",
+    icon: Users,
+    href: APP_ROUTES.ADMIN.TEAM_ACTIVITY,
     roles: ["TENANT_ADMIN"],
   },
   {

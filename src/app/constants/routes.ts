@@ -61,6 +61,7 @@ export const APP_ROUTES = {
     CHANNEL_SETTINGS: "channel/settings/:providerId",
     TAGS: "tags",
     ANALYTICS: "analytics",
+    TEAM_ACTIVITY: "team-activity",
 
     ORDERS: "orders",
     ORDERS_CREATE: "orders/createOrder",
