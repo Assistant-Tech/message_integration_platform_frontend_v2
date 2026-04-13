@@ -89,6 +89,11 @@ const CollapsibleSidebar = ({
     item.roles?.includes(user?.roleType ?? ""),
   );
 
+  const basePath =
+    user?.roleType === "MEMBER"
+      ? `/app/${slug}/dashboard`
+      : `/app/${slug}/admin`;
+
   const planName = "Pro Plan";
   const userName = user?.name || user?.email?.split("@")[0] || "User";
   const userRole = user?.roleType || "TENANT_ADMIN";
@@ -156,13 +161,13 @@ const CollapsibleSidebar = ({
           <nav className="flex-1 p-4 overflow-y-auto [&::-webkit-scrollbar-thumb]:bg-primary [&::-webkit-scrollbar-track]:bg-primary-dark">
             <ul className="space-y-2">
               {filteredItems.map((item, index) => {
-                const finalHref = `/app/${slug}/admin/${item.href}`;
+                const finalHref = `${basePath}/${item.href}`;
 
                 const hasActiveSubmenu =
                   item.hasSubmenu &&
                   Boolean(
                     item.submenu?.some((sub) => {
-                      const subFinalHref = `/app/${slug}/admin/${sub.href}`;
+                      const subFinalHref = `${basePath}/${sub.href}`;
                       return matchesRoute(subFinalHref);
                     }),
                   );
@@ -244,7 +249,7 @@ const CollapsibleSidebar = ({
                                 );
                               })
                               .map((sub, subIndex) => {
-                                const subFinalHref = `/app/${slug}/admin/${sub.href}`;
+                                const subFinalHref = `${basePath}/${sub.href}`;
                                 const subActive = matchesRoute(subFinalHref);
                                 return (
                                   <li key={subIndex}>
