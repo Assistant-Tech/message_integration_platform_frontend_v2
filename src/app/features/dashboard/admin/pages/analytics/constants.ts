@@ -44,11 +44,11 @@ export const MOCK_KPIS: KpiMetric[] = [
 ];
 
 export const MOCK_CHANNELS: ChannelBreakdown[] = [
-  { channel: "WhatsApp", conversations: 5420, percentage: 42, color: "#25D366" },
-  { channel: "Messenger", conversations: 2980, percentage: 23, color: "#0084FF" },
-  { channel: "Instagram", conversations: 1930, percentage: 15, color: "#E1306C" },
-  { channel: "Email", conversations: 1540, percentage: 12, color: "#2E5E99" },
-  { channel: "SMS", conversations: 977, percentage: 8, color: "#8B5CF6" },
+  { key: "whatsapp", channel: "WhatsApp", conversations: 5420, percentage: 42, color: "#25D366" },
+  { key: "facebook", channel: "Messenger", conversations: 2980, percentage: 23, color: "#0084FF" },
+  { key: "instagram", channel: "Instagram", conversations: 1930, percentage: 15, color: "#E1306C" },
+  { key: "tiktok", channel: "TikTok", conversations: 1540, percentage: 12, color: "#000000" },
+  { key: "sms", channel: "SMS", conversations: 977, percentage: 8, color: "#8B5CF6" },
 ];
 
 export const MOCK_HOURLY: HourlyVolume[] = [

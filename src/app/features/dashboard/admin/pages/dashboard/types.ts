@@ -32,6 +32,9 @@ export interface RecentConversation {
   status: "active" | "waiting" | "resolved";
 }
 
+export interface TodoItem {
+  id: string;
+  title: string;
   completed: boolean;
   priority: "low" | "medium" | "high";
 }

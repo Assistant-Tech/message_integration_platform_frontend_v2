@@ -6,7 +6,16 @@ export interface KpiMetric {
   sparkline: number[];
 }
 
+export type ChannelKey =
+  | "whatsapp"
+  | "facebook"
+  | "instagram"
+  | "tiktok"
+  | "email"
+  | "sms";
+
 export interface ChannelBreakdown {
+  key: ChannelKey;
   channel: string;
   conversations: number;
   percentage: number;

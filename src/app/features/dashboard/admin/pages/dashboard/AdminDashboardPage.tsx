@@ -11,7 +11,6 @@ import {
   mockStats,
   mockIncomeData,
   mockRecentConversations,
-  mockTodos,
 } from "./constants";
 import {
   TeamActivityMonitor,

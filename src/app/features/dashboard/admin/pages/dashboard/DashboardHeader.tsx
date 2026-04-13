@@ -37,12 +37,8 @@ const DashboardHeader = ({ userName }: DashboardHeaderProps) => {
       initial={{ opacity: 0, y: -12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="relative overflow-hidden rounded-2xl bg-primary-dark px-6 py-6 md:px-8 md:py-7"
+      className="relative overflow-hidden rounded-2xl bg-gradient-to-l from-primary to-primary-dark/90 px-6 py-6 md:px-8 md:py-7"
     >
-      {/* Decorative gradient orbs */}
-      <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-primary/30 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-12 right-24 h-32 w-32 rounded-full bg-secondary/20 blur-2xl" />
-
       <div className="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <div className="mb-1 flex items-center gap-2">
