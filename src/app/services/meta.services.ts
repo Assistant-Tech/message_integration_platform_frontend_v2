@@ -7,8 +7,8 @@ export const fetchStoredPages = async () => {
 };
 
 // Connected META API Pages
-export const connectMetaApiPage = async (selectionToken: string) => {
-  const res = await api.post("/meta/pages", { selectionToken });
+export const connectMetaApiPage = async (selectionCode: string) => {
+  const res = await api.post("/meta/pages", { selectionCode });
   return res.data;
 };
 

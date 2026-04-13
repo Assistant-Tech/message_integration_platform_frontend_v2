@@ -82,15 +82,40 @@ export default defineConfig(({ mode }) => {
       },
     },
     rollupOptions: {
+      // `auth.store` and `auth.services` are dynamically imported from
+      // `services/api/axios.ts` (and from each other) purely to break a
+      // circular dependency — not for code-splitting. Since they're also
+      // statically imported elsewhere in the app, Rollup warns that the
+      // dynamic import won't move the module into a separate chunk. That's
+      // expected; silence the specific warning so the build output stays
+      // actionable.
+      onwarn(warning, defaultHandler) {
+        if (
+          warning.code === "DYNAMIC_IMPORT_WILL_NOT_MOVE_MODULE" &&
+          typeof warning.message === "string" &&
+          (warning.message.includes("store/auth.store") ||
+            warning.message.includes("services/auth.services"))
+        ) {
+          return;
+        }
+        defaultHandler(warning);
+      },
       output: {
         manualChunks: {
           vendor: ["react", "react-dom"],
           ui: ["@radix-ui/themes", "framer-motion"],
           utils: ["axios", "react-hook-form", "zod"],
+          // Isolate the ~8MB country/state/city dataset so it doesn't get
+          // folded into the onboarding feature chunk. Only the onboarding
+          // Step 2 page references it, and it's lazy-loaded on demand.
+          "country-data": ["country-state-city"],
         },
       },
     },
-    chunkSizeWarningLimit: 1000,
+    // The `country-data` chunk above legitimately ships ~8MB of reference
+    // data (country/state/city JSON). Everything else should stay under 1MB,
+    // so this limit only silences the warning for that one data chunk.
+    chunkSizeWarningLimit: 9000,
   },
   optimizeDeps: {
     include: ["react", "react-dom", "framer-motion"],

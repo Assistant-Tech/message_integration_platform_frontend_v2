@@ -13,7 +13,7 @@
  * - Shared settings cache across functions
  */
 
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable */
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');

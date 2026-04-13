@@ -23,13 +23,11 @@ interface CheckoutDialogProps {
   plan?: PlanType;
 }
 
+type IntervalType = "MONTHLY" | "YEARLY";
+type CurrencyType = "NPR" | "USD";
+type PaymentOption = "khalti" | "esewa" | "stripe";
+
 const CheckoutDialogPop = ({ open, onClose, plan }: CheckoutDialogProps) => {
-  const allowedIntervals = ["MONTHLY", "YEARLY"] as const;
-  const allowedCurrencies = ["NPR", "USD"] as const;
-
-  type IntervalType = (typeof allowedIntervals)[number];
-  type CurrencyType = (typeof allowedCurrencies)[number];
-
   const [interval, setInterval] = useState<IntervalType>(
     plan?.interval === "YEARLY" ? "YEARLY" : "MONTHLY",
   );
@@ -42,11 +40,7 @@ const CheckoutDialogPop = ({ open, onClose, plan }: CheckoutDialogProps) => {
   >([]);
   const [promoInput, setPromoInput] = useState("");
   const [appliedPromoCode, setAppliedPromoCode] = useState("");
-  const [confirmed, setConfirmed] = useState(false);
-
-  if (confirmed) return toast.success("Success ");
-
-  type PaymentOption = "khalti" | "esewa" | "stripe";
+  const [, setConfirmed] = useState(false);
 
   const paymentIcons: Record<PaymentOption, string> = {
     khalti: KHALTI_IMAGE_URL,

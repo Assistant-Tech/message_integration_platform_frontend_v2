@@ -86,7 +86,7 @@ const BillingSubscription = ({
       setLoading(true);
       const response = await getSubscriptionInvoices(subId);
       setInvoices(response);
-    } catch (error) {
+    } catch {
       toast.error("Failed to load invoices");
     } finally {
       setLoading(false);
@@ -98,7 +98,7 @@ const BillingSubscription = ({
       setLoadingTransactions(true);
       const response = await getTranscation();
       setTransactions(response?.data || []);
-    } catch (error) {
+    } catch {
       toast.error("Failed to load transactions");
     } finally {
       setLoadingTransactions(false);
@@ -110,7 +110,7 @@ const BillingSubscription = ({
       const response = await getSubscriptionInvoiceById(invoiceId);
       setSelectedInvoice(response?.data ?? null);
       setIsInvoiceModalOpen(true);
-    } catch (error) {
+    } catch {
       toast.error("Failed to load invoice details");
     }
   };
@@ -120,7 +120,7 @@ const BillingSubscription = ({
       const response = await getTranscationById(transactionId);
       setSelectedTransaction(response?.data ?? null);
       setIsTransactionModalOpen(true);
-    } catch (error) {
+    } catch {
       toast.error("Failed to load transaction details");
     }
   };
@@ -145,7 +145,7 @@ const BillingSubscription = ({
 
       doc.save(`${invoice.invoiceNumber || "invoice"}.pdf`);
       toast.success("Invoice downloaded successfully");
-    } catch (error) {
+    } catch {
       toast.error("Failed to generate PDF");
     }
   };

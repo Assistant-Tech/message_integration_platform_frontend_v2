@@ -1,5 +1,4 @@
 import { test, expect } from "@playwright/test";
-import path from "path";
 import { mockOnboardingSubmit, mockCurrentUser } from "../mocks/auth.mocks";
 
 test.describe("Onboarding Flow", () => {

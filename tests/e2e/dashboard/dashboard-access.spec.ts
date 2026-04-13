@@ -1,9 +1,5 @@
 import { test, expect } from "@playwright/test";
-import {
-  mockCurrentUser,
-  mockLoginError,
-  TEST_DATA,
-} from "../mocks/auth.mocks";
+import { mockCurrentUser, TEST_DATA } from "../mocks/auth.mocks";
 
 test.describe("Dashboard Access", () => {
   test("should access dashboard with tenant slug in URL", async ({ page }) => {

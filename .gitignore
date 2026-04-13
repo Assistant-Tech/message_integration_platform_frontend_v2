@@ -34,3 +34,7 @@ reports
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+
+.claude
+.claude-flow

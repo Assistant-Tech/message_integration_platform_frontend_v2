@@ -60,6 +60,7 @@ const MfaVerifySection = ({ onSuccess, onCancel }: MfaVerifySectionProps) => {
         } else {
           setError(mapMfaErrorMessage(res.message));
         }
+<<<<<<< HEAD
       },
       onError: (err) => {
         setError(
@@ -69,6 +70,16 @@ const MfaVerifySection = ({ onSuccess, onCancel }: MfaVerifySectionProps) => {
         );
       },
     });
+=======
+      }
+
+      setError(errorMessage);
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+>>>>>>> 886924a (refactor: cleanup dead code, lazy-load onboarding steps, remove redundant error handling)
   };
 
   return (

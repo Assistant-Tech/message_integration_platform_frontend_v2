@@ -84,7 +84,7 @@ const StripeApiSettings = () => {
         if (data.testSecretKey) setTestSecretKey(data.testSecretKey);
         if (data.liveSecretKey) setLiveSecretKey(data.liveSecretKey);
       }
-    } catch (err) {
+    } catch {
       console.log("No existing keys found");
     }
   };

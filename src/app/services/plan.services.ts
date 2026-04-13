@@ -96,13 +96,9 @@ export const changeplan = async (
   newPlanId: string,
   applyImmediately?: boolean,
 ) => {
-  try {
-    const response = await api.post(`/subscription/change-plan`, {
-      planId: newPlanId,
-      applyImmediately: applyImmediately,
-    });
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
+  const response = await api.post(`/subscription/change-plan`, {
+    planId: newPlanId,
+    applyImmediately: applyImmediately,
+  });
+  return response.data;
 };
