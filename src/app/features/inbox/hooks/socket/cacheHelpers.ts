@@ -96,6 +96,9 @@ export function updateMessageStatusInCache(
  * Update inbox list when new message arrives
  * Updates: lastMessageContent, lastMessageAt, unreadCount, hasNewMessage
  *
+ * If the conversation is not yet in the cache (new conversation), invalidates
+ * the inbox query to trigger a refetch from the server.
+ *
  * @param queryClient - React Query client
  * @param conversationId - Conversation ID
  * @param message - The new message
@@ -107,6 +110,14 @@ export function updateInboxListWithNewMessage(
   message: InboxMessage,
   isCurrentConversation: boolean,
 ): void {
+  const current = queryClient.getQueryData<InboxListResponse>(INBOX_QUERY_KEY);
+
+  // Conversation not in cache yet — refetch the full list so it appears
+  if (!current?.data?.some((c) => c.id === conversationId)) {
+    queryClient.invalidateQueries({ queryKey: INBOX_QUERY_KEY });
+    return;
+  }
+
   queryClient.setQueryData<InboxListResponse>(INBOX_QUERY_KEY, (old) => {
     if (!old?.data) return old;
     return {
@@ -155,6 +166,14 @@ export function markConversationAsRead(
       ),
     };
   });
+}
+
+/**
+ * Invalidate the inbox list query to trigger a refetch.
+ * Used when a new conversation is created and we need the full data from the server.
+ */
+export function invalidateInboxList(queryClient: QueryClient): void {
+  queryClient.invalidateQueries({ queryKey: INBOX_QUERY_KEY });
 }
 
 /**

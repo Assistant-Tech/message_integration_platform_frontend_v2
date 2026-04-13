@@ -14,8 +14,24 @@ import {
 import {
   addMessageToCache,
   updateInboxListWithNewMessage,
+  invalidateInboxList,
 } from "./cacheHelpers";
+import { markConversationAsReadApi } from "@/app/services/inbox.services";
 import { playNotificationSound } from "@/app/utils/audioManager";
+
+// Debounced mark-as-read API calls (keyed by conversationId)
+const readDebounceTimers = new Map<string, ReturnType<typeof setTimeout>>();
+export function debouncedMarkAsRead(conversationId: string): void {
+  const existing = readDebounceTimers.get(conversationId);
+  if (existing) clearTimeout(existing);
+  readDebounceTimers.set(
+    conversationId,
+    setTimeout(() => {
+      readDebounceTimers.delete(conversationId);
+      markConversationAsReadApi(conversationId).catch(() => {});
+    }, 2000),
+  );
+}
 
 // ────────────────────────────────────────────────────────────────────────────
 // UNIFIED INBOX EVENT HANDLER
@@ -73,7 +89,8 @@ export function createInboxEventHandler(
       }
 
       case "new_conversation": {
-        // Let the sidebar pick this up and refetch the inbox list
+        // Refetch inbox list so the new conversation appears in the sidebar
+        invalidateInboxList(queryClient);
         window.dispatchEvent(
           new CustomEvent("inbox:new-conversation", { detail: event }),
         );

@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-=======
-import type { Platform } from "@/app/components/common/Conversation/panel/helpers";
-
->>>>>>> 886924a (refactor: cleanup dead code, lazy-load onboarding steps, remove redundant error handling)
 /**
  * Extracts and formats features from a plan's features object into a readable array
  */

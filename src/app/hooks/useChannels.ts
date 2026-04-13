@@ -6,6 +6,7 @@ export const useChannels = () => {
   const isLoading = useChannelsStore((s) => s.isLoading);
   const refreshChannels = useChannelsStore((s) => s.refreshChannels);
   const startMetaOAuth = useChannelsStore((s) => s.startMetaOAuth);
+  const startTikTokOAuth = useChannelsStore((s) => s.startTikTokOAuth);
 
   useEffect(() => {
     refreshChannels();
@@ -16,5 +17,6 @@ export const useChannels = () => {
     isLoading,
     refreshChannels,
     startMetaOAuth,
+    startTikTokOAuth,
   };
 };

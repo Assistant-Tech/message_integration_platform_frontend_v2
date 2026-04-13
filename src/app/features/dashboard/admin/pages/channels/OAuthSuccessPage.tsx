@@ -18,6 +18,16 @@ const OAuthSuccessPage = () => {
         window.location.hash.replace(/^#/, ""),
       );
 
+      const platform = searchParams.get("platform");
+
+      // TikTok: credentials already saved by backend callback — just show success
+      if (platform === "tiktok") {
+        setStatus("success");
+        setTimeout(() => window.close(), 1500);
+        return;
+      }
+
+      // Meta: extract selectionCode and finalize page storage
       let token: string | null =
         searchParams.get("token") ??
         searchParams.get("code") ??

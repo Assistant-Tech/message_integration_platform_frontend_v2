@@ -60,7 +60,6 @@ const MfaVerifySection = ({ onSuccess, onCancel }: MfaVerifySectionProps) => {
         } else {
           setError(mapMfaErrorMessage(res.message));
         }
-<<<<<<< HEAD
       },
       onError: (err) => {
         setError(
@@ -70,16 +69,6 @@ const MfaVerifySection = ({ onSuccess, onCancel }: MfaVerifySectionProps) => {
         );
       },
     });
-=======
-      }
-
-      setError(errorMessage);
-    } catch {
-      setError("Something went wrong. Please try again.");
-    } finally {
-      setLoading(false);
-    }
->>>>>>> 886924a (refactor: cleanup dead code, lazy-load onboarding steps, remove redundant error handling)
   };
 
   return (
@@ -101,7 +90,9 @@ const MfaVerifySection = ({ onSuccess, onCancel }: MfaVerifySectionProps) => {
             />
           ))}
         </div>
-        <span className="mx-1.5 sm:mx-2 text-2xl sm:h1-bold-48 text-grey">-</span>
+        <span className="mx-1.5 sm:mx-2 text-2xl sm:h1-bold-48 text-grey">
+          -
+        </span>
         <div className="flex gap-1.5 sm:gap-[10px]">
           {otp.slice(3, 6).map((digit, index) => (
             <input
@@ -119,7 +110,9 @@ const MfaVerifySection = ({ onSuccess, onCancel }: MfaVerifySectionProps) => {
           ))}
         </div>
       </div>
-      {error && <p className="text-danger h5-semi-bold-16 mt-2 text-center">{error}</p>}
+      {error && (
+        <p className="text-danger h5-semi-bold-16 mt-2 text-center">{error}</p>
+      )}
       <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
         <Button
           label={verifyMutation.isPending ? "Verifying..." : "Verify"}

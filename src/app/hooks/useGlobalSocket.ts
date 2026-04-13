@@ -1,9 +1,12 @@
 import { useEffect, useRef } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useAuthStore } from "@/app/store/auth.store";
 import { useSocketStore } from "@/app/store/socket.store";
+import { useInboxStore } from "@/app/store/inbox.store";
 import { CHAT_EVENTS } from "@/app/socket/events/chatEvents";
+import { APP_ROUTES } from "@/app/constants/routes";
 import {
   getOrCreateSocket,
   addSubscriber,
@@ -24,7 +27,7 @@ import type { InboxMessage } from "@/app/types/message.types";
  *          even when the user is reading Analytics, Settings, etc.
  *        - Dispatches window custom events so any section can react (e.g. notification badge)
  *   3. Show a toast notification when a new customer message arrives and the user
- *      is NOT currently in the /inbox section.
+ *      is NOT currently viewing that specific conversation.
  *   4. Sync the socket store's `status` field so any component can read the live
  *      connection state without mounting the inbox.
  *
@@ -36,23 +39,21 @@ export function useGlobalSocket() {
   const accessToken = useAuthStore((s) => s.accessToken);
   const queryClient = useQueryClient();
   const setStatus = useSocketStore((s) => s.setStatus);
+  const navigate = useNavigate();
+  const { slug } = useParams<{ slug: string }>();
 
-  // Track active conversation from URL — synced on navigation so handlers never go stale.
-  const activeConversationIdRef = useRef<string | null>(
-    new URLSearchParams(window.location.search).get("conversation"),
-  );
+  // Track active conversation from Zustand store (single source of truth).
+  const selectedId = useInboxStore((s) => s.selectedId);
+  const activeConversationIdRef = useRef<string | null>(selectedId);
+  activeConversationIdRef.current = selectedId;
 
-  useEffect(() => {
-    function syncFromUrl() {
-      activeConversationIdRef.current = new URLSearchParams(
-        window.location.search,
-      ).get("conversation");
-    }
-    window.addEventListener("popstate", syncFromUrl);
-    return () => window.removeEventListener("popstate", syncFromUrl);
-  }, []);
+  // Stable refs for navigation so toast callbacks always have current values
+  const navigateRef = useRef(navigate);
+  navigateRef.current = navigate;
+  const slugRef = useRef(slug);
+  slugRef.current = slug;
 
-  // ── Toast notification for new messages outside inbox ──────────────────────
+  // ── Toast notification for new messages ────────────────────────────────────
 
   useEffect(() => {
     function onNewMessage(e: Event) {
@@ -64,11 +65,8 @@ export function useGlobalSocket() {
       ).detail;
 
       // User is already looking at this conversation — no toast needed.
+      // (This check now works because activeConversationIdRef reads from Zustand)
       if (activeConversationIdRef.current === conversationId) return;
-
-      // User is in /inbox but a different conversation is open — the sidebar
-      // badge handles this; a toast would be redundant noise.
-      if (window.location.pathname.startsWith("/inbox")) return;
 
       const preview =
         message.content.length > 60
@@ -81,7 +79,14 @@ export function useGlobalSocket() {
         action: {
           label: "Open",
           onClick: () => {
-            window.location.href = `/inbox?conversation=${conversationId}`;
+            const s = slugRef.current;
+            if (!s) return;
+            // Select conversation in store (triggers room join + mark-as-read)
+            useInboxStore.getState().setSelected(conversationId);
+            // Navigate to inbox (SPA navigation, no full reload)
+            navigateRef.current(
+              `/app/${s}/admin/${APP_ROUTES.ADMIN.CONVERSATION}`,
+            );
           },
         },
       });
@@ -89,7 +94,7 @@ export function useGlobalSocket() {
 
     window.addEventListener("inbox:new-message", onNewMessage);
     return () => window.removeEventListener("inbox:new-message", onNewMessage);
-  }, []); // no deps — activeConversationIdRef is always current via the sync effect above
+  }, []); // no deps — all values read from refs
 
   // ── Socket lifecycle + event registration ──────────────────────────────────
 
@@ -99,9 +104,6 @@ export function useGlobalSocket() {
     addSubscriber();
     const socket = getOrCreateSocket(accessToken);
 
-    // INBOX_EVENT: update React Query cache + dispatch window custom events.
-    // The conversationIdRef passed here always reflects the open conversation
-    // (updated via the activeConversationId sync effect above).
     const handleInboxEvent = createInboxEventHandler(
       queryClient,
       activeConversationIdRef,
@@ -126,7 +128,6 @@ export function useGlobalSocket() {
     socket.on("reconnect_attempt", handleReconnecting);
     socket.on("connect_error", handleError);
 
-    // Sync initial state (socket may already be connected if token refreshed)
     setStatus(isSocketConnected() ? "connected" : "disconnected");
 
     return () => {

@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Line } from "react-chartjs-2";
 import {
@@ -12,6 +12,7 @@ import {
   Legend,
 } from "chart.js";
 import { cn } from "@/app/utils/cn";
+import { useAnalyticsMessages } from "@/app/hooks/query/useAnalyticsQuery";
 
 ChartJS.register(
   CategoryScale,
@@ -29,37 +30,57 @@ interface PlatformData {
   data: number[];
 }
 
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+const CHANNEL_META: Record<string, { label: string; color: string }> = {
+  WHATSAPP: { label: "WhatsApp", color: "#25D366" },
+  FACEBOOK: { label: "Facebook", color: "#1877F2" },
+  INSTAGRAM: { label: "Instagram", color: "#E1306C" },
+  TIKTOK: { label: "TikTok", color: "#000000" },
+  INTERNAL: { label: "Internal", color: "#2E5E99" },
+};
 
-const PLATFORMS: PlatformData[] = [
-  {
-    name: "WhatsApp",
-    color: "#25D366",
-    data: [820, 960, 1040, 1180, 1350, 1520],
-  },
-  {
-    name: "Facebook",
-    color: "#1877F2",
-    data: [540, 580, 620, 690, 720, 780],
-  },
-  {
-    name: "Instagram",
-    color: "#E1306C",
-    data: [310, 380, 450, 520, 610, 680],
-  },
-  {
-    name: "TikTok",
-    color: "#000000",
-    data: [80, 140, 220, 340, 480, 620],
-  },
+const FALLBACK_PLATFORMS: PlatformData[] = [
+  { name: "WhatsApp", color: "#25D366", data: [820, 960, 1040, 1180, 1350, 1520] },
+  { name: "Facebook", color: "#1877F2", data: [540, 580, 620, 690, 720, 780] },
+  { name: "Instagram", color: "#E1306C", data: [310, 380, 450, 520, 610, 680] },
+  { name: "TikTok", color: "#000000", data: [80, 140, 220, 340, 480, 620] },
 ];
+
+const CHANNELS_TO_FETCH = ["WHATSAPP", "FACEBOOK", "INSTAGRAM", "TIKTOK"] as const;
 
 const PlatformComparisonChart = () => {
   const chartRef = useRef<ChartJS<"line">>(null);
 
+  // Fetch messages per channel (month view, grouped by month for 6 data points)
+  const channelQueries = CHANNELS_TO_FETCH.map((ch) =>
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useAnalyticsMessages("year", ch, "month"),
+  );
+
+  const platforms: PlatformData[] = useMemo(() => {
+    const hasData = channelQueries.some((q) => q.data?.data?.points?.length);
+    if (!hasData) return FALLBACK_PLATFORMS;
+
+    return CHANNELS_TO_FETCH.map((ch, i) => {
+      const points = channelQueries[i]?.data?.data?.points ?? [];
+      const meta = CHANNEL_META[ch] ?? { label: ch, color: "#8B5CF6" };
+      return {
+        name: meta.label,
+        color: meta.color,
+        data: points.length > 0 ? points.map((p: { value: number }) => p.value) : [],
+      };
+    }).filter((p) => p.data.length > 0);
+  }, [channelQueries.map((q) => q.data)]);
+
+  const labels = useMemo(() => {
+    const hasData = channelQueries.some((q) => q.data?.data?.points?.length);
+    if (!hasData) return ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+    const firstWithData = channelQueries.find((q) => q.data?.data?.points?.length);
+    return firstWithData?.data?.data?.points?.map((p: { label: string }) => p.label) ?? ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+  }, [channelQueries.map((q) => q.data)]);
+
   const chartData = {
-    labels: MONTHS,
-    datasets: PLATFORMS.map((p) => ({
+    labels,
+    datasets: platforms.map((p) => ({
       label: p.name,
       data: p.data,
       borderColor: p.color,
@@ -107,13 +128,13 @@ const PlatformComparisonChart = () => {
     },
   } as const;
 
-  const totalByPlatform = PLATFORMS.map((p) => ({
+  const totalByPlatform = platforms.map((p) => ({
     name: p.name,
     color: p.color,
     total: p.data[p.data.length - 1] ?? 0,
-    growth: Math.round(
-      (((p.data[p.data.length - 1] ?? 0) - (p.data[0] ?? 0)) / (p.data[0] || 1)) * 100,
-    ),
+    growth: p.data.length >= 2
+      ? Math.round((((p.data[p.data.length - 1] ?? 0) - (p.data[0] ?? 0)) / (p.data[0] || 1)) * 100)
+      : 0,
   }));
 
   return (

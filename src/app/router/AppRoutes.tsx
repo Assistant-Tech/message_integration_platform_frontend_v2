@@ -12,6 +12,10 @@ const OAuthSuccessPage = lazy(
   () =>
     import("@/app/features/dashboard/admin/pages/channels/OAuthSuccessPage"),
 );
+const OAuthErrorPage = lazy(
+  () =>
+    import("@/app/features/dashboard/admin/pages/channels/OAuthErrorPage"),
+);
 
 const SubscriptionConfirmation = lazy(
   () =>
@@ -43,6 +47,7 @@ const AppRoutes = () => {
 
         {/* ✅ OAUTH ROUTE  */}
         <Route path="/oauth/success" element={<OAuthSuccessPage />} />
+        <Route path="/oauth/error" element={<OAuthErrorPage />} />
 
         {/* ✅ PAYMENT ROUTES */}
         <Route path="/payments/verify" element={<PaymentVerify />} />

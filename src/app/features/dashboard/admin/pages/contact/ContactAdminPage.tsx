@@ -14,6 +14,8 @@ import { Button } from "@/app/components/ui";
 import { Container } from "@/app/components/layout";
 import ContactRow from "./ContactRow";
 import { MOCK_CONTACTS } from "./constants";
+import { useContactsQuery } from "@/app/hooks/query/useContactQuery";
+import { formatRelativeTime } from "../dashboard/utils";
 import type { ContactFilterStatus, ContactRecord } from "./types";
 
 const FILTER_TABS: {
@@ -31,35 +33,59 @@ const ContactAdminPage = () => {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<ContactFilterStatus>("all");
 
-  const filtered = useMemo(() => {
-    let result: ContactRecord[] = MOCK_CONTACTS;
+  const { data: apiResponse } = useContactsQuery(
+    search.trim() ? { search: search.trim() } : undefined,
+  );
 
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      result = result.filter(
-        (c) =>
-          c.name.toLowerCase().includes(q) ||
-          c.email.toLowerCase().includes(q) ||
-          c.company.toLowerCase().includes(q) ||
-          c.phone.includes(q),
-      );
-    }
+  // Transform API contacts → ContactRecord[], fallback to mocks
+  const allContacts: ContactRecord[] = useMemo(() => {
+    const items = apiResponse?.data;
+    if (!items || !Array.isArray(items) || items.length === 0) return MOCK_CONTACTS;
+
+    return items.map((c: {
+      id: string;
+      name: string | null;
+      email: string | null;
+      phone: string | null;
+      customFields: Record<string, unknown> | null;
+      updatedAt: string;
+      channelIdentities: Array<{ channel: string }>;
+      _count?: { conversations: number };
+    }): ContactRecord => {
+      const convCount = c._count?.conversations ?? 0;
+      return {
+        id: c.id,
+        name: c.name ?? "Unknown",
+        email: c.email ?? "",
+        phone: c.phone ?? "",
+        company: (c.customFields?.company as string) ?? "",
+        channel: (c.channelIdentities?.[0]?.channel ?? "WHATSAPP") as ContactRecord["channel"],
+        status: convCount > 0 ? "active" : "inactive",
+        lastMessageAt: formatRelativeTime(c.updatedAt),
+        conversationCount: convCount,
+        tags: [],
+      };
+    });
+  }, [apiResponse]);
+
+  const filtered = useMemo(() => {
+    let result = allContacts;
 
     if (statusFilter !== "all") {
       result = result.filter((c) => c.status === statusFilter);
     }
 
     return result;
-  }, [search, statusFilter]);
+  }, [allContacts, statusFilter]);
 
   const counts = useMemo(
     () => ({
-      all: MOCK_CONTACTS.length,
-      active: MOCK_CONTACTS.filter((c) => c.status === "active").length,
-      inactive: MOCK_CONTACTS.filter((c) => c.status === "inactive").length,
-      blocked: MOCK_CONTACTS.filter((c) => c.status === "blocked").length,
+      all: allContacts.length,
+      active: allContacts.filter((c) => c.status === "active").length,
+      inactive: allContacts.filter((c) => c.status === "inactive").length,
+      blocked: allContacts.filter((c) => c.status === "blocked").length,
     }),
-    [],
+    [allContacts],
   );
 
   return (

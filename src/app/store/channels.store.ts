@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import api from "@/app/services/api/axios";
 import { fetchStoredPages } from "@/app/services/meta.services";
+import { fetchTikTokChannels } from "@/app/services/tiktok.services";
 import { Page } from "@/app/types/channel.types";
 
 type ChannelsState = {
@@ -8,6 +9,28 @@ type ChannelsState = {
   isLoading: boolean;
   refreshChannels: () => Promise<void>;
   startMetaOAuth: () => Promise<void>;
+  startTikTokOAuth: () => Promise<void>;
+};
+
+const openOAuthPopup = (
+  oauthUrl: string,
+  onClose: () => void,
+): Window | null => {
+  const popup = window.open(oauthUrl, "_blank", "width=800,height=900");
+  if (!popup) return null;
+
+  const timer = setInterval(() => {
+    try {
+      if (popup.closed) {
+        clearInterval(timer);
+        onClose();
+      }
+    } catch {
+      // popup is on a cross-origin page — keep polling
+    }
+  }, 500);
+
+  return popup;
 };
 
 export const useChannelsStore = create<ChannelsState>((set, get) => ({
@@ -17,8 +40,19 @@ export const useChannelsStore = create<ChannelsState>((set, get) => ({
   refreshChannels: async () => {
     set({ isLoading: true });
     try {
-      const { data } = await fetchStoredPages();
-      set({ pages: data.pages || [] });
+      const [metaRes, tiktokRes] = await Promise.allSettled([
+        fetchStoredPages(),
+        fetchTikTokChannels(),
+      ]);
+
+      const metaPages =
+        metaRes.status === "fulfilled" ? metaRes.value?.data?.pages || [] : [];
+      const tiktokChannels =
+        tiktokRes.status === "fulfilled"
+          ? tiktokRes.value?.data?.channels || []
+          : [];
+
+      set({ pages: [...metaPages, ...tiktokChannels] });
     } catch (err) {
       console.error("Failed to fetch channels", err);
     } finally {
@@ -32,21 +66,25 @@ export const useChannelsStore = create<ChannelsState>((set, get) => ({
       const oauthUrl = data?.data?.oauthUrl;
       if (!oauthUrl) return;
 
-      const popup = window.open(oauthUrl, "_blank", "width=800,height=900");
-      if (!popup) return;
-
-      const timer = setInterval(() => {
-        try {
-          if (popup.closed) {
-            clearInterval(timer);
-            setTimeout(() => get().refreshChannels(), 10000);
-          }
-        } catch {
-          // popup is on a cross-origin page (Facebook/api.chatblix.com) — keep polling
-        }
-      }, 500);
+      openOAuthPopup(oauthUrl, () => {
+        setTimeout(() => get().refreshChannels(), 10000);
+      });
     } catch (err) {
-      console.error("OAuth failed", err);
+      console.error("Meta OAuth failed", err);
+    }
+  },
+
+  startTikTokOAuth: async () => {
+    try {
+      const { data } = await api.get("/tiktok/oauth");
+      const oauthUrl = data?.data?.oauthUrl;
+      if (!oauthUrl) return;
+
+      openOAuthPopup(oauthUrl, () => {
+        setTimeout(() => get().refreshChannels(), 5000);
+      });
+    } catch (err) {
+      console.error("TikTok OAuth failed", err);
     }
   },
 }));

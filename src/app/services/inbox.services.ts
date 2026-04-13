@@ -61,6 +61,15 @@ export const updateConversation = async (
 };
 
 /*
+ * PATCH Mark conversation as read
+ */
+export const markConversationAsReadApi = async (
+  conversationId: string,
+): Promise<void> => {
+  await api.patch(`/inbox/${conversationId}/read`);
+};
+
+/*
  * Delete a new Inbox
  */
 export const deleteInbox = async (id: string) => {

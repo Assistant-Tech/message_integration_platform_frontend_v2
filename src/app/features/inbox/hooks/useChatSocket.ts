@@ -35,7 +35,6 @@ export function useChatSocket(conversationId: string | null) {
 
   const { isConnected } = useSocketConnection(
     accessToken,
-    conversationIdRef,
     onTypingStart,
     onTypingStop,
   );

@@ -12,7 +12,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import SkeletonCard from "@/app/components/ui/SkeletonCard";
 
 const ChannelPage = () => {
-  const { pages, isLoading, startMetaOAuth } = useChannels();
+  const { pages, isLoading, startMetaOAuth, startTikTokOAuth } = useChannels();
   const navigate = useNavigate();
   const { slug } = useParams<{ slug: string }>();
 
@@ -61,6 +61,8 @@ const ChannelPage = () => {
 
                   if (card.id === "facebook") {
                     startMetaOAuth();
+                  } else if (card.id === "tiktok") {
+                    startTikTokOAuth();
                   }
                 }}
               />

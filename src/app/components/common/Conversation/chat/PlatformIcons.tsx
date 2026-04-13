@@ -32,7 +32,7 @@ const PlatformIcon = ({
   className = "",
   showUnreadDot = false,
 }: PlatformIconProps) => (
-  <span className="relative inline-flex">
+  <span>
     <img
       src={PLATFORM_ICON_SRC[platform]}
       alt={PLATFORM_ALT[platform]}

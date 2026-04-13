@@ -20,4 +20,26 @@ export const QUERY_KEYS = {
     typeof limit === "number"
       ? (["messages", inboxId, limit] as const)
       : (["messages", inboxId] as const),
+
+  // Analytics
+  ANALYTICS_SUMMARY: (period: string) =>
+    ["analytics", "summary", period] as const,
+  ANALYTICS_MESSAGES: (
+    period: string,
+    channel?: string,
+    groupBy?: string,
+  ) => ["analytics", "messages", period, channel, groupBy] as const,
+  ANALYTICS_CONVERSATIONS: (status?: string, limit?: number) =>
+    ["analytics", "conversations", status, limit] as const,
+  TEAM_MEMBERS: (params?: object) =>
+    ["analytics", "team", "members", params] as const,
+  TEAM_SUMMARY: ["analytics", "team", "summary"] as const,
+  TEAM_ACTIVITIES: (params?: object) =>
+    ["analytics", "team", "activities", params] as const,
+
+  // Contacts
+  CONTACTS: (params?: object) => ["contacts", params] as const,
+  CONTACT_BY_ID: (id: string) => ["contacts", id] as const,
+  CONTACT_CHANNEL_IDENTITIES: (id: string) =>
+    ["contacts", id, "channel-identities"] as const,
 };

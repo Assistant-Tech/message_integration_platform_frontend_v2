@@ -6,7 +6,6 @@ import PlatformIcon from "@/app/components/common/Conversation/chat/PlatformIcon
 import InboxSkeleton from "@/app/components/ui/InboxSkeleton";
 import ChatSidebar from "@/app/components/common/Conversation/chat/ChatSidebar";
 import ChatPanel from "@/app/components/common/Conversation/chat/ChatPanel";
-import NotificationToast from "@/app/components/common/Conversation/chat/NotificationToast";
 import { useInboxPage } from "@/app/features/inbox/hooks/useInboxPage";
 import ContactDetails from "@/app/components/common/Conversation/panel/ContactDetails";
 import AssignDrawer from "@/app/components/common/Conversation/panel/AssignDrawer";
@@ -68,7 +67,6 @@ const InboxPage = () => {
 
   return (
     <section className="flex h-full min-h-0 flex-col p-4 bg-primary-light/20">
-      <NotificationToast activeConversationId={selected?.id ?? null} />
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-md border border-grey-light">
         {/* Tab bar */}
         <div className="border-b border-grey-light bg-white px-4 py-3">

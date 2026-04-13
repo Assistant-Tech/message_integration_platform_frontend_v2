@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { CHAT_EVENTS } from "@/app/socket/events/chatEvents";
 import {
   getOrCreateSocket,
@@ -8,7 +7,6 @@ import {
   isSocketConnected,
 } from "./socket/socketManager";
 import {
-  createInboxEventHandler,
   createTypingUpdateHandler,
   createConnectHandler,
   createDisconnectHandler,
@@ -17,18 +15,18 @@ import {
 /**
  * Manages the socket singleton lifecycle for the inbox.
  *
- * - Creates the socket when the first subscriber mounts
- * - Registers/unregisters event handlers on every render cycle (prevents stale closures)
- * - Tears down the socket when the last subscriber unmounts
+ * - Adds a subscriber to keep the socket alive while the inbox is mounted
+ * - Handles typing indicators (only needed in inbox)
  * - Exposes live connection state (isConnected)
+ *
+ * NOTE: inbox:event handling is done by useGlobalSocket (mounted in AdminLayout)
+ * to avoid duplicate processing. This hook only handles typing events.
  */
 export function useSocketConnection(
   accessToken: string | null,
-  conversationIdRef: React.RefObject<string | null>,
   onTypingStart: (cid: string) => void,
   onTypingStop: (cid: string) => void,
 ) {
-  const queryClient = useQueryClient();
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
@@ -37,7 +35,6 @@ export function useSocketConnection(
     addSubscriber();
     const socket = getOrCreateSocket(accessToken);
 
-    const handleInboxEvent = createInboxEventHandler(queryClient, conversationIdRef);
     const handleTypingUpdate = createTypingUpdateHandler((cid, isTyping) => {
       if (isTyping) onTypingStart(cid);
       else onTypingStop(cid);
@@ -45,7 +42,6 @@ export function useSocketConnection(
     const handleConnect = createConnectHandler(setIsConnected);
     const handleDisconnect = createDisconnectHandler(setIsConnected);
 
-    socket.on(CHAT_EVENTS.INBOX_EVENT, handleInboxEvent);
     socket.on(CHAT_EVENTS.TYPING_UPDATE, handleTypingUpdate);
     socket.on("connect", handleConnect);
     socket.on("disconnect", handleDisconnect);
@@ -53,13 +49,12 @@ export function useSocketConnection(
     setIsConnected(isSocketConnected());
 
     return () => {
-      socket.off(CHAT_EVENTS.INBOX_EVENT, handleInboxEvent);
       socket.off(CHAT_EVENTS.TYPING_UPDATE, handleTypingUpdate);
       socket.off("connect", handleConnect);
       socket.off("disconnect", handleDisconnect);
       removeSubscriber();
     };
-  }, [accessToken, queryClient, conversationIdRef, onTypingStart, onTypingStop]);
+  }, [accessToken, onTypingStart, onTypingStop]);
 
   return { isConnected };
 }
