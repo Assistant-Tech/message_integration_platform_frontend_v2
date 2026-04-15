@@ -7,6 +7,7 @@ import {
   // ShoppingBag,
   // ShoppingCart,
   Users,
+  Megaphone,
   LucideIcon,
 } from "lucide-react";
 
@@ -80,6 +81,12 @@ export const sidebarItems: SidebarItem[] = [
   //   href: APP_ROUTES.ADMIN.CHATBOT,
   //   roles: ["TENANT_ADMIN"],
   // },
+  {
+    label: "Bulk Messaging",
+    icon: Megaphone,
+    href: APP_ROUTES.ADMIN.BULK_MESSAGING,
+    roles: ["TENANT_ADMIN"],
+  },
   {
     label: "Team Activity",
     icon: Users,

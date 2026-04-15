@@ -63,6 +63,9 @@ export const APP_ROUTES = {
     ANALYTICS: "analytics",
     TEAM_ACTIVITY: "team-activity",
 
+    BULK_MESSAGING: "bulk-messaging",
+    BULK_MESSAGING_CREATE: "bulk-messaging/new",
+
     ORDERS: "orders",
     ORDERS_CREATE: "orders/createOrder",
     ORDERS_DETAILS: "orders/details/:id",
