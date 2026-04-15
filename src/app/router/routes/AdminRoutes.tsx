@@ -1,48 +1,51 @@
 import { Route, Routes } from "react-router-dom";
 import { lazy } from "react";
 import { APP_ROUTES } from "@/app/constants/routes";
-import StripeApiSettings from "@/app/features/dashboard/admin/component/integrations/StripeApiSettings";
+import StripeApiSettings from "@/app/features/integrations/StripeApiSettings";
 
 const AdminLayout = lazy(
   () => import("@/app/components/layout/dashboard-layouts/AdminLayout"),
 );
 const IntegrationPage = lazy(
-  () =>
-    import(
-      "@/app/features/dashboard/admin/component/integrations/IntegrationPage"
-    ),
+  () => import("@/app/features/integrations/IntegrationPage"),
 );
 const AdminDashboardPage = lazy(
   () =>
-    import("@/app/features/dashboard/admin/pages/dashboard/AdminDashboardPage"),
+    import("@/app/features/home/AdminHomePage"),
 );
 
 // FOLDER CHANGED TO FEATURE BASED
 const InboxPage = lazy(() => import("@/app/features/inbox/InboxPage"));
+const BulkMessagingPage = lazy(
+  () => import("@/app/features/bulk-messaging/BulkMessagingPage"),
+);
+const CreateBroadcastPage = lazy(
+  () => import("@/app/features/bulk-messaging/CreateBroadcastPage"),
+);
+const SettingsLayout = lazy(
+  () => import("@/app/features/settings/SettingsLayout"),
+);
+const SettingsIndexPage = lazy(
+  () => import("@/app/features/settings/SettingsIndexPage"),
+);
 const ContactPage = lazy(
-  () => import("@/app/features/dashboard/admin/pages/contact/ContactAdminPage"),
+  () => import("@/app/features/contacts/ContactAdminPage"),
 );
 const ChatbotPage = lazy(
   () => import("@/app/features/dashboard/admin/pages/chatbot/ChatbotPage"),
 );
 const ChannelPage = lazy(
-  () => import("@/app/features/dashboard/admin/pages/channels/ChannelPage"),
+  () => import("@/app/features/channels/ChannelPage"),
 );
 const ChannelSettingsPage = lazy(
   () =>
-    import("@/app/features/dashboard/admin/pages/channels/ChannelSettingsPage"),
+    import("@/app/features/channels/ChannelSettingsPage"),
 );
-// const TagsPage = lazy(
-//   () => import("@/app/features/dashboard/admin/pages/tags/TagsPage"),
-// );
 const AnalyticsPage = lazy(
-  () => import("@/app/features/dashboard/admin/pages/analytics/AnalyticsPage"),
+  () => import("@/app/features/analytics/AnalyticsPage"),
 );
 const TeamActivityPage = lazy(
-  () =>
-    import(
-      "@/app/features/dashboard/admin/pages/dashboard/team-activity/TeamActivityPage"
-    ),
+  () => import("@/app/features/team-activity/TeamActivityPage"),
 );
 const ProfileSettings = lazy(
   () => import("@/app/features/dashboard/admin/pages/settings/ProfileSettings"),
@@ -102,72 +105,71 @@ const AdminRoutes = () => {
           element={<ChannelSettingsPage />}
         />
 
-        {/*<Route path={APP_ROUTES.ADMIN.TAGS} element={<TagsPage />} />*/}
+        <Route
+          path={APP_ROUTES.ADMIN.BULK_MESSAGING_CREATE}
+          element={<CreateBroadcastPage />}
+        />
+        <Route
+          path={APP_ROUTES.ADMIN.BULK_MESSAGING}
+          element={<BulkMessagingPage />}
+        />
         <Route path={APP_ROUTES.ADMIN.ANALYTICS} element={<AnalyticsPage />} />
         <Route
           path={APP_ROUTES.ADMIN.TEAM_ACTIVITY}
           element={<TeamActivityPage />}
         />
-        <Route
-          path={APP_ROUTES.ADMIN.SETTINGS_PROFILE}
-          element={<ProfileSettings />}
-        />
-        <Route
-          path={APP_ROUTES.ADMIN.SETTINGS_COMPANY}
-          element={<CompanySettings />}
-        />
-        <Route
-          path={APP_ROUTES.ADMIN.SETTINGS_SECURITY}
-          element={<SecuritySettings />}
-        />
-        <Route
-          path={APP_ROUTES.ADMIN.SETTINGS_NOTIFICATIONS}
-          element={<NotificationSettings />}
-        />
-        <Route
-          path={APP_ROUTES.ADMIN.SETTINGS_ROLE_MANAGEMENT}
-          element={<RoleManagement />}
-        />
-        <Route
-          path={APP_ROUTES.ADMIN.SETTINGS_CHAT_SETTINGS}
-          element={<ChatSettings />}
-        />
-        <Route
-          path={APP_ROUTES.ADMIN.SETTINGS_SHIPPING}
-          element={<ShippingSettings />}
-        />
-        <Route
-          path={APP_ROUTES.ADMIN.SETTINGS_SUBSCRIPTION}
-          element={<SubscriptionSettings />}
-        />
-        <Route
-          path={APP_ROUTES.ADMIN.SETTINGS_SUBSCRIPTION_BILLING}
-          element={<BillingPage />}
-        />
-
-        {/* MVP 1: Orders and products routes are disabled. */}
-        {/* <Route path={APP_ROUTES.ADMIN.ORDERS} element={<OrderPage />} /> */}
-        {/* <Route path={APP_ROUTES.ADMIN.ORDERS_CREATE} element={<CreateOrderPage />} /> */}
-        {/* <Route path={APP_ROUTES.ADMIN.ORDERS_DETAILS} element={<OrderDetailsPage />} /> */}
-        {/* <Route path={APP_ROUTES.ADMIN.PRODUCTS} element={<ProductPage />} /> */}
-        {/* <Route path={APP_ROUTES.ADMIN.PRODUCTS_ALL} element={<AllProductsPage />} /> */}
-        {/* <Route path={APP_ROUTES.ADMIN.PRODUCTS_CATEGORY} element={<ProductCategory />} /> */}
-        {/* <Route path={APP_ROUTES.ADMIN.PRODUCTS_VARIANTS} element={<ProductVariants />} /> */}
-        {/* <Route path={APP_ROUTES.ADMIN.PRODUCTS_INVENTORY} element={<ProductInventory />} /> */}
-        {/* <Route path={APP_ROUTES.ADMIN.PRODUCTS_CREATE} element={<CreateProductPage />} /> */}
-        {/* <Route path={APP_ROUTES.ADMIN.PRODUCTS_DETAILS} element={<ProductDetailsPage />} /> */}
-        {/* <Route path={APP_ROUTES.ADMIN.PRODUCTS_EDIT} element={<EditProductPage />} /> */}
+        <Route element={<SettingsLayout />}>
+          <Route
+            path={APP_ROUTES.ADMIN.SETTINGS}
+            element={<SettingsIndexPage />}
+          />
+          <Route
+            path={APP_ROUTES.ADMIN.SETTINGS_PROFILE}
+            element={<ProfileSettings />}
+          />
+          <Route
+            path={APP_ROUTES.ADMIN.SETTINGS_COMPANY}
+            element={<CompanySettings />}
+          />
+          <Route
+            path={APP_ROUTES.ADMIN.SETTINGS_SECURITY}
+            element={<SecuritySettings />}
+          />
+          <Route
+            path={APP_ROUTES.ADMIN.SETTINGS_NOTIFICATIONS}
+            element={<NotificationSettings />}
+          />
+          <Route
+            path={APP_ROUTES.ADMIN.SETTINGS_ROLE_MANAGEMENT}
+            element={<RoleManagement />}
+          />
+          <Route
+            path={APP_ROUTES.ADMIN.SETTINGS_CHAT_SETTINGS}
+            element={<ChatSettings />}
+          />
+          <Route
+            path={APP_ROUTES.ADMIN.SETTINGS_SHIPPING}
+            element={<ShippingSettings />}
+          />
+          <Route
+            path={APP_ROUTES.ADMIN.SETTINGS_SUBSCRIPTION}
+            element={<SubscriptionSettings />}
+          />
+          <Route
+            path={APP_ROUTES.ADMIN.SETTINGS_SUBSCRIPTION_BILLING}
+            element={<BillingPage />}
+          />
+          <Route
+            path={APP_ROUTES.ADMIN.SETTINGS_INTEGRATION_SETTINGS}
+            element={<IntegrationPage />}
+          />
+          <Route
+            path={APP_ROUTES.ADMIN.SETTINGS_STRIPE}
+            element={<StripeApiSettings />}
+          />
+        </Route>
 
         <Route path={APP_ROUTES.ADMIN.CHECKOUT} element={<CheckoutPage />} />
-
-        <Route
-          path={APP_ROUTES.ADMIN.SETTINGS_INTEGRATION_SETTINGS}
-          element={<IntegrationPage />}
-        />
-        <Route
-          path={APP_ROUTES.ADMIN.SETTINGS_STRIPE}
-          element={<StripeApiSettings />}
-        />
       </Route>
     </Routes>
   );

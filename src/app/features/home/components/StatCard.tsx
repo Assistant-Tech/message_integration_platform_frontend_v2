@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 import { TrendingUp, TrendingDown } from "lucide-react";
 import { cn } from "@/app/utils/cn";
-import { STAT_COLOR_MAP } from "./constants";
-import type { StatCard as StatCardType } from "./types";
+import { STAT_COLOR_MAP } from "../constants/shared";
+import type { StatCard as StatCardType } from "../types";
 
 interface StatCardProps {
   stat: StatCardType;

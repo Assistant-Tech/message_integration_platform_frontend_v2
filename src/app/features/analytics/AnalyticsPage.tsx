@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Container } from "@/app/components/layout";
+import PageShell from "@/app/components/layout/PageShell";
 import AnalyticsHeader from "./components/AnalyticsHeader";
 import KpiCard from "./components/KpiCard";
 import ConversationVolumeChart from "./components/ConversationVolumeChart";
@@ -22,7 +22,7 @@ import {
   useResolutionStats,
   useHourlyVolume,
 } from "@/app/hooks/query/useAnalyticsQuery";
-import { formatDuration } from "../dashboard/utils";
+import { formatDuration } from "@/app/features/home/lib/utils";
 
 const RANGE_TO_PERIOD: Record<TimeRange, string> = {
   "7d": "week",
@@ -143,42 +143,40 @@ const AnalyticsPage = () => {
   }, [leaderboardRes]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-base-white to-grey-light/40 py-4 md:py-6 lg:py-8">
-      <Container>
-        <div className="space-y-6">
-          <AnalyticsHeader activeRange={range} onRangeChange={setRange} />
+    <PageShell>
+      <div className="space-y-6">
+        <AnalyticsHeader activeRange={range} onRangeChange={setRange} />
 
-          {/* KPI Cards */}
-          <section
-            className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
-            aria-label="Key performance indicators"
-          >
-            {kpis.map((metric, i) => (
-              <KpiCard key={metric.label} metric={metric} index={i} />
-            ))}
-          </section>
+        {/* KPI Cards */}
+        <section
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
+          aria-label="Key performance indicators"
+        >
+          {kpis.map((metric, i) => (
+            <KpiCard key={metric.label} metric={metric} index={i} />
+          ))}
+        </section>
 
-          {/* Charts row */}
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
-            <div className="lg:col-span-3">
-              <ConversationVolumeChart
-                hourlyData={hourlyData}
-                weeklyData={weeklyData}
-              />
-            </div>
-            <div className="lg:col-span-2">
-              <ChannelBreakdownChart channels={channels} />
-            </div>
+        {/* Charts row */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
+          <div className="lg:col-span-3">
+            <ConversationVolumeChart
+              hourlyData={hourlyData}
+              weeklyData={weeklyData}
+            />
           </div>
-
-          {/* Leaderboard + Platform Comparison */}
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <AgentLeaderboard agents={agents} />
-            <PlatformComparisonChart />
+          <div className="lg:col-span-2">
+            <ChannelBreakdownChart channels={channels} />
           </div>
         </div>
-      </Container>
-    </div>
+
+        {/* Leaderboard + Platform Comparison */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <AgentLeaderboard agents={agents} />
+          <PlatformComparisonChart />
+        </div>
+      </div>
+    </PageShell>
   );
 };
 

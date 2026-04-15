@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { Calendar, Clock, Sunrise, Sun, Moon } from "lucide-react";
-import { getGreeting } from "./constants";
+import { getGreeting } from "../constants/shared";
 
 const GREETING_ICONS = {
   sunrise: Sunrise,

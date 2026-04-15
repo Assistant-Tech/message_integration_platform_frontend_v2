@@ -11,11 +11,12 @@ import {
 } from "lucide-react";
 import { cn } from "@/app/utils/cn";
 import { Button } from "@/app/components/ui";
-import { Container } from "@/app/components/layout";
+import PageShell from "@/app/components/layout/PageShell";
+import PageHeader from "@/app/components/layout/PageHeader";
 import ContactRow from "./ContactRow";
 import { MOCK_CONTACTS } from "./constants";
 import { useContactsQuery } from "@/app/hooks/query/useContactQuery";
-import { formatRelativeTime } from "../dashboard/utils";
+import { formatRelativeTime } from "@/app/features/home/lib/utils";
 import type { ContactFilterStatus, ContactRecord } from "./types";
 
 const FILTER_TABS: {
@@ -89,29 +90,13 @@ const ContactAdminPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-base-white to-grey-light/40 py-4 md:py-6 lg:py-8">
-      <Container>
-        <div className="space-y-5">
-          {/* Header */}
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-            className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
-          >
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-                <Users className="h-5 w-5 text-primary" strokeWidth={1.8} />
-              </div>
-              <div>
-                <h1 className="h3-bold-32 text-grey">Find your customer</h1>
-                <p className="caption-medium-12 text-grey-medium">
-                  {counts.all} contacts &middot; {counts.active} active
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
+    <PageShell>
+      <div className="space-y-5">
+        <PageHeader
+          title="Find your customer"
+          description={`${counts.all} contacts · ${counts.active} active`}
+          actions={
+            <>
               <Button
                 label="Export"
                 variant="outlined"
@@ -124,10 +109,11 @@ const ContactAdminPage = () => {
                 size="xs"
                 IconLeft={<UserPlus className="h-3.5 w-3.5" />}
               />
-            </div>
-          </motion.div>
+            </>
+          }
+        />
 
-          {/* Toolbar */}
+        {/* Toolbar */}
           <motion.div
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
@@ -272,10 +258,9 @@ const ContactAdminPage = () => {
                 </div>
               </div>
             )}
-          </motion.div>
-        </div>
-      </Container>
-    </div>
+        </motion.div>
+      </div>
+    </PageShell>
   );
 };
 

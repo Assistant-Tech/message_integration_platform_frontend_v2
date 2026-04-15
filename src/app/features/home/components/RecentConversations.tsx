@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/app/utils/cn";
 import { Button } from "@/app/components/ui";
-import type { RecentConversation } from "./types";
+import type { RecentConversation } from "../types";
 
 const STATUS_STYLES = {
   active: {

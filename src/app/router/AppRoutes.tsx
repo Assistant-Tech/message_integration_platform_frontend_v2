@@ -9,12 +9,10 @@ const PublicRoutes = lazy(() => import("@/app/router/routes/PublicRoutes"));
 const AdminRoutes = lazy(() => import("@/app/router/routes/AdminRoutes"));
 const UserRoutes = lazy(() => import("@/app/router/routes/UserRoutes"));
 const OAuthSuccessPage = lazy(
-  () =>
-    import("@/app/features/dashboard/admin/pages/channels/OAuthSuccessPage"),
+  () => import("@/app/features/channels/OAuthSuccessPage"),
 );
 const OAuthErrorPage = lazy(
-  () =>
-    import("@/app/features/dashboard/admin/pages/channels/OAuthErrorPage"),
+  () => import("@/app/features/channels/OAuthErrorPage"),
 );
 
 const SubscriptionConfirmation = lazy(

@@ -2,23 +2,22 @@ import { useEffect, useMemo, useState } from "react";
 import { useAuthStore } from "@/app/store/auth.store";
 import { useMfaStore } from "@/app/store/mfa.store";
 import { Loading } from "@/app/components/common";
-import RecoveryPhrasesModal from "../../component/mfa/RecoveryCodesModal";
-import DashboardHeader from "./DashboardHeader";
-import StatCard from "./StatCard";
-import IncomeChart from "./IncomeChart";
-import RecentConversations from "./RecentConversations";
+import RecoveryPhrasesModal from "@/app/features/dashboard/admin/component/mfa/RecoveryCodesModal";
+import DashboardHeader from "./components/DashboardHeader";
+import StatCard from "./components/StatCard";
+import IncomeChart from "./components/IncomeChart";
+import RecentConversations from "./components/RecentConversations";
 import {
   mockStats,
   mockIncomeData,
   mockRecentConversations,
-} from "./constants";
+} from "./constants/admin";
 import {
   TeamActivityMonitor,
   MOCK_MEMBERS,
   MOCK_ACTIVITY_FEED,
   MOCK_SUMMARY,
-} from "./team-activity";
-import { Container } from "@/app/components/layout";
+} from "@/app/features/team-activity";
 import {
   useAnalyticsSummary,
   useAnalyticsMessages,
@@ -31,7 +30,8 @@ import {
   transformSummaryToStatCards,
   formatRelativeTime,
   formatDuration,
-} from "./utils";
+} from "./lib/utils";
+import PageShell from "@/app/components/layout/PageShell";
 
 const AdminDashboard = () => {
   const { user: profile } = useAuthStore();
@@ -142,7 +142,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-base-white to-grey-light/40 py-4 md:py-6 lg:py-8">
-      <Container>
+      <PageShell>
         <div className="space-y-6">
           {/* Greeting Banner */}
           <DashboardHeader userName={profile.name} />
@@ -178,7 +178,7 @@ const AdminDashboard = () => {
             activityFeed={activityFeed}
           />
         </div>
-      </Container>
+      </PageShell>
 
       {showRecoveryModal && (
         <RecoveryPhrasesModal

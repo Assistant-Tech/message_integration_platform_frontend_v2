@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Container } from "@/app/components/layout";
+import PageShell from "@/app/components/layout/PageShell";
 import { TeamActivityMonitor } from "./index";
 import { MOCK_MEMBERS, MOCK_ACTIVITY_FEED, MOCK_SUMMARY } from "./constants";
 import {
@@ -7,7 +7,10 @@ import {
   useTeamSummary,
   useTeamActivities,
 } from "@/app/hooks/query/useAnalyticsQuery";
-import { formatDuration, formatRelativeTime } from "../utils";
+import {
+  formatDuration,
+  formatRelativeTime,
+} from "@/app/features/home/lib/utils";
 
 const TeamActivityPage = () => {
   const { data: membersResponse } = useTeamMembers();
@@ -60,15 +63,13 @@ const TeamActivityPage = () => {
   }, [activitiesResponse]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-base-white to-grey-light/40 py-4 md:py-6 lg:py-8">
-      <Container>
-        <TeamActivityMonitor
-          members={teamMembers}
-          summary={teamSummary}
-          activityFeed={activityFeed}
-        />
-      </Container>
-    </div>
+    <PageShell>
+      <TeamActivityMonitor
+        members={teamMembers}
+        summary={teamSummary}
+        activityFeed={activityFeed}
+      />
+    </PageShell>
   );
 };
 

@@ -1,8 +1,5 @@
 import { MessageSquare, CheckCircle2, Zap } from "lucide-react";
-import type {
-  StatCard,
-  RecentConversation,
-} from "@/app/features/dashboard/admin/pages/dashboard/types";
+import type { StatCard, RecentConversation } from "@/app/features/home/types";
 
 /** Member sees only their own performance metrics — no org-wide totals. */
 export const memberStats: StatCard[] = [

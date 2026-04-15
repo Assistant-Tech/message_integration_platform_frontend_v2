@@ -12,7 +12,7 @@ import {
   Tooltip,
 } from "chart.js";
 import { cn } from "@/app/utils/cn";
-import type { ChartDataPoint } from "./types";
+import type { ChartDataPoint } from "../types";
 
 ChartJS.register(
   CategoryScale,

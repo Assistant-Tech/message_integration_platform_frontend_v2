@@ -5,7 +5,7 @@ import {
   CheckCircle2,
   Zap,
 } from "lucide-react";
-import type { StatCard } from "./types";
+import type { StatCard } from "../types";
 import type { AnalyticsSummaryData } from "@/app/types/analytics.types";
 
 /**
