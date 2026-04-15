@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
-import {
-  // CollapseSidebar,
-  TopNavbar,
-} from "@/app/features/dashboard/admin/component/ui";
+import { TopNavbar } from "@/app/features/dashboard/admin/component/ui";
 import SubscriptionListener from "@/app/socket/listeners/SubscriptionListener";
 import { AnnouncementBanner } from "@/app/components/common";
 import { useBanner } from "@/app/context/BannerContext";
