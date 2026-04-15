@@ -1,0 +1,62 @@
+import { useVerifyEmail } from "@/app/hooks/query/useAuthQuery";
+import { Loader2, CheckCircle2 } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+
+const VerifyEmail = () => {
+  const { token } = useParams<{ token: string }>();
+  const navigate = useNavigate();
+  const verifyEmailMutation = useVerifyEmail();
+
+  const [verified, setVerified] = useState(false);
+  const hasVerifiedRef = useRef(false);
+
+  useEffect(() => {
+    if (hasVerifiedRef.current || !token) return;
+    hasVerifiedRef.current = true;
+
+    if (!token) {
+      toast.error("Invalid verification link.");
+      navigate("/register");
+      return;
+    }
+
+    verifyEmailMutation.mutate(token, {
+      onSuccess: () => {
+        setVerified(true);
+        setTimeout(() => {
+          navigate("/login");
+        }, 3000);
+      },
+      onError: () => {
+        toast.error("Email verification failed.");
+        navigate("/register");
+      },
+    });
+  }, [token, navigate, verifyEmailMutation]);
+
+  return (
+    <div className="w-full h-screen flex flex-col justify-center items-center bg-gray-50">
+      {verifyEmailMutation.isPending ? (
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="animate-spin text-information" size={48} />
+          <p className="text-lg font-semibold text-grey-medium">
+            Verifying your email...
+          </p>
+        </div>
+      ) : verified ? (
+        <div className="flex flex-col items-center gap-4">
+          <CheckCircle2 className="text-primary" size={56} />
+          <p className="text-lg font-semibold text-gray-700">
+            Email verified successfully! Redirecting to login...
+          </p>
+        </div>
+      ) : (
+        <p className="text-lg font-semibold text-grey-medium">Redirecting...</p>
+      )}
+    </div>
+  );
+};
+
+export default VerifyEmail;

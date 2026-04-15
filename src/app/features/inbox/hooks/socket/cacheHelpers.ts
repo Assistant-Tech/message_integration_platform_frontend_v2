@@ -1,0 +1,190 @@
+/**
+ * React Query cache update helpers
+ *
+ * Encapsulates all cache mutation logic for inbox and message data.
+ * Single source of truth for how cache is structured and updated.
+ */
+
+import { QueryClient } from "@tanstack/react-query";
+import { QUERY_KEYS, INBOX_LIST_PARAMS } from "@/app/constants/queryKeys";
+import type { InboxMessage } from "@/app/types/message.types";
+import type { InboxListResponse } from "@/app/types/inbox.types";
+
+const INBOX_QUERY_KEY = QUERY_KEYS.INBOX(INBOX_LIST_PARAMS.type, INBOX_LIST_PARAMS.page, INBOX_LIST_PARAMS.limit);
+
+// ────────────────────────────────────────────────────────────────────────────
+// TYPING STATE UPDATES
+// ────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Update a specific conversation's isTyping state in the inbox list cache
+ * @param queryClient - React Query client
+ * @param conversationId - Conversation to update
+ * @param isTyping - New typing state
+ */
+export function updateInboxListTypingState(
+  queryClient: QueryClient,
+  conversationId: string,
+  isTyping: boolean,
+): void {
+  queryClient.setQueryData<InboxListResponse>(INBOX_QUERY_KEY, (old) => {
+    if (!old?.data) return old;
+    return {
+      ...old,
+      data: old.data.map((c) =>
+        c.id === conversationId ? { ...c, isTyping } : c,
+      ),
+    };
+  });
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// MESSAGE UPDATES
+// ────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Add a message to the messages cache for a conversation
+ * Deduplicates if message with same ID already exists
+ *
+ * @param queryClient - React Query client
+ * @param conversationId - Conversation ID
+ * @param message - Message to add
+ */
+export function addMessageToCache(
+  queryClient: QueryClient,
+  conversationId: string,
+  message: InboxMessage,
+): void {
+  queryClient.setQueriesData<InboxMessage[]>(
+    { queryKey: QUERY_KEYS.MESSAGES(conversationId) },
+    (old = []) =>
+      old.some((m) => m.id === message.id) ? old : [...old, message],
+  );
+}
+
+/**
+ * Update message status (e.g., when server ACKs the message with real ID)
+ * Replaces temporary message ID with server-assigned ID
+ *
+ * @param queryClient - React Query client
+ * @param conversationId - Conversation ID
+ * @param tempId - Temporary ID assigned by client
+ * @param realId - Server-assigned ID
+ * @param status - New message status
+ */
+export function updateMessageStatusInCache(
+  queryClient: QueryClient,
+  conversationId: string,
+  tempId: string,
+  realId: string,
+  status: InboxMessage["status"],
+): void {
+  queryClient.setQueriesData<InboxMessage[]>(
+    { queryKey: QUERY_KEYS.MESSAGES(conversationId) },
+    (old = []) =>
+      old.map((msg) =>
+        msg.id === tempId ? { ...msg, id: realId, status } : msg,
+      ),
+  );
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// INBOX LIST UPDATES
+// ────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Update inbox list when new message arrives
+ * Updates: lastMessageContent, lastMessageAt, unreadCount, hasNewMessage
+ *
+ * If the conversation is not yet in the cache (new conversation), invalidates
+ * the inbox query to trigger a refetch from the server.
+ *
+ * @param queryClient - React Query client
+ * @param conversationId - Conversation ID
+ * @param message - The new message
+ * @param isCurrentConversation - Whether this is the currently active conversation
+ */
+export function updateInboxListWithNewMessage(
+  queryClient: QueryClient,
+  conversationId: string,
+  message: InboxMessage,
+  isCurrentConversation: boolean,
+): void {
+  const current = queryClient.getQueryData<InboxListResponse>(INBOX_QUERY_KEY);
+
+  // Conversation not in cache yet — refetch the full list so it appears
+  if (!current?.data?.some((c) => c.id === conversationId)) {
+    queryClient.invalidateQueries({ queryKey: INBOX_QUERY_KEY });
+    return;
+  }
+
+  queryClient.setQueryData<InboxListResponse>(INBOX_QUERY_KEY, (old) => {
+    if (!old?.data) return old;
+    return {
+      ...old,
+      data: old.data.map((conv) => {
+        if (conv.id !== conversationId) return conv;
+
+        // Only increment unread count for incoming customer messages
+        // when not in the active conversation
+        const isIncomingCustomerMessage =
+          message.sender === "customer" && !isCurrentConversation;
+
+        return {
+          ...conv,
+          lastMessageContent: message.content,
+          lastMessageAt: message.timestamp,
+          unreadCount: isIncomingCustomerMessage
+            ? (conv.unreadCount ?? 0) + 1
+            : conv.unreadCount,
+          hasNewMessage: isIncomingCustomerMessage,
+        };
+      }),
+    };
+  });
+}
+
+/**
+ * Mark conversation as read when user joins it
+ * Clears unreadCount and hasNewMessage flags
+ *
+ * @param queryClient - React Query client
+ * @param conversationId - Conversation ID to mark as read
+ */
+export function markConversationAsRead(
+  queryClient: QueryClient,
+  conversationId: string,
+): void {
+  queryClient.setQueryData<InboxListResponse>(INBOX_QUERY_KEY, (old) => {
+    if (!old?.data) return old;
+    return {
+      ...old,
+      data: old.data.map((c) =>
+        c.id === conversationId
+          ? { ...c, unreadCount: 0, hasNewMessage: false }
+          : c,
+      ),
+    };
+  });
+}
+
+/**
+ * Invalidate the inbox list query to trigger a refetch.
+ * Used when a new conversation is created and we need the full data from the server.
+ */
+export function invalidateInboxList(queryClient: QueryClient): void {
+  queryClient.invalidateQueries({ queryKey: INBOX_QUERY_KEY });
+}
+
+/**
+ * Get the current inbox list from cache
+ * Useful for checking state before mutations
+ *
+ * @param queryClient - React Query client
+ * @returns Current inbox list or undefined if not cached
+ */
+export function getInboxListFromCache(
+  queryClient: QueryClient,
+): InboxListResponse | undefined {
+  return queryClient.getQueryData(INBOX_QUERY_KEY);
+}

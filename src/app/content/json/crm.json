@@ -1,0 +1,85 @@
+{
+  "empowerBusiness": {
+    "heading": {
+      "title": "Empowering Your Business with Chatblix's",
+      "highlight": "AI-Powered CRM Software"
+    },
+    "description": "Chatblix's CRM software helps you respond to your customer inquiries instantly and efficiently. It streamlines your company's workflow, helps with customer retention and simultaneously reduces marketing costs.",
+
+    "cta": {
+      "title": "Join 1,000+ businesses using our platform",
+      "placeholder": "Your work email",
+      "buttonLabel": "Start Free Trial",
+      "note": "Free for 14 days. Cancel anytime."
+    },
+
+    "features": [
+      {
+        "id": 1,
+        "title": "Unified Inbox",
+        "icon": "/white-icons/unifiedmsg.svg"
+      },
+      {
+        "id": 2,
+        "title": "Team Collaboration",
+        "icon": "/icons/team.svg"
+      },
+      {
+        "id": 3,
+        "title": "Automation Tools",
+        "icon": "/icons/automation.svg"
+      },
+      {
+        "id": 4,
+        "title": "Real-Time Analytics",
+        "icon": "/icons/analytics.svg"
+      }
+    ],
+
+    "benefits": [
+      {
+        "id": 1,
+        "title": "Increase Sales",
+        "color": "bg-green-500",
+        "icon": "TrendingUp"
+      },
+      {
+        "id": 2,
+        "title": "Save Time",
+        "color": "bg-blue-500",
+        "icon": "Clock"
+      },
+      {
+        "id": 3,
+        "title": "Happy Customers",
+        "color": "bg-purple-500",
+        "icon": "Smile"
+      }
+    ],
+
+    "image": {
+      "src": "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+      "alt": "CRM Dashboard"
+    },
+
+    "scale": {
+      "title": "Scale Your Business",
+      "description": "Whether you're a startup or an enterprise, our AI-enabled CRM helps take your business to the next level with intelligent automation and insights.",
+      "features": [
+        {
+          "title": "Online store owners who want to reply fast on social media"
+        },
+        {
+          "title": "Small businesses that want to support customers better"
+        },
+        {
+          "title": "Big enterprises looking for efficiency, control and long-term value"
+        }
+      ]
+    },
+    "smart": {
+      "title": "Smart Solutions for Businesses of All Sizes",
+      "description": "Our AI-enabled CRM software focuses on providing smart solutions like sales, marketing and customer support, for businesses of all sizes and supports a sustainable business model."
+    }
+  }
+}

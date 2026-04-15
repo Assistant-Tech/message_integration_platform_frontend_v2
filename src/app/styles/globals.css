@@ -1,0 +1,880 @@
+@import "tailwindcss";
+/* Main Nunito Import */
+@import "@fontsource/nunito-sans/400.css";
+@import "@fontsource/nunito-sans/500.css";
+@import "@fontsource/nunito-sans/600.css";
+@import "@fontsource/nunito-sans/700.css";
+@import "@fontsource/nunito-sans/400-italic.css";
+@import "@fontsource/nunito-sans/700-italic.css";
+
+/* Accent Typo Import */
+@import "@fontsource/merriweather";
+@import "@fontsource/merriweather/400.css";
+@import "@fontsource/merriweather/400-italic.css";
+
+/* Performance optimizations */
+* {
+  box-sizing: border-box;
+}
+
+/* Prevent layout shifts for images */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Optimize animations */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Optimize font loading */
+@font-face {
+  font-family: "Nunito Sans";
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Merriweather";
+  font-display: swap;
+}
+
+@theme {
+  /* Breakpoints */
+  --breakpoint-mobile: 480px;
+  --breakpoint-tablet: 768px;
+  --breakpoint-desktop: 1024px;
+  --breakpoint-large: 1440px;
+
+  /* Font families */
+  --font-sans: "Nunito Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-nunito: "Nunito Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-meri: "Merriweather", ui-serif, system-ui, serif;
+
+  /* Custom gradient */
+  --custom-gradient: linear-gradient(to bottom, #1cb496 8%, #169078 81.5%);
+
+  /* ----------------------------------- */
+  /* PRIMARY COLOR PALETTE (#2E5E99)     */
+  /* ----------------------------------- */
+  --color-primary-light: oklch(94% 0.02 240);
+  --color-primary: oklch(45% 0.12 250); /* MAIN PRIMARY */
+  --color-primary-dark: oklch(18% 0.06 250);
+  --color-primary-inactive: oklch(70% 0.08 245);
+  /* bg-primary/10 would be: oklch(45% 0.12 250 / 0.1) */
+
+  /* Secondary */
+  --color-secondary-light: oklch(97% 0.03 75);
+  --color-secondary: oklch(68% 0.17 55);
+  --color-secondary-dark: oklch(56% 0.15 50);
+  --color-secondary-inactive: oklch(87% 0.08 65);
+
+  /* Text Colors */
+  --color-base-white: oklch(98% 0.002 240);
+  --color-grey-light: oklch(91% 0 0);
+  --color-grey-medium: oklch(48% 0 0);
+  --color-grey: oklch(25% 0 0);
+  --color-base-black: oklch(8% 0.02 180);
+
+  /* Success */
+  --color-success-light: #dbf7ea;
+  --color-success: #009951;
+  --color-success-dark: #006b38;
+
+  /* Warning */
+  --color-warning-light: #fff3d1;
+  --color-warning: #ffc21a;
+  --color-warning-dark: #daa000;
+
+  /* Danger */
+  --color-danger-light: #f8cac7;
+  --color-danger: #b3261e;
+  --color-danger-dark: #8d0800;
+
+  /* Information */
+  --color-information-light: #e6f2fc;
+  --color-information: #007be5;
+  --color-information-dark: #004a89;
+}
+
+/* Scrollbar Hide */
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #2e5e99;
+  border-radius: 8px;
+}
+::-webkit-scrollbar-track {
+  background-color: #e7f0fa;
+  border-radius: 8px;
+}
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Base Styles
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+body {
+  @apply bg-white text-primary-dark font-sans;
+  /* Optimize rendering */
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Base typography classes (mobile-first) */
+.bold-64 {
+  @apply text-[32px] leading-[36px] tracking-[-0.012em] font-meri;
+}
+
+/* Responsive variants for bold-64 */
+@media (min-width: theme(breakpoint-tablet)) {
+  .bold-64 {
+    @apply text-[48px] leading-[52px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .bold-64 {
+    @apply text-[56px] leading-[60px];
+  }
+}
+
+@media (min-width: theme(breakpoint-large)) {
+  .bold-64 {
+    @apply text-[64px] leading-[68px];
+  }
+}
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Heading 1 - Responsive
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+.h1-bold-48 {
+  @apply text-2xl leading-[32px] tracking-[-0.012em] font-bold font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h1-bold-48 {
+    @apply text-4xl leading-[48px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h1-bold-48 {
+    @apply text-5xl leading-[60px];
+  }
+}
+
+.h1-semi-bold-48 {
+  @apply text-2xl leading-[32px] tracking-[-0.012em] font-semibold font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h1-semi-bold-48 {
+    @apply text-4xl leading-[48px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h1-semi-bold-48 {
+    @apply text-5xl leading-[60px];
+  }
+}
+
+.h1-medium-48 {
+  @apply text-2xl leading-[32px] tracking-[-0.012em] font-medium font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h1-medium-48 {
+    @apply text-4xl leading-[48px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h1-medium-48 {
+    @apply text-5xl leading-[60px];
+  }
+}
+
+.h1-regular-48 {
+  @apply text-2xl leading-[32px] tracking-[-0.012em] font-normal font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h1-regular-48 {
+    @apply text-4xl leading-[48px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h1-regular-48 {
+    @apply text-5xl leading-[60px];
+  }
+}
+
+.h1-italic-bold-48 {
+  @apply text-2xl leading-[32px] tracking-[-0.012em] font-bold font-nunito italic;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h1-italic-bold-48 {
+    @apply text-4xl leading-[48px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h1-italic-bold-48 {
+    @apply text-5xl leading-[60px];
+  }
+}
+
+.h1-italic-regular-48 {
+  @apply text-2xl leading-[32px] tracking-[-0.012em] font-normal font-nunito italic;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h1-italic-regular-48 {
+    @apply text-4xl leading-[48px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h1-italic-regular-48 {
+    @apply text-5xl leading-[60px];
+  }
+}
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Heading 2 - Responsive
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+.h2-bold-40 {
+  @apply text-xl leading-[28px] tracking-[-0.002em] font-bold font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h2-bold-40 {
+    @apply text-3xl leading-[40px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h2-bold-40 {
+    @apply text-[40px] leading-[50px];
+  }
+}
+
+.h2-semi-bold-40 {
+  @apply text-xl leading-[28px] tracking-[-0.002em] font-semibold font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h2-semi-bold-40 {
+    @apply text-3xl leading-[40px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h2-semi-bold-40 {
+    @apply text-[40px] leading-[50px];
+  }
+}
+
+.h2-medium-40 {
+  @apply text-xl leading-[28px] tracking-[-0.002em] font-medium font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h2-medium-40 {
+    @apply text-3xl leading-[40px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h2-medium-40 {
+    @apply text-[40px] leading-[50px];
+  }
+}
+
+.h2-regular-40 {
+  @apply text-xl leading-[28px] tracking-[-0.002em] font-normal font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h2-regular-40 {
+    @apply text-3xl leading-[40px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h2-regular-40 {
+    @apply text-[40px] leading-[50px];
+  }
+}
+
+.h2-italic-bold-40 {
+  @apply text-xl leading-[28px] tracking-[-0.002em] font-bold font-nunito italic;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h2-italic-bold-40 {
+    @apply text-3xl leading-[40px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h2-italic-bold-40 {
+    @apply text-[40px] leading-[50px];
+  }
+}
+
+.h2-italic-regular-40 {
+  @apply text-xl leading-[28px] tracking-[-0.002em] font-normal font-nunito italic;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h2-italic-regular-40 {
+    @apply text-3xl leading-[40px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h2-italic-regular-40 {
+    @apply text-[40px] leading-[50px];
+  }
+}
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Heading 3 - Responsive
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+.h3-bold-32 {
+  @apply text-lg leading-[26px] tracking-[0em] font-bold font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h3-bold-32 {
+    @apply text-2xl leading-[32px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h3-bold-32 {
+    @apply text-3xl leading-[40px];
+  }
+}
+
+.h3-semi-bold-32 {
+  @apply text-lg leading-[26px] tracking-[0em] font-semibold font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h3-semi-bold-32 {
+    @apply text-2xl leading-[32px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h3-semi-bold-32 {
+    @apply text-3xl leading-[40px];
+  }
+}
+
+.h3-medium-32 {
+  @apply text-lg leading-[26px] tracking-[0em] font-medium font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h3-medium-32 {
+    @apply text-2xl leading-[32px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h3-medium-32 {
+    @apply text-3xl leading-[40px];
+  }
+}
+
+.h3-regular-32 {
+  @apply text-lg leading-[26px] tracking-[0em] font-normal font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h3-regular-32 {
+    @apply text-2xl leading-[32px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h3-regular-32 {
+    @apply text-3xl leading-[40px];
+  }
+}
+
+.h3-italic-bold-32 {
+  @apply text-lg leading-[26px] tracking-[0em] font-bold font-nunito italic;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h3-italic-bold-32 {
+    @apply text-2xl leading-[32px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h3-italic-bold-32 {
+    @apply text-3xl leading-[40px];
+  }
+}
+
+.h3-italic-regular-32 {
+  @apply text-lg leading-[26px] tracking-[0em] font-normal font-nunito italic;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h3-italic-regular-32 {
+    @apply text-2xl leading-[32px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h3-italic-regular-32 {
+    @apply text-3xl leading-[40px];
+  }
+}
+
+/*
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h3-italic-regular-32 {
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Heading 4 - Responsive
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+.h4-bold-24 {
+  @apply text-base leading-[22px] tracking-[0em] font-bold font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h4-bold-24 {
+    @apply text-xl leading-[26px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h4-bold-24 {
+    @apply text-2xl leading-[30px];
+  }
+}
+
+.h4-semi-bold-24 {
+  @apply text-base leading-[22px] tracking-[0em] font-semibold font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h4-semi-bold-24 {
+    @apply text-xl leading-[26px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h4-semi-bold-24 {
+    @apply text-2xl leading-[30px];
+  }
+}
+
+.h4-medium-24 {
+  @apply text-base leading-[22px] tracking-[0em] font-medium font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h4-medium-24 {
+    @apply text-xl leading-[26px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h4-medium-24 {
+    @apply text-2xl leading-[30px];
+  }
+}
+
+.h4-regular-24 {
+  @apply text-base leading-[22px] tracking-[0em] font-normal font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h4-regular-24 {
+    @apply text-xl leading-[26px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h4-regular-24 {
+    @apply text-2xl leading-[30px];
+  }
+}
+
+.h4-italic-bold-24 {
+  @apply text-base leading-[22px] tracking-[0em] font-bold font-nunito italic;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h4-italic-bold-24 {
+    @apply text-xl leading-[26px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h4-italic-bold-24 {
+    @apply text-2xl leading-[30px];
+  }
+}
+
+.h4-italic-regular-24 {
+  @apply text-base leading-[22px] tracking-[0em] font-normal font-nunito italic;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h4-italic-regular-24 {
+    @apply text-xl leading-[26px];
+  }
+}
+
+@media (min-width: theme(breakpoint-desktop)) {
+  .h4-italic-regular-24 {
+    @apply text-2xl leading-[30px];
+  }
+}
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Heading 5 - Responsive
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+.h5-bold-16 {
+  @apply text-sm leading-[20px] tracking-[0.01em] font-bold font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h5-bold-16 {
+    @apply text-base leading-[24px];
+  }
+}
+
+.h5-semi-bold-16 {
+  @apply text-sm leading-[20px] tracking-[0.01em] font-semibold font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h5-semi-bold-16 {
+    @apply text-base leading-[24px];
+  }
+}
+
+.h5-medium-16 {
+  @apply text-sm leading-[20px] tracking-[0.01em] font-medium font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h5-medium-16 {
+    @apply text-base leading-[24px];
+  }
+}
+
+.h5-regular-16 {
+  @apply text-sm leading-[20px] tracking-[0.01em] font-normal font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h5-regular-16 {
+    @apply text-base leading-[24px];
+  }
+}
+
+.h5-italic-bold-16 {
+  @apply text-sm leading-[20px] tracking-[0.01em] font-bold font-nunito italic;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h5-italic-bold-16 {
+    @apply text-base leading-[24px];
+  }
+}
+
+.h5-italic-regular-16 {
+  @apply text-sm leading-[20px] tracking-[0.01em] font-normal font-nunito italic;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .h5-italic-regular-16 {
+    @apply text-base leading-[24px];
+  }
+}
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ BODY Section - Responsive
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+.body-bold-16 {
+  @apply font-bold text-sm leading-[20px] tracking-[0.01em] font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .body-bold-16 {
+    @apply text-base leading-[24px];
+  }
+}
+
+.body-semi-bold-16 {
+  @apply font-semibold text-sm leading-[20px] tracking-[0.01em] font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .body-semi-bold-16 {
+    @apply text-base leading-[24px];
+  }
+}
+
+.body-medium-16 {
+  @apply font-medium text-sm leading-[20px] tracking-[0.01em] font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .body-medium-16 {
+    @apply text-base leading-[24px];
+  }
+}
+
+.body-regular-16 {
+  @apply font-normal text-sm leading-[20px] tracking-[0.01em] font-nunito;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .body-regular-16 {
+    @apply text-base leading-[24px];
+  }
+}
+
+.body-regular-underlined-16 {
+  @apply font-semibold text-sm leading-[20px] tracking-[0.01em] font-nunito underline underline-offset-1;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .body-regular-underlined-16 {
+    @apply text-base leading-[24px];
+  }
+}
+
+.body-italic-bold-16 {
+  @apply font-bold text-sm leading-[20px] tracking-[0.01em] font-nunito italic;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .body-italic-bold-16 {
+    @apply text-base leading-[24px];
+  }
+}
+
+.body-italic-regular-16 {
+  @apply font-normal text-sm leading-[20px] tracking-[0.01em] font-nunito italic;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .body-italic-regular-16 {
+    @apply text-base leading-[24px];
+  }
+}
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Button Text - Responsive
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+.button-semi-bold-16 {
+  @apply font-nunito font-medium text-sm leading-[20px] tracking-[0.01em];
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .button-semi-bold-16 {
+    @apply text-base leading-[24px];
+  }
+}
+
+/*
+─────────────────────────────────────────────────────────────────────────────
+ 📦 ▶ Label Text - Responsive
+ ─────────────────────────────────────────────────────────────────────────────
+*/
+.label-bold-14 {
+  @apply font-nunito font-bold text-xs leading-[18px] tracking-[0.02em];
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .label-bold-14 {
+    @apply text-sm leading-[22px];
+  }
+}
+
+.label-semi-bold-14 {
+  @apply font-nunito font-semibold text-xs leading-[18px] tracking-[0.02em];
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .label-semi-bold-14 {
+    @apply text-sm leading-[22px];
+  }
+}
+
+.label-medium-14 {
+  @apply font-nunito font-medium text-xs leading-[18px] tracking-[0.02em];
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .label-medium-14 {
+    @apply text-sm leading-[22px];
+  }
+}
+
+.label-regular-14 {
+  @apply font-nunito font-normal text-xs leading-[18px] tracking-[0.02em];
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .label-regular-14 {
+    @apply text-sm leading-[22px];
+  }
+}
+
+.label-italic-bold-14 {
+  @apply font-nunito font-bold text-xs leading-[18px] tracking-[0.02em] italic;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .label-italic-bold-14 {
+    @apply text-sm leading-[22px];
+  }
+}
+
+.label-italic-regular-14 {
+  @apply font-nunito font-normal text-xs leading-[18px] tracking-[0.02em] italic;
+}
+
+@media (min-width: theme(breakpoint-tablet)) {
+  .label-italic-regular-14 {
+    @apply text-sm leading-[22px];
+  }
+}
+
+.caption-bold-12 {
+  @apply font-nunito font-bold text-xs leading-[18px] tracking-[0.02em];
+}
+.caption-medium-12 {
+  @apply font-nunito font-medium text-xs leading-[18px] tracking-[0.02em];
+}
+
+/* SCROLL  BAR */
+.scrollbar-invisible {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+.scrollbar-invisible::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-invisible::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 10px;
+}
+
+.scrollbar-invisible:hover::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.25);
+}
+/* HOVER */
+/* Container */
+.custom-scrollbar {
+  scrollbar-width: thin; /* Firefox */
+  scroll-behavior: smooth;
+  scrollbar-color: transparent transparent;
+}
+
+/* Scrollbar area */
+.custom-scrollbar::-webkit-scrollbar {
+  height: 3px;
+}
+
+/* Track */
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Thumb (the line) */
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 999px;
+}
+
+/* Show line on hover */
+.custom-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+/* Darker when dragging */
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+/* Remove arrow buttons */
+.custom-scrollbar::-webkit-scrollbar-button {
+  display: none;
+}
+
+/* Firefox hover */
+.custom-scrollbar:hover {
+  scrollbar-color: rgba(0, 0, 0, 0.25) transparent;
+}
+
+/* ── Skeleton shimmer ────────────────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 25%,
+    #e4e4e4 50%,
+    #f0f0f0 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+  border-radius: 0.375rem;
+}
