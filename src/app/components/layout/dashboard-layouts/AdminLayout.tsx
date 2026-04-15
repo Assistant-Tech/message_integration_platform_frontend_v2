@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import {
-  CollapseSidebar,
+  // CollapseSidebar,
   TopNavbar,
 } from "@/app/features/dashboard/admin/component/ui";
 import SubscriptionListener from "@/app/socket/listeners/SubscriptionListener";
@@ -9,6 +9,7 @@ import { AnnouncementBanner } from "@/app/components/common";
 import { useBanner } from "@/app/context/BannerContext";
 import { useNotificationStore } from "@/app/store/notification.store";
 import { useGlobalSocket } from "@/app/hooks/useGlobalSocket";
+import LockedSidebar from "@/app/features/dashboard/admin/component/ui/LockedSidebar";
 
 const AdminLayout = () => {
   const { isVisible } = useBanner();
@@ -33,12 +34,15 @@ const AdminLayout = () => {
         </div>
       )}
       <div className="flex flex-1 min-h-0">
-        <CollapseSidebar
+        <LockedSidebar
           isMobileOpen={isMobileSidebarOpen}
           onMobileClose={() => setIsMobileSidebarOpen(false)}
         />
         <div className="flex flex-col flex-1 overflow-hidden">
-          <TopNavbar showProfileMenu={false} />
+          <TopNavbar
+            showProfileMenu={false}
+            onMobileSidebarOpen={() => setIsMobileSidebarOpen(true)}
+          />
           <main className="overflow-auto flex-1">
             <SubscriptionListener />
             <Outlet />

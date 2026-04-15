@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { HelpCircle, Search } from "lucide-react";
+import { HelpCircle, Menu, Search } from "lucide-react";
 
 import { Button } from "@/app/components/ui";
 import NotificationDropdown from "@/app/components/common/Notification/NotificationDropDown";
@@ -28,6 +28,7 @@ const TopNavbar = ({
   showNotifications = true,
   showProfileMenu = true,
   className,
+  onMobileSidebarOpen,
 }: TopNavbarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -73,13 +74,23 @@ const TopNavbar = ({
   return (
     <header
       className={cn(
-        "w-full border-b border-grey-light bg-base-white px-4 py-2 md:px-12",
+        "w-full border-b border-grey-light bg-base-white px-4 py-2",
         className,
       )}
     >
       <div className="flex items-center justify-between gap-3">
         {/* Title / subtitle ─────────────────────────────────────────────── */}
         <div className="flex min-w-0 flex-1 items-center gap-3">
+          {onMobileSidebarOpen && (
+            <button
+              type="button"
+              onClick={onMobileSidebarOpen}
+              aria-label="Open navigation menu"
+              className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-grey-light bg-base-white text-grey-medium transition-colors hover:border-primary hover:bg-primary-light hover:text-primary md:hidden"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+          )}
           {(resolvedTitle || resolvedSubtitle) && (
             <div className="min-w-0">
               {resolvedTitle && (

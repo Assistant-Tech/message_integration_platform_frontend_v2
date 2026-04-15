@@ -1,4 +1,4 @@
-import { CheckCheck, Info, Tag, UserPlus2 } from "lucide-react";
+import { Info, Tag, UserPlus2 } from "lucide-react";
 import type { Inbox } from "@/app/types/inbox.types";
 import type { ActionHandlers, ConversationAction } from "./types";
 
@@ -28,15 +28,6 @@ export function buildActions(
       isActive: false,
       onSelect: handlers.onTagsClick
         ? () => handlers.onTagsClick!(conversation.id)
-        : undefined,
-    },
-    {
-      key: "resolve",
-      label: "Resolve",
-      Icon: CheckCheck,
-      isActive: conversation.status === "CLOSED",
-      onSelect: handlers.onResolve
-        ? () => handlers.onResolve!(conversation.id)
         : undefined,
     },
   ];

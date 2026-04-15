@@ -41,6 +41,7 @@ const StatCard = ({ stat, index }: StatCardProps) => {
           ) : (
             <TrendingDown className="h-3 w-3" />
           )}
+          {isPositiveTrend ? "+" : "-"}
           {Math.abs(stat.trend)}%
         </span>
       </div>

@@ -20,7 +20,9 @@ const UserLayout = () => {
           onMobileClose={() => setIsMobileSidebarOpen(false)}
         />
         <div className="flex flex-col flex-1 overflow-hidden">
-          <TopNavbar />
+          <TopNavbar
+            onMobileSidebarOpen={() => setIsMobileSidebarOpen(true)}
+          />
           <main className="overflow-auto flex-1">
             <Outlet />
           </main>

@@ -63,15 +63,12 @@ const SidebarIcon = ({
   );
 };
 
-interface CollapsibleSidebarProps {
+interface LockedSiProps {
   isMobileOpen?: boolean;
   onMobileClose?: () => void;
 }
 
-const CollapsibleSidebar = ({
-  isMobileOpen = false,
-  onMobileClose,
-}: CollapsibleSidebarProps) => {
+const LockedSi = ({ isMobileOpen = false, onMobileClose }: LockedSiProps) => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -113,12 +110,20 @@ const CollapsibleSidebar = ({
         item.submenu?.some((sub) => {
           const pathOnly = stripQuery(sub.href);
           return (
-            Boolean(matchPath({ path: pathOnly, end: true }, location.pathname)) ||
             Boolean(
-              matchPath({ path: `${pathOnly}/*`, end: false }, location.pathname),
+              matchPath({ path: pathOnly, end: true }, location.pathname),
             ) ||
             Boolean(
-              matchPath({ path: `*/${pathOnly}`, end: false }, location.pathname),
+              matchPath(
+                { path: `${pathOnly}/*`, end: false },
+                location.pathname,
+              ),
+            ) ||
+            Boolean(
+              matchPath(
+                { path: `*/${pathOnly}`, end: false },
+                location.pathname,
+              ),
             )
           );
         }),
@@ -424,4 +429,4 @@ const CollapsibleSidebar = ({
   );
 };
 
-export default CollapsibleSidebar;
+export default LockedSi;

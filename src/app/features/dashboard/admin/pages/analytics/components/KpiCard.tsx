@@ -40,8 +40,6 @@ const MiniSparkline = ({ data }: { data: number[] }) => {
 
 const KpiCard = ({ metric, index }: KpiCardProps) => {
   const isPositive = metric.change >= 0;
-  const isResponseTime = metric.label.includes("Response Time");
-  const isGood = isResponseTime ? !isPositive : isPositive;
 
   return (
     <motion.article
@@ -61,7 +59,7 @@ const KpiCard = ({ metric, index }: KpiCardProps) => {
             <span
               className={cn(
                 "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold",
-                isGood
+                isPositive
                   ? "bg-success-light text-success"
                   : "bg-danger-light text-danger",
               )}
@@ -71,6 +69,7 @@ const KpiCard = ({ metric, index }: KpiCardProps) => {
               ) : (
                 <TrendingDown className="h-3 w-3" />
               )}
+              {isPositive ? "+" : "-"}
               {Math.abs(metric.change)}%
             </span>
             <span className="caption-medium-12 text-grey-medium/60">
@@ -79,7 +78,12 @@ const KpiCard = ({ metric, index }: KpiCardProps) => {
           </div>
         </div>
 
-        <div className={cn("flex-shrink-0", isGood ? "text-success" : "text-danger")}>
+        <div
+          className={cn(
+            "flex-shrink-0",
+            isPositive ? "text-success" : "text-danger",
+          )}
+        >
           <MiniSparkline data={metric.sparkline} />
         </div>
       </div>

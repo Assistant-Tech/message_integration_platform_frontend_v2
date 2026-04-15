@@ -10,6 +10,7 @@ export interface TopNavbarProps {
   showNotifications?: boolean;
   showProfileMenu?: boolean;
   className?: string;
+  onMobileSidebarOpen?: () => void;
 }
 
 /* ─── Search destinations ─────────────────────────────────────────────────── */

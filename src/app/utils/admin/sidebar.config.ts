@@ -42,7 +42,25 @@ export const sidebarItems: SidebarItem[] = [
     label: "Inbox",
     icon: conversationsIconUrl,
     href: APP_ROUTES.ADMIN.CONVERSATION,
+    hasSubmenu: true,
     roles: ["TENANT_ADMIN", "MEMBER"],
+    submenu: [
+      {
+        label: "All",
+        href: `${APP_ROUTES.ADMIN.CONVERSATION}?view=all`,
+        roles: ["TENANT_ADMIN", "MEMBER"],
+      },
+      {
+        label: "Customer",
+        href: `${APP_ROUTES.ADMIN.CONVERSATION}?view=customer`,
+        roles: ["TENANT_ADMIN", "MEMBER"],
+      },
+      {
+        label: "Team",
+        href: `${APP_ROUTES.ADMIN.CONVERSATION}?view=team`,
+        roles: ["TENANT_ADMIN", "MEMBER"],
+      },
+    ],
   },
   {
     label: "Contact",
