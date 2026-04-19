@@ -11,7 +11,6 @@ export interface ConversationAction {
 
 export interface ChatPanelHeaderProps {
   conversation: Inbox;
-  isConnected: boolean;
   onDetailsToggle?: () => void;
   isDetailsOpen?: boolean;
   onAssignToggle?: () => void;

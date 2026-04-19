@@ -4,7 +4,7 @@ import { formatMessageTime } from "@/app/components/common/Conversation/panel/he
 import ChatEmptyState from "@/app/components/common/Conversation/panel/ChatEmptyState";
 import MessageBubble from "@/app/components/common/Conversation/panel/MessageBubble";
 import ChatComposer from "@/app/components/common/Conversation/panel/ChatComposer";
-import InboxSkeleton from "@/app/components/ui/InboxSkeleton";
+import { ConversationMessagesSkeleton } from "@/app/components/ui/InboxSkeleton";
 import { InboxMessage } from "@/app/types/message.types";
 import { useMessage } from "@/app/features/inbox/hooks/useMessage";
 import { useSendMessage } from "@/app/features/inbox/hooks/useSendMessage";
@@ -53,7 +53,7 @@ const ChatPanel = ({
 
   // Socket Connection Idealogy
   const conversationId = conversation?.id ?? null;
-  const { isConnected, isTyping, emitTypingStart, emitTypingStop } =
+  const { isTyping, emitTypingStart, emitTypingStop } =
     useChatSocket(conversationId ?? null);
 
   useEffect(() => {
@@ -174,7 +174,6 @@ const ChatPanel = ({
     <div className="flex h-full w-full flex-col overflow-hidden">
       <ChatPanelHeader
         conversation={conversation}
-        isConnected={isConnected}
         onDetailsToggle={onDetailsToggle}
         isDetailsOpen={isDetailsOpen}
         onAssignToggle={onAssignToggle}
@@ -189,7 +188,7 @@ const ChatPanel = ({
         className="min-h-0 flex-1 overflow-y-auto bg-white px-5 py-4"
       >
         {isLoadingMessages ? (
-          <InboxSkeleton />
+          <ConversationMessagesSkeleton />
         ) : (
           <div className="flex min-h-full flex-col justify-end gap-4">
             {canLoadMore && (

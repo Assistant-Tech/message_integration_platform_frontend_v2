@@ -33,12 +33,6 @@ export function buildActions(
   ];
 }
 
-export function getConnectionDisplay(isConnected: boolean) {
-  return isConnected
-    ? { label: "Live", className: "text-success" as const }
-    : { label: "Reconnecting", className: "text-secondary" as const };
-}
-
 export function getDisplayName(conversation: Inbox): string {
   return conversation.contact?.name ?? conversation.title;
 }

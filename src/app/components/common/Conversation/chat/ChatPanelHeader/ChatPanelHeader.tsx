@@ -4,12 +4,11 @@ import { Button, Label } from "@/app/components/ui";
 import { cn } from "@/app/utils/cn";
 
 import ActionMenu from "./ActionMenu";
-import { buildActions, getConnectionDisplay, getDisplayName } from "./logic";
+import { buildActions, getDisplayName } from "./logic";
 import type { ChatPanelHeaderProps } from "./types";
 
 const ChatPanelHeader = ({
   conversation,
-  isConnected,
   onDetailsToggle,
   isDetailsOpen = false,
   onAssignToggle,
@@ -18,7 +17,6 @@ const ChatPanelHeader = ({
   onTagsClick,
 }: ChatPanelHeaderProps) => {
   const displayName = getDisplayName(conversation);
-  const connection = getConnectionDisplay(isConnected);
   const actions = buildActions(conversation, {
     onDetailsToggle,
     isDetailsOpen,
@@ -44,10 +42,6 @@ const ChatPanelHeader = ({
           <span className="flex flex-wrap items-center gap-1.5 text-xs text-grey-medium">
             <span className="capitalize">
               {conversation.channel.toLowerCase()}
-            </span>
-            <Label variant="status" value={conversation.status} />
-            <span className={cn("font-medium", connection.className)}>
-              {connection.label}
             </span>
             {conversation.priority !== "NORMAL" && (
               <Label variant="priority" value={conversation.priority} />

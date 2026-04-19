@@ -30,28 +30,39 @@ const ConversationRowSkeleton = ({ delay = 0 }: { delay?: number }) => (
   </div>
 );
 
-/** One message bubble skeleton — customer (left) or agent (right) */
-const MessageSkeleton = ({
-  align,
+/** One incoming message bubble skeleton — mirrors MessageBubble (left, avatar + bubble) */
+const IncomingMessageSkeleton = ({
   width,
   height,
   delay = 0,
+  showAvatar = true,
 }: {
-  align: "left" | "right";
   width: string;
   height: string;
   delay?: number;
+  showAvatar?: boolean;
 }) => (
-  <div className={`flex items-end gap-2 ${align === "right" ? "flex-row-reverse" : ""}`}>
-    {align === "left" && (
-      <Bone className="h-7 w-7 flex-shrink-0 rounded-full" delay={delay} />
+  <div className="flex w-full items-end gap-2">
+    {showAvatar ? (
+      <Bone className="h-12 w-12 flex-shrink-0 rounded-full" delay={delay} />
+    ) : (
+      <div className="w-12 flex-shrink-0" />
     )}
     <Bone
-      className={`${height} ${width} rounded-2xl ${
-        align === "left" ? "rounded-tl-sm" : "rounded-tr-sm"
-      }`}
+      className={`${height} ${width} max-w-[70%] rounded-2xl rounded-tl-sm`}
       delay={delay}
     />
+  </div>
+);
+
+/** Messages area skeleton — incoming-style bubbles for chat panel loading state */
+export const ConversationMessagesSkeleton = () => (
+  <div className="flex min-h-full flex-col justify-end gap-4">
+    <IncomingMessageSkeleton width="w-56" height="h-10" delay={0} />
+    <IncomingMessageSkeleton width="w-72" height="h-16" delay={120} showAvatar={false} />
+    <IncomingMessageSkeleton width="w-44" height="h-8" delay={240} />
+    <IncomingMessageSkeleton width="w-64" height="h-12" delay={360} />
+    <IncomingMessageSkeleton width="w-52" height="h-10" delay={480} showAvatar={false} />
   </div>
 );
 
@@ -101,13 +112,8 @@ const InboxSkeleton = () => (
           </div>
 
           {/* Messages */}
-          <div className="flex flex-1 flex-col justify-end gap-3.5 px-5 py-4 overflow-hidden">
-            <MessageSkeleton align="left"  width="w-52" height="h-12" delay={0}   />
-            <MessageSkeleton align="right" width="w-44" height="h-9"  delay={80}  />
-            <MessageSkeleton align="left"  width="w-64" height="h-16" delay={160} />
-            <MessageSkeleton align="right" width="w-36" height="h-9"  delay={240} />
-            <MessageSkeleton align="left"  width="w-56" height="h-12" delay={320} />
-            <MessageSkeleton align="right" width="w-48" height="h-14" delay={400} />
+          <div className="flex flex-1 flex-col justify-end px-5 py-4 overflow-hidden">
+            <ConversationMessagesSkeleton />
           </div>
 
           {/* Composer */}

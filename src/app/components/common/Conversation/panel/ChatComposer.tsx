@@ -423,8 +423,22 @@ const ChatComposer = ({
               aria-hidden
               className="inline-flex h-2.5 w-2.5 flex-shrink-0 animate-pulse rounded-full bg-red-500"
             />
-            <span className="label-regular-16 min-w-0 flex-1 truncate text-grey">
-              Recording… {formatDuration(recordingElapsed)}
+            {/* Live waveform bars */}
+            <div className="flex h-6 flex-1 items-center gap-[2px]" aria-hidden>
+              {Array.from({ length: 24 }, (_, i) => (
+                <div
+                  key={i}
+                  className="w-[3px] flex-shrink-0 rounded-full bg-red-400"
+                  style={{
+                    height: `${30 + Math.sin((recordingElapsed * 3) + i * 0.7) * 30 + Math.cos(i * 1.3) * 25}%`,
+                    opacity: 0.5 + Math.sin((recordingElapsed * 2) + i) * 0.3,
+                    transition: "height 0.25s ease-out",
+                  }}
+                />
+              ))}
+            </div>
+            <span className="label-regular-16 flex-shrink-0 tabular-nums text-red-500 font-medium">
+              {formatDuration(recordingElapsed)}
             </span>
             <button
               type="button"
