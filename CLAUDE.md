@@ -1,4 +1,4 @@
-# Claude Code Configuration - RuFlo V2
+# Claude Code Configuration - RuFlo V3
 
 ## Behavioral Rules (Always Enforced)
 

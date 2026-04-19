@@ -7,7 +7,6 @@ import {
   // ShoppingBag,
   // ShoppingCart,
   Users,
-  Megaphone,
   LucideIcon,
 } from "lucide-react";
 
@@ -43,31 +42,13 @@ export const sidebarItems: SidebarItem[] = [
     label: "Inbox",
     icon: conversationsIconUrl,
     href: APP_ROUTES.ADMIN.CONVERSATION,
-    hasSubmenu: true,
     roles: ["TENANT_ADMIN", "MEMBER"],
-    submenu: [
-      {
-        label: "All",
-        href: `${APP_ROUTES.ADMIN.CONVERSATION}?view=all`,
-        roles: ["TENANT_ADMIN", "MEMBER"],
-      },
-      {
-        label: "Customer",
-        href: `${APP_ROUTES.ADMIN.CONVERSATION}?view=customer`,
-        roles: ["TENANT_ADMIN", "MEMBER"],
-      },
-      {
-        label: "Team",
-        href: `${APP_ROUTES.ADMIN.CONVERSATION}?view=team`,
-        roles: ["TENANT_ADMIN", "MEMBER"],
-      },
-    ],
   },
   {
     label: "Contact",
     icon: Contact,
     href: APP_ROUTES.ADMIN.CONTACT,
-    roles: ["TENANT_ADMIN", "CUSTOM"],
+    roles: ["TENANT_ADMIN", "MEMBER", "CUSTOM"],
   },
   {
     label: "Channels",
@@ -81,12 +62,6 @@ export const sidebarItems: SidebarItem[] = [
   //   href: APP_ROUTES.ADMIN.CHATBOT,
   //   roles: ["TENANT_ADMIN"],
   // },
-  {
-    label: "Bulk Messaging",
-    icon: Megaphone,
-    href: APP_ROUTES.ADMIN.BULK_MESSAGING,
-    roles: ["TENANT_ADMIN"],
-  },
   {
     label: "Team Activity",
     icon: Users,
@@ -161,7 +136,7 @@ export const sidebarItems: SidebarItem[] = [
       {
         label: "Security Settings",
         href: APP_ROUTES.ADMIN.SETTINGS_SECURITY,
-        roles: ["TENANT_ADMIN", "MEMBER"],
+        roles: ["TENANT_ADMIN"],
       },
       {
         label: "Chat Settings",

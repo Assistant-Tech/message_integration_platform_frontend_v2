@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Link,
   matchPath,
@@ -78,60 +78,16 @@ const CollapsibleSidebar = ({
   const { data: user } = useCurrentUser();
   const logoutMutation = useLogout();
 
-  const EXPANDED_STORAGE_KEY = "sidebar:expandedMenu";
-
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [expandedMenu, setExpandedMenu] = useState<string | null>(() => {
-    if (typeof window === "undefined") return null;
-    return window.localStorage.getItem(EXPANDED_STORAGE_KEY);
-  });
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (expandedMenu) {
-      window.localStorage.setItem(EXPANDED_STORAGE_KEY, expandedMenu);
-    } else {
-      window.localStorage.removeItem(EXPANDED_STORAGE_KEY);
-    }
-  }, [expandedMenu]);
+  const [expandedMenu, setExpandedMenu] = useState<string | null>(null);
 
   const toggleMenu = (label: string) => {
     setExpandedMenu((prev) => (prev === label ? null : label));
   };
 
-  const stripQuery = (href: string) => href.split("?")[0] ?? href;
-  const getQuery = (href: string) => href.split("?")[1] ?? "";
-
   const filteredItems = sidebarItems.filter((item) =>
     item.roles?.includes(user?.roleType ?? ""),
   );
-
-  useEffect(() => {
-    const activeParent = filteredItems.find(
-      (item) =>
-        item.hasSubmenu &&
-        item.submenu?.some((sub) => {
-          const pathOnly = stripQuery(sub.href);
-          return (
-            Boolean(matchPath({ path: pathOnly, end: true }, location.pathname)) ||
-            Boolean(
-              matchPath({ path: `${pathOnly}/*`, end: false }, location.pathname),
-            ) ||
-            Boolean(
-              matchPath({ path: `*/${pathOnly}`, end: false }, location.pathname),
-            )
-          );
-        }),
-    );
-    if (activeParent) {
-      setExpandedMenu(activeParent.label);
-    }
-  }, [location.pathname, filteredItems]);
-
-  const basePath =
-    user?.roleType === "MEMBER"
-      ? `/app/${slug}/dashboard`
-      : `/app/${slug}/admin`;
 
   const planName = "Pro Plan";
   const userName = user?.name || user?.email?.split("@")[0] || "User";
@@ -151,25 +107,10 @@ const CollapsibleSidebar = ({
   };
 
   const matchesRoute = (path: string) => {
-    const pathOnly = stripQuery(path);
     return (
-      Boolean(matchPath({ path: pathOnly, end: true }, location.pathname)) ||
-      Boolean(
-        matchPath({ path: `${pathOnly}/*`, end: false }, location.pathname),
-      )
+      Boolean(matchPath({ path, end: true }, location.pathname)) ||
+      Boolean(matchPath({ path: `${path}/*`, end: false }, location.pathname))
     );
-  };
-
-  const matchesSubRoute = (path: string) => {
-    if (!matchesRoute(path)) return false;
-    const subQuery = getQuery(path);
-    if (!subQuery) return true;
-    const current = new URLSearchParams(location.search);
-    const target = new URLSearchParams(subQuery);
-    for (const [k, v] of target.entries()) {
-      if (current.get(k) !== v) return false;
-    }
-    return true;
   };
 
   return (
@@ -215,13 +156,13 @@ const CollapsibleSidebar = ({
           <nav className="flex-1 p-4 overflow-y-auto [&::-webkit-scrollbar-thumb]:bg-primary [&::-webkit-scrollbar-track]:bg-primary-dark">
             <ul className="space-y-2">
               {filteredItems.map((item, index) => {
-                const finalHref = `${basePath}/${item.href}`;
+                const finalHref = `/app/${slug}/admin/${item.href}`;
 
                 const hasActiveSubmenu =
                   item.hasSubmenu &&
                   Boolean(
                     item.submenu?.some((sub) => {
-                      const subFinalHref = `${basePath}/${sub.href}`;
+                      const subFinalHref = `/app/${slug}/admin/${sub.href}`;
                       return matchesRoute(subFinalHref);
                     }),
                   );
@@ -303,8 +244,8 @@ const CollapsibleSidebar = ({
                                 );
                               })
                               .map((sub, subIndex) => {
-                                const subFinalHref = `${basePath}/${sub.href}`;
-                                const subActive = matchesSubRoute(subFinalHref);
+                                const subFinalHref = `/app/${slug}/admin/${sub.href}`;
+                                const subActive = matchesRoute(subFinalHref);
                                 return (
                                   <li key={subIndex}>
                                     <Link

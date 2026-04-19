@@ -261,7 +261,7 @@ export const getRouteMeta = (pathname: string) => {
 
   return (
     routes.find((route) => route.match.test(pathname)) ?? {
-      title: "Bulk Messaging",
+      title: "Workspace",
       subtitle: "Manage your day-to-day operations",
     }
   );

@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { TopNavbar } from "@/app/features/dashboard/admin/component/ui";
+import LockedSidebar from "@/app/features/dashboard/admin/component/ui/LockedSidebar";
 import SubscriptionListener from "@/app/socket/listeners/SubscriptionListener";
 import { AnnouncementBanner } from "@/app/components/common";
 import { useBanner } from "@/app/context/BannerContext";
 import { useNotificationStore } from "@/app/store/notification.store";
 import { useGlobalSocket } from "@/app/hooks/useGlobalSocket";
-import LockedSidebar from "@/app/features/dashboard/admin/component/ui/LockedSidebar";
 import AppWalkthrough from "@/app/components/common/Walkthrough/AppWalkthrough";
 
 const AdminLayout = () => {
@@ -39,7 +39,7 @@ const AdminLayout = () => {
         <div className="flex flex-col flex-1 overflow-hidden">
           <TopNavbar
             showProfileMenu={false}
-            onMobileSidebarOpen={() => setIsMobileSidebarOpen(true)}
+            onSidebarToggle={() => setIsMobileSidebarOpen((prev) => !prev)}
           />
           <main className="overflow-auto flex-1">
             <SubscriptionListener />

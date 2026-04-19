@@ -16,8 +16,8 @@ const avatarSizeClass = {
 };
 
 const iconSize = {
-  sm: 14,
-  md: 24,
+  sm: 24,
+  md: 32,
 };
 
 const ChatAvatar = ({ name, platform, url, size = "md" }: Props) => {

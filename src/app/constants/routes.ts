@@ -99,8 +99,6 @@ export const APP_ROUTES = {
   USER: {
     ROOT: (slug: string) => `/app/${slug}/dashboard`,
     DASHBOARD: "dashboard",
-    CONVERSATION: "conversation",
-    SETTINGS_PROFILE: "settings/profile",
   },
 };
 
