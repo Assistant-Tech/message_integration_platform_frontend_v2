@@ -25,6 +25,20 @@ const MessageBubble = ({
 }: Props) => {
   const isAgent = message.senderName === "AGENT";
 
+  // Detect media-only messages for Messenger-style full-bleed rendering.
+  // Legacy cached messages may still carry "[Attachment]" as content — treat
+  // that as empty so image-only bubbles render full-bleed correctly.
+  const trimmed = message.content?.trim() ?? "";
+  const hasText = trimmed.length > 0 && trimmed !== "[Attachment]";
+  const hasReply = Boolean(message.replyTo);
+  const isImageOnly =
+    !hasText &&
+    !hasReply &&
+    message.attachments.length > 0 &&
+    message.attachments.every((a) =>
+      a.mimeType?.toLowerCase().startsWith("image/"),
+    );
+
   return (
     <div className={cn("flex w-full flex-col", isAgent ? "items-end" : "items-start")}>
       <div
@@ -44,10 +58,15 @@ const MessageBubble = ({
         {/* Bubble */}
         <div
           className={cn(
-            "max-w-[70%] rounded-2xl px-4 py-2.5 text-sm whitespace-pre-wrap break-words",
-            isAgent
-              ? "rounded-lg bg-primary text-white"
-              : "rounded-lg bg-base-white text-grey shadow-sm ring-1 ring-grey-light",
+            "max-w-[70%] text-sm whitespace-pre-wrap break-words",
+            isImageOnly
+              ? "rounded-2xl overflow-hidden"
+              : cn(
+                  "rounded-2xl rounded-lg px-4 py-2.5",
+                  isAgent
+                    ? "bg-primary text-white"
+                    : "bg-base-white text-grey shadow-sm ring-1 ring-grey-light",
+                ),
           )}
         >
           {message.replyTo && (() => {

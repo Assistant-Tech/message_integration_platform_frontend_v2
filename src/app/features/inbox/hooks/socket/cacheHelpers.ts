@@ -9,6 +9,7 @@ import { QueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS, INBOX_LIST_PARAMS } from "@/app/constants/queryKeys";
 import type { InboxMessage } from "@/app/types/message.types";
 import type { InboxListResponse } from "@/app/types/inbox.types";
+import { getMessagePreview } from "@/app/utils/inbox/messageAdapters";
 
 const INBOX_QUERY_KEY = QUERY_KEYS.INBOX(INBOX_LIST_PARAMS.type, INBOX_LIST_PARAMS.page, INBOX_LIST_PARAMS.limit);
 
@@ -132,7 +133,7 @@ export function updateInboxListWithNewMessage(
 
         return {
           ...conv,
-          lastMessageContent: message.content,
+          lastMessageContent: getMessagePreview(message),
           lastMessageAt: message.timestamp,
           unreadCount: isIncomingCustomerMessage
             ? (conv.unreadCount ?? 0) + 1

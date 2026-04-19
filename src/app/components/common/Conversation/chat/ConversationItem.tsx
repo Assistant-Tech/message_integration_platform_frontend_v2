@@ -6,6 +6,7 @@ import { formatTimestamp } from "@/app/utils/helper";
 import { Button, Label } from "@/app/components/ui";
 import { type Inbox } from "@/app/types/inbox.types";
 import UnreadBadge from "@/app/components/common/Conversation/chat/UnreadBadge";
+import { sanitizePreviewText } from "@/app/utils/inbox/messageAdapters";
 
 interface Props {
   conv: Inbox;
@@ -49,10 +50,11 @@ const ConversationItem = ({
 
   const displayName = conv.contact?.name ?? conv.title;
   const showTyping = Boolean(conv.isTyping);
+  const sanitizedLast = sanitizePreviewText(conv.lastMessageContent, "");
   const preview =
     conv.assignedUser && conv.unreadCount === 0
-      ? `You: ${conv.lastMessageContent ?? ""}`
-      : (conv.lastMessageContent ?? "No message yet");
+      ? `You: ${sanitizedLast}`
+      : sanitizedLast || "No message yet";
 
   const handleDialogDrop = (
     e: React.MouseEvent<HTMLButtonElement>,
@@ -66,7 +68,7 @@ const ConversationItem = ({
     <div
       className={cn(
         "relative group flex items-center justify-between ",
-        "flex h-22 items-start gap-2 border-b border-grey-light px-4 py-3 transition-colors hover:bg-primary-light/50",
+        "flex h-20 items-start gap-2 border-b border-grey-light px-4 py-3 transition-colors hover:bg-primary-light/50",
         isSelected && "bg-primary-light",
       )}
     >
@@ -116,8 +118,9 @@ const ConversationItem = ({
 
           {/* Badges */}
           <div className="mt-1.5 flex flex-wrap gap-1 min-h-5">
-            <Label variant="status" value={conv.status} />
-            <Label variant="priority" value={conv.priority} />
+            {conv.priority !== "NORMAL" && (
+              <Label variant="priority" value={conv.priority} />
+            )}
             {conv.assignedUser && (
               <span className="rounded-full bg-primary-light px-2 py-0.5 text-[10px] font-medium text-primary">
                 {conv.assignedUser.name}
@@ -138,7 +141,7 @@ const ConversationItem = ({
           <Button
             variant="none"
             onClick={(e) => handleDialogDrop(e, conv.id)}
-            className="mt-0.5 inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-grey-light bg-white "
+            className="mt-0.5 inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full border border-grey-light bg-white "
             IconRight={<Ellipsis className="h-4 w-4 rounded-full" />}
           />
         </div>

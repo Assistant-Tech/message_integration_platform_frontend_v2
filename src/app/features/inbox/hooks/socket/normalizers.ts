@@ -5,7 +5,13 @@
  * Handles the unified `inbox:event` payload shape from the backend.
  */
 
-import type { InboxMessage, MessageType, MessageStatus } from "@/app/types/message.types";
+import type {
+  InboxMessage,
+  MessageType,
+  MessageStatus,
+  MessageAttachment,
+  ApiAttachment,
+} from "@/app/types/message.types";
 import type { PlainObject, SenderInfo } from "./types";
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -159,6 +165,39 @@ function mapMessageType(raw: unknown): MessageType {
 }
 
 /**
+ * Extract attachments from socket payload.
+ *
+ * Matches the REST ApiAttachment shape (url, size, filename, originalFilename,
+ * mimeType). Returns normalized MessageAttachment objects so MessageContent
+ * can render media immediately — no "[Attachment]" flash.
+ */
+export function extractAttachments(payload: PlainObject): MessageAttachment[] {
+  const msgData = isPlainObject(payload.message) ? payload.message : null;
+  const raw =
+    (msgData?.attachments as unknown) ??
+    (payload.attachments as unknown) ??
+    [];
+
+  if (!Array.isArray(raw)) return [];
+
+  return raw
+    .filter((a): a is ApiAttachment => isPlainObject(a) && typeof (a as PlainObject).url === "string")
+    .map((a) => {
+      const name =
+        (a.originalFilename as string | undefined) ||
+        (a.filename as string | undefined) ||
+        "";
+      return {
+        id: a.url,
+        url: a.url,
+        name,
+        mimeType: (a.mimeType as string | undefined) ?? "",
+        size: typeof a.size === "number" ? a.size : 0,
+      };
+    });
+}
+
+/**
  * Map backend MessageStatus to frontend MessageStatus.
  */
 function mapMessageStatus(raw: unknown): MessageStatus {
@@ -178,7 +217,9 @@ function mapMessageStatus(raw: unknown): MessageStatus {
  *
  * Handles:
  * - The new unified inbox:event shape (payload.message.*)
- * - Null content for attachment-only messages (uses "[Attachment]" placeholder)
+ * - Attachment-only messages: content stays empty; attachments are extracted
+ *   directly from the socket payload so the UI renders media immediately
+ *   (no "[Attachment]" text flash while media loads)
  * - Sender role mapping: CUSTOMER/BOT → "customer", AGENT → "agent", SYSTEM → "system"
  * - Profile picture URL from payload.message.sender.profilePicUrl
  *
@@ -190,7 +231,8 @@ export function normalizeMessage(payload: unknown): InboxMessage | null {
   const id = extractMessageId(payload);
   if (!id) return null;
 
-  const content = extractMessageContent(payload) ?? "[Attachment]";
+  const content = extractMessageContent(payload) ?? "";
+  const attachments = extractAttachments(payload);
   const { name: senderName, id: senderId, profilePicUrl } = extractSenderInfo(payload);
   const timestamp = extractTimestamp(payload);
 
@@ -215,7 +257,7 @@ export function normalizeMessage(payload: unknown): InboxMessage | null {
     timestamp,
     type,
     status,
-    attachments: [],
+    attachments,
     replyTo: null,
   };
 }

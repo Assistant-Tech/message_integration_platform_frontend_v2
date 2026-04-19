@@ -6,6 +6,7 @@ import type {
 } from "@/app/types/message.types";
 import { sendMessage } from "@/app/services/messages.services";
 import { QUERY_KEYS, INBOX_LIST_PARAMS } from "@/app/constants/queryKeys";
+import { getMessagePreview } from "@/app/utils/inbox/messageAdapters";
 
 type SendMessageMutationContext = {
   previousMessages: Array<[QueryKey, InboxMessage[] | undefined]>;
@@ -85,7 +86,7 @@ export const useSendMessage = (conversationId: string | null) => {
               conv.id === conversationId
                 ? {
                     ...conv,
-                    lastMessageContent: data.content,
+                    lastMessageContent: getMessagePreview(data),
                     lastMessageAt: data.timestamp,
                   }
                 : conv,
