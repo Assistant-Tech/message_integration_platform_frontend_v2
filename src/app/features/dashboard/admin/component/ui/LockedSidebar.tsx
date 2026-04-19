@@ -102,7 +102,7 @@ const LockedSidebar = ({
           aria-hidden
         />
       )}
-      <div className="flex bg-grey-light h-full min-h-0">
+      <div className="flex bg-grey-light h-full min-h-0" data-tour="sidebar">
         <aside
           className={clsx(
             "bg-primary text-white flex flex-col w-20",
@@ -131,8 +131,12 @@ const LockedSidebar = ({
                 const isActive =
                   matchesRoute(finalHref) || Boolean(hasActiveSubmenu);
 
+                const tourKey = item.label
+                  .toLowerCase()
+                  .replace(/\s+/g, "-");
+
                 return (
-                  <li key={index}>
+                  <li key={index} data-tour={`nav-${tourKey}`}>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Link
@@ -164,7 +168,7 @@ const LockedSidebar = ({
           </nav>
 
           <hr className="mx-4" />
-          <div className="p-2">
+          <div className="p-2" data-tour="profile">
             <DropdownMenu.Root>
               <DropdownMenu.Trigger asChild>
                 <button

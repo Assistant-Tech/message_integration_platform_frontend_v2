@@ -30,7 +30,8 @@ const AUTH_QUERY_KEYS = {
  * Only fetches when authenticated
  */
 export const useCurrentUser = () => {
-  const { setTenantSlug, setUser, accessToken } = useAuthStore();
+  const { setTenantSlug, setUser, accessToken, setIsWalkthroughRequired } =
+    useAuthStore();
 
   return useQuery<User>({
     queryKey: AUTH_QUERY_KEYS.currentUser,
@@ -42,6 +43,13 @@ export const useCurrentUser = () => {
       setUser(user);
       if (user.tenant?.slug) {
         setTenantSlug(user.tenant.slug);
+      }
+
+      // Rehydrate walkthrough flag on fresh session from the authoritative
+      // source (tenant object). Undefined means backend hasn't shipped yet —
+      // leave local flag untouched in that case.
+      if (typeof user.tenant?.isWalkthroughRequired === "boolean") {
+        setIsWalkthroughRequired(user.tenant.isWalkthroughRequired);
       }
 
       return user;
@@ -106,11 +114,23 @@ export const useVerifyEmail = () => {
 export const useOnboarding = () => {
   const queryClient = useQueryClient();
   const setRequiresOnboarding = useAuthStore((s) => s.setRequiresOnboarding);
+  const setIsWalkthroughRequired = useAuthStore(
+    (s) => s.setIsWalkthroughRequired,
+  );
 
   return useMutation({
     mutationFn: (data: FormData) => onboarding(data),
-    onSuccess: () => {
+    onSuccess: (res: any) => {
       setRequiresOnboarding(false);
+
+      // Backend spec: onboarding response carries the updated tenant with
+      // `isWalkthroughRequired: true`. Seed the local flag from it so the
+      // walkthrough fires on the very next dashboard entry.
+      const tenantFlag = res?.data?.tenant?.isWalkthroughRequired;
+      if (typeof tenantFlag === "boolean") {
+        setIsWalkthroughRequired(tenantFlag);
+      }
+
       toast.success("Onboarding completed!");
       queryClient.invalidateQueries({ queryKey: AUTH_QUERY_KEYS.currentUser });
     },
@@ -132,6 +152,7 @@ export const useLogin = () => {
     setTenantSlug,
     setAuthenticated,
     setRequiresOnboarding,
+    setIsWalkthroughRequired,
   } = useAuthStore();
 
   return useMutation({
@@ -149,6 +170,9 @@ export const useLogin = () => {
       setCsrfToken(successRes.data.csrfToken);
       setTenantSlug(successRes.data.tenantSlug);
       setRequiresOnboarding(successRes.data.requiresOnboarding);
+      setIsWalkthroughRequired(
+        Boolean(successRes.data.isWalkthroughRequired),
+      );
       setAuthenticated(true);
 
       // Invalidate to refetch user profile

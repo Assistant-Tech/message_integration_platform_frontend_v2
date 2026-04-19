@@ -7,6 +7,7 @@ import { useBanner } from "@/app/context/BannerContext";
 import { useNotificationStore } from "@/app/store/notification.store";
 import { useGlobalSocket } from "@/app/hooks/useGlobalSocket";
 import LockedSidebar from "@/app/features/dashboard/admin/component/ui/LockedSidebar";
+import AppWalkthrough from "@/app/components/common/Walkthrough/AppWalkthrough";
 
 const AdminLayout = () => {
   const { isVisible } = useBanner();
@@ -46,6 +47,7 @@ const AdminLayout = () => {
           </main>
         </div>
       </div>
+      <AppWalkthrough />
     </section>
   );
 };

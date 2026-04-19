@@ -118,7 +118,16 @@ export default defineConfig(({ mode }) => {
     chunkSizeWarningLimit: 9000,
   },
   optimizeDeps: {
-    include: ["react", "react-dom", "framer-motion"],
+    // Pre-bundle on dev server start so the first time a page imports these
+    // packages Vite doesn't trigger a mid-session re-optimize, which causes
+    // "Failed to fetch dynamically imported module" HMR errors for any route
+    // the browser had already fetched (e.g. AdminLayout).
+    include: [
+      "react",
+      "react-dom",
+      "framer-motion",
+      "react-joyride",
+    ],
   },
   };
 });
