@@ -1,0 +1,36 @@
+# Git / CI
+.git
+.github
+.gitignore
+
+# Node / build output
+node_modules
+dist
+dist-ssr
+*.tsbuildinfo
+
+# Local env (never baked into image — passed as build args)
+.env
+.env.local
+.env.production
+.env.staging
+
+# IDE / OS
+.vscode
+.idea
+.DS_Store
+*.swp
+
+# Test output
+coverage
+playwright-report
+test-results
+blob-report
+
+# Misc
+.claude
+.claude-flow
+docs
+README.md
+reports
+stats.html
