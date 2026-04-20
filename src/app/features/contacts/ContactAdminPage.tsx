@@ -248,7 +248,7 @@ const ContactAdminPage = () => {
                       <div className="flex flex-col items-center gap-2">
                         <Users className="h-10 w-10 text-grey-medium/30" />
                         <p className="body-medium-16 text-grey-medium">
-                          No contacts found
+                          No records to show
                         </p>
                         <p className="caption-medium-12 text-grey-medium/60">
                           {search

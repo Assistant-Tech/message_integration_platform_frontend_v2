@@ -48,7 +48,7 @@ export const sidebarItems: SidebarItem[] = [
     label: "Contact",
     icon: Contact,
     href: APP_ROUTES.ADMIN.CONTACT,
-    roles: ["TENANT_ADMIN", "MEMBER", "CUSTOM"],
+    roles: ["TENANT_ADMIN", "CUSTOM"],
   },
   {
     label: "Channels",
@@ -136,7 +136,7 @@ export const sidebarItems: SidebarItem[] = [
       {
         label: "Security Settings",
         href: APP_ROUTES.ADMIN.SETTINGS_SECURITY,
-        roles: ["TENANT_ADMIN"],
+        roles: ["TENANT_ADMIN", "MEMBER"],
       },
       {
         label: "Chat Settings",

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Inbox } from "lucide-react";
 import { cn } from "@/app/utils/cn";
 import { Button } from "@/app/components/ui";
 import type { RecentConversation } from "../types";
@@ -101,14 +101,24 @@ const RecentConversations = ({ conversations }: RecentConversationsProps) => (
     </div>
 
     <div className="flex-1 space-y-1 overflow-y-auto">
-      {conversations.map((conv, i) => (
-        <ConversationRow
-          key={conv.id}
-          conversation={conv}
-          isLast={i === conversations.length - 1}
-          index={i}
-        />
-      ))}
+      {conversations.length > 0 ? (
+        conversations.map((conv, i) => (
+          <ConversationRow
+            key={conv.id}
+            conversation={conv}
+            isLast={i === conversations.length - 1}
+            index={i}
+          />
+        ))
+      ) : (
+        <div className="flex h-full flex-col items-center justify-center gap-2 py-10 text-center">
+          <Inbox className="h-8 w-8 text-grey-medium/40" strokeWidth={1.6} />
+          <p className="body-medium-16 text-grey-medium">No records to show</p>
+          <p className="caption-medium-12 text-grey-medium/60">
+            Recent conversations will appear here
+          </p>
+        </div>
+      )}
     </div>
 
     <Button

@@ -44,10 +44,7 @@ const AdminLayout = () => {
           onMobileClose={() => setIsMobileSidebarOpen(false)}
         />
         <div className="flex flex-col flex-1 overflow-hidden">
-          <TopNavbar
-            showProfileMenu={false}
-            onSidebarToggle={() => setIsMobileSidebarOpen((prev) => !prev)}
-          />
+          <TopNavbar showProfileMenu={false} />
           <main className="overflow-auto flex-1">
             <SubscriptionListener />
             <Outlet />

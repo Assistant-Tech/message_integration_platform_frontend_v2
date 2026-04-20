@@ -6,6 +6,7 @@ import {
   Tag,
   ArrowRightLeft,
   StickyNote,
+  Activity,
 } from "lucide-react";
 import { cn } from "@/app/utils/cn";
 import { ACTION_LABELS } from "./constants";
@@ -50,6 +51,15 @@ const ActivityFeed = ({ events }: ActivityFeedProps) => (
     </div>
 
     <div className="flex-1 space-y-1 overflow-y-auto scrollbar-invisible">
+      {events.length === 0 && (
+        <div className="flex h-full flex-col items-center justify-center gap-2 py-10 text-center">
+          <Activity className="h-8 w-8 text-grey-medium/40" strokeWidth={1.6} />
+          <p className="body-medium-16 text-grey-medium">No records to show</p>
+          <p className="caption-medium-12 text-grey-medium/60">
+            Team activity will stream here
+          </p>
+        </div>
+      )}
       {events.map((event, i) => {
         const ActionIcon = ACTION_ICONS[event.action];
         const iconColor = ACTION_COLORS[event.action];

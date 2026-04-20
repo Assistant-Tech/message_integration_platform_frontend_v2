@@ -213,7 +213,7 @@ const AdminDashboard = () => {
               ))
             ) : (
               <div className="xl:col-span-5">
-                <SectionError message="No metrics available yet" />
+                <SectionError message="No records to show" />
               </div>
             )}
           </section>
@@ -234,7 +234,7 @@ const AdminDashboard = () => {
                   percentChange={chartData.percentChange}
                 />
               ) : (
-                <SectionError message="No chart data available" />
+                <SectionError message="No records to show" />
               )}
             </div>
             <div className="lg:col-span-2">
@@ -265,7 +265,7 @@ const AdminDashboard = () => {
               activityFeed={activityFeed}
             />
           ) : (
-            <SectionError message="No team data available" />
+            <SectionError message="No records to show" />
           )}
         </div>
       </PageShell>

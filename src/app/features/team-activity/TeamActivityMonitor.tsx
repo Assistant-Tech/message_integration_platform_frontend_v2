@@ -170,9 +170,11 @@ const TeamActivityMonitor = ({
             ) : (
               <div className="flex flex-col items-center justify-center gap-2 py-12 text-grey-medium">
                 <Users className="h-8 w-8 opacity-40" />
-                <p className="body-medium-16">No members found</p>
+                <p className="body-medium-16">No records to show</p>
                 <p className="caption-medium-12">
-                  Try adjusting your search or filters
+                  {search || statusFilter !== "all"
+                    ? "Try adjusting your search or filters"
+                    : "Team members will appear here once added"}
                 </p>
               </div>
             )}

@@ -13,14 +13,13 @@ const IntegrationPage = lazy(
     ),
 );
 const AdminDashboardPage = lazy(
-  () =>
-    import("@/app/features/dashboard/admin/pages/dashboard/AdminDashboardPage"),
+  () => import("@/app/features/home/AdminHomePage"),
 );
 
 // FOLDER CHANGED TO FEATURE BASED
 const InboxPage = lazy(() => import("@/app/features/inbox/InboxPage"));
 const ContactPage = lazy(
-  () => import("@/app/features/dashboard/admin/pages/contact/ContactAdminPage"),
+  () => import("@/app/features/contacts/ContactAdminPage"),
 );
 const ChatbotPage = lazy(
   () => import("@/app/features/dashboard/admin/pages/chatbot/ChatbotPage"),
@@ -39,10 +38,7 @@ const AnalyticsPage = lazy(
   () => import("@/app/features/dashboard/admin/pages/analytics/AnalyticsPage"),
 );
 const TeamActivityPage = lazy(
-  () =>
-    import(
-      "@/app/features/dashboard/admin/pages/dashboard/team-activity/TeamActivityPage"
-    ),
+  () => import("@/app/features/team-activity/TeamActivityPage"),
 );
 const ProfileSettings = lazy(
   () => import("@/app/features/dashboard/admin/pages/settings/ProfileSettings"),
