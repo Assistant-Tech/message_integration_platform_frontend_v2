@@ -6,7 +6,6 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable && corepack prepare pnpm@10.10.0 --activate
 WORKDIR /app
-RUN apk add --no-cache curl
 
 # ---- Dependencies ----
 FROM base AS dependencies
@@ -30,11 +29,13 @@ COPY . .
 RUN pnpm build
 
 # ---- Production (nginx) ----
-FROM nginx:alpine AS production
+FROM nginxinc/nginx-unprivileged:alpine AS production
+USER root
 RUN apk add --no-cache curl
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html
-EXPOSE 80
+USER nginx
+EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD curl -fsS http://localhost/ || exit 1
+    CMD curl -fsS http://localhost:8080/ || exit 1
 CMD ["nginx", "-g", "daemon off;"]
