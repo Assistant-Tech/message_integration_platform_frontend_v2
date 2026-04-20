@@ -13,6 +13,8 @@ interface AuthState {
   tenantSlug: string | null;
   isAuthenticated: boolean;
   requiresOnboarding: boolean;
+  /** Backend-driven flag: show the first-time walkthrough after dashboard entry */
+  isWalkthroughRequired: boolean;
   tokenExpiresAt: number | null;
 
   // Runtime state (not persisted)
@@ -27,6 +29,7 @@ interface AuthState {
   setTenantSlug: (slug: string | null) => void;
   setAuthenticated: (authenticated: boolean) => void;
   setRequiresOnboarding: (requires: boolean) => void;
+  setIsWalkthroughRequired: (required: boolean) => void;
   setUser: (user: User | null) => void;
   setTokenExpiresAt: (expiresAt: number | null) => void;
 
@@ -47,6 +50,7 @@ export const useAuthStore = create<AuthState>()(
       tenantSlug: null,
       isAuthenticated: false,
       requiresOnboarding: false,
+      isWalkthroughRequired: false,
       isRefreshing: false,
       isloading: false,
       user: null,
@@ -61,6 +65,8 @@ export const useAuthStore = create<AuthState>()(
       setAuthenticated: (isAuthenticated) => set({ isAuthenticated }),
       setRequiresOnboarding: (requiresOnboarding) =>
         set({ requiresOnboarding }),
+      setIsWalkthroughRequired: (isWalkthroughRequired) =>
+        set({ isWalkthroughRequired }),
       setUser: (user) => set({ user }),
       setTokenExpiresAt: (tokenExpiresAt) => set({ tokenExpiresAt }),
 
@@ -74,6 +80,7 @@ export const useAuthStore = create<AuthState>()(
           tenantSlug: null,
           isAuthenticated: false,
           requiresOnboarding: false,
+          isWalkthroughRequired: false,
           isRefreshing: false,
           isloading: false,
           user: null,
@@ -138,6 +145,7 @@ export const useAuthStore = create<AuthState>()(
         tenantSlug: state.tenantSlug,
         isAuthenticated: state.isAuthenticated,
         requiresOnboarding: state.requiresOnboarding,
+        isWalkthroughRequired: state.isWalkthroughRequired,
         tokenExpiresAt: state.tokenExpiresAt,
       }),
     },

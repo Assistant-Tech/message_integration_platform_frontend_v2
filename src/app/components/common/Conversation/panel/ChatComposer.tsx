@@ -9,6 +9,7 @@ import {
   type KeyboardEvent,
 } from "react";
 import {
+  CornerUpLeft,
   FileText,
   Image as ImageIcon,
   Mic,
@@ -220,26 +221,71 @@ const ChatComposer = ({
   return (
     <div className="border-t border-grey-light bg-base-white/80 px-3 py-3 sm:px-4">
       {/* Reply preview */}
-      {replyTarget && (
-        <div className="mb-2 flex items-start justify-between gap-3 rounded-xl border border-primary/20 bg-primary-light/20 px-3 py-2">
-          <div className="min-w-0 border-l-2 border-primary pl-2">
-            <p className="text-xs font-semibold text-primary">
-              Replying to {replyTarget.senderName}
-            </p>
-            <p className="line-clamp-1 text-xs text-grey-medium">
-              {replyTarget.content}
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={onClearReply}
-            className="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full text-grey-medium transition-colors hover:bg-grey-light hover:text-grey"
-            aria-label="Cancel reply"
-          >
-            <X className="h-3.5 w-3.5" />
-          </button>
-        </div>
-      )}
+      {replyTarget &&
+        (() => {
+          const isSelfReply = replyTarget.senderName === "AGENT";
+          const targetName = isSelfReply ? "yourself" : replyTarget.senderName;
+          const previewText = replyTarget.content?.trim()
+            ? replyTarget.content
+            : "Attachment";
+          return (
+            <div
+              className={cn(
+                "mb-2 flex items-stretch gap-0 overflow-hidden rounded-xl border shadow-sm transition-colors",
+                isSelfReply
+                  ? "border-grey-light bg-grey-light/40"
+                  : "border-primary/25 bg-primary-light/30",
+              )}
+            >
+              <span
+                aria-hidden
+                className={cn(
+                  "w-1 flex-shrink-0",
+                  isSelfReply ? "bg-grey-medium" : "bg-primary",
+                )}
+              />
+              <div className="flex min-w-0 flex-1 items-start gap-2.5 px-3 py-2">
+                <span
+                  className={cn(
+                    "mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full",
+                    isSelfReply
+                      ? "bg-white text-grey-medium"
+                      : "bg-primary/10 text-primary",
+                  )}
+                >
+                  <CornerUpLeft className="h-3.5 w-3.5" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p
+                    className={cn(
+                      "flex items-center gap-1.5 text-xs font-semibold",
+                      isSelfReply ? "text-grey" : "text-primary",
+                    )}
+                  >
+                    Replying to
+                    <span className="truncate">{targetName}</span>
+                    {isSelfReply && (
+                      <span className="rounded-full bg-white px-1.5 py-px text-[10px] font-medium uppercase tracking-wide text-grey-medium">
+                        You
+                      </span>
+                    )}
+                  </p>
+                  <p className="mt-0.5 line-clamp-1 text-xs italic text-grey-medium">
+                    {previewText}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={onClearReply}
+                  className="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full text-grey-medium transition-colors hover:bg-white hover:text-grey"
+                  aria-label="Cancel reply"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+          );
+        })()}
 
       {hasAttachments && (
         <div className="mb-2 flex flex-wrap gap-2">
@@ -377,8 +423,22 @@ const ChatComposer = ({
               aria-hidden
               className="inline-flex h-2.5 w-2.5 flex-shrink-0 animate-pulse rounded-full bg-red-500"
             />
-            <span className="label-regular-16 min-w-0 flex-1 truncate text-grey">
-              Recording… {formatDuration(recordingElapsed)}
+            {/* Live waveform bars */}
+            <div className="flex h-6 flex-1 items-center gap-[2px]" aria-hidden>
+              {Array.from({ length: 24 }, (_, i) => (
+                <div
+                  key={i}
+                  className="w-[3px] flex-shrink-0 rounded-full bg-red-400"
+                  style={{
+                    height: `${30 + Math.sin((recordingElapsed * 3) + i * 0.7) * 30 + Math.cos(i * 1.3) * 25}%`,
+                    opacity: 0.5 + Math.sin((recordingElapsed * 2) + i) * 0.3,
+                    transition: "height 0.25s ease-out",
+                  }}
+                />
+              ))}
+            </div>
+            <span className="label-regular-16 flex-shrink-0 tabular-nums text-red-500 font-medium">
+              {formatDuration(recordingElapsed)}
             </span>
             <button
               type="button"

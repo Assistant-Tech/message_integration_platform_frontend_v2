@@ -1,15 +1,14 @@
+import { Info } from "lucide-react";
 import { ConversationAvatar } from "@/app/components/ui/ConversationAvatar";
-import { Label } from "@/app/components/ui";
+import { Button, Label } from "@/app/components/ui";
 import { cn } from "@/app/utils/cn";
 
 import ActionMenu from "./ActionMenu";
-import ActionPill from "./ActionPill";
-import { buildActions, getConnectionDisplay, getDisplayName } from "./logic";
+import { buildActions, getDisplayName } from "./logic";
 import type { ChatPanelHeaderProps } from "./types";
 
 const ChatPanelHeader = ({
   conversation,
-  isConnected,
   onDetailsToggle,
   isDetailsOpen = false,
   onAssignToggle,
@@ -18,7 +17,6 @@ const ChatPanelHeader = ({
   onTagsClick,
 }: ChatPanelHeaderProps) => {
   const displayName = getDisplayName(conversation);
-  const connection = getConnectionDisplay(isConnected);
   const actions = buildActions(conversation, {
     onDetailsToggle,
     isDetailsOpen,
@@ -29,7 +27,7 @@ const ChatPanelHeader = ({
   });
 
   return (
-    <header className="flex flex-shrink-0 items-center justify-between gap-3 border-b border-grey-light bg-base-white px-4 py-3">
+    <header className="h-18 flex flex-shrink-0 items-center justify-between gap-3 border-b border-grey-light bg-base-white px-4 py-3">
       {/* Identity */}
       <div className="flex min-w-0 items-center gap-3">
         <ConversationAvatar
@@ -45,10 +43,6 @@ const ChatPanelHeader = ({
             <span className="capitalize">
               {conversation.channel.toLowerCase()}
             </span>
-            <Label variant="status" value={conversation.status} />
-            <span className={cn("font-medium", connection.className)}>
-              {connection.label}
-            </span>
             {conversation.priority !== "NORMAL" && (
               <Label variant="priority" value={conversation.priority} />
             )}
@@ -58,14 +52,22 @@ const ChatPanelHeader = ({
 
       {/* Actions */}
       <div className="flex flex-shrink-0 items-center gap-2">
-        <div className="hidden items-center gap-2 xl:flex">
-          {actions.map((action) => (
-            <ActionPill key={action.key} action={action} />
-          ))}
-        </div>
-        <div className="flex xl:hidden">
-          <ActionMenu actions={actions} />
-        </div>
+        <ActionMenu actions={actions} />
+        <Button
+          variant="none"
+          iconOnly
+          size="xs"
+          aria-label="Details"
+          aria-pressed={isDetailsOpen}
+          onClick={onDetailsToggle}
+          IconLeft={<Info className="h-4 w-4" />}
+          className={cn(
+            "!h-9 !w-9 rounded-full border transition-colors",
+            isDetailsOpen
+              ? "border-primary bg-primary-light text-primary"
+              : "border-grey-light bg-base-white text-grey-medium hover:border-primary hover:bg-primary-light hover:text-primary",
+          )}
+        />
       </div>
     </header>
   );

@@ -3,7 +3,11 @@ export interface Tenant {
   id: string;
   slug: string;
   isOnboarded: boolean;
+  /** Backend-owned flag. Flips to true on first onboarding completion, back
+   *  to false when the frontend finishes/dismisses the walkthrough. */
+  isWalkthroughRequired?: boolean;
   industry?: string;
+  isTrialActive?: boolean;
   createdAt?: string;
 }
 
@@ -54,6 +58,11 @@ export interface LoginSuccessResponse {
     accessTokenExpiresIn: number;
     csrfToken: string;
     requiresOnboarding: boolean;
+    /** Backend flag: when true, show the first-time walkthrough after login.
+     *  Authoritative source is `tenant.isWalkthroughRequired` (see
+     *  `/tenant/details` / onboarding response), but the login response may
+     *  also carry this mirrored value during rollout. */
+    isWalkthroughRequired?: boolean;
     tenantSlug: string;
   };
   timestamp: string;

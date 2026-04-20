@@ -1,10 +1,10 @@
 import { test, expect } from "@playwright/test";
-import { mockCurrentUser, TEST_DATA } from "../mocks/auth.mocks";
+import { mockUserProfile, TEST_DATA } from "../mocks/auth.mocks";
 
 test.describe("Dashboard Access", () => {
   test("should access dashboard with tenant slug in URL", async ({ page }) => {
     // Mock: authenticated user with completed onboarding
-    await mockCurrentUser(page, true);
+    await mockUserProfile(page, "admin");
 
     // Set auth state in localStorage
     await page.goto("/");
@@ -42,7 +42,7 @@ test.describe("Dashboard Access", () => {
     });
 
     // Try to access dashboard
-    await page.goto(`/${TEST_DATA.tenantSlug}/admin/dashboard`);
+    await page.goto(`/app/${TEST_DATA.tenantSlug}/admin/dashboard`);
 
     // Assert: redirects to login
     await expect(page).toHaveURL(/\/login/, { timeout: 5000 });
@@ -52,7 +52,7 @@ test.describe("Dashboard Access", () => {
     page,
   }) => {
     // Mock: user with onboarding NOT completed
-    await mockCurrentUser(page, false);
+    await mockUserProfile(page, "requiresOnboarding");
 
     await page.goto("/");
     await page.evaluate((slug) => {
@@ -74,7 +74,7 @@ test.describe("Dashboard Access", () => {
       );
     }, TEST_DATA.tenantSlug);
 
-    await page.goto(`/${TEST_DATA.tenantSlug}/admin/dashboard`);
+    await page.goto(`/app/${TEST_DATA.tenantSlug}/admin/dashboard`);
 
     // Assert: redirects to onboarding (OnboardingGuard redirects based on requiresOnboarding)
     await expect(page).toHaveURL(/\/login/, { timeout: 10000 });
@@ -109,7 +109,7 @@ test.describe("Dashboard Access", () => {
       );
     }, TEST_DATA.tenantSlug);
 
-    await page.goto(`/${TEST_DATA.tenantSlug}/admin/dashboard`);
+    await page.goto(`/app/${TEST_DATA.tenantSlug}/admin/dashboard`);
 
     // Assert: redirects to login after token expiration
     await expect(page).toHaveURL(/\/login/, { timeout: 10000 });

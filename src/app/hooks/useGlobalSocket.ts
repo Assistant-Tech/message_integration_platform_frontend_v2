@@ -15,6 +15,7 @@ import {
 } from "@/app/features/inbox/hooks/socket/socketManager";
 import { createInboxEventHandler } from "@/app/features/inbox/hooks/socket/eventHandlers";
 import type { InboxMessage } from "@/app/types/message.types";
+import { getMessagePreview } from "@/app/utils/inbox/messageAdapters";
 
 /**
  * GLOBAL SOCKET — mounted once in AdminLayout, lives for the entire dashboard session.
@@ -68,10 +69,9 @@ export function useGlobalSocket() {
       // (This check now works because activeConversationIdRef reads from Zustand)
       if (activeConversationIdRef.current === conversationId) return;
 
+      const raw = getMessagePreview(message);
       const preview =
-        message.content.length > 60
-          ? `${message.content.slice(0, 60)}…`
-          : message.content;
+        raw.length > 60 ? `${raw.slice(0, 60)}…` : raw;
 
       toast(message.senderName ?? "New message", {
         description: preview,

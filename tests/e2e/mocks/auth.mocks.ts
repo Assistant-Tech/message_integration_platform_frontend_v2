@@ -82,8 +82,9 @@ export async function mockLoginVerifiedNotOnboarded(page: Page) {
 }
 
 /**
- * Mock login response for unverified email
- * Redirects to: /check-email
+ * Mock login response when backend succeeds but has no tenantSlug yet
+ * (e.g. email not verified / tenant not provisioned).
+ * Frontend behavior: LoginForm.tsx redirects to /check-email.
  */
 export async function mockLoginNotVerified(page: Page) {
   await page.route("**/auth/login", async (route) => {

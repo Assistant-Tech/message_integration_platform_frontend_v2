@@ -25,6 +25,20 @@ const MessageBubble = ({
 }: Props) => {
   const isAgent = message.senderName === "AGENT";
 
+  // Detect media-only messages for Messenger-style full-bleed rendering.
+  // Legacy cached messages may still carry "[Attachment]" as content — treat
+  // that as empty so image-only bubbles render full-bleed correctly.
+  const trimmed = message.content?.trim() ?? "";
+  const hasText = trimmed.length > 0 && trimmed !== "[Attachment]";
+  const hasReply = Boolean(message.replyTo);
+  const isImageOnly =
+    !hasText &&
+    !hasReply &&
+    message.attachments.length > 0 &&
+    message.attachments.every((a) =>
+      a.mimeType?.toLowerCase().startsWith("image/"),
+    );
+
   return (
     <div className={cn("flex w-full flex-col", isAgent ? "items-end" : "items-start")}>
       <div
@@ -44,27 +58,71 @@ const MessageBubble = ({
         {/* Bubble */}
         <div
           className={cn(
-            "max-w-[70%] rounded-2xl px-4 py-2.5 text-sm whitespace-pre-wrap break-words",
-            isAgent
-              ? "rounded-lg bg-primary text-white"
-              : "rounded-lg bg-base-white text-grey shadow-sm ring-1 ring-grey-light",
+            "max-w-[70%] text-sm whitespace-pre-wrap break-words",
+            isImageOnly
+              ? "rounded-2xl overflow-hidden"
+              : cn(
+                  "rounded-2xl rounded-lg px-4 py-2.5",
+                  isAgent
+                    ? "bg-primary text-white"
+                    : "bg-base-white text-grey shadow-sm ring-1 ring-grey-light",
+                ),
           )}
         >
-          {message.replyTo && (
-            <div
-              className={cn(
-                "mb-2 rounded-lg border-l-2 px-2 py-1 text-xs",
-                isAgent
-                  ? "border-white/70 bg-white/15 text-white/90"
-                  : "border-primary/60 bg-base-white text-grey",
-              )}
-            >
-              <p className="font-semibold">{message.replyTo.senderName}</p>
-              <p className="line-clamp-2 opacity-90">
-                {message.replyTo.content}
-              </p>
-            </div>
-          )}
+          {message.replyTo && (() => {
+            const isSelfQuote =
+              message.replyTo.senderName === message.senderName;
+            const quotedName = isSelfQuote
+              ? isAgent
+                ? "You"
+                : contactName
+              : message.replyTo.senderName;
+            const quotedContent = message.replyTo.content?.trim()
+              ? message.replyTo.content
+              : "Attachment";
+            return (
+              <div
+                className={cn(
+                  "mb-2 flex items-stretch gap-0 overflow-hidden rounded-lg text-xs",
+                  isAgent
+                    ? "bg-white/15 text-white/95"
+                    : "bg-primary-light/40 text-grey",
+                )}
+              >
+                <span
+                  aria-hidden
+                  className={cn(
+                    "w-[3px] flex-shrink-0 rounded-l-sm",
+                    isAgent ? "bg-white/80" : "bg-primary",
+                  )}
+                />
+                <div className="min-w-0 flex-1 px-2 py-1.5">
+                  <p
+                    className={cn(
+                      "flex items-center gap-1 font-semibold",
+                      isAgent ? "text-white" : "text-primary",
+                    )}
+                  >
+                    <CornerUpLeft
+                      className={cn(
+                        "h-3 w-3 flex-shrink-0",
+                        isAgent ? "text-white/80" : "text-primary/80",
+                      )}
+                    />
+                    <span className="truncate">{quotedName}</span>
+                  </p>
+                  <p
+                    className={cn(
+                      "mt-0.5 line-clamp-2 italic",
+                      isAgent ? "text-white/85" : "text-grey-medium",
+                    )}
+                  >
+                    {quotedContent}
+                  </p>
+                </div>
+              </div>
+            );
+          })()}
           <MessageContent message={message} isAgent={isAgent} />
         </div>
 

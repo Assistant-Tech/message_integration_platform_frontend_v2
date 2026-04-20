@@ -1,6 +1,7 @@
 import { useNotificationStore } from "@/app/store/notification.store";
 import { useInboxFetchAllQuery } from "@/app/hooks/query/useInboxQuery";
 import { formatTimestamp } from "@/app/utils/helper";
+import { sanitizePreviewText } from "@/app/utils/inbox/messageAdapters";
 import { APP_ROUTES } from "@/app/constants/routes";
 import { INBOX_LIST_PARAMS } from "@/app/constants/queryKeys";
 import { Bell } from "lucide-react";
@@ -92,7 +93,7 @@ const NotificationDropdown = () => {
                       {conversation.contact?.name ?? conversation.title}
                     </p>
                     <p className="truncate text-xs text-grey-medium">
-                      {conversation.lastMessageContent}
+                      {sanitizePreviewText(conversation.lastMessageContent, "No message yet")}
                     </p>
                   </div>
                   <div className="ml-3 flex flex-shrink-0 items-center gap-2">

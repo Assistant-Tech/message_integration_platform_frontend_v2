@@ -1,8 +1,3 @@
-export const CONNECTION_DISPLAY = {
-  connected: { label: "Live", className: "text-success" },
-  disconnected: { label: "Reconnecting", className: "text-secondary" },
-} as const;
-
 export const PILL_BASE =
   "!rounded-full !px-3 !py-1.5 !min-h-0 !gap-1.5 border text-xs font-medium transition-colors";
 

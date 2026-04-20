@@ -106,6 +106,12 @@ const LoginForm = () => {
               navigate(APP_ROUTES.AUTH.ONBOARDING_FORM);
               return;
             }
+
+            if (!res.data.tenantSlug) {
+              navigate(APP_ROUTES.AUTH.CHECK_EMAIL);
+              return;
+            }
+
             navigate(`/app/${res.data.tenantSlug}/admin/dashboard`);
 
             reset();

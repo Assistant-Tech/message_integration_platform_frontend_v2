@@ -24,6 +24,9 @@ const OnboardingForm: React.FC = () => {
   const onboardingMutation = useOnboarding();
   const resetAuth = useAuthStore((s) => s.resetAuth);
   const setRequiresOnboarding = useAuthStore((s) => s.setRequiresOnboarding);
+  const user = useAuthStore((s) => s.user);
+  const firstName =
+    user?.firstName ?? user?.name?.split(" ")[0] ?? "there";
 
   // const { onboarding } = useAuthStore();
 
@@ -228,7 +231,7 @@ const OnboardingForm: React.FC = () => {
       case 4:
         return "Document Upload (Optional)";
       case 5:
-        return "Add Your Memebers (Optional)";
+        return "Add Your Members (Optional)";
       default:
         return "";
     }
@@ -245,7 +248,7 @@ const OnboardingForm: React.FC = () => {
         {/* Intro Text */}
         <div className="mb-10">
           <h1 className="h2-bold-40 text-base-black mb-2">
-            Welcome to Chatblix, Jane!
+            Welcome to Chatblix, {firstName}!
           </h1>
           <p className="text-grey-medium body-regular-16 max-w-2xl">
             Complete your onboarding process by setting up your workplace. The
