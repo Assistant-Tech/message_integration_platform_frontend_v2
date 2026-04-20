@@ -68,7 +68,7 @@ const ConversationItem = ({
     <div
       className={cn(
         "relative group flex items-center justify-between ",
-        "flex h-22 items-start gap-2 border-b border-grey-light px-4 py-3 transition-colors hover:bg-primary-light/50",
+        "flex h-20 items-start gap-2 border-b border-grey-light px-4 py-3 transition-colors hover:bg-primary-light/50",
         isSelected && "bg-primary-light",
       )}
     >

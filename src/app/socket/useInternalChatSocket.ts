@@ -36,7 +36,7 @@ export const useChatSocket = () => {
   useEffect(() => {
     if (!accessToken) return;
 
-    // const socket = io(`${import.meta.env.VITE_API_BASE_URL_TEST}`, {
+    // const socket = io(`${import.meta.env.VITE_API_BASE_URL}`, {
     const socket = io(`https://api.chatblix.com/`, {
       auth: { token: accessToken },
       transports: ["websocket"],

@@ -16,7 +16,7 @@ interface RetriableAxiosRequestConfig extends InternalAxiosRequestConfig {
 // In production the frontend and API share an eTLD+1, so we hit the API directly.
 const baseURL = import.meta.env.DEV
   ? "/api/v1"
-  : import.meta.env.VITE_API_BASE_URL_TEST;
+  : import.meta.env.VITE_API_BASE_URL;
 
 const api = axios.create({
   baseURL,

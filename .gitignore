@@ -14,6 +14,11 @@ dist-ssr
 *.local
 .env
 .env.local
+.env.production
+.env.staging
+
+# TypeScript incremental build cache
+*.tsbuildinfo
 
 # TypeScript incremental build cache
 *.tsbuildinfo

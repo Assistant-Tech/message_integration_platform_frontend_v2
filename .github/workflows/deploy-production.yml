@@ -1,0 +1,126 @@
+name: Deploy Frontend to Production
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: deploy-production-frontend
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy Frontend to Production
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Deploy via SSH
+        id: deploy
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            set -e
+            cd ${{ vars.FRONTEND_APP_DIR }}
+
+            TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+
+            # --- Pre-deploy backup ---
+            echo "==> Creating backup of current frontend container..."
+            if docker ps -q -f name=frontend | grep -q .; then
+              docker commit frontend frontend:backup-$TIMESTAMP
+              echo "Backup tagged: frontend:backup-$TIMESTAMP"
+            else
+              echo "No running frontend container found, skipping backup."
+            fi
+
+            # --- Pull & reset ---
+            echo "==> Fetching latest main..."
+            git fetch origin main
+            git reset --hard origin/main
+
+            # --- Build ---
+            echo "==> Building frontend..."
+            docker compose build --no-cache frontend
+
+            # --- Restart ---
+            echo "==> Starting frontend..."
+            docker compose up -d --no-deps frontend
+
+            # --- Health check ---
+            echo "==> Running health checks..."
+            HEALTH_URL="http://localhost:${{ vars.FRONTEND_PORT }}/"
+            RETRIES=6
+            DELAY=5
+            HEALTHY=false
+
+            for i in $(seq 1 $RETRIES); do
+              echo "Health check attempt $i/$RETRIES..."
+              STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$HEALTH_URL" || true)
+
+              if [ "$STATUS" = "200" ]; then
+                echo "Health check passed."
+                HEALTHY=true
+                break
+              fi
+
+              echo "Got status $STATUS, retrying in ${DELAY}s..."
+              sleep $DELAY
+            done
+
+            # --- Rollback on failure ---
+            if [ "$HEALTHY" = false ]; then
+              echo "==> HEALTH CHECK FAILED. Rolling back..."
+
+              LATEST_BACKUP=$(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'frontend:backup-' | head -1)
+
+              if [ -n "$LATEST_BACKUP" ]; then
+                echo "Rolling back to $LATEST_BACKUP"
+                docker tag "$LATEST_BACKUP" frontend:latest
+                docker compose up -d --no-deps frontend
+                echo "Rollback complete."
+              else
+                echo "ERROR: No backup image found for rollback!"
+              fi
+
+              exit 1
+            fi
+
+            # --- Cleanup old backups (keep last 3) ---
+            echo "==> Cleaning up old backup images..."
+            docker images --format '{{.Repository}}:{{.Tag}}' \
+              | grep 'frontend:backup-' \
+              | sort -r \
+              | tail -n +4 \
+              | xargs -r docker rmi || true
+
+            docker image prune -f
+            echo "==> Production deploy complete."
+
+  notify:
+    name: Deployment Summary
+    needs: deploy
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Write summary
+        run: |
+          echo "## Frontend Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| **Environment** | production |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Commit** | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Actor** | ${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Deploy Status** | ${{ needs.deploy.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Triggered by** | push to main |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Timestamp** | $(date -u +'%Y-%m-%d %H:%M:%S UTC') |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ needs.deploy.result }}" = "failure" ]; then
+            echo "> **Auto-rollback was triggered.** Check the deploy logs for details." >> $GITHUB_STEP_SUMMARY
+          fi

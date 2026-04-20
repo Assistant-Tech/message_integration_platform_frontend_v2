@@ -22,7 +22,9 @@ root.render(
       <App />
       {import.meta.env.DEV && (
         <React.Suspense fallback={null}>
-          <ReactQueryDevtools initialIsOpen={false} />
+          {import.meta.env.APP_STAGE == "development" && (
+            <ReactQueryDevtools initialIsOpen={false} />
+          )}
         </React.Suspense>
       )}
     </BannerProvider>

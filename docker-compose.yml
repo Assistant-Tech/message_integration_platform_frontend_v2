@@ -1,0 +1,45 @@
+services:
+  frontend:
+    container_name: frontend
+    build:
+      context: .
+      target: production
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL}
+        VITE_SOCKET_URL: ${VITE_SOCKET_URL}
+        VITE_CLOUDINARY_BASE_URL: ${VITE_CLOUDINARY_BASE_URL}
+        VITE_NEWSLETTER_MODAL_KEY: ${VITE_NEWSLETTER_MODAL_KEY}
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -qO- http://localhost:8080/ >/dev/null 2>&1 || exit 1",
+        ]
+      interval: 1m30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+    networks:
+      - chatblix-frontend-network
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared_frontend
+    env_file:
+      - .env.production
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    depends_on:
+      - frontend
+    networks:
+      - chatblix-frontend-network
+
+networks:
+  chatblix-frontend-network:
+    driver: bridge
