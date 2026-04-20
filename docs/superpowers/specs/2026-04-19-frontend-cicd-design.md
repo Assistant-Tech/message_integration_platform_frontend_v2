@@ -38,7 +38,7 @@ Add a GitHub Actions CI/CD pipeline for the frontend that mirrors the backend's 
 | Production | `main` | `${FRONTEND_APP_DIR}` | `docker-compose.yml` | `127.0.0.1:8080` | `frontend` | prod-domain → `http://localhost:8080` |
 | Staging | `staging` | `${FRONTEND_STAGING_DIR}` | `docker-compose.staging.yml` | `127.0.0.1:8081` | `chatblix-frontend-staging` | staging-domain → `http://localhost:8081` |
 
-The container listens on nginx port 80 internally; compose maps it to the localhost host port. Cloudflared tunnel (already installed on VPS for backend) terminates TLS and forwards to these localhost ports.
+The container listens on nginx port 8080 internally (using `nginxinc/nginx-unprivileged:alpine`, which runs as UID 101 and binds to 8080 by default — chosen to keep the production stage rootless). Compose maps it to the localhost host port (`127.0.0.1:8080:8080` prod, `127.0.0.1:8081:8080` staging). Cloudflared tunnel (already installed on VPS for backend) terminates TLS and forwards to these localhost ports.
 
 ### 3.2 Container
 
@@ -76,11 +76,11 @@ Multi-stage:
 1. `base` — `node:22-alpine`, corepack, pnpm activated, curl installed.
 2. `dependencies` — copy `pnpm-lock.yaml` + `package.json`, run `pnpm install --frozen-lockfile` with a cache mount on `/pnpm/store`.
 3. `build` — copy rest of source. Declare `ARG VITE_API_URL`, `ARG VITE_SOCKET_URL`, etc., and re-expose as `ENV`. Run `pnpm build` → `dist/`.
-4. `production` — `FROM nginx:alpine`. Copy `dist/` to `/usr/share/nginx/html`. Copy `nginx.conf` to `/etc/nginx/conf.d/default.conf`. `EXPOSE 80`. `HEALTHCHECK` curl `/`.
+4. `production` — `FROM nginxinc/nginx-unprivileged:alpine`. Copy `dist/` to `/usr/share/nginx/html`. Copy `nginx.conf` to `/etc/nginx/conf.d/default.conf`. `EXPOSE 8080`. `HEALTHCHECK` uses BusyBox `wget` (the unprivileged image ships without `curl`).
 
 ### 4.2 `nginx.conf`
 
-Single `server` block on port 80. `root /usr/share/nginx/html;`. SPA fallback, gzip, cache rules, security headers as described in 3.3.
+Single `server` block on port 8080. `root /usr/share/nginx/html;`. SPA fallback, gzip, cache rules, security headers as described in 3.3.
 
 ### 4.3 `docker-compose.yml` (production)
 
@@ -261,6 +261,7 @@ New files to be created:
 - `message_integration_platform_frontend_v2/.github/workflows/ci.yml`
 - `message_integration_platform_frontend_v2/.github/workflows/deploy-staging.yml`
 - `message_integration_platform_frontend_v2/.github/workflows/deploy-production.yml`
+- `message_integration_platform_frontend_v2/docs/superpowers/runbooks/frontend-vps-prep.md`
 
 Modified files:
 

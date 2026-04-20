@@ -103,3 +103,13 @@ curl -sS -o /dev/null -w "%{http_code}\n" http://localhost:8081/
 ```
 
 Expected final output: `200`.
+
+## Operational notes
+
+### Rollback caveat — `VITE_*` are baked into image layers
+
+Production `deploy-production.yml` snapshots the running container with `docker commit frontend frontend:backup-<ts>` and rolls back by retagging that snapshot. Because Vite bakes `VITE_*` build args into the JS bundle at build time, a rollback restores the **bundled** `VITE_*` values from the time of that build. If you rotate any `VITE_*` between deploys, a rollback to a pre-rotation backup will restore the old values. Risk is low (these are public URLs/keys, not server-side secrets), but worth knowing when investigating "why did the SPA call the old URL after rollback?"
+
+### Container internal port
+
+The image runs `nginxinc/nginx-unprivileged:alpine` which listens on port `8080` inside the container (not 80). The compose files map host `8080`/`8081` → container `8080`. Cloudflared rules target the host ports, so the internal port is invisible to the tunnel — but useful to know when poking at the container directly with `docker exec ... wget http://localhost:8080/`.
