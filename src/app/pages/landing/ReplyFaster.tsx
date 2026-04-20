@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
-import { Check, MessageSquare, Inbox } from "lucide-react";
+import { Check, Inbox } from "lucide-react";
 import landing from "@/app/content/json/landing.json";
 import {
-  AnimatedBadge,
+  SectionEyebrow,
   GradientHeadline,
   FloatingStatCard,
   LandingContainer,
@@ -71,13 +71,9 @@ const ReplyFaster = () => {
 
         {/* Right: copy + benefits */}
         <div className="order-1 lg:order-2 lg:col-span-6 lg:pl-6">
-          <AnimatedBadge
-            tone="primary"
-            icon={<MessageSquare className="h-3 w-3" strokeWidth={2.2} />}
-            className="mb-5"
-          >
+          <SectionEyebrow align="left" className="mb-5">
             {replyFaster.eyebrow}
-          </AnimatedBadge>
+          </SectionEyebrow>
 
           <GradientHeadline
             lead={replyFaster.title}

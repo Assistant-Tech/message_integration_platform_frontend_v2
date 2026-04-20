@@ -23,4 +23,5 @@ export { default as ScaleBusiness } from "./ScaleBusiness";
 export { default as BuiltAssistant } from "./BuiltAssistant";
 export { default as Testimonials } from "./Testimonials";
 export { default as OrderManagement } from "./OrderManagement";
+export { default as InventoryManagement } from "./InventoryManagement";
 export { default as SeemlessExperience } from "./SeemlessExperience";

@@ -120,16 +120,21 @@ const AppStoreButton = ({
 }) => (
   <motion.a
     href={href}
-    whileHover={{ y: -2 }}
-    transition={{ type: "spring", stiffness: 260, damping: 22 }}
-    className="inline-flex h-14 items-center gap-3 rounded-2xl bg-grey px-5 text-white shadow-[0_14px_30px_-12px_rgba(0,0,0,0.35)] transition-colors hover:bg-base-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2"
+    whileHover={{ scale: 1.04, y: -3 }}
+    whileTap={{ scale: 0.98 }}
+    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+    className="inline-flex h-16 sm:h-14 items-center gap-3 rounded-xl sm:rounded-2xl bg-base-black px-4 sm:px-5 text-white shadow-[0_16px_40px_-12px_rgba(0,0,0,0.4)] border border-grey-light/10 transition-all duration-300 hover:shadow-[0_20px_50px_-16px_rgba(46,94,153,0.3)] hover:border-grey-light/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
   >
-    <span className="text-white">{icon}</span>
+    <span className="flex h-9 w-9 sm:h-8 sm:w-8 items-center justify-center flex-shrink-0">
+      {icon}
+    </span>
     <span className="flex flex-col leading-tight">
-      <span className="text-[10px] uppercase tracking-[0.15em] text-white/70">
+      <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.12em] text-white/60 font-medium">
         {topLine}
       </span>
-      <span className="text-[15px] font-bold">{bottomLine}</span>
+      <span className="text-[14px] sm:text-[15px] font-bold text-white">
+        {bottomLine}
+      </span>
     </span>
   </motion.a>
 );

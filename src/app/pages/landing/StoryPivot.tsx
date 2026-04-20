@@ -1,7 +1,7 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import landing from "@/app/content/json/landing.json";
-import { LandingContainer } from "./_shared";
+import { LandingContainer, SectionEyebrow } from "./_shared";
 
 const { storyPivot } = landing;
 
@@ -55,15 +55,7 @@ const StoryPivot = () => {
       </span>
 
       <LandingContainer className="relative">
-        <motion.p
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="caption-medium-12 font-semibold uppercase tracking-[0.2em] text-primary"
-        >
-          The honest truth
-        </motion.p>
+        <SectionEyebrow align="left">The honest truth</SectionEyebrow>
 
         <h2 className="mt-6 font-meri text-[30px] font-bold leading-[1.15] tracking-[-0.02em] text-grey sm:text-[44px] lg:text-[56px]">
           <motion.span

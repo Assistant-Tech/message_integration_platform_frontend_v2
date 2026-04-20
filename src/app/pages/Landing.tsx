@@ -13,6 +13,8 @@ import {
   ReplyFaster,
   AISupercharge,
   MobileApp,
+  OrderManagement,
+  InventoryManagement,
   Pricing,
   FAQSection,
 } from "@/app/pages/landing";
@@ -54,6 +56,8 @@ const LandingContent = () => {
         <ReplyFaster />
         <AISupercharge />
         <MobileApp />
+        <OrderManagement />
+        <InventoryManagement />
         <Pricing />
         <FAQSection />
         <Footer />
