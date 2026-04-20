@@ -7,3 +7,4 @@ export { default as ShippingSettings } from "@/app/features/dashboard/admin/page
 export { default as SubscriptionSettings } from "@/app/features/dashboard/admin/pages/settings/SubscriptionSettings";
 export { default as NotificationSettings } from "@/app/features/dashboard/admin/pages/settings/NotificationSettings";
 export { default as TenantSettings } from "@/app/features/dashboard/admin/pages/settings/TenantSettings";
+export { default as SettingsHub } from "@/app/features/dashboard/admin/pages/settings/SettingsHub";

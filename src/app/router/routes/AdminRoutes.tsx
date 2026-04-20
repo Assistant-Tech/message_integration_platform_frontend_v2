@@ -40,6 +40,9 @@ const AnalyticsPage = lazy(
 const TeamActivityPage = lazy(
   () => import("@/app/features/team-activity/TeamActivityPage"),
 );
+const SettingsHub = lazy(
+  () => import("@/app/features/dashboard/admin/pages/settings/SettingsHub"),
+);
 const ProfileSettings = lazy(
   () => import("@/app/features/dashboard/admin/pages/settings/ProfileSettings"),
 );
@@ -104,6 +107,7 @@ const AdminRoutes = () => {
           path={APP_ROUTES.ADMIN.TEAM_ACTIVITY}
           element={<TeamActivityPage />}
         />
+        <Route path={APP_ROUTES.ADMIN.SETTINGS} element={<SettingsHub />} />
         <Route
           path={APP_ROUTES.ADMIN.SETTINGS_PROFILE}
           element={<ProfileSettings />}
