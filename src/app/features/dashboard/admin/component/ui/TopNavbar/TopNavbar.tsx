@@ -73,7 +73,7 @@ const TopNavbar = ({
   return (
     <header
       className={cn(
-        "w-full border-b border-grey-light bg-base-white px-4 py-2 md:px-12",
+        "w-full border-b border-grey-light bg-base-white px-4 py-2",
         className,
       )}
     >

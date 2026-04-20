@@ -447,10 +447,6 @@ export const faqData: FAQ[] = [
 ─────────────────────────────────────────────────────────────────────────────
 */
 import { Mail, Phone, MapPin } from "lucide-react";
-import fbBNW from "@/app/assets/icons/fb1.svg";
-import instaBNW from "@/app/assets/icons/in.svg";
-import LinkBNW from "@/app/assets/icons/link.svg";
-import xBNW from "@/app/assets/icons/xx.svg";
 import { APP_ROUTES } from "@/app/constants/routes";
 
 export type FooterLink = {
@@ -499,49 +495,62 @@ export const footerLinks: FooterLinks = {
   ],
   contact: [
     {
-      name: "chatblix@info.com",
-      url: "chatblix@info.com",
+      name: "info@chatblix.com",
+      url: "info@chatblix.com",
       icon: Mail,
     },
     {
-      name: "+977-9810000000",
-      url: "tel:+9779810000000",
+      name: "+977-9712039062",
+      url: "tel:+9779712039062",
       icon: Phone,
     },
     {
-      name: "123 Main Street, Anytown",
+      name: "TD TECH PVT LTD, Rabibhawan, Kathmandu ",
       url: "#",
       icon: MapPin,
     },
   ],
 };
 
+import whatsappIcon from "@/app/assets/dashboard-icons/whatsapp.svg";
+import instaIcon from "@/app/assets/dashboard-icons/insta.svg";
+import fbIcon from "@/app/assets/dashboard-icons/fb.svg";
+import linkIcon from "@/app/assets/dashboard-icons/link.svg";
+import tiktokIcon from "@/app/assets/dashboard-icons/tiktok.svg";
+
 export const SocialFooter: SocialLink[] = [
   {
     name: "Facebook",
-    src: fbBNW,
-    href: "https://wa.me/yourphonenumber",
+    src: fbIcon,
+    href: "https://wa.me/9712039062",
     color: "#25D366",
     size: 44,
   },
   {
     name: "Instagram",
-    src: instaBNW,
+    src: instaIcon,
     href: "https://www.instagram.com/chatblix?igsh=MWI2dmN2dzV0OXA3Mw%3D%3D&utm_source=qr",
     color: "#25D366",
     size: 44,
   },
   {
     name: "LinkedIn",
-    src: LinkBNW,
+    src: linkIcon,
     href: "https://www.linkedin.com/company/chatblix/",
     color: "#25D366",
     size: 44,
   },
   {
     name: "Tiktok",
-    src: xBNW,
+    src: tiktokIcon,
     href: "https://www.tiktok.com/@chatblix?_r=1&_t=ZS-92MQ98V9xkS",
+    color: "#25D366",
+    size: 44,
+  },
+  {
+    name: "WhatsApp",
+    src: whatsappIcon,
+    href: "https://wa.me/9712039062",
     color: "#25D366",
     size: 44,
   },

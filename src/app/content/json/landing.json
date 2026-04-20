@@ -1,7 +1,178 @@
 {
   "hero": {
-    "title": "Talk to All Your Customers in One Place",
-    "subtitle": "One clean, AI-powered app to manage all your chats — WhatsApp, Instagram, Facebook, Telegram, and more."
+    "title": "Every client, answered.",
+    "titleAccent": "Every DM, handled.",
+    "subtitle": "Chatblix brings Instagram, WhatsApp, Messenger, Telegram, and TikTok into one friendly inbox — with AI that replies in your voice, books appointments, and answers the little questions for you. You focus on your clients. We'll keep the conversations flowing.",
+    "primaryCta": { "label": "Start Free — 14 Days", "href": "/register" },
+    "secondaryCta": { "label": "See a 2-min demo", "href": "#demo" },
+    "reassurance": "No credit card. Setup in under 5 minutes. Cancel anytime."
+  },
+
+  "integrations": {
+    "eyebrow": "Built for the apps your customers actually use",
+    "items": [
+      { "name": "WhatsApp", "icon": "whatsapp" },
+      { "name": "Instagram", "icon": "instagram" },
+      { "name": "Messenger", "icon": "messenger" },
+      { "name": "Telegram", "icon": "telegram" },
+      { "name": "TikTok", "icon": "tiktok" },
+      { "name": "Meta Business", "icon": "meta" }
+    ],
+    "note": "Official partners with Meta & TikTok APIs."
+  },
+
+  "storyPivot": {
+    "problem": "Your customers are DMing you on six different apps.",
+    "tension": "You are only looking at two.",
+    "bridge": "Until now."
+  },
+
+  "replyFaster": {
+    "eyebrow": "Reply faster. From anywhere.",
+    "title": "One inbox. Every channel.",
+    "titleAccent": "Zero missed leads.",
+    "description": "Stop tab-switching at 2 AM. Chatblix pulls every message into a single queue — prioritized, assigned, and ready for your team (or your AI) to reply in seconds.",
+    "benefits": [
+      {
+        "title": "Unified queue across 6 channels",
+        "description": "WhatsApp, Instagram, Messenger, Telegram, TikTok, and email — all in one list, sorted by urgency."
+      },
+      {
+        "title": "Assign, tag, resolve — in one click",
+        "description": "Route conversations to the right teammate. Tag VIPs. Mark resolved. Move on."
+      },
+      {
+        "title": "Reply from mobile or desktop",
+        "description": "iOS, Android, and web. Pick up conversations wherever you are."
+      },
+      {
+        "title": "Never miss context",
+        "description": "Customer history, past orders, and notes surface the moment a new message lands."
+      }
+    ],
+    "stats": [
+      { "value": "12k+", "label": "messages unified daily" },
+      { "value": "2.1m", "label": "avg reply time" },
+      { "value": "6→1", "label": "channels, one inbox" },
+      { "value": "+38%", "label": "faster team replies" }
+    ]
+  },
+
+  "aiSupercharge": {
+    "eyebrow": "Your inbox, supercharged with AI",
+    "title": "Your AI replies while you sleep.",
+    "titleAccent": "So no lead ever slips.",
+    "description": "Chatblix AI learns your brand voice, answers FAQs, qualifies leads, and hands off to your team the second a human is needed. It's like hiring a night-shift agent that never logs off.",
+    "heroMockup": {
+      "customerMessage": "Hey, is this still in stock? Need it by Friday 🙏",
+      "aiTyping": "Typing…",
+      "aiReply": "Yes — last 4 in stock. Friday delivery is free if you order in the next 2 hours. Want me to save your size?"
+    },
+    "features": [
+      {
+        "id": "auto-reply",
+        "title": "Smart auto-replies",
+        "description": "AI drafts or sends replies trained on your brand tone and past tickets.",
+        "icon": "Sparkles",
+        "tint": "sky"
+      },
+      {
+        "id": "routing",
+        "title": "Intent-aware routing",
+        "description": "Sales, support, billing — every message lands on the right teammate first try.",
+        "icon": "Route",
+        "tint": "mint"
+      },
+      {
+        "id": "tagging",
+        "title": "Automatic tagging",
+        "description": "Priority, sentiment, topic, VIP — labeled the instant a message arrives.",
+        "icon": "Tags",
+        "tint": "peach"
+      },
+      {
+        "id": "team-assign",
+        "title": "One-click handoff",
+        "description": "AI hands to a human when it's not sure. Humans hand back when it's repetitive.",
+        "icon": "Users",
+        "tint": "lavender"
+      },
+      {
+        "id": "analytics",
+        "title": "Response analytics",
+        "description": "Volume, response time, CSAT, per-teammate — all without a BI tool.",
+        "icon": "LineChart",
+        "tint": "sky"
+      },
+      {
+        "id": "multi-channel",
+        "title": "Every channel, one API",
+        "description": "Native Meta & TikTok integrations — no webhooks duct-taped together.",
+        "icon": "Share2",
+        "tint": "mint"
+      }
+    ]
+  },
+
+  "mobileApp": {
+    "eyebrow": "Take it anywhere",
+    "title": "Your inbox fits in your pocket.",
+    "description": "Get push notifications the moment a customer DMs, reply with one tap, and watch your AI close the rest. Available on iOS and Android.",
+    "bullets": [
+      "Instant push for every channel",
+      "Voice-note replies",
+      "Offline drafts that sync when you're back"
+    ]
+  },
+
+  "pricing": {
+    "eyebrow": "Simple pricing",
+    "title": "Pay for replies, not seats.",
+    "subtitle": "Start free for 14 days. Upgrade when your inbox outgrows the starter plan."
+  },
+
+  "faq": {
+    "eyebrow": "You ask, we answer",
+    "title": "Questions, answered.",
+    "subtitle": "Everything you wanted to know before trying Chatblix.",
+    "defaultOpenId": "item-1",
+    "items": [
+      {
+        "id": "item-1",
+        "question": "Which channels does Chatblix support today?",
+        "answer": "WhatsApp Business, Instagram DMs, Facebook Messenger, Telegram, TikTok DMs, and email — with direct Meta and TikTok API partnerships so nothing is scraped or fragile."
+      },
+      {
+        "id": "item-2",
+        "question": "How does the AI actually reply to customers?",
+        "answer": "Chatblix AI is trained on your brand voice, FAQs, and past conversations. It drafts or sends replies autonomously, escalates to a human when confidence drops, and never hallucinates product details — it only answers from your approved knowledge base."
+      },
+      {
+        "id": "item-3",
+        "question": "Is my customer data safe?",
+        "answer": "Conversations are encrypted in transit and at rest. We never train foundation models on your data. You own every message, and you can export or delete it at any time."
+      },
+      {
+        "id": "item-4",
+        "question": "Can my whole team work in the same inbox?",
+        "answer": "Yes. Assign conversations, leave internal notes, tag teammates, and track who replied to what. Admins get real-time visibility into response time and workload per person."
+      },
+      {
+        "id": "item-5",
+        "question": "Do you have a mobile app?",
+        "answer": "Yes — native iOS and Android apps with push notifications, voice replies, and offline drafts. Download them from the App Store or Google Play."
+      },
+      {
+        "id": "item-6",
+        "question": "How long does setup take?",
+        "answer": "Under 10 minutes. Connect your Meta and TikTok business accounts, import your FAQs, and your AI is answering first-touch DMs the same afternoon."
+      }
+    ]
+  },
+
+  "footer": {
+    "tagline": "Every DM. One inbox. Zero missed leads.",
+    "wordmark": "CHATBLIX"
   },
 
   "features": {
@@ -28,7 +199,7 @@
       {
         "id": 2,
         "title": "Your Data is Safe",
-        "description": "Get simple reports showing how many messages you’ve handled, how quickly you’re replying, and how your team is doing.",
+        "description": "Get simple reports showing how many messages you've handled, how quickly you're replying, and how your team is doing.",
         "icon": "Shield",
         "iconColor": "#2E5E99",
         "animate": true
@@ -69,16 +240,8 @@
     ],
     "closingText": "Whether you're running a one-person shop or managing a team, Chatblix helps you reply faster, stay organized, and grow your business.",
     "floatingIcons": [
-      {
-        "icon": "ShoppingBag",
-        "position": "top-left",
-        "animation": "float"
-      },
-      {
-        "icon": "CreditCard",
-        "position": "bottom-right",
-        "animation": "float"
-      }
+      { "icon": "ShoppingBag", "position": "top-left", "animation": "float" },
+      { "icon": "CreditCard", "position": "bottom-right", "animation": "float" }
     ],
     "sliderImages": [
       {
@@ -118,39 +281,5 @@
     "title": "Create Your AI Chatbots in Minutes",
     "subTitle": "Create chatbots for sales, support, and more. Build intelligent conversational experiences that engage your customers 24/7 with our powerful AI platform.",
     "badge": "AI DRIVEN CHATBOTS"
-  },
-
-  "faq": {
-    "badge": "YOU ASK, WE ANSWER",
-    "title": "Frequently Asked Questions",
-    "subtitle": "Find answers to commonly asked questions in our platform",
-    "defaultOpenId": "item-1",
-    "items": [
-      {
-        "id": "item-1",
-        "question": "What message management features does your platform offer?",
-        "answer": "Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci lorem. Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, suscipit porttitor velit elementum non. Fusce nec pellentesque erat, id lobortis nunc."
-      },
-      {
-        "id": "item-2",
-        "question": "How secure is my data?",
-        "answer": "Fusce nec pellentesque erat, id lobortis nunc. Donec dui leo, ultrices quis. Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, suscipit porttitor velit elementum non."
-      },
-      {
-        "id": "item-3",
-        "question": "Can I customize user permissions?",
-        "answer": "Donec dui leo, ultrices quis turpis nec, sollicitudin sodales. Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, suscipit porttitor velit elementum non."
-      },
-      {
-        "id": "item-4",
-        "question": "Is the platform mobile-friendly?",
-        "answer": "Vivamus pulvinar commodo orci, suscipit porttitor velit elementum non. Vestibulum tempus imperdiet sem ac porttitor. Fusce nec pellentesque erat, id lobortis nunc."
-      },
-      {
-        "id": "item-5",
-        "question": "What kind of support is available?",
-        "answer": "Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, suscipit porttitor velit elementum non. Fusce nec pellentesque erat, id lobortis nunc."
-      }
-    ]
   }
 }

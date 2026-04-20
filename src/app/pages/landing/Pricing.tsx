@@ -5,12 +5,16 @@ import { cn } from "@/app/utils/cn";
 import { usePlans } from "@/app/hooks/usePlans";
 import { usePricingStore } from "@/app/store/pricing.store";
 import { PricingCard } from "@/app/components/common";
-import { Badge, Button, DynamicToggle } from "@/app/components/ui";
+import { Button, DynamicToggle } from "@/app/components/ui";
 import { Plan, Duration, APIDuration, Currency } from "@/app/types/plan.types";
 import { extractFeatures } from "@/app/utils/helper";
 import { Check } from "lucide-react";
 import Ribbon from "../aboutus/components/Ribbon";
 import * as RadioGroup from "@radix-ui/react-radio-group";
+import landing from "@/app/content/json/landing.json";
+import { GradientHeadline, SectionEyebrow } from "./_shared";
+
+const { pricing } = landing;
 
 const Pricing = () => {
   const { currency, duration, setCurrency, setDuration } = usePricingStore();
@@ -51,20 +55,20 @@ const Pricing = () => {
   ];
 
   return (
-    <Box className="px-6 md:px-2 mb-6 max-w-full mx-auto">
+    <Box className="mx-auto w-full max-w-[1600px] px-4 sm:px-6 md:px-8 xl:px-12 2xl:px-0 py-12 sm:py-20">
       <Flex direction="column" align="center" gap="3" mb="6">
-        <div className="flex flex-col items-center text-center space-y-4">
-          <article className="flex flex-col items-center text-center space-y-4">
-            <Badge
-              title="PLANS TAILORED TO YOUR NEEDS"
-              textStyle="body-italic-bold-16"
-            />
-            <h1 className="h2-bold-40 text-grey">Discover Plans For You</h1>
-            <p className="h4-regular-24 text-grey-medium">
-              Whether you're just starting out or ready to scale, we have a plan
-              designed to fit your goals.
-            </p>
-          </article>
+        <div className="flex w-full flex-col items-center text-center space-y-5">
+          <SectionEyebrow>{pricing.eyebrow}</SectionEyebrow>
+          <GradientHeadline lead={pricing.title} as="h2" />
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.45, delay: 0.15 }}
+            className="max-w-xl body-regular-16 text-grey-medium sm:text-[17px] sm:leading-[28px]"
+          >
+            {pricing.subtitle}
+          </motion.p>
 
           <DynamicToggle
             options={pricingOptions}
