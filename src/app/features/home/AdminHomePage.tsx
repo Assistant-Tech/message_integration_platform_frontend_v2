@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { AlertCircle, Loader2 } from "lucide-react";
 import { useAuthStore } from "@/app/store/auth.store";
 import { useMfaStore } from "@/app/store/mfa.store";
 import { Loading } from "@/app/components/common";
@@ -7,17 +8,7 @@ import DashboardHeader from "./components/DashboardHeader";
 import StatCard from "./components/StatCard";
 import IncomeChart from "./components/IncomeChart";
 import RecentConversations from "./components/RecentConversations";
-import {
-  mockStats,
-  mockIncomeData,
-  mockRecentConversations,
-} from "./constants/admin";
-import {
-  TeamActivityMonitor,
-  MOCK_MEMBERS,
-  MOCK_ACTIVITY_FEED,
-  MOCK_SUMMARY,
-} from "@/app/features/team-activity";
+import { TeamActivityMonitor } from "@/app/features/team-activity";
 import {
   useAnalyticsSummary,
   useAnalyticsMessages,
@@ -33,103 +24,148 @@ import {
 } from "./lib/utils";
 import PageShell from "@/app/components/layout/PageShell";
 
+const SectionSkeleton = ({ height = "h-40" }: { height?: string }) => (
+  <div
+    className={`flex w-full items-center justify-center rounded-2xl border border-grey-light/60 bg-white ${height}`}
+  >
+    <Loader2 className="h-5 w-5 animate-spin text-grey-medium" />
+  </div>
+);
+
+const SectionError = ({
+  message,
+  onRetry,
+}: {
+  message: string;
+  onRetry?: () => void;
+}) => (
+  <div className="flex w-full flex-col items-center justify-center gap-2 rounded-2xl border border-danger-light bg-danger-light/20 p-6 text-center">
+    <AlertCircle className="h-6 w-6 text-danger" strokeWidth={1.8} />
+    <p className="body-medium-16 text-danger">{message}</p>
+    {onRetry && (
+      <button
+        type="button"
+        onClick={onRetry}
+        className="label-semi-bold-14 text-primary hover:underline"
+      >
+        Retry
+      </button>
+    )}
+  </div>
+);
+
 const AdminDashboard = () => {
   const { user: profile } = useAuthStore();
   const { displayedRecoveryCodes, closeRecoveryCodes } = useMfaStore();
   const [showRecoveryModal, setShowRecoveryModal] = useState(false);
 
-  // Analytics hooks
-  const { data: summaryResponse } = useAnalyticsSummary("today");
-  const { data: messagesResponse } = useAnalyticsMessages("month");
-  const { data: conversationsResponse } = useAnalyticsConversations();
-  const { data: membersResponse } = useTeamMembers();
-  const { data: teamSummaryResponse } = useTeamSummary();
-  const { data: activitiesResponse } = useTeamActivities();
+  const {
+    data: summaryResponse,
+    isLoading: summaryLoading,
+    isError: summaryError,
+    refetch: refetchSummary,
+  } = useAnalyticsSummary("today");
+  const {
+    data: messagesResponse,
+    isLoading: messagesLoading,
+    isError: messagesError,
+    refetch: refetchMessages,
+  } = useAnalyticsMessages("month");
+  const {
+    data: conversationsResponse,
+    isLoading: conversationsLoading,
+    isError: conversationsError,
+    refetch: refetchConversations,
+  } = useAnalyticsConversations();
+  const {
+    data: membersResponse,
+    isLoading: membersLoading,
+    isError: membersError,
+    refetch: refetchMembers,
+  } = useTeamMembers();
+  const {
+    data: teamSummaryResponse,
+    isLoading: teamSummaryLoading,
+    isError: teamSummaryError,
+    refetch: refetchTeamSummary,
+  } = useTeamSummary();
+  const {
+    data: activitiesResponse,
+    isLoading: activitiesLoading,
+    isError: activitiesError,
+    refetch: refetchActivities,
+  } = useTeamActivities();
 
-  // Transform API data to component-friendly format, fallback to mocks
-  const stats = useMemo(() => {
-    if (summaryResponse?.data) {
-      return transformSummaryToStatCards(summaryResponse.data);
-    }
-    return mockStats;
-  }, [summaryResponse]);
+  const stats = useMemo(
+    () =>
+      summaryResponse?.data
+        ? transformSummaryToStatCards(summaryResponse.data)
+        : [],
+    [summaryResponse],
+  );
 
   const chartData = useMemo(() => {
-    if (messagesResponse?.data) {
-      return {
-        points: messagesResponse.data.points,
-        total: messagesResponse.data.total.toLocaleString(),
-        percentChange: messagesResponse.data.percentChange,
-      };
-    }
+    if (!messagesResponse?.data) return null;
     return {
-      points: mockIncomeData,
-      total: "27,300",
-      percentChange: 14.2,
+      points: messagesResponse.data.points,
+      total: messagesResponse.data.total.toLocaleString(),
+      percentChange: messagesResponse.data.percentChange,
     };
   }, [messagesResponse]);
 
   const conversations = useMemo(() => {
-    if (conversationsResponse?.data) {
-      return conversationsResponse.data.map((conv) => ({
-        id: conv.id,
-        name: conv.contactName,
-        channel: conv.channel,
-        time: new Date(conv.lastMessageAt).toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-        message: conv.lastMessagePreview,
-        avatar: conv.contactAvatar ?? undefined,
-        status: conv.status,
-      }));
-    }
-    return mockRecentConversations;
+    if (!conversationsResponse?.data) return [];
+    return conversationsResponse.data.map((conv) => ({
+      id: conv.id,
+      name: conv.contactName,
+      channel: conv.channel,
+      time: new Date(conv.lastMessageAt).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      message: conv.lastMessagePreview,
+      avatar: conv.contactAvatar ?? undefined,
+      status: conv.status,
+    }));
   }, [conversationsResponse]);
 
   const teamMembers = useMemo(() => {
-    if (membersResponse?.data) {
-      return membersResponse.data.map((m) => ({
-        id: m.id,
-        name: m.name,
-        email: m.email,
-        role: m.role,
-        avatar: m.avatar ?? undefined,
-        status: m.status,
-        activeMinutesToday: m.activeMinutesToday,
-        activeConversations: m.activeConversations,
-        resolvedToday: m.resolvedToday,
-        avgResponseTime: formatDuration(m.avgResponseTimeSeconds),
-        lastActiveAt: formatRelativeTime(m.lastActiveAt),
-      }));
-    }
-    return MOCK_MEMBERS;
+    if (!membersResponse?.data) return [];
+    return membersResponse.data.map((m) => ({
+      id: m.id,
+      name: m.name,
+      email: m.email,
+      role: m.role,
+      avatar: m.avatar ?? undefined,
+      status: m.status,
+      activeMinutesToday: m.activeMinutesToday,
+      activeConversations: m.activeConversations,
+      resolvedToday: m.resolvedToday,
+      avgResponseTime: formatDuration(m.avgResponseTimeSeconds),
+      lastActiveAt: formatRelativeTime(m.lastActiveAt),
+    }));
   }, [membersResponse]);
 
   const teamSummary = useMemo(() => {
-    if (teamSummaryResponse?.data) {
-      const s = teamSummaryResponse.data;
-      return {
-        totalMembers: s.totalMembers,
-        online: s.online,
-        away: s.away,
-        busy: s.busy,
-        offline: s.offline,
-        avgResponseTime: formatDuration(s.avgResponseTimeSeconds),
-        totalResolved: s.totalResolvedToday,
-      };
-    }
-    return MOCK_SUMMARY;
+    if (!teamSummaryResponse?.data) return null;
+    const s = teamSummaryResponse.data;
+    return {
+      totalMembers: s.totalMembers,
+      online: s.online,
+      away: s.away,
+      busy: s.busy,
+      offline: s.offline,
+      avgResponseTime: formatDuration(s.avgResponseTimeSeconds),
+      totalResolved: s.totalResolvedToday,
+    };
   }, [teamSummaryResponse]);
 
   const activityFeed = useMemo(() => {
-    if (activitiesResponse?.data) {
-      return activitiesResponse.data.map((evt) => ({
-        ...evt,
-        timestamp: formatRelativeTime(evt.timestamp),
-      }));
-    }
-    return MOCK_ACTIVITY_FEED;
+    if (!activitiesResponse?.data) return [];
+    return activitiesResponse.data.map((evt) => ({
+      ...evt,
+      timestamp: formatRelativeTime(evt.timestamp),
+    }));
   }, [activitiesResponse]);
 
   useEffect(() => {
@@ -140,43 +176,97 @@ const AdminDashboard = () => {
 
   if (!profile) return <Loading />;
 
+  const teamMonitorLoading =
+    membersLoading || teamSummaryLoading || activitiesLoading;
+  const teamMonitorError =
+    membersError || teamSummaryError || activitiesError;
+  const retryTeamMonitor = () => {
+    refetchMembers();
+    refetchTeamSummary();
+    refetchActivities();
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-base-white to-grey-light/40 py-4 md:py-6 lg:py-8">
       <PageShell>
         <div className="space-y-6">
-          {/* Greeting Banner */}
           <DashboardHeader userName={profile.name} />
 
-          {/* Stat Cards */}
           <section
             className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
             aria-label="Key metrics"
           >
-            {stats.map((stat, index) => (
-              <StatCard key={stat.label} stat={stat} index={index} />
-            ))}
+            {summaryLoading ? (
+              Array.from({ length: 5 }).map((_, i) => (
+                <SectionSkeleton key={i} height="h-36" />
+              ))
+            ) : summaryError ? (
+              <div className="xl:col-span-5">
+                <SectionError
+                  message="Could not load metrics"
+                  onRetry={() => refetchSummary()}
+                />
+              </div>
+            ) : stats.length > 0 ? (
+              stats.map((stat, index) => (
+                <StatCard key={stat.label} stat={stat} index={index} />
+              ))
+            ) : (
+              <div className="xl:col-span-5">
+                <SectionError message="No metrics available yet" />
+              </div>
+            )}
           </section>
 
-          {/* Charts + Conversations Row */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
             <div className="lg:col-span-3">
-              <IncomeChart
-                data={chartData.points}
-                totalValue={chartData.total}
-                percentChange={chartData.percentChange}
-              />
+              {messagesLoading ? (
+                <SectionSkeleton height="h-[26rem]" />
+              ) : messagesError ? (
+                <SectionError
+                  message="Could not load messages chart"
+                  onRetry={() => refetchMessages()}
+                />
+              ) : chartData ? (
+                <IncomeChart
+                  data={chartData.points}
+                  totalValue={chartData.total}
+                  percentChange={chartData.percentChange}
+                />
+              ) : (
+                <SectionError message="No chart data available" />
+              )}
             </div>
             <div className="lg:col-span-2">
-              <RecentConversations conversations={conversations} />
+              {conversationsLoading ? (
+                <SectionSkeleton height="h-[26rem]" />
+              ) : conversationsError ? (
+                <SectionError
+                  message="Could not load conversations"
+                  onRetry={() => refetchConversations()}
+                />
+              ) : (
+                <RecentConversations conversations={conversations} />
+              )}
             </div>
           </div>
 
-          {/* Team Activity Monitor */}
-          <TeamActivityMonitor
-            members={teamMembers}
-            summary={teamSummary}
-            activityFeed={activityFeed}
-          />
+          {teamMonitorLoading ? (
+            <SectionSkeleton height="h-96" />
+          ) : teamMonitorError ? (
+            <SectionError
+              message="Could not load team activity"
+              onRetry={retryTeamMonitor}
+            />
+          ) : teamSummary ? (
+            <TeamActivityMonitor
+              members={teamMembers}
+              summary={teamSummary}
+              activityFeed={activityFeed}
+            />
+          ) : (
+            <SectionError message="No team data available" />
+          )}
         </div>
       </PageShell>
 
