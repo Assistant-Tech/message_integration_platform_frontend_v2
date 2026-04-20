@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState } from "react";
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { TopNavbar } from "@/app/features/dashboard/admin/component/ui";
 import LockedSidebar from "@/app/features/dashboard/admin/component/ui/LockedSidebar";
@@ -7,14 +7,7 @@ import { AnnouncementBanner } from "@/app/components/common";
 import { useBanner } from "@/app/context/BannerContext";
 import { useNotificationStore } from "@/app/store/notification.store";
 import { useGlobalSocket } from "@/app/hooks/useGlobalSocket";
-
-// Lazy-load the walkthrough so `react-joyride` (large dep tree) only enters
-// the graph once the admin dashboard is reached. Keeps public/auth routes
-// out of its pre-bundle surface — which previously caused Vite HMR to evict
-// other dynamic chunks mid-load.
-const AppWalkthrough = lazy(
-  () => import("@/app/components/common/Walkthrough/AppWalkthrough"),
-);
+import AppWalkthrough from "@/app/components/common/Walkthrough/AppWalkthrough";
 
 const AdminLayout = () => {
   const { isVisible } = useBanner();
@@ -51,9 +44,7 @@ const AdminLayout = () => {
           </main>
         </div>
       </div>
-      <Suspense fallback={null}>
-        <AppWalkthrough />
-      </Suspense>
+      <AppWalkthrough />
     </section>
   );
 };
