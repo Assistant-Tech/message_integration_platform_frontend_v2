@@ -32,18 +32,20 @@ git clone -b staging git@github.com:<owner>/<frontend-repo>.git "$FRONTEND_STAGI
 ### 3. Place env files
 
 Production — `$FRONTEND_APP_DIR/.env.production`:
+
 ```
 VITE_API_URL=https://api.chatblix.com
-VITE_API_BASE_URL_TEST=https://api.chatblix.com/api/v1
+VITE_API_BASE_URL=https://api.chatblix.com/api/v1
 VITE_SOCKET_URL=wss://api.chatblix.com
 VITE_CLOUDINARY_BASE_URL=https://res.cloudinary.com/<cloud-name>
 VITE_NEWSLETTER_MODAL_KEY=<prod-newsletter-key>
 ```
 
 Staging — `$FRONTEND_STAGING_DIR/.env.staging`:
+
 ```
 VITE_API_URL=https://staging-api.chatblix.com
-VITE_API_BASE_URL_TEST=https://staging-api.chatblix.com/api/v1
+VITE_API_BASE_URL=https://staging-api.chatblix.com/api/v1
 VITE_SOCKET_URL=wss://staging-api.chatblix.com
 VITE_CLOUDINARY_BASE_URL=https://res.cloudinary.com/<cloud-name>
 VITE_NEWSLETTER_MODAL_KEY=<staging-newsletter-key>
@@ -64,13 +66,14 @@ Expected: `ports free`. If a process holds 8080 or 8081, either stop it or updat
 Edit `/etc/cloudflared/config.yml` (or equivalent) and add routes before the catch-all 404:
 
 ```yaml
-  - hostname: app.chatblix.com
-    service: http://localhost:8080
-  - hostname: staging.chatblix.com
-    service: http://localhost:8081
+- hostname: app.chatblix.com
+  service: http://localhost:8080
+- hostname: staging.chatblix.com
+  service: http://localhost:8081
 ```
 
 Reload:
+
 ```bash
 sudo systemctl reload cloudflared
 ```
@@ -78,17 +81,20 @@ sudo systemctl reload cloudflared
 ### 6. Configure GitHub repository
 
 **Secrets** — reuse from backend:
+
 - `VPS_HOST`
 - `VPS_USER`
 - `VPS_SSH_KEY`
 
 **Variables**:
+
 - `FRONTEND_APP_DIR`
 - `FRONTEND_STAGING_DIR`
 - `FRONTEND_PORT` = `8080`
 - `STAGING_FRONTEND_PORT` = `8081`
 
 **Environments**:
+
 - `production`
 - `staging`
 

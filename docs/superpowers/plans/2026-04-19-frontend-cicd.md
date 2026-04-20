@@ -8,14 +8,16 @@
 
 **Tech Stack:** Vite + React 19, pnpm, nginx:alpine, Docker Compose, GitHub Actions, `appleboy/ssh-action@v1`, cloudflared tunnel (external).
 
-**Source of truth for VITE_* keys (grepped from `src/`):** `VITE_API_URL`, `VITE_API_BASE_URL_TEST`, `VITE_SOCKET_URL`, `VITE_CLOUDINARY_BASE_URL`, `VITE_NEWSLETTER_MODAL_KEY`.
+**Source of truth for VITE\_\* keys (grepped from `src/`):** `VITE_API_URL`, `VITE_API_BASE_URL`, `VITE_SOCKET_URL`, `VITE_CLOUDINARY_BASE_URL`, `VITE_NEWSLETTER_MODAL_KEY`.
 
 **Operating decisions (from user):**
+
 - Work directly on branch `main`. No feature branch. No PR.
 - Commits are **local only**. Do NOT `git push`. First push will trigger `deploy-production.yml`; user will push explicitly once VPS prep is complete.
 - Task 0 (branch setup) and Task 11 (PR) in the original draft are SKIPPED; they are retained below only as "N/A" placeholders so numbering stays stable across reviewers.
 
 **Caveats for the implementer:**
+
 - This is an infra plan. "Verification" = `docker compose config`, `docker build`, `docker run` smoke — not unit tests. Follow the steps literally.
 - Docker 29.4+ and `docker compose` v5+ are already installed locally (verified).
 - `gh` CLI is authed as user `SurajR2` (only relevant if a reviewer wants to cross-check).
@@ -28,18 +30,18 @@
 
 Files to create or modify in `message_integration_platform_frontend_v2/`:
 
-| Path | Responsibility |
-|---|---|
-| `nginx.conf` | SPA routing + caching + gzip + security headers |
-| `.dockerignore` | Exclude build artifacts, secrets, IDE cruft from Docker context |
-| `Dockerfile` | Multi-stage build: pnpm install → vite build → nginx:alpine serve |
-| `docker-compose.yml` | Production service (`127.0.0.1:8080:80`, `.env.production`) |
-| `docker-compose.staging.yml` | Staging service (`127.0.0.1:8081:80`, `.env.staging`) |
-| `.gitignore` | Add `.env.production`, `.env.staging` |
-| `.github/workflows/ci.yml` | PR/push: lint, type-check, test, build |
-| `.github/workflows/deploy-staging.yml` | Push to `staging`: SSH deploy + health check |
-| `.github/workflows/deploy-production.yml` | Push to `main`: backup + SSH deploy + health check + rollback |
-| `docs/superpowers/runbooks/frontend-vps-prep.md` | One-time VPS setup instructions |
+| Path                                             | Responsibility                                                    |
+| ------------------------------------------------ | ----------------------------------------------------------------- |
+| `nginx.conf`                                     | SPA routing + caching + gzip + security headers                   |
+| `.dockerignore`                                  | Exclude build artifacts, secrets, IDE cruft from Docker context   |
+| `Dockerfile`                                     | Multi-stage build: pnpm install → vite build → nginx:alpine serve |
+| `docker-compose.yml`                             | Production service (`127.0.0.1:8080:80`, `.env.production`)       |
+| `docker-compose.staging.yml`                     | Staging service (`127.0.0.1:8081:80`, `.env.staging`)             |
+| `.gitignore`                                     | Add `.env.production`, `.env.staging`                             |
+| `.github/workflows/ci.yml`                       | PR/push: lint, type-check, test, build                            |
+| `.github/workflows/deploy-staging.yml`           | Push to `staging`: SSH deploy + health check                      |
+| `.github/workflows/deploy-production.yml`        | Push to `main`: backup + SSH deploy + health check + rollback     |
+| `docs/superpowers/runbooks/frontend-vps-prep.md` | One-time VPS setup instructions                                   |
 
 Files NOT modified: `.github/workflows/playwright.yml` stays as-is.
 
@@ -54,6 +56,7 @@ Working directly on `main`. No action.
 ## Task 1: Create `nginx.conf`
 
 **Files:**
+
 - Create: `nginx.conf`
 
 - [ ] **Step 1.1: Write `nginx.conf`**
@@ -115,6 +118,7 @@ server {
 - [ ] **Step 1.2: Verify syntax with a throwaway container**
 
 Run:
+
 ```bash
 docker run --rm -v "$PWD/nginx.conf:/etc/nginx/conf.d/default.conf:ro" nginx:alpine nginx -t
 ```
@@ -133,6 +137,7 @@ git commit -m "chore(cicd): add nginx config for SPA serving"
 ## Task 2: Create `.dockerignore`
 
 **Files:**
+
 - Create: `.dockerignore`
 
 - [ ] **Step 2.1: Write `.dockerignore`**
@@ -190,6 +195,7 @@ git commit -m "chore(cicd): add dockerignore"
 ## Task 3: Create `Dockerfile`
 
 **Files:**
+
 - Create: `Dockerfile`
 
 - [ ] **Step 3.1: Write `Dockerfile`**
@@ -216,12 +222,12 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 # ---- Build ----
 FROM dependencies AS build
 ARG VITE_API_URL
-ARG VITE_API_BASE_URL_TEST
+ARG VITE_API_BASE_URL
 ARG VITE_SOCKET_URL
 ARG VITE_CLOUDINARY_BASE_URL
 ARG VITE_NEWSLETTER_MODAL_KEY
 ENV VITE_API_URL=$VITE_API_URL \
-    VITE_API_BASE_URL_TEST=$VITE_API_BASE_URL_TEST \
+    VITE_API_BASE_URL=$VITE_API_BASE_URL \
     VITE_SOCKET_URL=$VITE_SOCKET_URL \
     VITE_CLOUDINARY_BASE_URL=$VITE_CLOUDINARY_BASE_URL \
     VITE_NEWSLETTER_MODAL_KEY=$VITE_NEWSLETTER_MODAL_KEY
@@ -244,10 +250,11 @@ The pnpm version `10.10.0` matches `package.json:packageManager`. Keep them in s
 - [ ] **Step 3.2: Verify the image builds locally with placeholder args**
 
 Run:
+
 ```bash
 docker build \
   --build-arg VITE_API_URL=https://placeholder.example/api \
-  --build-arg VITE_API_BASE_URL_TEST=https://placeholder.example/api \
+  --build-arg VITE_API_BASE_URL=https://placeholder.example/api \
   --build-arg VITE_SOCKET_URL=wss://placeholder.example \
   --build-arg VITE_CLOUDINARY_BASE_URL=https://placeholder.example \
   --build-arg VITE_NEWSLETTER_MODAL_KEY=placeholder \
@@ -261,6 +268,7 @@ If the build fails because of a TypeScript error in source, STOP and report — 
 - [ ] **Step 3.3: Smoke-run the image locally**
 
 Run:
+
 ```bash
 docker run --rm -d --name frontend-smoke -p 127.0.0.1:8090:80 chatblix-frontend:dev
 sleep 3
@@ -282,6 +290,7 @@ git commit -m "chore(cicd): add multi-stage Dockerfile (node build + nginx serve
 ## Task 4: Create `docker-compose.yml` (production)
 
 **Files:**
+
 - Create: `docker-compose.yml`
 
 - [ ] **Step 4.1: Write `docker-compose.yml`**
@@ -297,7 +306,7 @@ services:
       target: production
       args:
         VITE_API_URL: ${VITE_API_URL}
-        VITE_API_BASE_URL_TEST: ${VITE_API_BASE_URL_TEST}
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL}
         VITE_SOCKET_URL: ${VITE_SOCKET_URL}
         VITE_CLOUDINARY_BASE_URL: ${VITE_CLOUDINARY_BASE_URL}
         VITE_NEWSLETTER_MODAL_KEY: ${VITE_NEWSLETTER_MODAL_KEY}
@@ -323,10 +332,11 @@ networks:
 - [ ] **Step 4.2: Validate compose syntax with a temporary env file**
 
 Run:
+
 ```bash
 cat > /tmp/frontend-test.env <<'EOF'
 VITE_API_URL=https://placeholder.example/api
-VITE_API_BASE_URL_TEST=https://placeholder.example/api
+VITE_API_BASE_URL=https://placeholder.example/api
 VITE_SOCKET_URL=wss://placeholder.example
 VITE_CLOUDINARY_BASE_URL=https://placeholder.example
 VITE_NEWSLETTER_MODAL_KEY=placeholder
@@ -353,6 +363,7 @@ git commit -m "chore(cicd): add production docker-compose"
 ## Task 5: Create `docker-compose.staging.yml`
 
 **Files:**
+
 - Create: `docker-compose.staging.yml`
 
 - [ ] **Step 5.1: Write `docker-compose.staging.yml`**
@@ -368,7 +379,7 @@ services:
       target: production
       args:
         VITE_API_URL: ${VITE_API_URL}
-        VITE_API_BASE_URL_TEST: ${VITE_API_BASE_URL_TEST}
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL}
         VITE_SOCKET_URL: ${VITE_SOCKET_URL}
         VITE_CLOUDINARY_BASE_URL: ${VITE_CLOUDINARY_BASE_URL}
         VITE_NEWSLETTER_MODAL_KEY: ${VITE_NEWSLETTER_MODAL_KEY}
@@ -394,10 +405,11 @@ networks:
 - [ ] **Step 5.2: Validate compose syntax**
 
 Run:
+
 ```bash
 cat > /tmp/frontend-staging-test.env <<'EOF'
 VITE_API_URL=https://placeholder.example/api
-VITE_API_BASE_URL_TEST=https://placeholder.example/api
+VITE_API_BASE_URL=https://placeholder.example/api
 VITE_SOCKET_URL=wss://placeholder.example
 VITE_CLOUDINARY_BASE_URL=https://placeholder.example
 VITE_NEWSLETTER_MODAL_KEY=placeholder
@@ -422,11 +434,13 @@ git commit -m "chore(cicd): add staging docker-compose"
 ## Task 6: Update `.gitignore`
 
 **Files:**
+
 - Modify: `.gitignore`
 
 - [ ] **Step 6.1: Confirm current `.gitignore` state**
 
 Run:
+
 ```bash
 grep -E '^\.env(\..+)?$' .gitignore
 ```
@@ -436,12 +450,14 @@ Expected: prints at least `.env` and `.env.local`, and does NOT currently includ
 - [ ] **Step 6.2: Append env entries**
 
 Edit `.gitignore`: immediately after the `.env.local` line, insert two new lines:
+
 ```
 .env.production
 .env.staging
 ```
 
 Verify:
+
 ```bash
 grep -E '^\.env\.(production|staging)$' .gitignore
 ```
@@ -460,6 +476,7 @@ git commit -m "chore(cicd): ignore env files for production and staging"
 ## Task 7: Create `.github/workflows/ci.yml`
 
 **Files:**
+
 - Create: `.github/workflows/ci.yml`
 
 - [ ] **Step 7.1: Write `ci.yml`**
@@ -486,7 +503,7 @@ jobs:
 
     env:
       VITE_API_URL: https://ci-placeholder.example/api
-      VITE_API_BASE_URL_TEST: https://ci-placeholder.example/api
+      VITE_API_BASE_URL: https://ci-placeholder.example/api
       VITE_SOCKET_URL: wss://ci-placeholder.example
       VITE_CLOUDINARY_BASE_URL: https://ci-placeholder.example
       VITE_NEWSLETTER_MODAL_KEY: ci-placeholder
@@ -523,6 +540,7 @@ jobs:
 - [ ] **Step 7.2: Validate YAML**
 
 Run:
+
 ```bash
 python3 -c "import yaml; yaml.safe_load(open('.github/workflows/ci.yml'))" && echo OK
 ```
@@ -541,6 +559,7 @@ git commit -m "ci(cicd): add CI workflow (lint, type-check, test, build)"
 ## Task 8: Create `.github/workflows/deploy-staging.yml`
 
 **Files:**
+
 - Create: `.github/workflows/deploy-staging.yml`
 
 - [ ] **Step 8.1: Write `deploy-staging.yml`**
@@ -633,6 +652,7 @@ jobs:
 - [ ] **Step 8.2: Validate YAML**
 
 Run:
+
 ```bash
 python3 -c "import yaml; yaml.safe_load(open('.github/workflows/deploy-staging.yml'))" && echo OK
 ```
@@ -651,6 +671,7 @@ git commit -m "ci(cicd): add staging deploy workflow"
 ## Task 9: Create `.github/workflows/deploy-production.yml`
 
 **Files:**
+
 - Create: `.github/workflows/deploy-production.yml`
 
 - [ ] **Step 9.1: Write `deploy-production.yml`**
@@ -789,6 +810,7 @@ jobs:
 - [ ] **Step 9.2: Validate YAML**
 
 Run:
+
 ```bash
 python3 -c "import yaml; yaml.safe_load(open('.github/workflows/deploy-production.yml'))" && echo OK
 ```
@@ -807,11 +829,13 @@ git commit -m "ci(cicd): add production deploy workflow with auto-rollback"
 ## Task 10: Write VPS prep runbook
 
 **Files:**
+
 - Create: `docs/superpowers/runbooks/frontend-vps-prep.md`
 
 - [ ] **Step 10.1: Create runbook directory**
 
 Run:
+
 ```bash
 mkdir -p docs/superpowers/runbooks
 ```
@@ -820,7 +844,7 @@ mkdir -p docs/superpowers/runbooks
 
 Create `message_integration_platform_frontend_v2/docs/superpowers/runbooks/frontend-vps-prep.md`:
 
-```markdown
+````markdown
 # Frontend VPS Prep Runbook
 
 One-time setup required on the VPS before the first frontend deploy.
@@ -844,6 +868,7 @@ export FRONTEND_STAGING_DIR=/srv/chatblix-frontend-staging
 sudo mkdir -p "$FRONTEND_APP_DIR" "$FRONTEND_STAGING_DIR"
 sudo chown "$USER":"$USER" "$FRONTEND_APP_DIR" "$FRONTEND_STAGING_DIR"
 ```
+````
 
 ### 2. Clone the repo twice
 
@@ -855,18 +880,20 @@ git clone -b staging git@github.com:<owner>/<frontend-repo>.git "$FRONTEND_STAGI
 ### 3. Place env files
 
 Production — `$FRONTEND_APP_DIR/.env.production`:
+
 ```
 VITE_API_URL=https://api.chatblix.com
-VITE_API_BASE_URL_TEST=https://api.chatblix.com/api/v1
+VITE_API_BASE_URL=https://api.chatblix.com/api/v1
 VITE_SOCKET_URL=wss://api.chatblix.com
 VITE_CLOUDINARY_BASE_URL=https://res.cloudinary.com/<cloud-name>
 VITE_NEWSLETTER_MODAL_KEY=<prod-newsletter-key>
 ```
 
 Staging — `$FRONTEND_STAGING_DIR/.env.staging`:
+
 ```
 VITE_API_URL=https://staging-api.chatblix.com
-VITE_API_BASE_URL_TEST=https://staging-api.chatblix.com/api/v1
+VITE_API_BASE_URL=https://staging-api.chatblix.com/api/v1
 VITE_SOCKET_URL=wss://staging-api.chatblix.com
 VITE_CLOUDINARY_BASE_URL=https://res.cloudinary.com/<cloud-name>
 VITE_NEWSLETTER_MODAL_KEY=<staging-newsletter-key>
@@ -887,13 +914,14 @@ Expected: `ports free`. If a process holds 8080 or 8081, either stop it or updat
 Edit `/etc/cloudflared/config.yml` (or equivalent) and add routes before the catch-all 404:
 
 ```yaml
-  - hostname: app.chatblix.com
-    service: http://localhost:8080
-  - hostname: staging.chatblix.com
-    service: http://localhost:8081
+- hostname: app.chatblix.com
+  service: http://localhost:8080
+- hostname: staging.chatblix.com
+  service: http://localhost:8081
 ```
 
 Reload:
+
 ```bash
 sudo systemctl reload cloudflared
 ```
@@ -901,17 +929,20 @@ sudo systemctl reload cloudflared
 ### 6. Configure GitHub repository
 
 **Secrets** — reuse from backend:
+
 - `VPS_HOST`
 - `VPS_USER`
 - `VPS_SSH_KEY`
 
 **Variables**:
+
 - `FRONTEND_APP_DIR`
 - `FRONTEND_STAGING_DIR`
 - `FRONTEND_PORT` = `8080`
 - `STAGING_FRONTEND_PORT` = `8081`
 
 **Environments**:
+
 - `production`
 - `staging`
 
@@ -926,14 +957,15 @@ curl -sS -o /dev/null -w "%{http_code}\n" http://localhost:8081/
 ```
 
 Expected final output: `200`.
-```
+
+````
 
 - [ ] **Step 10.3: Commit**
 
 ```bash
 git add docs/superpowers/runbooks/frontend-vps-prep.md
 git commit -m "docs(cicd): add VPS prep runbook for frontend deploys"
-```
+````
 
 ---
 
@@ -957,6 +989,7 @@ These cannot be done from the repo and are flagged for the user:
 ## Self-Review Notes
 
 **Spec coverage (all sections mapped):**
+
 - §3.1 environments → Tasks 4, 5, 8, 9, 10.
 - §3.2 container → Task 3.
 - §3.3 nginx → Task 1.
