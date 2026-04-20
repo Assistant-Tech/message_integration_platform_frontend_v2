@@ -54,9 +54,13 @@ const Navbar = forwardRef<NavbarRef, { offsetTop?: number }>(
     });
 
     const navbarStyles = {
-      default: "bg-white border-b border-transparent",
+      // Over the hero: transparent — blends into the aurora background
+      // (no glass, no tint) so it feels like part of the hero chrome.
+      default: "bg-transparent border-b border-transparent",
+      // After scroll: switch to a frosted white glass with a subtle blue
+      // shadow and a hairline divider.
       scrolled:
-        "bg-white/85 backdrop-blur-sm shadow-sm border-b border-gray-100/20",
+        "bg-white/85 backdrop-blur-xl shadow-[0_8px_24px_-16px_rgba(46,94,153,0.25)] border-b border-grey-light/60",
     };
 
     return (

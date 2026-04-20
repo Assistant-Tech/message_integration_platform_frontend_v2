@@ -9,9 +9,9 @@ export const LOGIN_OTP_IMAGE_URL = `${BASE_URL}/v1756630890/loginImage_dhul1r.pn
 export const DEMO_IMAGE_URL = `${BASE_URL}/v1753920904/demo_snjh0d.webp`;
 
 // Dashboard
-export const DASHBOARD_IMAGE_URL = `${BASE_URL}/v1765931633/dashboard2_taupix.png`;
-export const DASHBOARD_IMAGE_URL_2 = `${BASE_URL}/v1765931633/dashboard_dn71id.png`;
-export const DASHBOARD_IMAGE_URL_MOBILE = `${BASE_URL}/v1765931633/dashboard_dn71id.png`;
+export const DASHBOARD_IMAGE_URL = `${BASE_URL}/v1776672485/ss_ixu1ap.png`;
+export const DASHBOARD_IMAGE_URL_2 = `${BASE_URL}/v1776672485/ss_ixu1ap.png`;
+export const DASHBOARD_IMAGE_URL_MOBILE = `${BASE_URL}/v1776672485/ss_ixu1ap.png`;
 
 // Logos
 export const LOGO_FAB_ICON_URL = `${BASE_URL}/v1773126956/Vector_kwwszc.svg`;

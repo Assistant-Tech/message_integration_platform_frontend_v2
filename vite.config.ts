@@ -124,5 +124,22 @@ export default defineConfig(({ mode }) => {
       // the browser had already fetched (e.g. AdminLayout).
       include: ["react", "react-dom", "framer-motion", "react-joyride"],
     },
+    // The `country-data` chunk above legitimately ships ~8MB of reference
+    // data (country/state/city JSON). Everything else should stay under 1MB,
+    // so this limit only silences the warning for that one data chunk.
+    chunkSizeWarningLimit: 9000,
+  },
+  optimizeDeps: {
+    // Pre-bundle on dev server start so the first time a page imports these
+    // packages Vite doesn't trigger a mid-session re-optimize, which causes
+    // "Failed to fetch dynamically imported module" HMR errors for any route
+    // the browser had already fetched (e.g. AdminLayout).
+    include: [
+      "react",
+      "react-dom",
+      "framer-motion",
+      "react-joyride",
+    ],
+  },
   };
 });

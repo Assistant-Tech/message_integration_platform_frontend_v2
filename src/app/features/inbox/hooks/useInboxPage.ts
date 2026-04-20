@@ -8,6 +8,11 @@ import {
 import { useInboxStore } from "@/app/store/inbox.store";
 import { INBOX_LIST_PARAMS } from "@/app/constants/queryKeys";
 import type { Inbox } from "@/app/types/inbox.types";
+// ⚠️ TEMP showcase mock — see src/app/features/inbox/utils/showcaseMock.ts
+import {
+  SHOWCASE_MOCK_ENABLED,
+  MOCK_CONVERSATIONS,
+} from "@/app/features/inbox/utils/showcaseMock";
 
 export const useInboxPage = () => {
   const {
@@ -22,7 +27,12 @@ export const useInboxPage = () => {
   } = useInboxStore();
 
   const { data, isLoading, isError } = useInboxFetchAllQuery(INBOX_LIST_PARAMS.type, INBOX_LIST_PARAMS.page, INBOX_LIST_PARAMS.limit);
-  const conversations: Inbox[] = data?.data ?? [];
+  const apiConversations: Inbox[] = data?.data ?? [];
+  // ⚠️ TEMP showcase mock — real data always wins; mocks fill the empty state.
+  const conversations: Inbox[] =
+    SHOWCASE_MOCK_ENABLED && apiConversations.length === 0
+      ? MOCK_CONVERSATIONS
+      : apiConversations;
 
   const filteredConversations = useMemo(() => {
     const list =
