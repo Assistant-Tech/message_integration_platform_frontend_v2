@@ -1,0 +1,80 @@
+name: Deploy Frontend to Staging
+
+on:
+  push:
+    branches: [staging]
+
+concurrency:
+  group: deploy-staging-frontend
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy Frontend to Staging
+    runs-on: ubuntu-latest
+    environment: staging
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            set -e
+            cd ${{ vars.FRONTEND_STAGING_DIR }}
+
+            echo "==> Fetching latest staging..."
+            git fetch origin staging
+
+            echo "==> Resetting to origin/staging..."
+            git reset --hard origin/staging
+
+            echo "==> Building frontend..."
+            docker compose -f docker-compose.staging.yml build --no-cache frontend
+
+            echo "==> Starting frontend..."
+            docker compose -f docker-compose.staging.yml up -d frontend
+
+            echo "==> Cleaning up dangling images..."
+            docker image prune -f
+
+            echo "==> Deploy complete."
+
+  health-check:
+    name: Health Check
+    needs: deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Wait for startup
+        run: sleep 10
+
+      - name: Poll health endpoint
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            set -e
+            HEALTH_URL="http://localhost:${{ vars.STAGING_FRONTEND_PORT }}/"
+            RETRIES=5
+            DELAY=5
+
+            for i in $(seq 1 $RETRIES); do
+              echo "Health check attempt $i/$RETRIES..."
+              STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$HEALTH_URL" || true)
+
+              if [ "$STATUS" = "200" ]; then
+                echo "Health check passed."
+                exit 0
+              fi
+
+              echo "Got status $STATUS, retrying in ${DELAY}s..."
+              sleep $DELAY
+            done
+
+            echo "Health check failed after $RETRIES attempts."
+            exit 1
