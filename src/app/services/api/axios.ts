@@ -13,10 +13,9 @@ interface RetriableAxiosRequestConfig extends InternalAxiosRequestConfig {
 // same-origin request. This is required for HttpOnly + SameSite=Strict cookies
 // (e.g. `onboarding-token`, `refresh-token`, `sessionId`, `device-fingerprint`)
 // which the browser otherwise refuses to send cross-site.
-// In production the frontend and API share an eTLD+1, so we hit the API directly.
-const baseURL = import.meta.env.DEV
-  ? "/api/v1"
-  : import.meta.env.VITE_API_BASE_URL;
+// In production we use VITE_API_BASE_URL directly so the frontend can point at
+// a separate API host (e.g. api.chatblix.com) instead of same-origin.
+const baseURL = import.meta.env.VITE_API_BASE_URL ?? "/api/v1";
 
 const api = axios.create({
   baseURL,
