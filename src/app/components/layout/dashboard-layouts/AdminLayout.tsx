@@ -7,7 +7,6 @@ import { AnnouncementBanner } from "@/app/components/common";
 import { useBanner } from "@/app/context/BannerContext";
 import { useNotificationStore } from "@/app/store/notification.store";
 import { useGlobalSocket } from "@/app/hooks/useGlobalSocket";
-import AppWalkthrough from "@/app/components/common/Walkthrough/AppWalkthrough";
 
 // Lazy-load the walkthrough so `react-joyride` (large dep tree) only enters
 // the graph once the admin dashboard is reached. Keeps public/auth routes
@@ -52,7 +51,9 @@ const AdminLayout = () => {
           </main>
         </div>
       </div>
-      <AppWalkthrough />
+      <Suspense fallback={null}>
+        <AppWalkthrough />
+      </Suspense>
     </section>
   );
 };
