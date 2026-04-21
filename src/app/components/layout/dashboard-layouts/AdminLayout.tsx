@@ -1,4 +1,4 @@
-import { lazy, useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { TopNavbar } from "@/app/features/dashboard/admin/component/ui";
 import LockedSidebar from "@/app/features/dashboard/admin/component/ui/LockedSidebar";
@@ -51,7 +51,9 @@ const AdminLayout = () => {
           </main>
         </div>
       </div>
-      <AppWalkthrough />
+      <Suspense fallback={null}>
+        <AppWalkthrough />
+      </Suspense>
     </section>
   );
 };
