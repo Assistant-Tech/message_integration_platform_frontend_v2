@@ -6,8 +6,18 @@ const DemoDialog = () => {
   const { isOpen, close } = useDemoDialogStore();
 
   return (
-    <GenericDialog open={isOpen} maxWidth="7xl">
-      <DemoFormContent onClose={close} showCloseButton={true} />
+    <GenericDialog
+      open={isOpen}
+      maxWidth="max-w-6xl"
+      width="w-[95vw]"
+      noPadding
+    >
+      <DemoFormContent
+        onClose={close}
+        showCloseButton={true}
+        isFullPage
+        className="w-full"
+      />
     </GenericDialog>
   );
 };

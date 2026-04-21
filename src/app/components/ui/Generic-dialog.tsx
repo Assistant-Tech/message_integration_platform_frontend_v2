@@ -10,6 +10,8 @@ interface GenericDialogProps {
   title?: string;
   children: React.ReactNode;
   maxWidth?: string;
+  width?: string;
+  noPadding?: boolean;
 }
 
 const GenericDialog = ({
@@ -18,6 +20,8 @@ const GenericDialog = ({
   title,
   children,
   maxWidth = "max-w-5xl",
+  width = "w-[25vw]",
+  noPadding = false,
 }: GenericDialogProps) => {
   return (
     <Dialog.Root open={open} onOpenChange={(o) => !o && onClose?.()}>
@@ -38,7 +42,7 @@ const GenericDialog = ({
                 initial={{ y: "-10%", opacity: 0 }}
                 animate={{ y: "0%", opacity: 1 }}
                 exit={{ y: "-10%", opacity: 0 }}
-                className={`fixed z-50 top-1/2 left-1/2 w-[25vw] ${maxWidth} max-h-[90vh] overflow-auto -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white shadow-lg`}
+                className={`fixed z-50 top-1/2 left-1/2 ${width} ${maxWidth} max-h-[90vh] overflow-auto -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white shadow-lg`}
               >
                 {/* Consolidate the title and close button into a single header for flexbox alignment */}
                 {(title || onClose) && (
@@ -78,7 +82,7 @@ const GenericDialog = ({
                 </Dialog.Title>
 
                 {/* Content */}
-                <div className="p-6">{children}</div>
+                <div className={noPadding ? "" : "p-6"}>{children}</div>
               </motion.div>
             </Dialog.Content>
           </Dialog.Portal>
