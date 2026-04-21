@@ -16,7 +16,6 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      VITE_API_URL: https://ci-placeholder.example/api
       VITE_API_BASE_URL: https://ci-placeholder.example/api
       VITE_SOCKET_URL: wss://ci-placeholder.example
       VITE_CLOUDINARY_BASE_URL: https://ci-placeholder.example

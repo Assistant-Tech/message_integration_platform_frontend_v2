@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 import { Agreement, Button } from "@/app/components/ui/";
 import { cn } from "@/app/utils/cn";
 
-
 const LOCAL_STORAGE_KEY = import.meta.env.VITE_NEWSLETTER_MODAL_KEY;
 
 const NewsLetterModalPopUp = () => {
@@ -34,7 +33,7 @@ const NewsLetterModalPopUp = () => {
       onOpenChange={(isOpen) => !isOpen && handleClose()}
     >
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/70 z-40" />
+        <Dialog.Overlay className="fixed inset-0 bg-black/70 z-50" />
 
         <Dialog.Content aria-describedby={undefined}>
           <motion.div
@@ -48,13 +47,7 @@ const NewsLetterModalPopUp = () => {
               "rounded-4xl bg-white shadow-xl",
             )}
           >
-            <figure
-              className="h-48 sm:h-60 md:h-72 rounded-t-3xl relative"
-              style={{
-                background:
-                  "linear-gradient(159deg, #1CB496 8.78%, #0C4E41 81.41%)",
-              }}
-            >
+            <figure className="h-48 sm:h-60 md:h-72 rounded-t-3xl relative bg-linear-to-r from-primary-light to-primary">
               <Dialog.Close asChild>
                 <button
                   onClick={handleClose}
@@ -64,9 +57,11 @@ const NewsLetterModalPopUp = () => {
                 </button>
               </Dialog.Close>
               <img
-                src={"https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920906/newsletter_uoa7xd.webp"}
+                src={
+                  "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1776751804/newsletter_subscribe_1_ig0lqp.png"
+                }
                 alt="newsletter.png"
-                className="w-full h-full object-cover rounded-t-3xl"
+                className="w-full h-full object-cover rounded-t-3xl pt-12 px-4"
               />
             </figure>
 
@@ -77,9 +72,9 @@ const NewsLetterModalPopUp = () => {
                 </Dialog.Title>
               </div>
               <div className="text-grey body-medium-16 mb-2 text-center">
-                Subscribe to Chatblix’s monthly newsletter to stay updated
-                on new features and services and get a chance to unlock
-                exclusive offers as a gift
+                Subscribe to Chatblix’s monthly newsletter to stay updated on
+                new features and services and get a chance to unlock exclusive
+                offers as a gift
               </div>
 
               <div className="relative py-2">

@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => {
     server: {
       port: 5173,
       open: true,
-      allowedHosts: ["rachele-paleaceous-ethyl.ngrok-free.dev"],
+      allowedHosts: ["dev.chatblix.com"],
       // Proxy API calls in dev so the browser sees them as same-origin.
       // This is critical for HttpOnly + SameSite=Strict cookies (e.g.
       // `onboarding-token`, `refresh-token`, `sessionId`, `device-fingerprint`)

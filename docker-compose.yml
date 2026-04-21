@@ -5,7 +5,6 @@ services:
       context: .
       target: production
       args:
-        VITE_API_URL: ${VITE_API_URL}
         VITE_API_BASE_URL: ${VITE_API_BASE_URL}
         VITE_SOCKET_URL: ${VITE_SOCKET_URL}
         VITE_CLOUDINARY_BASE_URL: ${VITE_CLOUDINARY_BASE_URL}
@@ -14,7 +13,7 @@ services:
       - "8080:8080"
     restart: unless-stopped
     env_file:
-      - .env.production
+      - .env
     healthcheck:
       test:
         [

@@ -24,6 +24,12 @@ export const fetchStripeIntegrationStatus = async () => {
   return response.data;
 };
 
+// Fetch existing stripe keys (for edit form prefill)
+export const fetchStripeKeys = async () => {
+  const response = await api.get(`/tenant/integrations/stripe`);
+  return response.data;
+};
+
 // Stripe Configuration setup
 export const checkStripeConfiguration = async () => {
   const res = await api.get("/tenant/integrations");

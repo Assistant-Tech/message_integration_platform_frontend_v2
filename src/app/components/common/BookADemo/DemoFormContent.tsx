@@ -41,25 +41,25 @@ const DemoFormContent = ({
   return (
     <div className={`${className}`}>
       <div
-        className={`${isFullPage ? "flex flex-col lg:flex-row min-h-auto" : "flex flex-col sm:flex-row justify-center gap-4 md:gap-12"}`}
+        className={`${isFullPage ? "grid grid-cols-1 lg:grid-cols-2 items-stretch relative" : "flex flex-col sm:flex-row justify-center gap-4 md:gap-12"}`}
       >
-        <DemoTextArea />
+        <DemoTextArea isFullPage={isFullPage} />
 
         {showCloseButton && (
           <button
             onClick={onClose}
-            className="text-base-black absolute top-5 right-5 hidden sm:block cursor-pointer"
+            className="text-base-black absolute top-4 right-4 hidden sm:block cursor-pointer z-10 p-2 rounded-lg bg-white/90 hover:bg-white shadow-sm"
           >
-            <X size={24} />
+            <X size={20} />
           </button>
         )}
 
         <div
-          className={`${isFullPage ? "flex-1 py-6 px-6 lg:py-6 lg:px-12" : ""}`}
+          className={`${isFullPage ? "w-full py-8 px-6 lg:py-10 lg:px-10 flex flex-col justify-center" : "w-full "}`}
         >
           <div className="flex justify-between items-start">
             <h2
-              className={`${isFullPage ? "text-2xl lg:text-3xl font-bold text-gray-800 mb-8" : "h5-bold-16 pt-4 text-grey"}`}
+              className={`${isFullPage ? "text-2xl lg:text-3xl font-bold text-gray-800 mb-6" : "h5-bold-16 pt-4 text-grey"}`}
             >
               Schedule your personalized demo!
             </h2>
@@ -67,21 +67,25 @@ const DemoFormContent = ({
 
           <form
             onSubmit={handleSubmit(onSubmit, onError)}
-            className={`flex flex-col gap-4 justify-center w-full space-y-2 ${isFullPage ? "max-w-2xl" : "max-w-7xl"}`}
+            className="flex flex-col gap-4 justify-center w-full space-y-2"
           >
             <div className="flex flex-col sm:flex-row gap-3">
-              <Input
-                label="First Name"
-                placeholder="Enter your first name"
-                {...register("firstName")}
-                error={errors.firstName?.message}
-              />
-              <Input
-                label="Last Name"
-                placeholder="Enter your last name"
-                {...register("lastName")}
-                error={errors.lastName?.message}
-              />
+              <div className="flex-1 min-w-0">
+                <Input
+                  label="First Name"
+                  placeholder="Enter your first name"
+                  {...register("firstName")}
+                  error={errors.firstName?.message}
+                />
+              </div>
+              <div className="flex-1 min-w-0">
+                <Input
+                  label="Last Name"
+                  placeholder="Enter your last name"
+                  {...register("lastName")}
+                  error={errors.lastName?.message}
+                />
+              </div>
             </div>
 
             <Input

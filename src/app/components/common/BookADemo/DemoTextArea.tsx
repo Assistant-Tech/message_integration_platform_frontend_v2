@@ -5,7 +5,7 @@ import { X, CircleCheckBig } from "lucide-react";
 import logo from "@/app/assets/icons/logo-white.svg";
 import { DEMO_IMAGE_URL } from "@/app/constants/image-cloudinary";
 
-const DemoTextArea = () => {
+const DemoTextArea = ({ isFullPage = false }: { isFullPage?: boolean }) => {
   const { close } = useDemoDialogStore();
 
   const itemVariants = {
@@ -21,9 +21,15 @@ const DemoTextArea = () => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-primary to-primary-dark rounded-3xl overflow-hidden w-full xl:w-1/2 max-w-full">
+    <div
+      className={`bg-gradient-to-br from-primary to-primary-dark overflow-hidden w-full max-w-full h-full flex flex-col ${
+        isFullPage
+          ? "rounded-t-xl lg:rounded-l-xl lg:rounded-tr-none"
+          : "rounded-3xl"
+      }`}
+    >
       {/* Header */}
-      <div className="p-4 sm:p-6 pb-4 relative">
+      <div className="p-6 sm:p-8 pb-4 relative">
         <motion.div
           variants={itemVariants}
           initial="hidden"
@@ -72,11 +78,14 @@ const DemoTextArea = () => {
       </div>
 
       {/* Features */}
-      <div className="px-4 sm:px-6 space-y-3 mb-4 sm:mb-6">
+      <div className="px-6 sm:px-8 space-y-3 mb-4 sm:mb-6 flex-1 flex flex-col">
         {[
           "Find the best plan that suits your goal and budget.",
           "Get expert tips and insights tailored to your company.",
           "Ask questions and explore how our product fits your business.",
+          "Find what best is for the business.",
+          "Want More feature, Lets talk",
+          "Small to medium scaled busineses.",
         ].map((feature, index) => (
           <motion.div
             key={index}
@@ -92,13 +101,15 @@ const DemoTextArea = () => {
             <p className="text-white body-semi-bold-16">{feature}</p>
           </motion.div>
         ))}
-        <figure className="flex justify-center pt-12">
+        <figure className="flex justify-center pt-6 sm:pt-8 mt-auto">
           <img
             src={DEMO_IMAGE_URL}
             alt="feature/image.webp"
             width={620}
             height={142}
-            className="w-full h-auto object-contain rounded-2xl"
+            className={`w-full object-cover rounded-2xl ${
+              isFullPage ? "max-h-[220px] lg:max-h-[240px]" : "h-auto"
+            }`}
           />
         </figure>
       </div>

@@ -19,7 +19,7 @@
 import type { Inbox } from "@/app/types/inbox.types";
 import type { InboxMessage } from "@/app/types/message.types";
 
-export const SHOWCASE_MOCK_ENABLED = true;
+export const SHOWCASE_MOCK_ENABLED = false;
 
 const ago = (minutes: number) =>
   new Date(Date.now() - minutes * 60_000).toISOString();
@@ -50,7 +50,12 @@ export const MOCK_CONVERSATIONS: Inbox[] = [
     status: "OPEN",
     priority: "HIGH",
     assignedTo: null,
+<<<<<<< HEAD
+    lastMessageContent:
+      "Hi! Is the size M still in stock? Need it by Friday 🙏",
+=======
     lastMessageContent: "Hi! Is the size M still in stock? Need it by Friday 🙏",
+>>>>>>> staging
     lastMessageAt: ago(2),
     unreadCount: 2,
     createdAt: ago(30),
@@ -315,11 +320,15 @@ export const MOCK_MESSAGES: Record<string, InboxMessage[]> = {
       "The olive linen blazer — do you still have size M?",
       10,
     ),
+<<<<<<< HEAD
+    mkAgent("m1-4", "Checking stock for you now — one sec! 🔎", 8),
+=======
     mkAgent(
       "m1-4",
       "Checking stock for you now — one sec! 🔎",
       8,
     ),
+>>>>>>> staging
     mkCustomer(
       "m1-5",
       MOCK_CONVERSATIONS[0]!,
@@ -362,12 +371,16 @@ export const MOCK_MESSAGES: Record<string, InboxMessage[]> = {
     ),
   ],
   "mock-4": [
+<<<<<<< HEAD
+    mkCustomer("m4-1", MOCK_CONVERSATIONS[3]!, "Your TikTok is unreal 🤯", 90),
+=======
     mkCustomer(
       "m4-1",
       MOCK_CONVERSATIONS[3]!,
       "Your TikTok is unreal 🤯",
       90,
     ),
+>>>>>>> staging
     mkCustomer(
       "m4-2",
       MOCK_CONVERSATIONS[3]!,

@@ -14,6 +14,7 @@ import {
 import {
   saveStripeKeys,
   fetchStripeIntegrationStatus,
+  fetchStripeKeys,
 } from "@/app/services/stripe.services";
 import { toast } from "sonner";
 
@@ -75,15 +76,9 @@ const StripeApiSettings = () => {
 
   const loadExistingKeys = async () => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/tenant/integrations/stripe`,
-      );
-      if (response.ok) {
-        const data = await response.json();
-
-        if (data.testSecretKey) setTestSecretKey(data.testSecretKey);
-        if (data.liveSecretKey) setLiveSecretKey(data.liveSecretKey);
-      }
+      const data = await fetchStripeKeys();
+      if (data?.testSecretKey) setTestSecretKey(data.testSecretKey);
+      if (data?.liveSecretKey) setLiveSecretKey(data.liveSecretKey);
     } catch {
       console.log("No existing keys found");
     }
