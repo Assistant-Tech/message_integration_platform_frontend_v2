@@ -17,6 +17,8 @@ export const DASHBOARD_IMAGE_URL_MOBILE = `${BASE_URL}/v1776672485/ss_ixu1ap.png
 export const LOGO_FAB_ICON_URL = `${BASE_URL}/v1773126956/Vector_kwwszc.svg`;
 export const LOGO_WHITE_URL = `${BASE_URL}/v1765951144/chatblix-white-logo_mvva3b.png`;
 export const LOGO_NORMAL_URL = `${BASE_URL}/v1765951230/main-chatblix-logo_dwrrjm.png`;
+// export const LOGO_NORMAL_URL = `${BASE_URL}/v1776705969/meri_logo_jz6lis.png`;
+
 export const DEFAULT_PROFILE_IMAGE_URL = `${BASE_URL}/v1773229634/pp_o3fr0h.jpg`;
 
 // Payments
@@ -35,4 +37,4 @@ export const SCALE_IMAGE_URL = `${BASE_URL}/v1753920902/CRM1_vfsdiz.webp`;
 export const PRODUCT_IMAGE_URL = `${BASE_URL}/v1753920902/CRM1_vfsdiz.webp`;
 
 // Email
-export const CHECK_EMAIL_URL = `${BASE_URL}/v1755061535/verify_b097yg.png`;
+export const CHECK_EMAIL_URL = `${BASE_URL}/v1777026275/Verified-bro_g6jkrb.svg`;
