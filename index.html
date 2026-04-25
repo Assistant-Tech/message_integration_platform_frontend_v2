@@ -2,71 +2,92 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    
+
+    <!-- Icons -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="mask-icon" href="/chatblix_icon.svg" color="#000000" />
+
     <!-- Responsive design: scales page to device width -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <!-- Short description for SEO: appears in search engine results -->
-    <meta
-      name="description"
-      content="Chatblix - Seamlessly connect, manage, and streamline all your messaging services in one unified dashboard."
-    />
-
-    <!-- Set author info: optional but useful for credibility -->
-    <meta name="author" content="Chatblix" />
-
-    <!-- Set relevant keywords for SEO: helps search engines categorize content -->
-    <meta
-      name="keywords"
-      content="Chatblix, messaging, chat integration, communication dashboard, chat management, unified message, store, e-commerce, artificial intelligence, ai"
-    />
 
     <!-- Ensure correct character rendering on all browsers -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
+    <!-- Primary SEO -->
+    <meta name="author" content="Chatblix" />
+    <meta
+      name="description"
+      content="Chatblix unifies WhatsApp, Instagram, Facebook, and Telegram conversations into one inbox. AI-powered customer support automation for teams of all sizes."
+    />
+    <meta
+      name="keywords"
+      content="unified inbox, AI messaging platform, customer support automation, WhatsApp business integration, Instagram DM management, Facebook Messenger inbox, team collaboration messaging, multi-channel chat, business communication platform, AI chatbot"
+    />
+    <meta name="robots" content="index, follow" />
+
     <!-- Open Graph: controls appearance when sharing on social media -->
-    <meta property="og:title" content="Chatblix" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Chatblix" />
+    <meta property="og:locale" content="en_US" />
+    <meta
+      property="og:title"
+      content="Chatblix | Unified AI-Powered Messaging Platform"
+    />
     <meta
       property="og:description"
-      content="Seamlessly connect, manage, and streamline all your messaging services in one unified dashboard."
-    />
-    <meta
-      property="og:image"
-      content="https://chatblix.com/src/app/assets/icons/logo.png"
+      content="Manage all customer conversations from WhatsApp, Instagram, Facebook & Telegram in one AI-powered inbox. Never miss a lead again."
     />
     <meta property="og:url" content="https://chatblix.com/" />
-    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://chatblix.com/apple-touch-icon.png" />
 
-    <!-- Twitter Card: controls appearance when sharing on X / Thread-->
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Chatblix" />
+    <meta name="twitter:title" content="Chatblix | Unified AI Messaging Platform" />
     <meta
       name="twitter:description"
-      content="Seamlessly connect, manage, and streamline all your messaging services in one unified dashboard."
+      content="Manage all customer conversations in one AI-powered inbox. Never miss a lead again."
     />
-    <meta
-      name="twitter:image"
-      content="https://chatblix.com/src/app/assets/icons/logo.svg"
-    />
+    <meta name="twitter:image" content="https://chatblix.com/apple-touch-icon.png" />
 
     <!-- Canonical link: avoids SEO penalties for duplicate content -->
     <link rel="canonical" href="https://chatblix.com/" />
 
     <!-- Preload critical resources -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700&display=swap"></noscript>
-    
-    <!-- Preload hero images -->
-    <link rel="preload" as="image" href="https://res.cloudinary.com/dtoqwn0gx/image/upload/w_800/v1753920902/dash1_qvgd1t.png" media="(min-width: 768px)">
-    <link rel="preload" as="image" href="https://res.cloudinary.com/dtoqwn0gx/image/upload/w_400/v1753920902/dash1_qvgd1t.png" media="(max-width: 767px)">
-    
-    <!-- DNS prefetch for external domains -->
-    <link rel="dns-prefetch" href="//res.cloudinary.com">
-    <link rel="dns-prefetch" href="//fonts.googleapis.com">
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700&display=swap"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript
+      ><link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700&display=swap"
+    /></noscript>
 
-    <title>Chatblix | Unified Messaging Solution</title>
+    <!-- Preload hero images -->
+    <link
+      rel="preload"
+      as="image"
+      href="https://res.cloudinary.com/dtoqwn0gx/image/upload/w_800/v1753920902/dash1_qvgd1t.png"
+      media="(min-width: 768px)"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="https://res.cloudinary.com/dtoqwn0gx/image/upload/w_400/v1753920902/dash1_qvgd1t.png"
+      media="(max-width: 767px)"
+    />
+
+    <!-- DNS prefetch for external domains -->
+    <link rel="dns-prefetch" href="//res.cloudinary.com" />
+    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+
+    <title>Chatblix | Unified AI-Powered Messaging Platform for Business</title>
   </head>
   <body>
     <div id="root"></div>
