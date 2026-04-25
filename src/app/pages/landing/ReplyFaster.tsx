@@ -1,5 +1,16 @@
-import { motion } from "framer-motion";
-import { Check, Inbox } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
+import {
+  Bell,
+  BarChart3,
+  Check,
+  MessageSquare,
+  Search,
+  Settings as SettingsIcon,
+  Sparkles,
+  Star,
+  Users as UsersIcon,
+} from "lucide-react";
 import landing from "@/app/content/json/landing.json";
 import {
   SectionEyebrow,
@@ -7,6 +18,11 @@ import {
   FloatingStatCard,
   LandingContainer,
 } from "./_shared";
+
+import whatsappIcon from "@/app/assets/dashboard-icons/whatsapp.svg";
+import instaIcon from "@/app/assets/dashboard-icons/insta.svg";
+import fbIcon from "@/app/assets/dashboard-icons/fb.svg";
+import telegramIcon from "@/app/assets/dashboard-icons/telegram.svg";
 
 const { replyFaster } = landing;
 
@@ -18,24 +34,13 @@ const STAT_POSITIONS: Array<{
 }> = [
   {
     tone: "primary",
-    className: "absolute -top-3 left-2 sm:left-6",
+    className: "absolute -top-3 left-0 sm:-left-4",
     delay: 0.2,
   },
   {
     tone: "secondary",
-    className: "absolute top-20 right-0 sm:right-2",
-    delay: 0.35,
-    drift: "md",
-  },
-  {
-    tone: "mint",
-    className: "absolute bottom-12 left-0 sm:left-4",
+    className: "absolute -bottom-4 right-0 sm:-right-4",
     delay: 0.5,
-  },
-  {
-    tone: "primary",
-    className: "absolute -bottom-4 right-4 sm:right-10",
-    delay: 0.65,
     drift: "md",
   },
 ];
@@ -44,14 +49,13 @@ const ReplyFaster = () => {
   return (
     <section
       aria-label="Reply faster. From anywhere."
-      className="relative overflow-hidden py-24 sm:py-32"
+      className="relative overflow-hidden py-28 sm:py-36"
     >
       <LandingContainer className="grid grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-10">
         {/* Left: illustration + floating stats */}
         <div className="relative order-2 lg:order-1 lg:col-span-6">
           <ReplyIllustration />
 
-          {/* Floating stats positioned around the illustration */}
           {replyFaster.stats.map((stat, i) => {
             const pos = STAT_POSITIONS[i];
             if (!pos) return null;
@@ -124,130 +128,386 @@ const ReplyFaster = () => {
   );
 };
 
-/**
- * Abstract inline SVG — a stylized phone + chat bubble cluster on a gradient
- * card. Pure tokens, no external image, no generic stock vibe.
- */
-const ReplyIllustration = () => (
-  <motion.div
-    initial={{ opacity: 0, y: 20, scale: 0.98 }}
-    whileInView={{ opacity: 1, y: 0, scale: 1 }}
-    viewport={{ once: true, margin: "-80px" }}
-    transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-    className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-[28px] border border-grey-light/70 bg-gradient-to-br from-surface-sky via-white to-surface-lavender/60 shadow-[0_40px_80px_-40px_rgba(46,94,153,0.35)]"
-  >
-    {/* Grid underlay */}
-    <div
-      aria-hidden
-      className="absolute inset-0 opacity-40"
-      style={{
-        backgroundImage:
-          "radial-gradient(circle at 1px 1px, oklch(70% 0.04 250 / 0.25) 1px, transparent 0)",
-        backgroundSize: "22px 22px",
-      }}
-    />
+/* ──────────────────────────────────────────────────────────────────────────
+ * ReplyIllustration — faithful Chatblix inbox mockup inside a phone frame,
+ * with a rotating "new message" toast that cycles across channels and an
+ * AI-reply confirmation, mirroring the real product flow.
+ * ──────────────────────────────────────────────────────────────────────── */
 
-    {/* Orbital rings */}
-    <motion.div
-      aria-hidden
-      className="absolute left-1/2 top-1/2 h-[340px] w-[340px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-primary/15"
-      animate={{ rotate: 360 }}
-      transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-    />
-    <motion.div
-      aria-hidden
-      className="absolute left-1/2 top-1/2 h-[220px] w-[220px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-primary/20 border-dashed"
-      animate={{ rotate: -360 }}
-      transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-    />
+interface InboxRow {
+  name: string;
+  avatar: string; // tint classname
+  snippet: string;
+  time: string;
+  channelIcon: string;
+  channelDot: string;
+  vip?: boolean;
+  unread?: number;
+  assigned?: string;
+}
 
-    {/* Phone mockup */}
-    <div className="absolute left-1/2 top-1/2 h-[62%] w-[52%] -translate-x-1/2 -translate-y-1/2">
-      <div className="relative h-full w-full rounded-[28px] border-[6px] border-grey bg-white shadow-[0_30px_60px_-20px_rgba(0,0,0,0.35)]">
+const INBOX_ROWS: InboxRow[] = [
+  {
+    name: "Anjali Tamang",
+    avatar: "bg-surface-peach",
+    snippet: "Dai, can I get this delivered to Pokhara by tom…",
+    time: "5m",
+    channelIcon: whatsappIcon,
+    channelDot: "#25D366",
+    vip: true,
+    unread: 2,
+  },
+  {
+    name: "Sujan Shrestha",
+    avatar: "bg-surface-mint",
+    snippet: "Esewa gardiye hai check garnu ta. Thanks!",
+    time: "18m",
+    channelIcon: instaIcon,
+    channelDot: "#E1306C",
+    assigned: "Aayush (Support)",
+  },
+  {
+    name: "Binod Chaudhary",
+    avatar: "bg-surface-lavender",
+    snippet: "Size chart pathaidinu na please.",
+    time: "26m",
+    channelIcon: fbIcon,
+    channelDot: "#0084FF",
+    unread: 1,
+  },
+  {
+    name: "Prakriti Bhattarai",
+    avatar: "bg-surface-sky",
+    snippet: "Do you have any outlet in Baneshwor? Ki onlin…",
+    time: "48m",
+    channelIcon: telegramIcon,
+    channelDot: "#229ED9",
+    vip: true,
+    unread: 3,
+  },
+];
+
+const INCOMING_CYCLE: Array<{
+  name: string;
+  channel: string;
+  channelIcon: string;
+  channelDot: string;
+  message: string;
+}> = [
+  {
+    name: "Priya Sharma",
+    channel: "WhatsApp",
+    channelIcon: whatsappIcon,
+    channelDot: "#25D366",
+    message: "Hi! Is size M still in stock?",
+  },
+  {
+    name: "James R.",
+    channel: "Instagram",
+    channelIcon: instaIcon,
+    channelDot: "#E1306C",
+    message: "Can I change my order address?",
+  },
+  {
+    name: "Lin Wu",
+    channel: "Messenger",
+    channelIcon: fbIcon,
+    channelDot: "#0084FF",
+    message: "What's your return policy?",
+  },
+  {
+    name: "Ana Costa",
+    channel: "Telegram",
+    channelIcon: telegramIcon,
+    channelDot: "#229ED9",
+    message: "Do you ship to Pokhara?",
+  },
+];
+
+const ReplyIllustration = () => {
+  const [cycleIndex, setCycleIndex] = useState(0);
+  const [phase, setPhase] = useState<"incoming" | "replying" | "idle">("idle");
+
+  useEffect(() => {
+    let incomingTimer: number | undefined;
+    let replyTimer: number | undefined;
+    let advanceTimer: number | undefined;
+
+    incomingTimer = window.setTimeout(() => setPhase("incoming"), 600);
+    replyTimer = window.setTimeout(() => setPhase("replying"), 3200);
+    advanceTimer = window.setTimeout(() => {
+      setPhase("idle");
+      setCycleIndex((i) => (i + 1) % INCOMING_CYCLE.length);
+    }, 5200);
+
+    return () => {
+      if (incomingTimer) window.clearTimeout(incomingTimer);
+      if (replyTimer) window.clearTimeout(replyTimer);
+      if (advanceTimer) window.clearTimeout(advanceTimer);
+    };
+  }, [cycleIndex]);
+
+  const current = INCOMING_CYCLE[cycleIndex] ?? INCOMING_CYCLE[0]!;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20, scale: 0.98 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      className="relative mx-auto w-full max-w-[380px]"
+    >
+      {/* Phone body */}
+      <div className="relative aspect-[9/18] rounded-[42px] border-[10px] border-grey bg-white shadow-[0_40px_80px_-30px_rgba(46,94,153,0.35)]">
         {/* Notch */}
-        <div className="absolute left-1/2 top-2 h-1.5 w-14 -translate-x-1/2 rounded-full bg-grey" />
+        <div className="absolute left-1/2 top-2.5 z-10 h-1.5 w-20 -translate-x-1/2 rounded-full bg-grey" />
 
-        {/* Header */}
-        <div className="flex items-center gap-2 border-b border-grey-light/60 px-3 pb-2 pt-6">
-          <Inbox className="h-3.5 w-3.5 text-primary" strokeWidth={2} />
-          <span className="text-[10px] font-bold text-grey">Unified Inbox</span>
-          <span className="ml-auto h-1.5 w-1.5 rounded-full bg-success" />
-        </div>
+        {/* Screen */}
+        <div className="relative flex h-full flex-col overflow-hidden rounded-[32px] bg-white">
+          {/* Status bar */}
+          <div className="flex items-center justify-between px-5 pt-7 pb-1">
+            <span className="text-[11px] font-semibold text-grey">6:21</span>
+            <div className="flex items-center gap-1 text-grey/80">
+              <span className="h-1.5 w-1.5 rounded-full bg-grey" />
+              <span className="h-1.5 w-1.5 rounded-full bg-grey" />
+              <span className="h-1.5 w-1.5 rounded-full bg-grey/40" />
+            </div>
+          </div>
 
-        {/* Chat rows */}
-        <div className="space-y-2 p-3">
-          {[
-            { name: "Priya", tint: "bg-primary/10" },
-            { name: "James", tint: "bg-surface-peach" },
-            { name: "Lin", tint: "bg-surface-mint" },
-            { name: "Ana", tint: "bg-surface-lavender" },
-          ].map((row, i) => (
-            <motion.div
-              key={row.name}
-              initial={{ opacity: 0, x: -8 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-120px" }}
-              transition={{
-                duration: 0.4,
-                delay: 0.4 + i * 0.09,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              className="flex items-center gap-2 rounded-lg bg-grey-light/30 p-1.5"
-            >
-              <span
-                className={`h-5 w-5 flex-shrink-0 rounded-full ${row.tint}`}
-              />
-              <div className="flex-1 space-y-1">
-                <div className="h-1 w-16 rounded-full bg-grey/20" />
-                <div className="h-1 w-20 rounded-full bg-grey/10" />
+          {/* App header */}
+          <div className="flex items-center justify-between border-b border-grey-light/60 px-4 py-2.5">
+            <span className="font-meri text-[14px] font-bold tracking-tight text-grey">
+              CHATBLIX
+            </span>
+            <div className="flex items-center gap-2">
+              <span className="flex h-7 w-7 items-center justify-center rounded-full text-grey">
+                <Bell className="h-3.5 w-3.5" strokeWidth={2} />
+              </span>
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/15 text-[10px] font-bold text-primary">
+                A
+              </span>
+            </div>
+          </div>
+
+          {/* Search + Manage */}
+          <div className="flex items-center gap-2 px-3 pt-2.5">
+            <div className="flex h-8 flex-1 items-center gap-1.5 rounded-xl border border-grey-light/70 bg-grey-light/30 px-2.5">
+              <Search className="h-3 w-3 text-grey-medium" strokeWidth={2} />
+              <span className="text-[10px] text-grey-medium">
+                Search conversations…
+              </span>
+            </div>
+            <button className="rounded-xl border border-grey-light/70 bg-white px-2.5 py-1 text-[10px] font-semibold text-grey">
+              Manage
+            </button>
+          </div>
+
+          {/* Filter chips */}
+          <div className="flex items-center gap-1.5 px-3 pb-2 pt-2">
+            {["All", "Unread", "Priority", "Assigned"].map((chip, i) => {
+              const active = i === 0;
+              return (
+                <span
+                  key={chip}
+                  className={
+                    active
+                      ? "rounded-full bg-primary px-2.5 py-0.5 text-[9px] font-bold text-white"
+                      : "rounded-full bg-primary/10 px-2.5 py-0.5 text-[9px] font-semibold text-primary"
+                  }
+                >
+                  {chip}
+                </span>
+              );
+            })}
+          </div>
+
+          {/* Conversation list */}
+          <div className="flex-1 divide-y divide-grey-light/40 overflow-hidden">
+            {INBOX_ROWS.map((row, i) => (
+              <motion.div
+                key={row.name}
+                initial={{ opacity: 0, x: -6 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-120px" }}
+                transition={{
+                  duration: 0.35,
+                  delay: 0.35 + i * 0.07,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                className="flex items-start gap-2.5 px-3 py-2"
+              >
+                <div className="relative flex-shrink-0">
+                  <span
+                    className={`flex h-8 w-8 items-center justify-center rounded-full ${row.avatar} text-[11px] font-bold text-grey`}
+                  >
+                    {row.name[0]}
+                  </span>
+                  <span
+                    className="absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full border-2 border-white"
+                    style={{ backgroundColor: row.channelDot }}
+                    aria-label={`via channel dot ${row.channelDot}`}
+                  >
+                    <img
+                      src={row.channelIcon}
+                      alt=""
+                      className="h-2 w-2"
+                      aria-hidden
+                    />
+                  </span>
+                </div>
+
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex min-w-0 items-center gap-1">
+                      {row.vip && (
+                        <Star
+                          className="h-3 w-3 flex-shrink-0 text-[#F5C518]"
+                          strokeWidth={2}
+                          fill="#F5C518"
+                          aria-hidden
+                        />
+                      )}
+                      <p className="truncate text-[11.5px] font-bold text-grey">
+                        {row.name}
+                      </p>
+                    </div>
+                    <span className="flex-shrink-0 text-[9px] font-semibold text-primary">
+                      {row.time}
+                    </span>
+                  </div>
+                  <p className="mt-0.5 truncate text-[10px] leading-tight text-grey-medium">
+                    {row.snippet}
+                  </p>
+                  {row.assigned && (
+                    <span className="mt-1 inline-block rounded-full bg-primary/10 px-1.5 py-0.5 text-[8px] font-semibold text-primary">
+                      {row.assigned}
+                    </span>
+                  )}
+                </div>
+
+                {row.unread && (
+                  <span className="mt-1 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-primary text-[8px] font-bold text-white">
+                    {row.unread}
+                  </span>
+                )}
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Bottom nav */}
+          <div className="flex items-center justify-around border-t border-grey-light/60 bg-white/90 px-2 py-2 backdrop-blur">
+            {[
+              { icon: MessageSquare, label: "Inbox", active: true },
+              { icon: UsersIcon, label: "Contacts" },
+              { icon: BarChart3, label: "Analytics" },
+              { icon: SettingsIcon, label: "Settings" },
+            ].map(({ icon: Icon, label, active }) => (
+              <div
+                key={label}
+                className={`flex flex-col items-center gap-0.5 ${
+                  active ? "text-primary" : "text-grey-medium"
+                }`}
+              >
+                <Icon className="h-3.5 w-3.5" strokeWidth={2} />
+                <span className="text-[8px] font-semibold">{label}</span>
               </div>
-              <span className="text-[8px] text-grey-medium">2m</span>
-            </motion.div>
-          ))}
+            ))}
+          </div>
+
+          {/* Home indicator */}
+          <div className="flex justify-center pb-1.5 pt-1">
+            <span className="h-1 w-20 rounded-full bg-grey" />
+          </div>
         </div>
       </div>
-    </div>
 
-    {/* Orbiting channel chips */}
-    {[
-      { emoji: "💬", top: "12%", left: "8%", delay: 0.2 },
-      { emoji: "📷", top: "18%", right: "10%", delay: 0.35 },
-      { emoji: "✉️", bottom: "22%", left: "6%", delay: 0.5 },
-      { emoji: "✈️", bottom: "14%", right: "8%", delay: 0.65 },
-    ].map((c, i) => (
-      <motion.div
-        key={i}
-        className="absolute flex h-10 w-10 items-center justify-center rounded-2xl border border-grey-light/70 bg-white/95 shadow-lg backdrop-blur-md"
-        style={{
-          top: c.top,
-          bottom: c.bottom,
-          left: c.left,
-          right: c.right,
-        }}
-        initial={{ opacity: 0, scale: 0.8 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true, margin: "-80px" }}
-        transition={{
-          duration: 0.5,
-          delay: c.delay,
-          ease: [0.22, 1, 0.36, 1],
-        }}
-      >
-        <motion.span
-          className="text-base"
-          animate={{ y: [0, -4, 0] }}
-          transition={{
-            duration: 3.5,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: c.delay,
-          }}
-        >
-          {c.emoji}
-        </motion.span>
-      </motion.div>
-    ))}
-  </motion.div>
-);
+      {/* Incoming message toast — rotates across channels */}
+      <AnimatePresence mode="wait">
+        {phase !== "idle" && (
+          <motion.div
+            key={`incoming-${cycleIndex}`}
+            initial={{ opacity: 0, y: -16, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -12, scale: 0.92 }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            className="pointer-events-none absolute -right-4 top-24 hidden w-[240px] rounded-2xl border border-grey-light/70 bg-white/95 p-3 shadow-[0_24px_50px_-18px_rgba(46,94,153,0.4)] backdrop-blur-md sm:block sm:-right-10"
+          >
+            <div className="flex items-start gap-2.5">
+              <span
+                className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl"
+                style={{ backgroundColor: `${current.channelDot}22` }}
+              >
+                <img
+                  src={current.channelIcon}
+                  alt=""
+                  className="h-4 w-4"
+                  aria-hidden
+                />
+              </span>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center justify-between">
+                  <p className="truncate text-[11px] font-bold text-grey">
+                    {current.name}
+                  </p>
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-primary">
+                    Now
+                  </span>
+                </div>
+                <p className="mt-0.5 line-clamp-2 text-[10.5px] leading-tight text-grey-medium">
+                  {current.message}
+                </p>
+                <p className="mt-1 text-[8.5px] font-semibold uppercase tracking-wide text-grey-medium">
+                  via {current.channel}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* AI reply confirmation toast — appears during replying phase */}
+      <AnimatePresence mode="wait">
+        {phase === "replying" && (
+          <motion.div
+            key={`reply-${cycleIndex}`}
+            initial={{ opacity: 0, y: 16, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 12, scale: 0.92 }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            className="pointer-events-none absolute -left-4 bottom-28 hidden w-[220px] rounded-2xl border border-primary/30 bg-gradient-to-br from-primary to-information p-3 text-white shadow-[0_24px_50px_-18px_rgba(46,94,153,0.45)] sm:block sm:-left-10"
+          >
+            <div className="flex items-start gap-2.5">
+              <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-xl bg-white/20">
+                <Sparkles className="h-3.5 w-3.5" strokeWidth={2.2} />
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="text-[10.5px] font-bold uppercase tracking-wider text-white/90">
+                  Chatblix AI
+                </p>
+                <p className="mt-0.5 text-[10.5px] leading-tight text-white">
+                  Replied in 1.8s — handed off to your team for review.
+                </p>
+                <span className="mt-1 flex items-center gap-1">
+                  {[0, 1, 2].map((i) => (
+                    <motion.span
+                      key={i}
+                      animate={{ opacity: [0.3, 1, 0.3] }}
+                      transition={{
+                        duration: 1.1,
+                        repeat: Infinity,
+                        delay: i * 0.15,
+                      }}
+                      className="h-1 w-1 rounded-full bg-white"
+                    />
+                  ))}
+                </span>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+};
 
 export default ReplyFaster;

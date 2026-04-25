@@ -6,6 +6,7 @@ import {
   Users,
   LineChart,
   Share2,
+  MessageCircle,
   type LucideIcon,
 } from "lucide-react";
 import landing from "@/app/content/json/landing.json";
@@ -57,7 +58,7 @@ const AISupercharge = () => {
   return (
     <section
       aria-label="AI features"
-      className="relative overflow-hidden py-24 sm:py-32"
+      className="relative overflow-hidden py-28 sm:py-36"
     >
       <LandingContainer>
         <SectionEyebrow>{aiSupercharge.eyebrow}</SectionEyebrow>
@@ -87,8 +88,8 @@ const AISupercharge = () => {
           aiReply={aiSupercharge.heroMockup.aiReply}
         />
 
-        {/* Feature grid: 1 → 2 → 3 columns */}
-        <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Feature grid: 1 → 2 → 4 columns (tight focused set) */}
+        <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {aiSupercharge.features.map((f, i) => {
             const Icon = ICON_MAP[f.icon] ?? Sparkles;
             const tint = (f.tint as Tint) in TINT_STYLES ? (f.tint as Tint) : "sky";
@@ -210,8 +211,8 @@ const AIConversationCard = ({
             transition={{ duration: 0.45, delay: 0.35 }}
             className="flex gap-2.5"
           >
-            <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-surface-peach text-sm">
-              💬
+            <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-surface-peach text-surface-peach-ink">
+              <MessageCircle className="h-4 w-4" strokeWidth={2} />
             </span>
             <div className="flex-1 rounded-2xl rounded-tl-sm bg-grey-light/50 px-3.5 py-2">
               <p className="caption-medium-12 font-semibold text-grey">

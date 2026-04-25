@@ -9,7 +9,7 @@ const Loading = () => {
         {/* Text */}
         <h1
           className="
-          relative 
+          relative
           font-black tracking-wider
           text-4xl sm:text-6xl lg:text-7xl
         "
@@ -18,10 +18,11 @@ const Loading = () => {
             <span
               key={index}
               className="
-                inline-block 
-                text-transparent bg-clip-text 
+                inline-block
+                text-transparent bg-clip-text
                 bg-gradient-to-br from-[#2e5e99] via-[#7ba4f0] to-[#2e5e99]
                 animate-pulse
+                font-meri
               "
               style={{
                 animationDelay: `${index * 0.1}s`,
@@ -38,9 +39,9 @@ const Loading = () => {
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div
           className="
-            relative 
-            w-56 h-56 
-            sm:w-80 sm:h-80 
+            relative
+            w-56 h-56
+            sm:w-80 sm:h-80
             lg:w-96 lg:h-96
           "
         >
@@ -51,10 +52,10 @@ const Loading = () => {
           >
             <div
               className="
-                absolute top-0 left-1/2 
-                w-3 h-3 sm:w-4 sm:h-4 
-                bg-[#2e5e99] rounded-full 
-                -ml-1.5 sm:-ml-2 
+                absolute top-0 left-1/2
+                w-3 h-3 sm:w-4 sm:h-4
+                bg-[#2e5e99] rounded-full
+                -ml-1.5 sm:-ml-2
                 shadow-lg
               "
             />
@@ -71,9 +72,9 @@ const Loading = () => {
           >
             <div
               className="
-                absolute bottom-0 left-1/2 
-                w-2.5 h-2.5 sm:w-3 sm:h-3 
-                bg-[#7ba4f0] rounded-full 
+                absolute bottom-0 left-1/2
+                w-2.5 h-2.5 sm:w-3 sm:h-3
+                bg-[#7ba4f0] rounded-full
                 -ml-1.25 sm:-ml-1.5
               "
             />
@@ -86,10 +87,10 @@ const Loading = () => {
           >
             <div
               className="
-                absolute left-0 top-1/2 
-                w-2.5 h-2.5 sm:w-3 sm:h-3 
-                bg-[#2e5e99] rounded-full 
-                -mt-1.25 sm:-mt-1.5 
+                absolute left-0 top-1/2
+                w-2.5 h-2.5 sm:w-3 sm:h-3
+                bg-[#2e5e99] rounded-full
+                -mt-1.25 sm:-mt-1.5
                 shadow-lg
               "
             />

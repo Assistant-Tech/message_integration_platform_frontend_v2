@@ -18,7 +18,7 @@ const FAQSection = () => {
     <section
       aria-label="Frequently asked questions"
       id="faq"
-      className="relative py-24 sm:py-32"
+      className="relative py-28 sm:py-36"
     >
       <LandingContainer className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
         {/* Left: heading */}

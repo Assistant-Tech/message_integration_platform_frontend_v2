@@ -13,7 +13,6 @@ import {
   ShieldCheck,
   Zap,
   TrendingDown,
-  Mail,
   Apple,
   Play,
   Smartphone,
@@ -25,31 +24,10 @@ import { Button } from "@/app/components/ui";
 import { cn } from "@/app/utils/cn";
 import { AuroraBackdrop, LandingContainer } from "./_shared";
 
-import whatsappIcon from "@/app/assets/dashboard-icons/whatsapp.svg";
-import instaIcon from "@/app/assets/dashboard-icons/insta.svg";
 import fbIcon from "@/app/assets/dashboard-icons/fb.svg";
-import telegramIcon from "@/app/assets/dashboard-icons/telegram.svg";
 import tiktokIcon from "@/app/assets/dashboard-icons/tiktok.svg";
-import viberIcon from "@/app/assets/dashboard-icons/viber.svg";
 
 const { hero } = landing;
-
-interface ChannelChip {
-  label: string;
-  icon: string | "mail";
-  dot?: string;
-}
-
-const CHANNEL_CHIPS: ChannelChip[] = [
-  { label: "WhatsApp", icon: whatsappIcon, dot: "#25D366" },
-  { label: "Instagram", icon: instaIcon, dot: "#E1306C" },
-  { label: "Messenger", icon: fbIcon, dot: "#0084FF" },
-  { label: "TikTok", icon: tiktokIcon, dot: "#000000" },
-  { label: "Telegram", icon: telegramIcon, dot: "#229ED9" },
-  { label: "Viber", icon: viberIcon, dot: "7360F2" },
-  { label: "SMS", icon: "mail", dot: "#62F280" },
-  { label: "Email", icon: "mail", dot: "#6B7280" },
-];
 
 const HEADLINE_WORDS = hero.title.split(" ");
 const ACCENT_WORDS = hero.titleAccent.split(" ");
@@ -92,13 +70,14 @@ const Hero = () => {
     <section
       id="hero"
       aria-label="Chatblix hero"
-      className="relative isolate overflow-hidden pt-28 pb-16 sm:pt-24 lg:pt-28 lg:pb-24"
+      className="relative isolate overflow-hidden pt-28 pb-24 sm:pt-32 sm:pb-28 lg:pt-36 lg:pb-32"
     >
       <AuroraBackdrop />
 
       <LandingContainer className="relative z-10">
-        {/* Channel showcase — where Chatblix lives */}
-        <ChannelShowcase />
+        {/* Partner badge — Meta + TikTok official integrations */}
+        <PartnerBadge />
+
         {/* Headline — word-by-word reveal */}
         <h1 className="mx-auto mt-6 max-w-4xl text-center font-meri font-bold tracking-[-0.03em] text-grey">
           <span className="block text-[40px] leading-[44px] sm:text-[58px] sm:leading-[62px] lg:text-[76px] lg:leading-[80px]">
@@ -150,7 +129,7 @@ const Hero = () => {
             delay: 0.12 + (HEADLINE_WORDS.length + ACCENT_WORDS.length) * 0.06,
             ease: [0.22, 1, 0.36, 1],
           }}
-          className="mx-auto mt-6 max-w-2xl text-center body-regular-16 text-grey-medium sm:text-[18px] sm:leading-[28px]"
+          className="mx-auto mt-8 max-w-2xl text-center body-regular-16 text-grey-medium sm:text-[18px] sm:leading-[28px]"
         >
           {hero.subtitle}
         </motion.p>
@@ -160,7 +139,7 @@ const Hero = () => {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.75, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4"
+          className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4"
         >
           <Link to={hero.primaryCta.href} className="contents">
             <Button
@@ -240,7 +219,7 @@ const Hero = () => {
                   <span className="h-1.5 w-1.5 rounded-full bg-success" />
                   app.chatblix.com
                 </div>
-                <span className="caption-medium-12 text-grey-medium/70">
+                <span className="caption-medium-12 text-grey-medium">
                   Live inbox
                 </span>
               </div>
@@ -276,54 +255,32 @@ const Hero = () => {
 };
 
 /* ──────────────────────────────────────────────────────────────────────────
- * Channel showcase — horizontal chip row right under the CTAs. Each chip is
- * an iconed pill so the visitor sees every integration at the fold.
+ * Partner badge — small pill above headline signaling official Meta + TikTok
+ * Business Partner status. Builds trust before the eye hits the headline.
  * ──────────────────────────────────────────────────────────────────────── */
-const ChannelShowcase = () => (
+const PartnerBadge = () => (
   <motion.div
-    initial={{ opacity: 0, y: 10 }}
+    initial={{ opacity: 0, y: -8 }}
     animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.55, delay: 1.1, ease: [0.22, 1, 0.36, 1] }}
-    className="mt-8 flex flex-col items-center gap-3"
+    transition={{ duration: 0.5, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
+    className="mx-auto flex w-fit items-center gap-2 rounded-full border border-grey-light/70 bg-white/80 px-3.5 py-1.5 shadow-[0_6px_20px_-10px_rgba(46,94,153,0.25)] backdrop-blur-sm"
   >
-    <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5">
-      {CHANNEL_CHIPS.map((chip, i) => (
-        <motion.div
-          key={chip.label}
-          initial={{ opacity: 0, y: 10, scale: 0.92 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{
-            duration: 0.45,
-            delay: 1.15 + i * 0.06,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-          whileHover={{ y: -3 }}
-          className={cn(
-            "group relative inline-flex items-center gap-2 rounded-full",
-            "border border-grey-light/70 bg-white/85 px-3.5 py-2",
-            "backdrop-blur-sm shadow-[0_4px_14px_-6px_rgba(46,94,153,0.2)]",
-            "transition-all duration-200 hover:border-primary/30 hover:shadow-[0_10px_24px_-12px_rgba(46,94,153,0.35)]",
-          )}
-        >
-          {/* Brand accent dot */}
-          <span
-            aria-hidden
-            className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full"
-          >
-            {chip.icon === "mail" ? (
-              <Mail
-                className="h-3.5 w-3.5"
-                strokeWidth={2}
-                style={{ color: chip.dot }}
-              />
-            ) : (
-              <img src={chip.icon} alt="" className="h-4 w-4" loading="lazy" />
-            )}
-          </span>
-          <span className="label-semi-bold-14 text-grey">{chip.label}</span>
-        </motion.div>
-      ))}
-    </div>
+    <span className="flex items-center -space-x-1.5">
+      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white ring-1 ring-grey-light/70">
+        <img src={fbIcon} alt="" className="h-3.5 w-3.5" aria-hidden />
+      </span>
+      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white ring-1 ring-grey-light/70">
+        <img src={tiktokIcon} alt="" className="h-3.5 w-3.5" aria-hidden />
+      </span>
+    </span>
+    <span className="caption-medium-12 font-semibold text-grey">
+      Official Meta &amp; TikTok Business Partner
+    </span>
+    <ShieldCheck
+      className="h-3.5 w-3.5 text-success"
+      strokeWidth={2.2}
+      aria-hidden
+    />
   </motion.div>
 );
 

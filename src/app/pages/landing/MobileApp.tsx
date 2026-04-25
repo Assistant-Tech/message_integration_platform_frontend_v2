@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
-import { Bell, Mic, WifiOff, Apple, Play, Smartphone } from "lucide-react";
+import { Bell, Mic, WifiOff, Apple, Play, MessageCircle } from "lucide-react";
 import landing from "@/app/content/json/landing.json";
-import { AnimatedBadge, SectionEyebrow, LandingContainer } from "./_shared";
+import { SectionEyebrow, LandingContainer } from "./_shared";
 
 const { mobileApp } = landing;
 
@@ -11,7 +11,7 @@ const MobileApp = () => {
   return (
     <section
       aria-label="Mobile app"
-      className="relative overflow-hidden py-24 sm:py-32"
+      className="relative overflow-hidden py-28 sm:py-36"
     >
       {/* Soft gradient canvas backdrop */}
       <div
@@ -93,9 +93,6 @@ const MobileApp = () => {
             />
           </motion.div>
 
-          <AnimatedBadge tone="mint" className="mt-6">
-            <Smartphone className="h-3 w-3" strokeWidth={2.2} /> Also works beautifully in your browser
-          </AnimatedBadge>
         </div>
 
         {/* Right: phone mockup */}
@@ -176,7 +173,7 @@ const PhoneMockup = () => (
             </p>
           </div>
           <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
-            <span className="text-sm">🔔</span>
+            <Bell className="h-4 w-4 text-primary" strokeWidth={2} />
           </span>
         </div>
 
@@ -202,13 +199,6 @@ const PhoneMockup = () => (
               snippet: "Thanks for the quick reply!",
               channel: "Messenger",
               tint: "bg-surface-lavender",
-              unread: false,
-            },
-            {
-              name: "Ana Costa",
-              snippet: "Can I change delivery date?",
-              channel: "Telegram",
-              tint: "bg-surface-sky",
               unread: false,
             },
           ].map((row, i) => (
@@ -264,8 +254,8 @@ const PhoneMockup = () => (
         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
         className="flex items-start gap-2.5"
       >
-        <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-primary/15">
-          <span className="text-[13px]">💬</span>
+        <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
+          <MessageCircle className="h-4 w-4" strokeWidth={2} />
         </span>
         <div className="min-w-0">
           <p className="text-[11px] font-bold text-grey">Chatblix</p>

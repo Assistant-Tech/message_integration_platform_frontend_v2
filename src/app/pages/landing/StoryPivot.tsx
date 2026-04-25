@@ -29,7 +29,7 @@ const StoryPivot = () => {
     <section
       ref={ref}
       aria-label="The problem Chatblix solves"
-      className="relative isolate overflow-hidden bg-grey-light/25 py-24 sm:py-32"
+      className="relative isolate overflow-hidden bg-grey-light/25 py-28 sm:py-36"
     >
       {/* Subtle grid underlay */}
       <div

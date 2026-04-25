@@ -38,7 +38,7 @@ const IntegrationStrip = () => {
   return (
     <section
       aria-label="Integrations"
-      className="relative py-14 sm:py-16"
+      className="relative py-20 sm:py-24"
     >
       <LandingContainer>
         <motion.p

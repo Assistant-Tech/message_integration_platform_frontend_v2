@@ -1,14 +1,12 @@
 import { useState } from "react";
 import { footerLinks, SocialFooter } from "@/app/utils/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button, Input, Logo } from "@/app/components/ui";
+import { Button, Logo } from "@/app/components/ui";
 import {
   ChevronDown,
   Apple,
   Play,
   ArrowRight,
-  Mail,
-  Check,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import landing from "@/app/content/json/landing.json";
@@ -216,9 +214,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Newsletter */}
-        <NewsletterRow />
-
         {/* Meta row */}
         <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-grey-light/60 py-6 sm:flex-row">
           <p className="caption-medium-12 text-grey-medium">
@@ -251,134 +246,7 @@ const Footer = () => {
           </nav>
         </div>
       </div>
-
-      {/* Giant wordmark — solid primary at top, fades to white only near the bottom */}
-      <div className="relative mt-10 overflow-hidden bg-transparent">
-        <motion.h2
-          aria-hidden
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-          className="select-none text-center font-meri font-black leading-[0.85] bg-clip-text text-transparent"
-          style={{
-            // Primary solid for the top ~65% of each letter, then fade fast
-            // through a mid tone to pure white at the bottom.
-            backgroundImage:
-              "linear-gradient(180deg, var(--color-primary-dark) 0%, var(--color-primary) 30%, var(--color-primary) 62%, oklch(58% 0.13 250) 78%, oklch(82% 0.06 245) 92%, #ffffff 100%)",
-            WebkitBackgroundClip: "text",
-            backgroundClip: "text",
-            fontSize: "clamp(72px, 22vw, 320px)",
-            letterSpacing: "-0.05em",
-            paddingBottom: "0.08em",
-          }}
-        >
-          {footer.wordmark}
-        </motion.h2>
-        {/* Thin bottom seal so the fade-out lands cleanly on white */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-10 bg-gradient-to-t from-white to-transparent"
-        />
-      </div>
     </footer>
-  );
-};
-
-/**
- * Footer newsletter capture — pre-launch "get updates" strip. Uses the shared
- * Input (pill shape) and Button primitives so styling stays in one place.
- */
-const NewsletterRow = () => {
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "submitting" | "success">(
-    "idle",
-  );
-  const [error, setError] = useState<string | undefined>();
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!email.trim()) {
-      setError("Enter your email so we know where to send the good news.");
-      return;
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      setError("That email looks off — mind double-checking?");
-      return;
-    }
-    setError(undefined);
-    setStatus("submitting");
-    // TODO(wire-up): POST to newsletter endpoint when backend is live.
-    await new Promise((r) => setTimeout(r, 700));
-    setStatus("success");
-    setEmail("");
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 14 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      className="mt-16 rounded-3xl border border-grey-light/60 bg-white/75 p-6 shadow-[0_24px_50px_-30px_rgba(46,94,153,0.25)] backdrop-blur-sm sm:p-8"
-    >
-      <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-        <div className="max-w-lg">
-          <p className="caption-medium-12 font-semibold uppercase tracking-[0.18em] text-primary">
-            Stay in the loop
-          </p>
-          <h4 className="mt-2 font-meri text-[22px] font-bold leading-[1.2] text-grey sm:text-[26px]">
-            Get launch updates & product news.
-          </h4>
-          <p className="mt-1 label-regular-14 text-grey-medium">
-            One email. Only when something worth your inbox happens.
-          </p>
-        </div>
-
-        {status === "success" ? (
-          <div className="inline-flex items-center gap-2 rounded-full bg-success-light px-4 py-3 label-semi-bold-14 text-success-dark">
-            <Check className="h-4 w-4" strokeWidth={2.4} /> You're on the list —
-            talk soon.
-          </div>
-        ) : (
-          <form
-            onSubmit={handleSubmit}
-            className="flex w-full max-w-md flex-col gap-2 sm:flex-row sm:items-start"
-            noValidate
-          >
-            <div className="flex-1">
-              <Input
-                variant="email"
-                shape="pill"
-                placeholder="you@work.com"
-                aria-label="Email address"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  if (error) setError(undefined);
-                }}
-                iconLeft={<Mail className="h-4 w-4" strokeWidth={1.8} />}
-                error={error}
-                disabled={status === "submitting"}
-              />
-            </div>
-            <Button
-              type="submit"
-              label={status === "submitting" ? "Subscribing…" : "Notify me"}
-              variant="primary"
-              size="md"
-              loading={status === "submitting"}
-              IconRight={
-                status === "submitting" ? undefined : (
-                  <ArrowRight className="h-4 w-4" strokeWidth={2.2} />
-                )
-              }
-              className="rounded-full px-6"
-            />
-          </form>
-        )}
-      </div>
-    </motion.div>
   );
 };
 
