@@ -8,12 +8,15 @@ importers:
 
   .:
     dependencies:
-      '@fontsource/merriweather':
-        specifier: ^5.2.7
-        version: 5.2.7
+      '@fontsource/comfortaa':
+        specifier: ^5.2.8
+        version: 5.2.8
       '@fontsource/nunito-sans':
         specifier: ^5.2.5
         version: 5.2.5
+      '@fontsource/viga':
+        specifier: ^5.2.7
+        version: 5.2.7
       '@hookform/resolvers':
         specifier: ^5.0.1
         version: 5.0.1(react-hook-form@7.56.4(react@19.2.1))
@@ -768,11 +771,14 @@ packages:
   '@floating-ui/utils@0.2.9':
     resolution: {integrity: sha512-MDWhGtE+eHw5JW7lq4qhc5yRLS11ERl1c7Z6Xd0a58DozHES6EnNNwUWbMiG4J9Cgj053Bhk8zvlhFYKVhULwg==}
 
-  '@fontsource/merriweather@5.2.7':
-    resolution: {integrity: sha512-ryOP1w5L0bZCFm1YoITndy18N+4Z07sJFkWEl9XxCAbqx88gkUO/F/vjPMw4Uup20w6plDD5w6xmsRiAI3+1NA==}
+  '@fontsource/comfortaa@5.2.8':
+    resolution: {integrity: sha512-S5oyMR0QzBPIJvS52W8Xgv9IcJkScIHgHZ7R2lqwW9nVD10mlIzunNPrIrAuU6kES+A35tc52UdQ9tunL1CWeg==}
 
   '@fontsource/nunito-sans@5.2.5':
     resolution: {integrity: sha512-QE2I4PmR9CHoAXxfpz4L+o35X4jg64i+5/J8Aa0G24mY9xs2VPr0a4igDcZkjIMhGfFfPAvcaR+hf/NpXVhZuw==}
+
+  '@fontsource/viga@5.2.7':
+    resolution: {integrity: sha512-bceE1FphG0khMw2+ftCrkL0UAi/piuBV9t2v3ozRQI8B+IklwmGOlPsqLcu+qnYEULnzYQsBudCNQBbStLdISw==}
 
   '@gilbarbara/deep-equal@0.4.1':
     resolution: {integrity: sha512-QF2BGeQjsa59T59XvFdR3is5jrl28Eg0J6giXAC5919bcqvR8XP4B+07tpbs6Y6/IQd4FBncaL2WVXIBgSxt4w==}
@@ -3103,11 +3109,12 @@ packages:
 
   glob@10.4.5:
     resolution: {integrity: sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
-    deprecated: Glob versions prior to v9 are no longer supported
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   globals@11.12.0:
     resolution: {integrity: sha512-WOBp/EEGUiIsJSp7wcv/y6MO+lV9UoncWqxuFfm8eBwzWNgyfBd6Gz+IeKQ9jCmyhoH99g15M3T+QaVHFjizVA==}
@@ -4413,6 +4420,7 @@ packages:
   tar@7.4.3:
     resolution: {integrity: sha512-5S7Va8hKfV7W5U6g3aYxXmlPoZVAwUMy9AOKyF2fVuZa2UD3qZjg578OrLRt8PcNN1PleVaL/5/yYATNL0ICUw==}
     engines: {node: '>=18'}
+    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   terser@5.44.0:
     resolution: {integrity: sha512-nIVck8DK+GM/0Frwd+nIhZ84pR/BX7rmXMfYwyg+Sri5oGVE99/E3KvXqpC2xHFxyqXyGHTKBSioxxplrO4I4w==}
@@ -5232,9 +5240,11 @@ snapshots:
 
   '@floating-ui/utils@0.2.9': {}
 
-  '@fontsource/merriweather@5.2.7': {}
+  '@fontsource/comfortaa@5.2.8': {}
 
   '@fontsource/nunito-sans@5.2.5': {}
+
+  '@fontsource/viga@5.2.7': {}
 
   '@gilbarbara/deep-equal@0.4.1': {}
 

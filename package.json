@@ -19,8 +19,9 @@
     "analyze": "cross-env ANALYZE=true vite build"
   },
   "dependencies": {
-    "@fontsource/merriweather": "^5.2.7",
+    "@fontsource/comfortaa": "^5.2.8",
     "@fontsource/nunito-sans": "^5.2.5",
+    "@fontsource/viga": "^5.2.7",
     "@hookform/resolvers": "^5.0.1",
     "@radix-ui/react-accordion": "^1.2.11",
     "@radix-ui/react-collapsible": "^1.1.11",
