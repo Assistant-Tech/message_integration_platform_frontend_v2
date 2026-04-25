@@ -21,7 +21,7 @@ const DemoTextArea = () => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-primary to-primary-dark rounded-3xl overflow-hidden w-full xl:w-1/2 max-w-full">
+    <div className="bg-gradient-to-br from-primary to-primary-dark rounded-3xl overflow-hidden w-full min-w-0">
       {/* Header */}
       <div className="p-4 sm:p-6 pb-4 relative">
         <motion.div

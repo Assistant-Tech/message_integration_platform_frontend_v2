@@ -13,7 +13,13 @@ import {
   MOCK_AGENTS,
   MOCK_WEEKLY_TREND,
 } from "./constants";
-import type { TimeRange, KpiMetric, ChannelBreakdown, HourlyVolume, AgentPerformance } from "./types";
+import type {
+  TimeRange,
+  KpiMetric,
+  ChannelBreakdown,
+  HourlyVolume,
+  AgentPerformance,
+} from "./types";
 import {
   useAnalyticsSummary,
   useAnalyticsMessages,
@@ -43,12 +49,20 @@ const AnalyticsPage = () => {
   const period = RANGE_TO_PERIOD[range] ?? "month";
 
   // Hooks
-  const { data: summaryRes } = useAnalyticsSummary(period === "quarter" ? "month" : (period as "today" | "week" | "month"));
-  const { data: messagesRes } = useAnalyticsMessages(period === "quarter" ? "month" : (period as "week" | "month" | "year"), undefined, "day");
+  const { data: summaryRes } = useAnalyticsSummary(
+    period === "quarter" ? "month" : (period as "today" | "week" | "month"),
+  );
+  const { data: messagesRes } = useAnalyticsMessages(
+    period === "quarter" ? "month" : (period as "week" | "month" | "year"),
+    undefined,
+    "day",
+  );
   const { data: channelsRes } = useChannelStats(period);
   const { data: leaderboardRes } = useLeaderboard({ period, limit: 5 });
   const { data: resolutionsRes } = useResolutionStats(period);
-  const { data: hourlyRes } = useHourlyVolume(period === "quarter" ? "month" : period);
+  const { data: hourlyRes } = useHourlyVolume(
+    period === "quarter" ? "month" : period,
+  );
 
   // Transform: KPI cards
   const kpis: KpiMetric[] = useMemo(() => {
@@ -100,46 +114,65 @@ const AnalyticsPage = () => {
   // Transform: Channel breakdown
   const channels: ChannelBreakdown[] = useMemo(() => {
     const data = channelsRes?.data;
-    if (!data || !Array.isArray(data) || data.length === 0) return MOCK_CHANNELS;
-    return data.map((ch: { channel: string; conversations: number; percentage: number }) => ({
-      key: ch.channel.toLowerCase() as ChannelBreakdown["key"],
-      channel: ch.channel,
-      conversations: ch.conversations,
-      percentage: ch.percentage,
-      color: CHANNEL_COLORS[ch.channel] ?? "#8B5CF6",
-    }));
+    if (!data || !Array.isArray(data) || data.length === 0)
+      return MOCK_CHANNELS;
+    return data.map(
+      (ch: { channel: string; conversations: number; percentage: number }) => ({
+        key: ch.channel.toLowerCase() as ChannelBreakdown["key"],
+        channel: ch.channel,
+        conversations: ch.conversations,
+        percentage: ch.percentage,
+        color: CHANNEL_COLORS[ch.channel] ?? "#8B5CF6",
+      }),
+    );
   }, [channelsRes]);
 
   // Transform: Hourly volume from dedicated endpoint
   const hourlyData: HourlyVolume[] = useMemo(() => {
     const hours = hourlyRes?.data?.hours;
-    if (!hours || !Array.isArray(hours) || hours.length === 0) return MOCK_HOURLY;
-    return hours.map((h: { hour: string; incoming: number; outgoing: number }) => ({
-      hour: h.hour,
-      incoming: h.incoming,
-      outgoing: h.outgoing,
-    }));
+    if (!hours || !Array.isArray(hours) || hours.length === 0)
+      return MOCK_HOURLY;
+    return hours.map(
+      (h: { hour: string; incoming: number; outgoing: number }) => ({
+        hour: h.hour,
+        incoming: h.incoming,
+        outgoing: h.outgoing,
+      }),
+    );
   }, [hourlyRes]);
 
   // Transform: Weekly trend from messages endpoint
   const weeklyData = useMemo(() => {
     const points = messagesRes?.data?.points;
-    if (!points || !Array.isArray(points) || points.length === 0) return MOCK_WEEKLY_TREND;
-    return points.map((p: { label: string; value: number }) => ({ label: p.label, value: p.value }));
+    if (!points || !Array.isArray(points) || points.length === 0)
+      return MOCK_WEEKLY_TREND;
+    return points.map((p: { label: string; value: number }) => ({
+      label: p.label,
+      value: p.value,
+    }));
   }, [messagesRes]);
 
   // Transform: Agent leaderboard
-  const agents: AgentPerformance[] = useMemo(() => {
+  const agents: AgentPerformance[] | undefined = useMemo(() => {
     const items = leaderboardRes?.data?.items;
-    if (!items || !Array.isArray(items) || items.length === 0) return MOCK_AGENTS;
-    return items.map((a: { memberId: string; memberName: string; conversationsHandled: number; resolved: number; avgResponseTimeSeconds: number; csatAvg: number }) => ({
-      id: a.memberId,
-      name: a.memberName,
-      conversations: a.conversationsHandled,
-      resolved: a.resolved,
-      avgResponseTime: formatDuration(a.avgResponseTimeSeconds),
-      satisfaction: a.csatAvg || 4.5,
-    }));
+    if (!items || !Array.isArray(items) || items.length === 0) return;
+    return items.map(
+      (a: {
+        memberId: string;
+        memberName: string;
+        conversationsHandled: number;
+        resolved: number;
+        avgResponseTimeSeconds: number;
+        csatAvg: number;
+      }) => ({
+        id: a.memberId,
+        name: a.memberName,
+        conversations: a.conversationsHandled,
+        resolved: a.resolved,
+        avgResponseTime: formatDuration(a.avgResponseTimeSeconds),
+        satisfaction: a.csatAvg || 4.5,
+      }),
+    );
   }, [leaderboardRes]);
 
   return (

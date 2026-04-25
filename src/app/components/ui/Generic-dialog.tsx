@@ -19,6 +19,10 @@ const GenericDialog = ({
   children,
   maxWidth = "max-w-5xl",
 }: GenericDialogProps) => {
+  // Back-compat: some callers pass "7xl" instead of "max-w-7xl". Prefix if missing.
+  const resolvedMaxWidth = maxWidth.startsWith("max-w-")
+    ? maxWidth
+    : `max-w-${maxWidth}`;
   return (
     <Dialog.Root open={open} onOpenChange={(o) => !o && onClose?.()}>
       <AnimatePresence>
@@ -38,7 +42,7 @@ const GenericDialog = ({
                 initial={{ y: "-10%", opacity: 0 }}
                 animate={{ y: "0%", opacity: 1 }}
                 exit={{ y: "-10%", opacity: 0 }}
-                className={`fixed z-50 top-1/2 left-1/2 w-[25vw] ${maxWidth} max-h-[90vh] overflow-auto -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white shadow-lg`}
+                className={`fixed z-50 top-1/2 left-1/2 w-[95vw] ${resolvedMaxWidth} max-h-[90vh] overflow-auto -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white shadow-lg`}
               >
                 {/* Consolidate the title and close button into a single header for flexbox alignment */}
                 {(title || onClose) && (

@@ -14,11 +14,17 @@ const AVATAR_PALETTES = [
 const getColor = (name: string): string => {
   let h = 0;
   for (let i = 0; i < name.length; i++) h = name.charCodeAt(i) + h * 31;
-  return AVATAR_PALETTES[Math.abs(h) % AVATAR_PALETTES.length] ?? AVATAR_PALETTES[0];
+  return (
+    AVATAR_PALETTES[Math.abs(h) % AVATAR_PALETTES.length] ?? AVATAR_PALETTES[0]
+  );
 };
 
 const getInitials = (name: string): string =>
-  name.split(/\s+/).slice(0, 2).map((w) => w[0]?.toUpperCase() ?? "").join("");
+  name
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((w) => w[0]?.toUpperCase() ?? "")
+    .join("");
 
 const RANK_BADGES = [
   "bg-warning/15 text-warning-dark border-warning/30",
@@ -27,7 +33,7 @@ const RANK_BADGES = [
 ] as const;
 
 interface AgentLeaderboardProps {
-  agents: AgentPerformance[];
+  agents: AgentPerformance[] | undefined;
 }
 
 const AgentLeaderboard = ({ agents }: AgentLeaderboardProps) => (
@@ -43,8 +49,11 @@ const AgentLeaderboard = ({ agents }: AgentLeaderboardProps) => (
     </div>
 
     <div className="space-y-2">
-      {agents.map((agent, i) => {
-        const resolutionRate = Math.round((agent.resolved / agent.conversations) * 100);
+      {!agents && <p>No agent data found, please try again later.</p>}
+      {agents?.map((agent, i) => {
+        const resolutionRate = Math.round(
+          (agent.resolved / agent.conversations) * 100,
+        );
 
         return (
           <motion.div

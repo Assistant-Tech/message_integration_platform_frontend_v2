@@ -41,7 +41,7 @@ const DemoFormContent = ({
   return (
     <div className={`${className}`}>
       <div
-        className={`${isFullPage ? "flex flex-col lg:flex-row min-h-auto" : "flex flex-col sm:flex-row justify-center gap-4 md:gap-12"}`}
+        className={`${isFullPage ? "grid grid-cols-1 lg:grid-cols-2 min-h-auto" : "grid grid-cols-1 lg:grid-cols-2 justify-center gap-4 md:gap-8"}`}
       >
         <DemoTextArea />
 
@@ -55,7 +55,7 @@ const DemoFormContent = ({
         )}
 
         <div
-          className={`${isFullPage ? "flex-1 py-6 px-6 lg:py-6 lg:px-12" : ""}`}
+          className={`min-w-0 ${isFullPage ? "py-6 px-6 lg:py-6 lg:px-12" : ""}`}
         >
           <div className="flex justify-between items-start">
             <h2
