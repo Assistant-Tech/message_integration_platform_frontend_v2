@@ -13,10 +13,10 @@ import {
   Zap,
 } from "lucide-react";
 
-import crm from "@/app/assets/white-icons/crm.svg";
-import chat from "@/app/assets/white-icons/chat.svg";
-import unified from "@/app/assets/white-icons/unifiedmsg.svg";
-import bulk from "@/app/assets/white-icons/bulk.svg";
+// import crm from "@/app/assets/white-icons/crm.svg";
+// import chat from "@/app/assets/white-icons/chat.svg";
+// import unified from "@/app/assets/white-icons/unifiedmsg.svg";
+// import bulk from "@/app/assets/white-icons/bulk.svg";
 import blog from "@/app/assets/white-icons/blog.svg";
 import video from "@/app/assets/white-icons/videos.svg";
 import faq from "@/app/assets/white-icons/faq.svg";
@@ -38,66 +38,66 @@ export interface NavigationItem {
 }
 
 export const navigation: NavigationItem[] = [
-  {
-    id: 1,
-    name: "Products",
-    description:
-      "Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, suscipit porttitor velit elementum non.",
-    dropdown: [
-      {
-        name: "CRM",
-        href: APP_ROUTES.PUBLIC.CRM,
-        description: "Customer relationship management",
-        icon: crm,
-      },
-      {
-        name: "Automation",
-        href: APP_ROUTES.PUBLIC.CHATBOT,
-        description: "AI-powered customer support",
-        icon: chat,
-      },
-      {
-        name: "Unified Messaging",
-        href: APP_ROUTES.PUBLIC.UNIFIED_MESSAGE,
-        description: "Vestibulum tempus imperdiet",
-        icon: unified,
-      },
-      {
-        name: "Bulk Messaging",
-        href: APP_ROUTES.PUBLIC.BULK_MESSAGING,
-        description: "Vestibulum tempus imperdiet",
-        icon: bulk,
-      },
-    ],
-  },
+  // {
+  //   id: 1,
+  //   name: "Products",
+  //   description:
+  //     "Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, suscipit porttitor velit elementum non.",
+  //   dropdown: [
+  //     {
+  //       name: "CRM",
+  //       href: APP_ROUTES.PUBLIC.CRM,
+  //       description: "Customer relationship management",
+  //       icon: crm,
+  //     },
+  //     {
+  //       name: "Automation",
+  //       href: APP_ROUTES.PUBLIC.CHATBOT,
+  //       description: "AI-powered customer support",
+  //       icon: chat,
+  //     },
+  //     {
+  //       name: "Unified Messaging",
+  //       href: APP_ROUTES.PUBLIC.UNIFIED_MESSAGE,
+  //       description: "Vestibulum tempus imperdiet",
+  //       icon: unified,
+  //     },
+  //     {
+  //       name: "Bulk Messaging",
+  //       href: APP_ROUTES.PUBLIC.BULK_MESSAGING,
+  //       description: "Vestibulum tempus imperdiet",
+  //       icon: bulk,
+  //     },
+  //   ],
+  // },
   {
     id: 2,
     name: "Resources",
     description:
-      "Vestibulum tempus imperdiet sem ac porttitor. Vivamus pulvinar commodo orci, suscipit porttitor velit elementum non.",
+      "Guides, walkthroughs, and answers to help your team get more out of Chatblix.",
     dropdown: [
       {
         name: "Blogs",
         href: "/resources/blogs",
-        description: "API docs and guides",
+        description: "Tips on AI messaging, automation, and customer support",
         icon: blog,
       },
       {
         name: "Videos",
         href: "/resources/videos",
-        description: "Get support and answers",
+        description: "Product demos and short tutorials",
         icon: video,
       },
       {
         name: "FAQs",
         href: "/resources/faq",
-        description: "Latest news and insights",
+        description: "Quick answers to the most common questions",
         icon: faq,
       },
       {
         name: "Support",
         href: "/resources/support",
-        description: "For more questionaires",
+        description: "Talk to our team — we usually reply within an hour",
         icon: support,
       },
     ],

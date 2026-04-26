@@ -46,7 +46,7 @@ const SmartCard: React.FC<SmartCardProps> = ({
       whileTap="tap"
       onClick={handleClick}
       className={cn(
-        "bg-white rounded-xl border border-grey-light transition-all cursor-pointer hover:shadow-md px-8 py-6 h-full flex flex-col justify-between max-w-sm",
+        "bg-white rounded-xl border border-grey-light transition-all cursor-pointer hover:shadow-md px-8 py-6 h-full flex flex-col justify-between w-full",
         className,
       )}
     >

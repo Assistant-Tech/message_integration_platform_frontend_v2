@@ -14,7 +14,7 @@ const DesktopNavigation: React.FC<DesktopNavigationProps> = ({
   onToggleDropdown,
 }) => {
   return (
-    <nav className="hidden xl:flex items-center space-x-8">
+    <nav className="hidden xl:flex justify-center items-center space-x-16">
       {navigation.map((item) => (
         <NavigationItem
           key={item.name}

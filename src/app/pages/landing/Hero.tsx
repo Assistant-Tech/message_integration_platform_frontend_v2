@@ -70,7 +70,7 @@ const Hero = () => {
     <section
       id="hero"
       aria-label="Chatblix hero"
-      className="relative isolate overflow-hidden pt-28 pb-24 sm:pt-32 sm:pb-28 lg:pt-36 lg:pb-32"
+      className="relative isolate overflow-hidden py-28"
     >
       <AuroraBackdrop />
 

@@ -61,7 +61,7 @@ const LandingContent = () => {
 };
 
 const Landing = () => (
-  <div className="min-h-screen bg-white text-grey">
+  <div className="min-h-screen">
     <Theme>
       <LandingContent />
       <ChatToggleButton />

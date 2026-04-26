@@ -2,18 +2,14 @@ import { useState } from "react";
 import { footerLinks, SocialFooter } from "@/app/utils/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button, Logo } from "@/app/components/ui";
-import {
-  ChevronDown,
-  Apple,
-  Play,
-  ArrowRight,
-} from "lucide-react";
+import { ChevronDown, Apple, Play, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import landing from "@/app/content/json/landing.json";
+import { Container } from "@/app/components/layout";
 
 const { footer } = landing;
 
-const SECTION_ORDER = ["products", "resources", "pricing", "contact"] as const;
+const SECTION_ORDER = ["resources", "pricing", "contact"] as const;
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -99,8 +95,8 @@ const Footer = () => {
       </div>
 
       {/* Main columns */}
-      <div className="mx-auto w-full max-w-[1600px] px-4 pt-20 sm:px-6 md:px-8 xl:px-12 2xl:px-0">
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1.3fr_2fr]">
+      <Container>
+        <div className="grid grid-cols-1 gap-24 lg:grid-cols-2 pt-24">
           {/* Brand */}
           <div>
             <Logo />
@@ -245,7 +241,7 @@ const Footer = () => {
             </ul>
           </nav>
         </div>
-      </div>
+      </Container>
     </footer>
   );
 };

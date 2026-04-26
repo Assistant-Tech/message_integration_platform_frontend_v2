@@ -71,7 +71,7 @@ const CRM: React.FC = () => {
   ];
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg min-h-screen">
       <div>
         {/* Breadcrumb Section */}
         <motion.div
@@ -113,9 +113,9 @@ const CRM: React.FC = () => {
               transition={{ delay: 0.1 }}
               className="mt-6 mx-auto max-w-3xl body-regular-16 text-grey-medium sm:text-[18px] sm:leading-[28px]"
             >
-              Chatblix CRM transforms how you manage customer relationships. Centralize
-              data, automate workflows, and close deals faster with unified customer
-              intelligence.
+              Chatblix CRM transforms how you manage customer relationships.
+              Centralize data, automate workflows, and close deals faster with
+              unified customer intelligence.
             </motion.p>
 
             <motion.div
@@ -180,7 +180,7 @@ const CRM: React.FC = () => {
         <ScaleYourBusiness />
 
         {/* LEARN MORE ABOUT CRM SECTION */}
-        <LearnMoreCRM />
+        {/*<LearnMoreCRM />*/}
 
         {/* GET STARTED */}
         <div className="relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] w-screen">

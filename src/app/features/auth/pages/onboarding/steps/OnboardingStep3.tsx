@@ -1,7 +1,20 @@
 import React from "react";
 import { Button, Input } from "@/app/components/ui/";
 import { useOnboardingStore } from "@/app/features/auth/pages/onboarding/hooks/useOnboardingStore";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Briefcase,
+  Flower2,
+  Shirt,
+  Sparkles,
+  Cpu,
+  Utensils,
+  Hammer,
+  Palette,
+  BookOpen,
+  MoreHorizontal,
+} from "lucide-react";
 import {
   onboardingStep3Schema,
   OnboardingStep3FormData,
@@ -16,6 +29,22 @@ interface OnboardingStep3Props {
   onFinishEarly?: (stepData: { industry: string }) => void;
   showFinishEarlyOption?: boolean;
 }
+
+const INDUSTRY_OPTIONS: {
+  label: string;
+  Icon: React.ComponentType<{ size?: number; strokeWidth?: number; className?: string }>;
+}[] = [
+  { label: "Digital Marketing", Icon: Briefcase },
+  { label: "Skin Care", Icon: Flower2 },
+  { label: "Clothing & Fashion", Icon: Shirt },
+  { label: "Cosmetics", Icon: Sparkles },
+  { label: "Electronics", Icon: Cpu },
+  { label: "Food & Beverage", Icon: Utensils },
+  { label: "Handicraft", Icon: Hammer },
+  { label: "Arts", Icon: Palette },
+  { label: "Bookstore", Icon: BookOpen },
+  { label: "Others", Icon: MoreHorizontal },
+];
 
 const OnboardingStep3: React.FC<OnboardingStep3Props> = ({
   onNext,
@@ -43,23 +72,8 @@ const OnboardingStep3: React.FC<OnboardingStep3Props> = ({
   const isOther = watch("isOther");
   const selectedIndustry = watch("industry");
 
-  const industries = [
-    "Digital Marketing",
-    "Skin Care",
-    "Clothing & Fashion",
-    "Cosmetics",
-    "Electronics",
-    "Food & Beverage",
-    "Handicraft",
-    "Arts",
-    "Bookstore",
-    "Others",
-  ];
-
   const handleIndustryChange = (value: string) => {
-    setValue("industry", value === "Others" ? "" : value, {
-      shouldDirty: true,
-    });
+    setValue("industry", value === "Others" ? "" : value, { shouldDirty: true });
     setValue("isOther", value === "Others", { shouldDirty: true });
     clearErrors("industry");
   };
@@ -75,109 +89,134 @@ const OnboardingStep3: React.FC<OnboardingStep3Props> = ({
 
   const handleFinishSetup = () => {
     if (!onFinishEarly) return;
-
     handleSubmit((values) => {
       onFinishEarly({ industry: values.industry.trim() });
     })();
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
       {showFinishEarlyOption && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-          <h4 className="text-blue-800 font-medium mb-2">🎉 Great progress!</h4>
-          <p className="text-blue-600 text-sm">
-            You've completed all the required steps. You can finish your setup
-            now or continue with optional steps to add documents and team
-            members.
-          </p>
+        <div className="flex items-start gap-3 p-4 rounded-xl bg-success-light/40 border border-success-light">
+          <span className="h-8 w-8 rounded-full bg-success/15 text-success flex items-center justify-center text-sm">
+            🎉
+          </span>
+          <div>
+            <p className="label-semi-bold-14 text-success-dark">
+              You've got the essentials!
+            </p>
+            <p className="body-regular-16 text-grey-dark/80 mt-0.5">
+              Once you pick an industry you can finish setup now, or continue
+              with optional steps to upload documents and invite your team.
+            </p>
+          </div>
         </div>
       )}
 
-      <h3 className="text-lg font-medium text-grey mb-4">
-        Choose your Industry <span className="text-danger">*</span>
-      </h3>
+      <div>
+        <p className="label-semi-bold-14 text-grey-dark mb-3">
+          Pick the one that fits best{" "}
+          <span className="text-danger">*</span>
+        </p>
+        <div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
+          role="radiogroup"
+          aria-label="Industry"
+        >
+          {INDUSTRY_OPTIONS.map(({ label, Icon }) => {
+            const isSelected =
+              label === "Others"
+                ? isOther
+                : !isOther && selectedIndustry === label;
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {industries.map((industryOption) => {
-          const isSelected =
-            industryOption === "Others"
-              ? isOther
-              : !isOther && selectedIndustry === industryOption;
-
-          return (
-            <label
-              key={industryOption}
-              className={`flex items-center p-4 border rounded-lg cursor-pointer transition-colors ${
-                isSelected
-                  ? "border-primary bg-primary/5"
-                  : "border-gray-200 hover:border-gray-300"
-              }`}
-            >
-              <input
-                type="radio"
-                name="industry"
-                value={industryOption}
-                checked={isSelected}
-                onChange={() => handleIndustryChange(industryOption)}
-                className="hidden"
-              />
-              <div
-                className={`w-5 h-5 rounded-full border-2 mr-3 flex items-center justify-center ${
-                  isSelected ? "border-primary" : "border-gray-300"
+            return (
+              <label
+                key={label}
+                className={`group flex items-center gap-3 p-3.5 rounded-xl border cursor-pointer transition-all ${
+                  isSelected
+                    ? "border-primary bg-primary/5 ring-1 ring-primary/30"
+                    : "border-grey-light/80 hover:border-grey-medium bg-base-white"
                 }`}
               >
-                {isSelected && (
-                  <div className="w-2.5 h-2.5 rounded-full bg-primary" />
-                )}
-              </div>
-              <span className="text-sm text-gray-700">{industryOption}</span>
-            </label>
-          );
-        })}
+                <input
+                  type="radio"
+                  name="industry"
+                  value={label}
+                  checked={isSelected}
+                  onChange={() => handleIndustryChange(label)}
+                  className="sr-only"
+                />
+                <span
+                  className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors ${
+                    isSelected
+                      ? "bg-primary text-white"
+                      : "bg-grey-light/60 text-grey-medium group-hover:text-grey-dark"
+                  }`}
+                >
+                  <Icon size={18} strokeWidth={1.8} />
+                </span>
+                <span
+                  className={`label-semi-bold-14 flex-1 ${
+                    isSelected ? "text-grey-dark" : "text-grey-dark/90"
+                  }`}
+                >
+                  {label}
+                </span>
+                <span
+                  className={`h-5 w-5 rounded-full border-2 flex items-center justify-center transition-colors ${
+                    isSelected ? "border-primary" : "border-grey-light"
+                  }`}
+                  aria-hidden
+                >
+                  {isSelected && (
+                    <span className="h-2.5 w-2.5 rounded-full bg-primary" />
+                  )}
+                </span>
+              </label>
+            );
+          })}
+        </div>
+
+        {errors.industry && (
+          <p className="text-sm text-danger mt-3">{errors.industry.message}</p>
+        )}
       </div>
 
-      {errors.industry && (
-        <p className="text-danger text-sm mt-1">{errors.industry.message}</p>
-      )}
-
       {isOther && (
-        <div className="mt-6">
-          <p className="text-grey-medium mb-4">If Others, please specify</p>
-          <Input
-            id="customIndustry"
-            placeholder="Please specify your industry"
-            {...register("industry")}
-            onChange={(e) => handleCustomIndustryChange(e.target.value)}
-            error={errors.industry?.message}
-          />
-        </div>
+        <Input
+          id="customIndustry"
+          label="Tell us your industry"
+          placeholder="e.g. Renewable Energy, Edtech, …"
+          required
+          {...register("industry")}
+          onChange={(e) => handleCustomIndustryChange(e.target.value)}
+          error={errors.industry?.message}
+        />
       )}
 
-      <div className="flex justify-between pt-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-2">
         <Button
-          label="Go Back"
+          label="Back"
           onClick={onPrevious}
           variant="outlined"
-          IconLeft={<ArrowLeft size={20} />}
+          IconLeft={<ArrowLeft size={18} />}
           disabled={isSubmitting}
         />
 
-        <div className="flex gap-3">
+        <div className="flex flex-col-reverse sm:flex-row gap-3">
           {showFinishEarlyOption && onFinishEarly && (
             <Button
-              label="Finish Setup"
+              label="Finish setup now"
               onClick={handleFinishSetup}
               variant="outlined"
               disabled={isSubmitting}
-              className="border-primary text-primary hover:bg-primary hover:text-white"
             />
           )}
           <Button
             label="Continue"
             type="submit"
             variant="primary"
-            IconRight={<ArrowRight size={20} />}
+            IconRight={<ArrowRight size={18} />}
             disabled={isSubmitting}
           />
         </div>

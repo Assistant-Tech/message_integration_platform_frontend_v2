@@ -11,7 +11,25 @@ export default defineConfig(({ mode }) => {
   // Resolve the upstream API base URL and strip the /api/v1 suffix so the
   // dev proxy can forward the same path the browser requested.
   const apiBase = env.VITE_API_BASE_URL ?? "";
-  const apiOrigin = apiBase.replace(/\/api\/v1\/?$/, "");
+  let apiOrigin = apiBase.replace(/\/api\/v1\/?$/, "");
+
+  // Tolerate values without a scheme (e.g. `api.chatblix.com`) — http-proxy
+  // requires an absolute URL or it silently no-ops and every /api/v1/* req 404s.
+  if (apiOrigin && !/^https?:\/\//i.test(apiOrigin)) {
+    apiOrigin = `https://${apiOrigin}`;
+  }
+
+  if (mode === "development") {
+    if (!apiOrigin) {
+      console.warn(
+        "\n[vite] VITE_API_BASE_URL is not set — /api/v1/* requests will 404. " +
+          "Add it to .env (e.g. VITE_API_BASE_URL=https://api.chatblix.com/api/v1) " +
+          "and restart the dev server.\n",
+      );
+    } else {
+      console.info(`[vite] dev proxy /api/v1 → ${apiOrigin}/api/v1`);
+    }
+  }
 
   return {
     plugins: [

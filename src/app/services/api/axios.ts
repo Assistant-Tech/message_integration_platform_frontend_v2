@@ -15,7 +15,7 @@ interface RetriableAxiosRequestConfig extends InternalAxiosRequestConfig {
 // which the browser otherwise refuses to send cross-site.
 // In production we use VITE_API_BASE_URL directly so the frontend can point at
 // a separate API host (e.g. api.chatblix.com) instead of same-origin.
-const baseURL = import.meta.env.VITE_API_BASE_URL ?? "/api/v1";
+const baseURL = import.meta.env.VITE_API_BASE_URL_TEST ?? "/api/v1";
 
 const api = axios.create({
   baseURL,

@@ -13,42 +13,28 @@ const ImageGrid: React.FC = () => {
     // Top left (tall narrow)
     {
       id: 1,
-      src: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
-      colSpan: "col-span-1",
-      rowSpan: "row-span-2",
-    },
-    // Top center (circular HUD)
-    {
-      id: 2,
-      src: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+      src: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1777185001/about-1_thkabu.jpg",
       colSpan: "col-span-1",
       rowSpan: "row-span-2",
     },
     // Top right (man with email icon)
     {
       id: 3,
-      src: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+      src: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1777185001/about-3_hhnewg.jpg",
       colSpan: "col-span-1",
       rowSpan: "row-span-1",
     },
     // Middle left (developer at desk)
     {
       id: 4,
-      src: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+      src: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1777185001/about-6_l23jal.jpg",
       colSpan: "col-span-1",
       rowSpan: "row-span-2",
     },
     // Middle right (AI robot hand)
     {
       id: 5,
-      src: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
-      colSpan: "col-span-1",
-      rowSpan: "row-span-1",
-    },
-    // Bottom center (laptop and tablet hands)
-    {
-      id: 6,
-      src: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1753920902/CRM1_vfsdiz.webp",
+      src: "https://res.cloudinary.com/dtoqwn0gx/image/upload/v1777185001/about-2_i8yhsd.jpg",
       colSpan: "col-span-1",
       rowSpan: "row-span-1",
     },

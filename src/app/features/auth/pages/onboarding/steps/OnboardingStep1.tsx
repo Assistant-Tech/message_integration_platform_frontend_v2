@@ -7,13 +7,20 @@ import {
 } from "@/app/features/auth/pages/onboarding/schemas/Onboarding.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronDown } from "lucide-react";
 
 interface OnboardingStep1Props {
   onNext: (stepData: OnboardingStep1FormData) => void;
   onPrevious: () => void;
   isSubmitting: boolean;
 }
+
+const COUNTRY_OPTIONS = [
+  { label: "Nepal", flag: "🇳🇵", dial: "+977" },
+  { label: "India", flag: "🇮🇳", dial: "+91" },
+  { label: "USA", flag: "🇺🇸", dial: "+1" },
+  { label: "UK", flag: "🇬🇧", dial: "+44" },
+];
 
 const OnboardingStep1: React.FC<OnboardingStep1Props> = ({
   onNext,
@@ -23,10 +30,7 @@ const OnboardingStep1: React.FC<OnboardingStep1Props> = ({
   const { initialCountryCode, initialContactNumber } = useMemo(() => {
     const stored = data.step1?.contactNumber ?? "";
     if (!stored) {
-      return {
-        initialCountryCode: "Nepal",
-        initialContactNumber: "",
-      };
+      return { initialCountryCode: "Nepal", initialContactNumber: "" };
     }
 
     const [maybeCode, maybeNumber] = stored.split("-", 2);
@@ -45,6 +49,8 @@ const OnboardingStep1: React.FC<OnboardingStep1Props> = ({
   }, [data.step1?.contactNumber]);
 
   const [countryCode, setCountryCode] = useState<string>(initialCountryCode);
+  const selectedDial =
+    COUNTRY_OPTIONS.find((c) => c.label === countryCode)?.dial ?? "";
 
   const {
     register,
@@ -77,69 +83,98 @@ const OnboardingStep1: React.FC<OnboardingStep1Props> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
       <Input
         id="organizationName"
-        label="Company Name"
-        placeholder="Enter your company name"
+        label="Company name"
+        placeholder="Acme Inc."
         error={errors.organizationName?.message}
         required
+        autoComplete="organization"
         {...register("organizationName")}
       />
 
-      <Input
-        id="email"
-        type="email"
-        label="Company Email"
-        placeholder="xyzcompany@gmail.com"
-        error={errors.email?.message}
-        required
-        {...register("email")}
-      />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <Input
+          id="email"
+          type="email"
+          label="Company email"
+          placeholder="hello@acme.com"
+          error={errors.email?.message}
+          required
+          autoComplete="email"
+          {...register("email")}
+        />
 
-      <div>
-        <label className="body-bold-16 text-grey mb-2 block">
-          Company Phone Number <span className="text-danger">*</span>
-        </label>
-        <div className="flex">
-          <select
-            className="px-3 py-2 border border-grey-light rounded-l-lg text-grey-medium bg-white min-w-[100px]"
-            value={countryCode}
-            onChange={(e) => setCountryCode(e.target.value)}
+        <div className="flex flex-col gap-1 w-full">
+          <label
+            htmlFor="contactNumber"
+            className="body-bold-16 text-grey"
           >
-            <option value="Nepal">🇳🇵 Nepal</option>
-            <option value="India">🇮🇳 India</option>
-            <option value="USA">🇺🇸 USA</option>
-            <option value="UK">🇬🇧 UK</option>
-          </select>
-          <div className="flex-1">
-            <Input
-              id="phone"
+            Company phone <span className="text-danger">*</span>
+          </label>
+          <div
+            className={`flex items-stretch rounded-lg border overflow-hidden transition-all focus-within:ring-2 focus-within:ring-primary/40 focus-within:border-primary/60 ${
+              errors.contactNumber ? "border-danger" : "border-grey-light"
+            }`}
+          >
+            <div className="relative flex items-center pl-3 pr-2 bg-grey-light/30 border-r border-grey-light">
+              <select
+                value={countryCode}
+                onChange={(e) => setCountryCode(e.target.value)}
+                className="appearance-none bg-transparent pr-6 body-regular-16 text-grey-dark outline-none cursor-pointer"
+                aria-label="Country"
+              >
+                {COUNTRY_OPTIONS.map((c) => (
+                  <option key={c.label} value={c.label}>
+                    {c.flag} {c.label}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown
+                size={14}
+                className="pointer-events-none absolute right-2 text-grey-medium"
+              />
+            </div>
+            <span className="flex items-center px-3 body-regular-16 text-grey-medium bg-grey-light/20 border-r border-grey-light">
+              {selectedDial}
+            </span>
+            <input
+              id="contactNumber"
               type="tel"
-              placeholder="+977 9876543210"
-              error={errors.contactNumber?.message}
-              className="rounded-l-none border-l-0"
+              autoComplete="tel"
+              placeholder="9876543210"
+              className="flex-1 min-w-0 px-3 body-regular-16 text-grey-dark placeholder:text-grey-medium/60 outline-none"
               {...register("contactNumber")}
             />
           </div>
+          {errors.contactNumber && (
+            <p className="text-sm text-danger mt-1">
+              {errors.contactNumber.message}
+            </p>
+          )}
         </div>
       </div>
 
       <Input
         id="website"
         type="url"
-        label="Company Website"
-        placeholder="https://www.xyz.com"
+        label="Website"
+        placeholder="https://acme.com"
         error={errors.website?.message}
+        autoComplete="url"
         {...register("website")}
       />
+      <p className="-mt-3 caption-medium-12 text-grey-medium">
+        Optional — helps teammates recognize your brand.
+      </p>
 
-      <div className="flex justify-end pt-4">
+      <div className="flex justify-end pt-2">
         <Button
-          label="Next"
+          label="Continue"
           type="submit"
           variant="primary"
-          IconRight={<ArrowRight size={20} />}
+          IconRight={<ArrowRight size={18} />}
           disabled={isSubmitting}
         />
       </div>

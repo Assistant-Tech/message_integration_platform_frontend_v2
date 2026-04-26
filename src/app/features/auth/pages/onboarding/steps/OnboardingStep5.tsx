@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Input } from "@/app/components/ui";
-import { ArrowLeft, Plus } from "lucide-react";
+import { Button, Input } from "@/app/components/ui";
+import { ArrowLeft, Plus, Trash2, Users } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface MemberData {
@@ -13,12 +13,6 @@ interface OnboardingStep5FormData {
   members: MemberData[];
 }
 
-interface AddMembersErrors {
-  fieldErrors?: {
-    members?: string[];
-  };
-}
-
 interface OnboardingStep5Props {
   onNext: (stepData: OnboardingStep5FormData) => void;
   onPrevious: () => void;
@@ -27,8 +21,8 @@ interface OnboardingStep5Props {
   isOptional?: boolean;
 }
 
-const roleOptions = [
-  "CEO/Founder",
+const ROLE_OPTIONS = [
+  "CEO / Founder",
   "CTO",
   "Software Engineer",
   "Product Manager",
@@ -40,6 +34,8 @@ const roleOptions = [
   "Other",
 ];
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 const OnboardingStep5: React.FC<OnboardingStep5Props> = ({
   onNext,
   onPrevious,
@@ -47,234 +43,229 @@ const OnboardingStep5: React.FC<OnboardingStep5Props> = ({
   isSubmitting,
   isOptional = true,
 }) => {
-  const [formData, setFormData] = useState<OnboardingStep5FormData>({
-    members: [
-      { name: "", role: "", email: "" },
-      { name: "", role: "", email: "" },
-    ],
-  });
-  const [errors, setErrors] = useState<AddMembersErrors>({});
+  const [members, setMembers] = useState<MemberData[]>([
+    { name: "", role: "", email: "" },
+  ]);
+  const [rowErrors, setRowErrors] = useState<
+    Record<number, Partial<Record<keyof MemberData, string>>>
+  >({});
 
-  // Handle changes to a specific member's field
   const handleMemberChange = (
     index: number,
     field: keyof MemberData,
     value: string,
   ) => {
-    setFormData((prev) => ({
-      ...prev,
-      members: prev.members.map((member, i) =>
-        i === index ? { ...member, [field]: value } : member,
-      ),
-    }));
-
-    // Clear errors when user starts typing
-    if (errors?.fieldErrors?.members?.[index]) {
-      setErrors((prev) => ({
-        ...prev,
-        fieldErrors: {
-          ...prev.fieldErrors,
-          members: prev.fieldErrors?.members?.map((error, i) =>
-            i === index ? "" : error,
-          ),
-        },
-      }));
-    }
-  };
-
-  // Add a new empty member to the list
-  const addStaffMember = () => {
-    setFormData((prev) => ({
-      ...prev,
-      members: [...prev.members, { name: "", role: "", email: "" }],
-    }));
-  };
-
-  // Remove a member from the list
-  const removeMember = (index: number) => {
-    if (formData.members.length > 1) {
-      setFormData((prev) => ({
-        ...prev,
-        members: prev.members.filter((_, i) => i !== index),
-      }));
-    }
-  };
-
-  // Handle form submission
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Simple validation - you can replace with your Zod schema
-    const hasErrors = formData.members.some(
-      (member) =>
-        !member.name.trim() || !member.role.trim() || !member.email.trim(),
+    setMembers((prev) =>
+      prev.map((m, i) => (i === index ? { ...m, [field]: value } : m)),
     );
 
-    if (hasErrors) {
-      console.log("Please fill in all fields");
+    if (rowErrors[index]?.[field]) {
+      setRowErrors((prev) => ({
+        ...prev,
+        [index]: { ...prev[index], [field]: undefined },
+      }));
+    }
+  };
+
+  const addMember = () =>
+    setMembers((prev) => [...prev, { name: "", role: "", email: "" }]);
+
+  const removeMember = (index: number) => {
+    setMembers((prev) => prev.filter((_, i) => i !== index));
+    setRowErrors((prev) => {
+      const next = { ...prev };
+      delete next[index];
+      return next;
+    });
+  };
+
+  const isEmptyRow = (m: MemberData) =>
+    !m.name.trim() && !m.role.trim() && !m.email.trim();
+
+  const validateAndSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const filled = members.filter((m) => !isEmptyRow(m));
+
+    // No one added — allowed because step is optional. Send empty list.
+    if (filled.length === 0) {
+      setRowErrors({});
+      onNext({ members: [] });
       return;
     }
 
-    setErrors({});
-    onNext(formData);
+    // For each non-empty row, every field is required + email format
+    const errors: typeof rowErrors = {};
+    members.forEach((m, i) => {
+      if (isEmptyRow(m)) return;
+      const rowErr: Partial<Record<keyof MemberData, string>> = {};
+      if (!m.name.trim()) rowErr.name = "Required";
+      if (!m.role.trim()) rowErr.role = "Pick a role";
+      if (!m.email.trim()) rowErr.email = "Required";
+      else if (!emailRegex.test(m.email.trim()))
+        rowErr.email = "Enter a valid email";
+      if (Object.keys(rowErr).length) errors[i] = rowErr;
+    });
+
+    if (Object.keys(errors).length) {
+      setRowErrors(errors);
+      return;
+    }
+
+    setRowErrors({});
+    onNext({ members: filled });
   };
 
   return (
-    <div className="max-w-4xl mx-auto pt-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        {/* Header Row */}
-        <div className="grid grid-cols-3 gap-4 mb-4">
-          <div className="text-sm font-medium text-grey-medium">Name</div>
-          <div className="text-sm font-medium text-grey-medium">Role</div>
-          <div className="text-sm font-medium text-grey-medium">Email</div>
-        </div>
+    <form onSubmit={validateAndSubmit} className="space-y-6" noValidate>
+      <div className="flex items-start gap-3 p-4 rounded-xl bg-information-light/40 border border-information-light">
+        <Users
+          size={18}
+          strokeWidth={1.8}
+          className="text-information shrink-0 mt-0.5"
+        />
+        <p className="body-regular-16 text-grey-dark/80">
+          Add teammates you'd like to bring in right away. They'll receive an
+          invite by email. You can always invite more people later.
+        </p>
+      </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            <AnimatePresence>
-              {formData.members.map((member, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="grid grid-cols-3 gap-4"
-                >
-                  {/* Name Field */}
-                  <div>
-                    <Input
-                      type="text"
-                      placeholder="Enter full name"
-                      value={member.name}
-                      onChange={(e) =>
-                        handleMemberChange(index, "name", e.target.value)
-                      }
-                      className="w-full px-3 py-2 border border-grey-light rounded-md focus:outline-none focus:ring-2 focus:ring-information focus:border-transparent placeholder-gray-400"
-                    />
-                  </div>
+      <div className="space-y-4">
+        <AnimatePresence initial={false}>
+          {members.map((member, index) => {
+            const rowErr = rowErrors[index] ?? {};
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.2 }}
+                className="rounded-xl border border-grey-light/70 p-4 sm:p-5 bg-base-white"
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <p className="label-semi-bold-14 text-grey-dark">
+                    Teammate {index + 1}
+                  </p>
+                  {members.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeMember(index)}
+                      className="inline-flex items-center gap-1 caption-medium-12 text-grey-medium hover:text-danger transition-colors"
+                      aria-label={`Remove teammate ${index + 1}`}
+                    >
+                      <Trash2 size={14} strokeWidth={1.8} />
+                      Remove
+                    </button>
+                  )}
+                </div>
 
-                  {/* Role Field - Dropdown */}
-                  <div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Input
+                    id={`name-${index}`}
+                    label="Full name"
+                    placeholder="Jane Doe"
+                    value={member.name}
+                    onChange={(e) =>
+                      handleMemberChange(index, "name", e.target.value)
+                    }
+                    error={rowErr.name}
+                  />
+
+                  <div className="flex flex-col gap-1 w-full">
+                    <label
+                      htmlFor={`role-${index}`}
+                      className="body-bold-16 text-grey"
+                    >
+                      Role
+                    </label>
                     <select
+                      id={`role-${index}`}
                       value={member.role}
                       onChange={(e) =>
                         handleMemberChange(index, "role", e.target.value)
                       }
-                      className="w-full px-3 py-2 border border-grey-light rounded-md focus:outline-none focus:ring-2 focus:ring-information focus:border-transparent text-grey-medium bg-white appearance-none cursor-pointer"
+                      className={`w-full min-h-[48px] px-4 rounded-lg border body-regular-16 bg-white text-grey-dark outline-none transition-all focus:ring-2 focus:ring-primary/40 focus:border-primary/60 appearance-none cursor-pointer pr-10 ${
+                        rowErr.role ? "border-danger" : "border-grey-light"
+                      }`}
                       style={{
-                        backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e")`,
+                        backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239AA1AB' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e")`,
                         backgroundRepeat: "no-repeat",
-                        backgroundPosition: "right 8px center",
+                        backgroundPosition: "right 12px center",
                         backgroundSize: "16px",
-                        paddingRight: "32px",
                       }}
                     >
-                      <option value="" disabled className="text-gray-400">
-                        Select Role
-                      </option>
-                      {roleOptions.map((role) => (
+                      <option value="">Select a role</option>
+                      {ROLE_OPTIONS.map((role) => (
                         <option key={role} value={role}>
                           {role}
                         </option>
                       ))}
                     </select>
-                  </div>
-
-                  {/* Email Field */}
-                  <div className="relative">
-                    <Input
-                      type="email"
-                      placeholder="Enter email address"
-                      value={member.email}
-                      onChange={(e: any) =>
-                        handleMemberChange(index, "email", e.target.value)
-                      }
-                      className="w-full px-3 py-2 border border-grey-light rounded-md focus:outline-none focus:ring-2 focus:ring-information focus:border-transparent placeholder-gray-400"
-                    />
-                    {formData.members.length > 2 && (
-                      <button
-                        type="button"
-                        onClick={() => removeMember(index)}
-                        className="absolute -right-8 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-danger transition-colors"
-                      >
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M6 18L18 6M6 6l12 12"
-                          />
-                        </svg>
-                      </button>
+                    {rowErr.role && (
+                      <p className="text-sm text-danger mt-1">{rowErr.role}</p>
                     )}
                   </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
+                </div>
 
-          {/* Add Staff Members Button */}
-          <motion.button
-            type="button"
-            onClick={addStaffMember}
-            className="flex items-center text-primary hover:text-primary-dark mt-6 transition-colors group"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <div className="w-6 h-6 rounded-full border-2 border-primary flex items-center justify-center mr-3 group-hover:border-primary-dark transition-colors">
-              <Plus className="w-4 h-4" />
-            </div>
-            <span className="font-medium">Add Staff Members</span>
-          </motion.button>
+                <div className="mt-4">
+                  <Input
+                    id={`email-${index}`}
+                    type="email"
+                    label="Work email"
+                    placeholder="jane@acme.com"
+                    value={member.email}
+                    onChange={(e) =>
+                      handleMemberChange(index, "email", e.target.value)
+                    }
+                    error={rowErr.email}
+                  />
+                </div>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
 
-          {/* Navigation Buttons */}
-          <div className="flex justify-between items-center mt-12">
-            <motion.button
-              type="button"
-              onClick={onPrevious}
-              className="flex items-center px-6 py-2 border border-grey-light rounded-md text-grey hover:bg-grey-light transition-colors"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Go Back
-            </motion.button>
+        <button
+          type="button"
+          onClick={addMember}
+          className="group inline-flex items-center gap-2 label-semi-bold-14 text-primary hover:text-primary-dark transition-colors"
+        >
+          <span className="h-7 w-7 rounded-full border border-primary/50 flex items-center justify-center group-hover:bg-primary/10">
+            <Plus size={14} strokeWidth={2} />
+          </span>
+          Add another teammate
+        </button>
+      </div>
 
-            <div className="flex items-center space-x-4">
-              {isOptional && onSkip && (
-                <motion.button
-                  type="button"
-                  onClick={onSkip}
-                  className="text-primary hover:text-primary-dark underline font-medium transition-colors"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  Skip this step
-                </motion.button>
-              )}
-              <motion.button
-                type="submit"
-                disabled={isSubmitting}
-                className="px-6 py-2 bg-primary text-white rounded-md hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
-                whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
-                whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
-              >
-                {isSubmitting ? "Saving..." : "Save and Finish"}
-              </motion.button>
-            </div>
-          </div>
-        </form>
-      </motion.div>
-    </div>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-2">
+        <Button
+          label="Back"
+          onClick={onPrevious}
+          variant="outlined"
+          IconLeft={<ArrowLeft size={18} />}
+          disabled={isSubmitting}
+        />
+
+        <div className="flex flex-col-reverse sm:flex-row gap-3">
+          {isOptional && onSkip && (
+            <Button
+              label="Skip & finish"
+              onClick={onSkip}
+              variant="none"
+              className="underline text-grey-dark"
+              disabled={isSubmitting}
+            />
+          )}
+          <Button
+            label={isSubmitting ? "Finishing up…" : "Complete onboarding"}
+            type="submit"
+            variant="primary"
+            disabled={isSubmitting}
+          />
+        </div>
+      </div>
+    </form>
   );
 };
 

@@ -2,20 +2,55 @@ import React, { useState, useEffect, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { useOnboardingStore } from "@/app/features/auth/pages/onboarding/hooks/useOnboardingStore";
 import { Logo } from "@/app/components/ui/";
-import { StepSidebar } from "@/app/features/auth/pages/onboarding/components/";
+import {
+  StepSidebar,
+  MobileStepProgress,
+} from "@/app/features/auth/pages/onboarding/components/";
 import {
   OnboardingStep1,
   OnboardingStep3,
   OnboardingStep4,
   OnboardingStep5,
 } from "@/app/features/auth/pages/onboarding/steps";
-import { Cross } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 
 // Lazy-load Step2 — it pulls in country-state-city (~7.7MB of geo JSON)
 const OnboardingStep2 = lazy(() => import("./OnboardingStep2"));
 import { useOnboarding } from "@/app/hooks/query/useAuthQuery";
 import { useAuthStore } from "@/app/store/auth.store";
 import type { NormalizedError } from "@/app/types/error.types";
+
+const STEP_META: Record<
+  number,
+  { title: string; subtitle: string; optional?: boolean }
+> = {
+  1: {
+    title: "Tell us about your company",
+    subtitle:
+      "Just the basics — name, how to reach you, and where we can find you online.",
+  },
+  2: {
+    title: "Where is your company based?",
+    subtitle:
+      "We use this to personalize region, language, and compliance settings.",
+  },
+  3: {
+    title: "Which industry fits you best?",
+    subtitle: "Helps us recommend templates and integrations tailored to you.",
+  },
+  4: {
+    title: "Upload your business documents",
+    subtitle:
+      "Optional — you can add these now or from your dashboard later.",
+    optional: true,
+  },
+  5: {
+    title: "Invite your team",
+    subtitle:
+      "Optional — bring teammates in now, or invite them anytime from Settings.",
+    optional: true,
+  },
+};
 
 const OnboardingForm: React.FC = () => {
   const navigate = useNavigate();
@@ -25,10 +60,7 @@ const OnboardingForm: React.FC = () => {
   const resetAuth = useAuthStore((s) => s.resetAuth);
   const setRequiresOnboarding = useAuthStore((s) => s.setRequiresOnboarding);
   const user = useAuthStore((s) => s.user);
-  const firstName =
-    user?.firstName ?? user?.name?.split(" ")[0] ?? "there";
-
-  // const { onboarding } = useAuthStore();
+  const firstName = user?.firstName ?? user?.name?.split(" ")[0] ?? "there";
 
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -41,16 +73,10 @@ const OnboardingForm: React.FC = () => {
   }, [completedSteps]);
 
   const handleStepComplete = (step: number, stepData: any) => {
-    // Save step data to store
     setStepData(`step${step}` as keyof typeof data, stepData);
     setCompletedSteps(step);
 
-    // Move to next step or submit if it's the last required step
-    if (step < 3) {
-      setCurrentStep(step + 1);
-    } else if (step === 3) {
-      setCurrentStep(step + 1);
-    } else if (step === 4) {
+    if (step < 5) {
       setCurrentStep(step + 1);
     } else if (step === 5) {
       handleFinalSubmit();
@@ -117,30 +143,24 @@ const OnboardingForm: React.FC = () => {
 
     Object.entries(allStepsData).forEach(([key, value]) => {
       if (value instanceof File) {
-        // Single file
         formData.append(key, value);
       } else if (
         Array.isArray(value) &&
         value.length > 0 &&
         value[0] instanceof File
       ) {
-        // Multiple files
         value.forEach((file, idx) => {
           if (file instanceof File) {
             formData.append(`${key}[${idx}]`, file);
           } else {
-            // If not a File, serialize to JSON string
             formData.append(`${key}[${idx}]`, JSON.stringify(file));
           }
         });
       } else if (Array.isArray(value)) {
-        // Array of strings/numbers/objects
         formData.append(key, JSON.stringify(value));
       } else if (typeof value === "object" && value !== null) {
-        // Serialize objects to JSON string
         formData.append(key, JSON.stringify(value));
       } else if (value !== undefined && value !== null) {
-        // Normal text/number fields
         formData.append(key, value as string | Blob);
       }
     });
@@ -152,7 +172,6 @@ const OnboardingForm: React.FC = () => {
         navigate(`/login`, {
           state: { message: "Onboarding completed successfully!" },
         });
-        //Clear localstorage
         useOnboardingStore.persist.clearStorage();
         useOnboardingStore.getState().reset();
       },
@@ -162,10 +181,9 @@ const OnboardingForm: React.FC = () => {
           return;
         }
 
-        // Add a specific check for the Role error to help you debug
         if (error?.message?.includes("Default role")) {
           setSubmitError(
-            "Server Configuration Error: System roles are not initialized. Please contact support.",
+            "Server configuration error: system roles are not initialized. Please contact support.",
           );
         } else {
           setSubmitError(
@@ -220,81 +238,112 @@ const OnboardingForm: React.FC = () => {
     }
   };
 
-  const getStepTitle = () => {
-    switch (currentStep) {
-      case 1:
-        return "General Information";
-      case 2:
-        return "Location Details";
-      case 3:
-        return "Industry Selection";
-      case 4:
-        return "Document Upload (Optional)";
-      case 5:
-        return "Add Your Members (Optional)";
-      default:
-        return "";
-    }
-  };
+  const meta = STEP_META[currentStep];
 
   return (
-    <div className="min-h-screen bg-base-white py-12 px-4">
-      <div className="max-w-7xl mx-auto flex flex-col justify-center">
-        {/* Header */}
-        <article className="pb-12">
+    <div className="min-h-screen bg-grey-light/30 pb-16">
+      {/* Sticky top bar */}
+      <header className="sticky top-0 z-20 bg-base-white/95 backdrop-blur border-b border-grey-light/60">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
           <Logo />
-        </article>
+          <div className="hidden sm:flex items-center gap-2 caption-medium-12 text-grey-medium">
+            <span className="px-2.5 py-1 rounded-full bg-primary/10 text-primary font-semibold">
+              Step {currentStep} of 5
+            </span>
+            {meta?.optional && (
+              <span className="px-2.5 py-1 rounded-full bg-grey-light/60 text-grey-medium">
+                Optional
+              </span>
+            )}
+          </div>
+        </div>
+      </header>
 
-        {/* Intro Text */}
-        <div className="mb-10">
-          <h1 className="h2-bold-40 text-base-black mb-2">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-8 sm:pt-10">
+        {/* Greeting */}
+        <div className="mb-8">
+          <h1 className="h3-bold-32 sm:h2-bold-40 text-grey-dark">
             Welcome to Chatblix, {firstName}!
           </h1>
-          <p className="text-grey-medium body-regular-16 max-w-2xl">
-            Complete your onboarding process by setting up your workplace. The
-            next few steps will contain all the necessary information you will
-            need to enter to personalize your Chatblix account.
+          <p className="mt-2 body-regular-16 text-grey-medium max-w-2xl">
+            Let's set up your workspace. It only takes a few minutes — you can
+            save and come back anytime.
           </p>
-          {currentStep >= 4 && (
-            <p className="text-grey-medium body-regular-14 max-w-2xl mt-2">
-              Steps {currentStep}-5 are optional. You can skip them if you want
-              to start using Chatblix immediately.
-            </p>
-          )}
         </div>
 
-        {/* Error Message */}
-        {submitError && (
-          <div className="mb-6 p-4 bg-danger-light text-grey rounded-lg flex items-center gap-2">
-            <Cross className="text-danger" />
-            <p className="text-danger text-sm">{submitError}</p>
-          </div>
-        )}
-
-        {/* Main Content */}
-        <div className="flex flex-col lg:flex-row items-start max-w-full gap-16">
-          {/* Step Sidebar */}
-          <StepSidebar
+        {/* Mobile progress */}
+        <div className="mb-6 lg:hidden">
+          <MobileStepProgress
             currentStep={currentStep}
             completedSteps={completedSteps}
             totalSteps={5}
           />
+        </div>
 
-          {/* Form Section */}
-          <div className="w-full lg:flex-1">
-            <h2 className="h4-bold-24 text-grey mb-6">{getStepTitle()}</h2>
-            <Suspense
-              fallback={
-                <div className="space-y-4 animate-pulse">
-                  <div className="h-10 bg-grey-light rounded w-full" />
-                  <div className="h-10 bg-grey-light rounded w-full" />
-                  <div className="h-10 bg-grey-light rounded w-3/4" />
-                </div>
-              }
+        {/* Error banner */}
+        {submitError && (
+          <div
+            role="alert"
+            className="mb-6 flex items-start gap-3 p-4 rounded-xl border border-danger-light bg-danger-light/30"
+          >
+            <AlertCircle
+              className="text-danger shrink-0 mt-0.5"
+              size={20}
+              strokeWidth={1.8}
+            />
+            <div className="flex-1">
+              <p className="label-semi-bold-14 text-danger">
+                Something went wrong
+              </p>
+              <p className="body-regular-16 text-grey-dark/80 mt-0.5">
+                {submitError}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setSubmitError("")}
+              className="label-medium-14 text-grey-medium hover:text-grey-dark underline underline-offset-2"
             >
-              {renderCurrentStep()}
-            </Suspense>
+              Dismiss
+            </button>
           </div>
+        )}
+
+        {/* Main grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-8">
+          {/* Sidebar — desktop only */}
+          <aside className="hidden lg:block">
+            <div className="sticky top-28">
+              <StepSidebar
+                currentStep={currentStep}
+                completedSteps={completedSteps}
+                totalSteps={5}
+              />
+            </div>
+          </aside>
+
+          {/* Form card */}
+          <section className="bg-base-white border border-grey-light/60 rounded-2xl shadow-sm">
+            <div className="p-6 sm:p-8 border-b border-grey-light/40">
+              <h2 className="h4-semi-bold-24 text-grey-dark">{meta?.title}</h2>
+              <p className="mt-1.5 body-regular-16 text-grey-medium">
+                {meta?.subtitle}
+              </p>
+            </div>
+            <div className="p-6 sm:p-8">
+              <Suspense
+                fallback={
+                  <div className="space-y-4 animate-pulse">
+                    <div className="h-11 bg-grey-light rounded-lg w-full" />
+                    <div className="h-11 bg-grey-light rounded-lg w-full" />
+                    <div className="h-11 bg-grey-light rounded-lg w-3/4" />
+                  </div>
+                }
+              >
+                {renderCurrentStep()}
+              </Suspense>
+            </div>
+          </section>
         </div>
       </div>
     </div>

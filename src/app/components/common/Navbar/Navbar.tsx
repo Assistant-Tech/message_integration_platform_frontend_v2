@@ -11,6 +11,7 @@ import {
 } from "@/app/components/common";
 import { useScrollEffect } from "@/app/hooks/ui/useScrollEffect";
 import { DemoDialog } from "@/app/components/common/BookADemo/";
+import { Container } from "@/app/components/layout";
 
 interface NavbarRef {
   getHeight: () => number;
@@ -73,19 +74,22 @@ const Navbar = forwardRef<NavbarRef, { offsetTop?: number }>(
       >
         <DemoDialog />
 
-        <div className="mx-auto max-w-[1600px] px-4 sm:px-6 md:px-8 xl:px-12 2xl:px-0">
-          <div className="flex h-16 justify-between items-center">
-            {/* Logo */}
+        <Container>
+          <div className="grid grid-cols-3 items-center h-16 gap-8">
+            {/* 1. Logo — left */}
             <div
-              className={`transition-all duration-300 ${
+              className={`justify-self-start transition-all duration-300 ${
                 isScrolled ? "scale-95" : "scale-100"
               }`}
             >
               <Logo />
             </div>
 
-            {/* Desktop Navigation */}
-            <div ref={dropdownRef}>
+            {/* 2. Desktop Navigation — center */}
+            <div
+              ref={dropdownRef}
+              className="hidden xl:flex justify-center items-center space-x-16"
+            >
               <DesktopNavigation
                 activeDropdown={activeDropdown}
                 onMouseEnter={handleMouseEnter}
@@ -94,33 +98,34 @@ const Navbar = forwardRef<NavbarRef, { offsetTop?: number }>(
               />
             </div>
 
-            {/* Auth Buttons */}
-            <div
-              className={`transition-all duration-300 ${
-                isScrolled ? "opacity-90" : "opacity-100"
-              }`}
-            >
-              <AuthButtons />
-            </div>
+            {/* 3. Right side — auth (xl+) OR mobile CTA */}
+            <div className="justify-self-end flex items-center gap-2">
+              <div
+                className={`hidden xl:flex transition-all duration-300 ${
+                  isScrolled ? "opacity-90" : "opacity-100"
+                }`}
+              >
+                <AuthButtons />
+              </div>
 
-            {/* Mobile CTA + Toggle */}
-            <nav className="flex gap-2 lg:hidden items-center">
-              {!mobileMenuOpen && (
-                <Link to={APP_ROUTES.PUBLIC.REGISTER}>
-                  <Button
-                    label="Start Free Trial"
-                    variant="primary"
-                    className="py-3 ms-2"
-                  />
-                </Link>
-              )}
-              <MenuMobileToggle
-                isOpen={mobileMenuOpen}
-                onToggle={toggleMobileMenu}
-              />
-            </nav>
+              <nav className="flex gap-2 xl:hidden items-center">
+                {!mobileMenuOpen && (
+                  <Link to={APP_ROUTES.PUBLIC.REGISTER}>
+                    <Button
+                      label="Start Free Trial"
+                      variant="primary"
+                      className="py-3 ms-2"
+                    />
+                  </Link>
+                )}
+                <MenuMobileToggle
+                  isOpen={mobileMenuOpen}
+                  onToggle={toggleMobileMenu}
+                />
+              </nav>
+            </div>
           </div>
-        </div>
+        </Container>
 
         <MobileMenu isOpen={mobileMenuOpen} />
       </header>

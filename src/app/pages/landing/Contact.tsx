@@ -443,25 +443,6 @@ const Contact = ({ embedded = false }: ContactProps) => {
                   <p className="mt-2 body-regular-14 text-grey-medium">
                     Product updates, customer stories, and more.
                   </p>
-                  <div className="mt-5 flex items-center gap-3">
-                    {[
-                      { icon: Twitter, label: "Twitter", href: "#" },
-                      { icon: Linkedin, label: "LinkedIn", href: "#" },
-                      { icon: Github, label: "GitHub", href: "#" },
-                    ].map((social) => {
-                      const Icon = social.icon;
-                      return (
-                        <a
-                          key={social.label}
-                          href={social.href}
-                          aria-label={social.label}
-                          className="flex h-10 w-10 items-center justify-center rounded-lg border border-grey-light/60 bg-white text-grey-medium hover:text-primary hover:border-primary/40 hover:bg-primary/5 transition-all"
-                        >
-                          <Icon className="h-4 w-4" strokeWidth={1.8} />
-                        </a>
-                      );
-                    })}
-                  </div>
                 </div>
               </motion.aside>
             </div>

@@ -11,6 +11,21 @@ import {
 
 const { faq } = landing;
 
+// FAQPage structured data — Google reads this to surface rich-result FAQ
+// snippets in search. React 19 hoists ld+json scripts into <head>.
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faq.items.map((item) => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: item.answer,
+    },
+  })),
+};
+
 const FAQSection = () => {
   const [openId, setOpenId] = useState<string>(faq.defaultOpenId);
 
@@ -20,6 +35,10 @@ const FAQSection = () => {
       id="faq"
       className="relative py-28 sm:py-36"
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       <LandingContainer className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
         {/* Left: heading */}
         <div className="lg:col-span-5">

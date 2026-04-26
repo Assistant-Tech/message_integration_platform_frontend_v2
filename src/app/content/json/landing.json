@@ -113,45 +113,55 @@
 
   "pricing": {
     "eyebrow": "Simple pricing",
-    "title": "Pay for replies, not seats.",
+    "title": "Pay as you go.",
     "subtitle": "Free for 14 days. Upgrade only when you outgrow the starter plan."
   },
 
   "faq": {
     "eyebrow": "Questions answered",
     "title": "Good to know.",
-    "subtitle": "Everything worth knowing before you try Chatblix.",
+    "subtitle": "Everything worth knowing before you try Chatblix — answers on channels, pricing, security, and getting your team set up.",
     "defaultOpenId": "item-1",
     "items": [
       {
         "id": "item-1",
-        "question": "Which channels does Chatblix support?",
-        "answer": "WhatsApp Business, Instagram DMs, Messenger, Telegram, TikTok DMs, and email — through official Meta and TikTok APIs. Nothing scraped, nothing fragile."
+        "question": "Which messaging channels does Chatblix's unified inbox support?",
+        "answer": "Chatblix connects WhatsApp Business, Instagram DMs, Facebook Messenger, Telegram, TikTok DMs, and email through the official Meta and TikTok Business APIs. One inbox, every channel — no scraping, no fragile browser plugins."
       },
       {
         "id": "item-2",
-        "question": "How does the AI actually reply?",
-        "answer": "It's trained on your brand voice, FAQs, and past conversations. It drafts or sends replies, escalates when confidence drops, and only answers from your approved knowledge base."
+        "question": "How does the AI customer support actually reply to messages?",
+        "answer": "Our AI is trained on your brand voice, FAQs, and past conversations, so replies sound like your team — not a generic bot. It can draft replies for review or send them directly, and it escalates to a human the moment confidence drops."
       },
       {
         "id": "item-3",
-        "question": "Is my customer data safe?",
-        "answer": "Conversations are encrypted in transit and at rest. We never train foundation models on your data. Export or delete anything, anytime."
+        "question": "Is my customer data safe and private?",
+        "answer": "All conversations are encrypted in transit and at rest, and hosted on SOC 2-aligned infrastructure. We never train foundation models on your data, and you can export or delete everything at any time."
       },
       {
         "id": "item-4",
-        "question": "Can my team share the inbox?",
-        "answer": "Yes. Assign chats, leave internal notes, tag teammates, and see who replied to what. Admins get live workload and response-time views."
+        "question": "How much does Chatblix cost?",
+        "answer": "Plans start with a free 14-day trial — no credit card required — then scale based on AI replies, not the number of seats. Your whole team can collaborate in the shared WhatsApp business inbox without per-user fees."
       },
       {
         "id": "item-5",
-        "question": "Is there a mobile app?",
-        "answer": "Yes — native iOS and Android with push, voice replies, and offline drafts. Available on the App Store and Google Play."
+        "question": "Can my whole team share the same inbox?",
+        "answer": "Yes. Assign chats, leave internal notes, @mention teammates, and see exactly who replied to what across every social media DM channel. Admins get live workload, response-time, and CSAT dashboards built in."
       },
       {
         "id": "item-6",
-        "question": "How long does setup take?",
-        "answer": "Under 10 minutes. Connect your Meta and TikTok accounts, import FAQs, and your AI starts answering the same afternoon."
+        "question": "How long does setup and onboarding take?",
+        "answer": "Most teams are live in under 10 minutes. Connect your Meta and TikTok Business accounts, import your FAQs, and your AI starts handling DMs the same afternoon."
+      },
+      {
+        "id": "item-7",
+        "question": "Does Chatblix integrate with my CRM and other tools?",
+        "answer": "Out-of-the-box integrations cover HubSpot, Salesforce, Shopify, Zapier, and Slack — plus a REST API and webhooks for everything else. Sync contact data in, push conversation history out, and trigger workflows automatically."
+      },
+      {
+        "id": "item-8",
+        "question": "Is there a mobile app for iOS and Android?",
+        "answer": "Yes — native iOS and Android apps with push notifications, voice replies, and offline drafts. Manage WhatsApp, Instagram, and Messenger DMs from anywhere, even on patchy connections."
       }
     ]
   },

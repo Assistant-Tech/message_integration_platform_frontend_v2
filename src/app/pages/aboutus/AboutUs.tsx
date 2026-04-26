@@ -2,20 +2,13 @@ import { Suspense, lazy } from "react";
 import { Theme } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
 
-import {
-  Navbar,
-  Footer,
-  NewsLetter,
-  Loading,
-  FAQ,
-} from "@/app/components/common";
+import { Navbar, Footer, Loading, FAQ } from "@/app/components/common";
 import Section from "@/app/components/layout/Section";
 import {
   CompanyLogo,
   ImageGrid,
   Marquee,
   OurProcess,
-  OurTeam,
   WhatWeOffer,
 } from "@/app/pages/aboutus/components";
 
@@ -25,7 +18,6 @@ import about from "@/app/content/json/aboutUs.json";
 
 // Lazy loaded
 const GetStarted = lazy(() => import("@/app/pages/landing/GetStarted"));
-const Testimonials = lazy(() => import("@/app/pages/landing/Testimonials"));
 
 import {
   ChartNoAxesCombined,
@@ -86,23 +78,12 @@ const About = () => {
   const sections = [
     {
       element: (
-        <div className="pt-4">
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mb-4 sm:mb-6 md:mb-8"
-          >
-            <h1 className="h2-bold-40 text-base-black pt-10">About Us</h1>
-          </motion.div>
-        </div>
-      ),
-    },
-    {
-      element: (
-        <div className="grid lg:grid-cols-2 gap-16 items-center w-full ">
+        <div className="grid lg:grid-cols-2 gap-16 items-center w-full">
           {/* Left */}
-          <motion.div variants={itemVariants} className="space-y-8 max-w-xl">
+          <motion.div
+            variants={itemVariants}
+            className="flex flex-col justify-items-start items-start space-y-8 max-w-xl"
+          >
             <motion.h2 variants={itemVariants} className="h3-bold-32 text-grey">
               {aboutData.title}
             </motion.h2>
@@ -173,7 +154,7 @@ const About = () => {
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="flex justify-center lg:justify-end items-center max-w-full"
+            className="flex justify-center lg:justify-end items-center max-w-full mt-24"
           >
             <ImageGrid />
           </motion.div>
@@ -226,23 +207,6 @@ const About = () => {
       ),
       useContainer: false,
     },
-    {
-      element: (
-        <Suspense fallback={<Loading />}>
-          <OurTeam />
-        </Suspense>
-      ),
-      useContainer: false,
-    },
-    {
-      element: (
-        <Suspense fallback={<Loading />}>
-          <Testimonials />
-        </Suspense>
-      ),
-      useContainer: false,
-    },
-    { element: <NewsLetter /> },
     { element: <Footer />, useContainer: false },
   ];
 

@@ -5,8 +5,9 @@ import {
   OnboardingStep2FormData,
   onboardingStep2Schema,
 } from "@/app/features/auth/pages/onboarding/schemas/Onboarding.schema";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, MapPin } from "lucide-react";
 import Select from "react-select/creatable";
+import type { StylesConfig, GroupBase } from "react-select";
 import { useForm, Controller, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -16,12 +17,8 @@ type StateData = { name: string; isoCode: string };
 type CityData = { name: string };
 
 interface GeoModule {
-  Country: {
-    getAllCountries: () => CountryData[];
-  };
-  State: {
-    getStatesOfCountry: (countryCode: string) => StateData[];
-  };
+  Country: { getAllCountries: () => CountryData[] };
+  State: { getStatesOfCountry: (countryCode: string) => StateData[] };
   City: {
     getCitiesOfState: (countryCode: string, stateCode: string) => CityData[];
   };
@@ -35,11 +32,98 @@ const useGeoData = () => {
     import("country-state-city").then((mod) => {
       if (!cancelled) setGeo(mod as unknown as GeoModule);
     });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return geo;
 };
+
+type OptionType = { label: string; value: string };
+
+// Align react-select visuals with the project's Input component
+const selectStyles: StylesConfig<
+  OptionType,
+  false,
+  GroupBase<OptionType>
+> = {
+  control: (base, state) => ({
+    ...base,
+    minHeight: 48,
+    borderRadius: 8,
+    borderColor: state.isFocused
+      ? "rgba(var(--color-primary-rgb, 16 103 217) / 0.6)"
+      : "var(--color-grey-light, #E2E4E8)",
+    boxShadow: state.isFocused
+      ? "0 0 0 2px rgba(16,103,217,0.25)"
+      : "none",
+    backgroundColor: state.isDisabled ? "rgba(229,231,235,0.4)" : "white",
+    ":hover": {
+      borderColor: state.isFocused
+        ? "rgba(16,103,217,0.6)"
+        : "var(--color-grey-medium, #9AA1AB)",
+    },
+    paddingLeft: 6,
+    paddingRight: 6,
+  }),
+  placeholder: (base) => ({
+    ...base,
+    color: "#9AA1AB",
+  }),
+  singleValue: (base) => ({
+    ...base,
+    color: "#1F2937",
+  }),
+  menu: (base) => ({
+    ...base,
+    borderRadius: 12,
+    overflow: "hidden",
+    zIndex: 30,
+  }),
+  option: (base, state) => ({
+    ...base,
+    backgroundColor: state.isSelected
+      ? "rgba(16,103,217,0.12)"
+      : state.isFocused
+        ? "rgba(16,103,217,0.06)"
+        : "white",
+    color: "#1F2937",
+    cursor: "pointer",
+  }),
+  indicatorSeparator: () => ({ display: "none" }),
+};
+
+interface FieldShellProps {
+  id: string;
+  label: string;
+  required?: boolean;
+  error?: string;
+  hint?: string;
+  children: React.ReactNode;
+}
+
+const FieldShell: React.FC<FieldShellProps> = ({
+  id,
+  label,
+  required,
+  error,
+  hint,
+  children,
+}) => (
+  <div className="flex flex-col gap-1 w-full">
+    <label htmlFor={id} className="body-bold-16 text-grey">
+      {label}
+      {required && <span className="text-danger"> *</span>}
+    </label>
+    {children}
+    {error ? (
+      <p className="text-sm text-danger mt-1">{error}</p>
+    ) : hint ? (
+      <p className="caption-medium-12 text-grey-medium mt-1">{hint}</p>
+    ) : null}
+  </div>
+);
 
 interface OnboardingStep2Props {
   onNext: (stepData: OnboardingStep2FormData) => void;
@@ -102,10 +186,7 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
 
     const libraryStates = geo.State.getStatesOfCountry(
       selectedCountry.value,
-    ).map(({ name, isoCode }) => ({
-      label: name,
-      value: isoCode,
-    }));
+    ).map(({ name, isoCode }) => ({ label: name, value: isoCode }));
 
     const customStates = customOptions.states.map((state) => ({
       label: state,
@@ -126,10 +207,7 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
     const libraryCities = geo.City.getCitiesOfState(
       selectedCountry.value,
       selectedState.value,
-    ).map(({ name }) => ({
-      label: name,
-      value: name,
-    }));
+    ).map(({ name }) => ({ label: name, value: name }));
 
     const customCities = customOptions.cities.map((city) => ({
       label: city,
@@ -178,106 +256,108 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
     onNext({ ...values, address });
   };
 
-  // Show a lightweight loading state while geo data loads
   if (!geo) {
     return (
       <div className="space-y-6">
         {[1, 2, 3].map((i) => (
           <div key={i} className="space-y-2">
             <div className="h-4 w-32 bg-grey-light rounded animate-pulse" />
-            <div className="h-10 w-full bg-grey-light rounded animate-pulse" />
+            <div className="h-12 w-full bg-grey-light rounded-lg animate-pulse" />
           </div>
         ))}
-        <p className="text-sm text-grey-medium">Loading location data...</p>
+        <p className="caption-medium-12 text-grey-medium">
+          Loading location data…
+        </p>
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      {/* Country Dropdown */}
-      <div className="flex flex-col">
-        <label htmlFor="country" className="mb-1 body-bold-16 text-grey-medium">
-          Country <span className="text-danger">*</span>
-        </label>
-        <Controller
-          control={control}
-          name="country"
-          render={({ field }) => {
-            const selected =
-              countries.find((c) => c.label === field.value) || null;
-            return (
-              <Select
-                id="country"
-                options={countries}
-                value={selected}
-                onChange={(option) => {
-                  const label = option ? option.label : "";
-                  field.onChange(label);
-                  setValue("state", "", { shouldDirty: true });
-                  setValue("city", "", { shouldDirty: true });
-                  recomputeAddress({ country: label, state: "", city: "" });
-                }}
-                placeholder="Select a country"
-                isSearchable
-                className="text-grey-medium"
-              />
-            );
-          }}
-        />
-        {errors.country && (
-          <span className="text-danger text-sm mt-1 animate-in fade-in duration-200">
-            {errors.country.message}
-          </span>
-        )}
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <FieldShell
+          id="country"
+          label="Country"
+          required
+          error={errors.country?.message}
+        >
+          <Controller
+            control={control}
+            name="country"
+            render={({ field }) => {
+              const selected =
+                countries.find((c) => c.label === field.value) || null;
+              return (
+                <Select
+                  inputId="country"
+                  options={countries}
+                  value={selected}
+                  onChange={(option) => {
+                    const label = option ? option.label : "";
+                    field.onChange(label);
+                    setValue("state", "", { shouldDirty: true });
+                    setValue("city", "", { shouldDirty: true });
+                    recomputeAddress({
+                      country: label,
+                      state: "",
+                      city: "",
+                    });
+                  }}
+                  placeholder="Select a country"
+                  isSearchable
+                  styles={selectStyles}
+                />
+              );
+            }}
+          />
+        </FieldShell>
+
+        <FieldShell
+          id="state"
+          label="State / Province"
+          required
+          error={errors.state?.message}
+          hint={!watchCountry ? "Pick a country first" : undefined}
+        >
+          <Controller
+            control={control}
+            name="state"
+            render={({ field }) => {
+              const selected =
+                states.find((s) => s.label === field.value) || null;
+              return (
+                <Select
+                  inputId="state"
+                  options={states}
+                  value={selected}
+                  onChange={(option) => {
+                    const label = option ? option.label : "";
+                    field.onChange(label);
+                    setValue("city", "", { shouldDirty: true });
+                    recomputeAddress({ state: label, city: "" });
+                  }}
+                  placeholder="Select a state"
+                  isSearchable
+                  isDisabled={!watchCountry}
+                  isClearable
+                  onCreateOption={(inputValue) =>
+                    handleAddNew("state", inputValue)
+                  }
+                  styles={selectStyles}
+                />
+              );
+            }}
+          />
+        </FieldShell>
       </div>
 
-      {/* State Dropdown */}
-      <div className="flex flex-col">
-        <label htmlFor="state" className="mb-1 body-bold-16 text-grey-medium">
-          State/Province <span className="text-danger">*</span>
-        </label>
-        <Controller
-          control={control}
-          name="state"
-          render={({ field }) => {
-            const selected =
-              states.find((s) => s.label === field.value) || null;
-            return (
-              <Select
-                id="state"
-                options={states}
-                value={selected}
-                onChange={(option) => {
-                  const label = option ? option.label : "";
-                  field.onChange(label);
-                  setValue("city", "", { shouldDirty: true });
-                  recomputeAddress({ state: label, city: "" });
-                }}
-                placeholder="Select a state"
-                isSearchable
-                isDisabled={!watchCountry}
-                isClearable
-                onCreateOption={(inputValue) =>
-                  handleAddNew("state", inputValue)
-                }
-                className="text-grey-medium"
-              />
-            );
-          }}
-        />
-        {errors.state && (
-          <span className="text-danger text-sm mt-1 animate-in fade-in duration-200">
-            {errors.state.message}
-          </span>
-        )}
-      </div>
-
-      {/* City Dropdown */}
-      <div className="flex flex-col">
-        <label htmlFor="city" className="mb-1 body-bold-16 text-grey-medium">
-          City <span className="text-danger">*</span>
-        </label>
+      <FieldShell
+        id="city"
+        label="City"
+        required
+        error={errors.city?.message}
+        hint={!watchState ? "Pick a state first" : undefined}
+      >
         <Controller
           control={control}
           name="city"
@@ -286,7 +366,7 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
               cities.find((c) => c.label === field.value) || null;
             return (
               <Select
-                id="city"
+                inputId="city"
                 options={cities}
                 value={selected}
                 onChange={(option) => {
@@ -298,42 +378,45 @@ const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
                 isSearchable
                 isDisabled={!watchState}
                 isClearable
-                onCreateOption={(inputValue) =>
-                  handleAddNew("city", inputValue)
-                }
-                className="text-grey-medium"
+                onCreateOption={(inputValue) => handleAddNew("city", inputValue)}
+                styles={selectStyles}
               />
             );
           }}
         />
-        {errors.city && (
-          <span className="text-danger text-sm mt-1 animate-in fade-in duration-200">
-            {errors.city.message}
-          </span>
-        )}
-      </div>
+      </FieldShell>
 
-      {/* Address Preview */}
       {watchAddress && (
-        <div className="p-2 bg-base-white border rounded text-sm text-grey-medium">
-          Selected address: <strong>{watchAddress}</strong>
+        <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-grey-light/30 border border-grey-light/60">
+          <MapPin
+            size={18}
+            strokeWidth={1.8}
+            className="text-primary shrink-0 mt-0.5"
+          />
+          <div className="min-w-0">
+            <p className="caption-medium-12 text-grey-medium uppercase tracking-wide">
+              Your address
+            </p>
+            <p className="body-regular-16 text-grey-dark truncate">
+              {watchAddress}
+            </p>
+          </div>
         </div>
       )}
 
-      {/* Navigation Buttons */}
-      <div className="flex justify-between pt-4">
+      <div className="flex items-center justify-between pt-2">
         <Button
-          label="Go Back"
+          label="Back"
           onClick={onPrevious}
           variant="outlined"
-          IconLeft={<ArrowLeft size={20} />}
+          IconLeft={<ArrowLeft size={18} />}
           disabled={isSubmitting}
         />
         <Button
-          label="Next"
+          label="Continue"
           type="submit"
           variant="primary"
-          IconRight={<ArrowRight size={20} />}
+          IconRight={<ArrowRight size={18} />}
           disabled={isSubmitting}
         />
       </div>
